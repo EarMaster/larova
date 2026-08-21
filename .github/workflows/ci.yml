@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # Everything below is gated on the Gradle project existing. Larova is documentation and seed
+  # files until M0 lands the wrapper (docs/implementation-plan.md), so these jobs currently pass
+  # by skipping. That is deliberate: the workflows are in place first so the first build lands
+  # into a repo that already checks it, rather than the other way round.
+  #
+  # `screenshots` is a second, narrower gate. Roborazzi goldens arrive in M3, and a job that
+  # runs `--tests '*ScreenshotTest'` with no such test fails on "no tests found" — a permanent
+  # warning nobody would read by the time it means something.
+  detect:
+    name: Detect Gradle project
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+      screenshots: ${{ steps.check.outputs.screenshots }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        name: Check for the wrapper and for screenshot tests
+        run: |
+          echo "ready=$([ -f ./gradlew ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          if find . -name '*ScreenshotTest*.kt' -not -path './build/*' | grep -q .; then
+            echo "screenshots=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "screenshots=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: Build
+    needs: detect
+    if: needs.detect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Assemble debug APK
+        run: ./gradlew assembleDebug
+
+  test:
+    name: Unit Tests
+    needs: detect
+    if: needs.detect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/build/reports/tests/'
+          retention-days: 14
+
+  screenshots:
+    name: Screenshots
+    needs: detect
+    if: needs.detect.outputs.ready == 'true' && needs.detect.outputs.screenshots == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      # Compares every screen against its committed golden. For Larova the matrix is wide by
+      # design — every tile type across light, dark, night and 200 % font scale — because the
+      # three appearance modes are resolved from colour tokens at runtime and a broken token
+      # lookup is invisible in the light-mode screenshot everyone looks at.
+      #
+      # **A mismatch reports as a warning, not a failure** (`continue-on-error`). Two reasons:
+      # goldens are baselines a maintainer *accepts* rather than a contract the code must
+      # satisfy, so "the UI changed" is information rather than a defect; and a golden can differ
+      # for reasons unrelated to the change under review — a Robolectric or Skia bump, a decoder
+      # that rounds differently on another host — which turns a blocking job into one that gets
+      # clicked past rather than read.
+      #
+      # The cost is real: a genuine visual regression merges green, and nothing else in CI looks
+      # at pixels. If the warning below stops being read, make this blocking again rather than
+      # keep a check nobody acts on.
+      - name: Verify screenshots
+        id: verify
+        continue-on-error: true
+        run: ./gradlew :app:verifyRoborazziDebug --tests '*ScreenshotTest'
+
+      # Keyed on the step's outcome rather than `failure()`: with `continue-on-error` the job
+      # never enters a failed state, so `failure()` would be false and the diffs would silently
+      # never upload — which is the whole point of the job.
+      - name: Upload screenshot diffs
+        if: steps.verify.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-diffs
+          path: app/build/outputs/roborazzi/
+          retention-days: 14
+
+      # A green check with a warning buried in a collapsed log is indistinguishable from a green
+      # check. The annotation surfaces on the PR itself.
+      - name: Report the mismatch
+        if: steps.verify.outcome == 'failure'
+        run: |
+          echo "::warning title=Screenshot goldens do not match::The UI has changed against the committed goldens. Download the 'screenshot-diffs' artifact to see what moved."
+          {
+            echo "## Screenshot goldens do not match"
+            echo
+            echo "This is a **warning, not a failure** — the job is green and the merge is not blocked."
+            echo
+            echo "Download the \`screenshot-diffs\` artifact and look at the \`_compare\` images."
+            echo "Each is an actual/expected/diff triptych."
+            echo
+            echo "- **Intended change?** Accept the new look, then commit the PNGs:"
+            echo "  \`\`\`"
+            echo "  ./gradlew :app:recordRoborazziDebug --tests '*ScreenshotTest'"
+            echo "  \`\`\`"
+            echo "- **Not intended?** It is a visual regression, and nothing else in CI will catch it."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: Lint
+    needs: detect
+    if: needs.detect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      # Detekt runs alongside Lint per docs/technical-notes.md §9. Both in one job: they are
+      # fast, and a PR that fails static analysis fails it for either reason.
+      - name: Run lint and Detekt
+        run: ./gradlew lint detekt
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: |
+            app/build/reports/lint-results-debug.html
+            **/build/reports/detekt/
+          retention-days: 14

@@ -29,6 +29,10 @@ decisions that are expensive to reverse.
 | `app/src/main/res/values/strings.xml` | English base strings — the single source |
 | `app/src/main/res/xml/locales_config.xml` | Per-app language list |
 | `brand/*.svg` | Adaptive icon layers and the store icon |
+| `CHANGELOG.md` | [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) history. **Update `## [Unreleased]` in the same commit as any user-facing change.** `release.yml` extracts GitHub Release notes from the `## [x.y.z]` heading matching `versionName`, so headings must stay exact |
+| `fastlane/metadata/android/` | Play Store listing text, one folder per store locale in `fastlane supply` layout. Written by `/release`, validated by `tools/check_store_metadata.sh`, consumed by `google-play.yml`. See that folder's `README.md` |
+| `tools/check_store_metadata.sh` | Validates listing text against Play's per-locale character limits (title 30, short 80, full 4000, release notes 500) and listing images (24-bit PNG, no alpha, 320–3840 px a side, long side at most twice the short one, at least two per set). Pass a versionCode to also require release notes in every store locale |
+| `.claude/commands/` | Repo slash commands: `/commit` and `/release` — see "Slash commands" |
 
 ## Commands
 
@@ -48,8 +52,83 @@ are the standard ones:
 ./gradlew recordRoborazziDebug                 # re-record screenshot baselines
 ```
 
-CI (GitHub Actions) is specified to run build, unit tests, lint and Detekt on
-every push. It is not set up yet either.
+```bash
+bash tools/check_store_metadata.sh          # listing text and images
+bash tools/check_store_metadata.sh 7        # also require release notes for versionCode 7
+```
+
+The metadata check works today and does not need Gradle. Invoke it through `bash`: the repo is
+developed on Windows with `core.filemode=false`, so the script's executable bit is not recorded
+in git and running it by path can fail with exit 126.
+
+## Branching model
+
+`main` represents **the released state of the app** — nothing else. `develop` is where all
+ongoing work lands first: commits, feature branches, PRs, all of it. `develop` is intentionally
+left unprotected (direct pushes are fine — the maintainer is a solo developer and doesn't want
+extra ceremony there). `main` only ever advances by merging `develop` into it at release time,
+which is what triggers `release.yml`'s tag/build/publish.
+
+**Never open a pull request targeting `main`.** Base every branch and PR on `develop` instead.
+Promoting `develop` to `main` for a release is the maintainer's call to make, not something to
+initiate unprompted.
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope):
+description`, imperative and lowercase. Scopes track the module layout — `home`, `card`, `help`,
+`transfer`, `settings`, `domain`, `data`, `ui`, `platform` — plus `release`, `store` and `l10n`.
+
+## Release process
+
+1. Work lands on `develop`, each user-facing change adding its own `## [Unreleased]` entry in
+   `CHANGELOG.md`.
+2. `/release [major|minor|patch|X.Y.Z]` bumps `versionName`/`versionCode` in
+   `app/build.gradle.kts`, stamps the `Unreleased` section with the new version and today's date,
+   writes per-locale Play release notes to
+   `fastlane/metadata/android/{locale}/changelogs/{versionCode}.txt`, and validates them. It
+   commits `chore(release): bump version to X.Y.Z` and stops — it does not promote to `main`.
+3. The maintainer merges `develop` into `main`.
+4. `release.yml` reads `versionName`, tags `vX.Y.Z`, builds a signed APK and AAB, and cuts a
+   GitHub Release with notes pulled from the matching `CHANGELOG.md` heading. It then calls
+   `google-play.yml` for the `internal` track.
+
+Two things about that chain are worth knowing before relying on it. **Release notes are named
+after the `versionCode`, not the `versionName`** — `changelogs/7.txt` is for versionCode 7, and a
+file named `1.2.0.txt` is silently never picked up. And **the release is a file format as much as
+an APK**: if the export container changed, `schemaVersion` must have been bumped and an older
+export must still import (`docs/technical-notes.md` §6). A broken export format is the one
+regression that cannot be walked back, because that file may be the only copy of a family's data.
+
+## CI/CD
+
+`.github/workflows/`, ported from a sibling project and adapted:
+
+- `ci.yml` / `codeql.yml` — build, unit tests, lint + Detekt, screenshot verification and CodeQL
+  analysis on PRs to `main` or `develop`. **On pull requests only** — a direct push to `develop`
+  runs neither, so work pushed straight to that branch has had no build, no lint and no golden
+  verification until it reaches a PR. Both start with a `detect` job gated on a root `./gradlew`,
+  which does not exist yet, so **every job currently passes by skipping**. `ci.yml`'s screenshot
+  job has a second gate on a `*ScreenshotTest*.kt` existing, and reports a golden mismatch as a
+  warning rather than a failure — read the comment in the file for what that costs.
+- `release.yml` — tags `main` from `app/build.gradle.kts`'s `versionName`, builds a signed
+  APK/AAB, and cuts a GitHub Release with notes from `CHANGELOG.md`. Gated on
+  `app/build.gradle.kts` existing. Needs `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and
+  `KEY_PASSWORD` repo secrets before it can sign anything.
+- `google-play.yml` — reusable workflow (`workflow_call`/manual dispatch) that uploads a tagged
+  release's AAB to Google Play, package `app.larova`. Needs a `SERVICE_ACCOUNT_JSON` secret and an
+  active Play Console listing. Checks out the *tag* rather than the default branch so the
+  `versionCode` it reads matches the AAB, and aborts if `versionName` disagrees with the tag. It
+  does **not** upload listing text or screenshots — `r0adkll/upload-google-play` handles only the
+  AAB, mapping and release notes.
+
+## Slash commands
+
+`.claude/commands/` — repo-specific Claude Code commands:
+
+- `/commit` — syncs, stages, drafts a conventional commit message, updates `CHANGELOG.md`'s
+  `Unreleased` section when the change is user-facing, checks the staged diff against the
+  invariants below, and offers to push.
+- `/release` — the version bump and store-metadata step described above. Gated on
+  `app/build.gradle.kts` existing, which it does not yet.
 
 ## Architecture
 
@@ -141,6 +220,15 @@ Break one of these and it cannot be repaired later, because users own the data.
 - The HTML prototypes predate the switch to English and still carry German
   annotations. Sample content is fine to leave; annotations get translated when
   those screens are next revised.
+- Project language is English throughout: code, comments, commit messages,
+  documentation. The exceptions are the colour token keys above and the German
+  store listing.
+- Keep `CHANGELOG.md` current: an entry under `## [Unreleased]` for any
+  user-facing change, in the same commit that makes it, not as a follow-up. CI,
+  tooling and docs-only changes do not belong there.
+- No unreviewed machine translation for anything a user reads — in-app strings
+  or store text. Store text deserves *more* care, not less: a missing in-app
+  string falls back to English, a missing store locale publishes blank.
 
 ## Licence
 

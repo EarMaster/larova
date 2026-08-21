@@ -1,0 +1,56 @@
+Larova is an app you set up on your child's phone. You fill it with the things you would otherwise have to explain — how bedtime works, what your child eats, who to call, what helps when they are upset.
+
+Grandparents, a babysitter, a daycare teacher or a sports coach open the app, find what they need in two taps, and can reach you immediately if something comes up.
+
+WHAT YOU CAN PUT IN IT
+
+Your start screen is a grid of tiles that you arrange yourself. Each tile holds one kind of thing:
+
+• Guide — numbered steps, one per screen, each with text and optionally a picture or a recording
+• Video — from your gallery, or one you record on the spot
+• Audio — a song, or your own voice
+• Note — free text with headings and bullet points
+• Checklist — items to tick off, optionally resetting each morning
+• Table — columns and rows you define yourself
+• Call — a name, a number and a photo, one tap to dial
+• Website — a link that opens in the browser
+• App shortcut — opens another app already on the phone
+• Folder — groups tiles together
+
+Everything inside a tile is written by you. Larova provides the shape; you provide the content.
+
+TWO VIEWS
+
+Caregiver view is what the app normally shows. Read, tick things off, make a call, open a link. Nothing can be changed, moved or deleted by accident.
+
+Parent view unlocks with a PIN or your fingerprint. Only here do the edit handles, the plus button and the backup options appear. After five minutes without input, the app returns to caregiver view on its own.
+
+That means you can hand the phone to anyone without a word of explanation.
+
+GET HELP
+
+A bar sits at the bottom of every screen. Behind it are the numbers you chose, shown large, with a photo and a relation — "Mum", "Dad", "Dr Keller", "112".
+
+Tapping one opens the phone app with the number ready. It never dials on its own, and it never sends your location anywhere. The person holding the phone decides.
+
+YOUR DATA STAYS YOURS
+
+Larova stores everything on the device and nowhere else. No account, no analytics, and no internet permission at all. Nothing you write is ever sent to us, because there is no "us" to send it to.
+
+One menu item creates a single file containing all your tiles, pictures and recordings. You choose where it goes — the phone itself, a cloud drive, a USB stick, whatever is installed. The same file works as a handover package: send it to your partner or the other grandparent, they open it in their own copy of Larova, and everything is there. You can protect it with a password.
+
+LIGHT, DARK AND NIGHT
+
+Three appearance settings. The third one exists for a specific reason: reading a bedtime guide aloud in a darkened room with a white screen does not work. Night uses warm amber on near-black, dims the display and avoids bright surfaces entirely, so nobody wakes up.
+
+LANGUAGES
+
+Larova speaks English, German, French, Italian, Spanish, Portuguese, Ukrainian, Polish, Russian, Turkish, Arabic, Hindi, Chinese and Japanese — and you can set the app's language independently of the phone's. That matters: a grandmother who does not read German can put Larova into Turkish while her grandchild's phone stays in German.
+
+The app is translated. What you write is not — your own words stay exactly as you wrote them, and are never sent anywhere to be translated.
+
+WHAT LAROVA IS NOT
+
+Larova is a notebook. It does not diagnose anything, does not calculate anything, does not interpret what you write, and does not give advice. It is not a medical device and not an emergency service. In an emergency, call your local emergency number.
+
+Larova is free software under the GNU Affero General Public License v3.0.

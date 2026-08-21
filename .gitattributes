@@ -1,0 +1,18 @@
+# The wrapper script must stay LF whatever a contributor's core.autocrlf is set to: CRLF line
+# endings make it unrunnable on the Linux CI runner.
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
+
+# Same reasoning as gradlew, and it bites the same way: tools/check_store_metadata.sh runs on the
+# Linux runner and a CRLF copy fails with `$'\r': command not found`, which names nothing useful.
+# This repo is developed on Windows, so be explicit rather than relying on core.autocrlf.
+*.sh text eol=lf
+
+# Golden screenshots and brand assets. Marking them binary keeps Git from trying to diff or
+# convert them, and keeps a merge conflict in one from producing an unopenable file.
+*.png binary
+
+# Export packages are user content and have no business in the repo (see .gitignore), but if one
+# is ever committed deliberately as a test fixture, it must not be mangled.
+*.larova binary
