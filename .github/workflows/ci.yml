@@ -203,6 +203,14 @@ jobs:
           test -f ./_site/index.html || { echo "::error::index.html missing"; exit 1; }
           test -f ./_site/privacy/index.html || { echo "::error::privacy page missing"; exit 1; }
           grep -q 'tiles' ./_site/index.html || { echo "::error::the tile grid did not render"; exit 1; }
+          # Both pages must end up with a title. The layout has no literal <title> tag — it
+          # comes from `{% seo %}` — so a static reading of the template cannot tell whether
+          # one exists, and an accessibility linter reading the raw layout reports it missing
+          # (WCAG 2.4.2). This asserts against the rendered output, which is the only place
+          # the question has an answer.
+          for f in ./_site/index.html ./_site/privacy/index.html; do
+            grep -qE '<title>[^<]+</title>' "$f" || { echo "::error::$f rendered without a <title> — is {% seo %} still in the layout?"; exit 1; }
+          done
           if grep -q '{%' ./_site/index.html ./_site/privacy/index.html; then echo "::error::unrendered Liquid tag left in a page"; exit 1; fi
 
       # The whole product claim is that nothing leaves the device, and this site hosts the
