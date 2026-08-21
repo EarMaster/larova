@@ -61,6 +61,19 @@ that are not this laptop — a password manager entry with the file attached is 
 `.gitignore` covers `*.p12`, `*.jks` and `*.b64` so none of it can reach the repo by accident, but
 that also means nothing in git will ever remind you it existed.
 
+**The keystore does not live in the repo**, so a local release build needs `KEYSTORE_PATH`
+pointing at wherever it is kept. CI is unaffected: `release.yml` reconstructs the file from
+`KEYSTORE_BASE64` into the runner's workspace, and never reads a path from here. Whatever the M0
+Gradle `signingConfig` ends up looking like, it must treat a missing keystore as "build unsigned"
+rather than "fail" — otherwise a plain `assembleDebug` on a fresh clone stops working for anyone
+who does not hold the key, which is everyone but you.
+
+To confirm the password and alias are right without waiting for a release to fail:
+
+```bash
+"$KEYTOOL" -list -keystore /path/to/larova-upload.p12 -alias larova-upload
+```
+
 ## 2. The four GitHub secrets
 
 `release.yml` reads these to sign the release build. Same terminal session as above, so `$KS_PW`
@@ -160,8 +173,8 @@ gh api -X DELETE repos/EarMaster/larova/branches/main/protection
 |---|---|
 | Branch protection on `main` | done |
 | `.gitignore` covers keystores, `.p12`, base64 and service-account JSON | done |
-| Upload keystore generated | **yours to run, §1** |
-| `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` | **yours to run, §2** |
+| Upload keystore generated and backed up | done, 2026-08-21 |
+| `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` | done, 2026-08-21 |
 | Play Console account, app, listing, service account | **yours, §3** — start the account first, it has a wait |
 | `SERVICE_ACCOUNT_JSON` | after the Play service account exists |
 | Privacy policy at `https://larova.app/privacy` | needs DNS and a page; blocks store review, not development |
