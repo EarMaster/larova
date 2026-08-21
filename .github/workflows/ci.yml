@@ -213,10 +213,15 @@ jobs:
       - name: Check nothing loads from a third party
         run: |
           # Only *asset loads* are checked — a stylesheet, script, image, iframe or a CSS
-          # url(). Anchors are deliberately not matched: linking out to GitHub or to the
-          # GDPR text is normal, and a check that broke on a new prose link would get
-          # deleted rather than fixed.
-          if grep -rInoE '<(link[^>]+href|script[^>]+src|img[^>]+src|iframe[^>]+src)="https?://[^"]+' ./_site --include='*.html'; then
+          # url(). Two kinds of external URL are deliberately not matched, because neither
+          # fetches anything:
+          #   - anchors. Linking out to GitHub or to the GDPR text is normal, and a check
+          #     that broke on the next prose link would get deleted rather than fixed.
+          #   - <link rel="canonical"> and friends. jekyll-seo-tag emits a canonical link on
+          #     every page, pointing at this site's own absolute URL. It is metadata for
+          #     crawlers, not a request the browser makes.
+          if grep -rInoE '<(link|script|img|iframe)[^>]+(href|src)="https?://[^"]+' ./_site --include='*.html' \
+             | grep -vE 'rel="(canonical|alternate|author|license|me|prev|next)"'; then
             echo "::error::a page loads an asset over the network — inline or self-host it instead"
             exit 1
           fi
