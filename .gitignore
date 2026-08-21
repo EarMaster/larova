@@ -44,8 +44,12 @@ keystore.properties
 signing.properties
 
 # Google Play service account credentials. Lives only in the SERVICE_ACCOUNT_JSON secret.
+# `pc-api-*.json` is the name Google Cloud gives the downloaded key by default, and it matches
+# neither of the tidy names below — which is exactly why it is listed.
 play-service-account*.json
 *-service-account.json
+pc-api-*.json
+gcloud-*.json
 
 # Android Studio / IntelliJ
 .idea/*
