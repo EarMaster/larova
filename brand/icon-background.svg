@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <!-- Larova · Hintergrundebene für Android Adaptive Icon (108dp, randlos) -->
+  <defs>
+    <radialGradient id="bgRoom" cx="50%" cy="44%" r="72%">
+      <stop offset="0%" stop-color="#332B60"/>
+      <stop offset="60%" stop-color="#221E3C"/>
+      <stop offset="100%" stop-color="#171429"/>
+    </radialGradient>
+    <radialGradient id="bgWarm" cx="50%" cy="52%" r="42%">
+      <stop offset="0%" stop-color="#E0913A" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#E0913A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="108" height="108" fill="url(#bgRoom)"/>
+  <rect width="108" height="108" fill="url(#bgWarm)"/>
+</svg>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larova — App icon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#1E1B33;
+  --night-2:#272242;
+  --dusk:#443A72;
+  --glow:#FFC46B;
+  --glow-deep:#E0913A;
+  --cream:#FBEFD9;
+  --display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);background:var(--night);color:#EFECF7;-webkit-font-smoothing:antialiased}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(44rem 32rem at 22% 18%, rgba(255,196,107,.15), transparent 66%),
+    radial-gradient(34rem 28rem at 92% 6%, rgba(107,86,196,.26), transparent 70%);
+}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:56px 28px 100px}
+
+.eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--glow);margin:0 0 14px}
+h1{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;line-height:1.03;letter-spacing:-.025em;margin:0 0 18px}
+h1 em{font-style:normal;color:var(--glow)}
+.lede{font-size:1.05rem;line-height:1.62;color:#BDB6D2;margin:0;max-width:44rem}
+
+h2{font-family:var(--display);font-size:1.5rem;font-weight:600;letter-spacing:-.02em;margin:0 0 8px}
+.sub{font-size:.94rem;line-height:1.6;color:#B7B0CC;margin:0 0 26px;max-width:42rem}
+section{margin-top:72px}
+.rule{height:1px;background:rgba(255,255,255,.11);margin:0 0 30px}
+
+/* --- hero --- */
+.hero{display:flex;align-items:center;gap:44px;flex-wrap:wrap;margin-top:52px}
+.hero .big{width:220px;height:220px;flex:0 0 auto;border-radius:23.5%;overflow:hidden;
+  box-shadow:0 30px 60px -24px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.09)}
+.hero .why{max-width:30rem}
+.hero .why p{font-size:.97rem;line-height:1.65;color:#B7B0CC;margin:0 0 12px}
+.hero .why strong{color:#EDE9F7;font-weight:600}
+
+/* --- generic icon box --- */
+.ico{display:block;overflow:hidden;background:transparent}
+.ico svg{display:block;width:100%;height:100%}
+.mask-squircle{border-radius:23.5%}
+.mask-circle{border-radius:50%}
+.mask-square{border-radius:12%}
+
+/* --- variants --- */
+.variants{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:24px}
+.vcard.pick{border-color:var(--glow);background:rgba(255,196,107,.07)}
+.vcard .ico{width:104px;height:104px;margin-bottom:18px}
+.vcard .tag{display:inline-block;font-size:.64rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--night);background:var(--glow);padding:3px 8px;border-radius:99px;margin-bottom:10px}
+.vcard h3{font-family:var(--display);font-size:1.14rem;font-weight:600;margin:0 0 8px;letter-spacing:-.015em}
+.vcard p{font-size:.87rem;line-height:1.58;color:#B0A9C6;margin:0}
+
+/* --- size ladder --- */
+.ladder{display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap}
+.rung{text-align:center}
+.rung .ico{margin:0 auto 9px}
+.rung span{display:block;font-size:.7rem;font-weight:600;color:#8E85AE;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+
+/* --- theme row --- */
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px}
+.tcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px;text-align:center}
+.tcard .ico{width:88px;height:88px;margin:0 auto 15px}
+.tcard b{display:block;font-size:.93rem;font-weight:600;margin-bottom:5px}
+.tcard small{display:block;font-size:.79rem;line-height:1.5;color:#A49CBC}
+.tcard.on-light{background:#EFE9F5;border-color:transparent}
+.tcard.on-light b{color:#241F35}
+.tcard.on-light small{color:#6B6480}
+
+/* --- home screen --- */
+.homescreen{
+  border-radius:26px;padding:30px 26px;
+  background:linear-gradient(160deg,#5B4A86 0%,#37507A 46%,#2B4A57 100%);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:22px 14px;max-width:400px;
+}
+.app{text-align:center}
+.app .ico,.app .ph{width:100%;aspect-ratio:1;border-radius:23.5%;margin-bottom:7px}
+.app .ph{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.12)}
+.app span{display:block;font-size:.66rem;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* --- safe zone --- */
+.safe{display:flex;gap:36px;align-items:center;flex-wrap:wrap}
+.safe .diagram{width:230px;height:230px;flex:0 0 auto}
+.safe ul{margin:0;padding-left:19px;color:#B7B0CC;font-size:.93rem;line-height:1.68;max-width:34rem}
+.safe li{margin-bottom:7px}
+.safe strong{color:#EDE9F7;font-weight:600}
+.safe code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em;background:rgba(255,255,255,.09);padding:2px 6px;border-radius:5px}
+
+.note{margin-top:26px;padding:22px 24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.note h4{font-family:var(--display);font-size:1.04rem;font-weight:600;margin:0 0 9px}
+.note p{margin:0 0 10px;font-size:.92rem;line-height:1.64;color:#B7B0CC}
+.note p:last-child{margin:0}
+.note strong{color:#EDE9F7;font-weight:600}
+
+@media (max-width:820px){
+  .wrap{padding:40px 18px 72px}
+  .variants{grid-template-columns:1fr}
+  .hero{gap:28px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <radialGradient id="room" cx="50%" cy="44%" r="72%">
+    <stop offset="0%" stop-color="#332B60"/><stop offset="60%" stop-color="#221E3C"/><stop offset="100%" stop-color="#171429"/>
+  </radialGradient>
+  <radialGradient id="warm" cx="50%" cy="52%" r="42%">
+    <stop offset="0%" stop-color="#E0913A" stop-opacity=".30"/><stop offset="100%" stop-color="#E0913A" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="lamp" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#FFC46B" stop-opacity=".85"/>
+    <stop offset="45%" stop-color="#FFC46B" stop-opacity=".28"/>
+    <stop offset="100%" stop-color="#FFC46B" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="lampL" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#E0913A" stop-opacity=".55"/>
+    <stop offset="45%" stop-color="#E0913A" stop-opacity=".18"/>
+    <stop offset="100%" stop-color="#E0913A" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- Variante A · Die Nische -->
+  <symbol id="v-a" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="url(#room)"/>
+    <rect width="108" height="108" fill="url(#warm)"/>
+    <circle cx="54" cy="56" r="21" fill="url(#lamp)"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#FBEFD9" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="54" cy="56" r="8" fill="#FFC46B"/>
+  </symbol>
+
+  <!-- Variante A · helle Fassung -->
+  <symbol id="v-a-light" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="#FBEFD9"/>
+    <circle cx="54" cy="56" r="21" fill="url(#lampL)"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#1E1B33" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#1E1B33" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="54" cy="56" r="8" fill="#E0913A"/>
+  </symbol>
+
+  <!-- Variante A · monochrom -->
+  <symbol id="v-a-mono" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="#5C5470"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#fff" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#fff" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="54" cy="56" r="8" fill="#fff"/>
+  </symbol>
+
+  <!-- Variante B · Nische mit Kacheln -->
+  <symbol id="v-b" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="url(#room)"/>
+    <rect width="108" height="108" fill="url(#warm)"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#FBEFD9" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+    <rect x="45" y="45" width="8.5" height="8.5" rx="2.4" fill="#FFC46B"/>
+    <rect x="56" y="45" width="8.5" height="8.5" rx="2.4" fill="#FFC46B" opacity=".55"/>
+    <rect x="45" y="56" width="19.5" height="8.5" rx="2.4" fill="#FFC46B" opacity=".8"/>
+  </symbol>
+
+  <!-- Variante C · Der Hüter -->
+  <symbol id="v-c" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="url(#room)"/>
+    <rect width="108" height="108" fill="url(#warm)"/>
+    <path d="M38 79 L38 52 A16 16 0 0 1 70 52 L70 79 Z" fill="#FBEFD9"/>
+    <circle cx="54" cy="59" r="6.5" fill="#E0913A"/>
+    <circle cx="54" cy="59" r="15" fill="url(#lamp)"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="wrap">
+
+<p class="eyebrow">App icon · Draft</p>
+<h1>A niche where <em>the light stays on.</em></h1>
+<p class="lede">Larova comes from the <em>Lares</em>, the household spirits of Roman homes. Their shrine was the <em>lararium</em>: a small arched niche in the wall holding a lamp that burned as long as the house was lived in. That shape is the icon.</p>
+
+<div class="hero">
+  <span class="ico mask-squircle big"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span>
+  <div class="why">
+    <p>The shape does <strong>three things at once</strong>, none of which needs explaining.</p>
+    <p><strong>It is a shrine.</strong> The arch is the niche of the Lares, so the meaning of the name sits inside the image rather than beside it.</p>
+    <p><strong>It is a doorway with the light left on.</strong> Someone is there even when you are not. That is the entire product in one mark.</p>
+    <p><strong>It is a nightlight.</strong> That ties the icon to the leading use case, bedtime, and to the night mode built for it.</p>
+  </div>
+</div>
+
+<section>
+  <h2>Three variants</h2>
+  <p class="sub">All three use the same arch. They differ in what stands inside the niche.</p>
+  <div class="rule"></div>
+  <div class="variants">
+
+    <article class="vcard pick">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span>
+      <span class="tag">Recommended</span>
+      <h3>A · The niche</h3>
+      <p>Arch, threshold, lamp. The most reduced version and the only one that stays fully legible at 24 pixels. The glow on the wall gives the mark depth without adding a shape.</p>
+    </article>
+
+    <article class="vcard">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-b"/></svg></span>
+      <h3>B · Niche with tiles</h3>
+      <p>Three tiles stand in the niche instead of the lamp, in the same arrangement as the start screen. It says more about the function but loses the light, and below 48 pixels the tiles merge into a blur.</p>
+    </article>
+
+    <article class="vcard">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-c"/></svg></span>
+      <h3>C · The guardian</h3>
+      <p>The niche becomes a figure: a small guardian with a light inside. The warmest and most charming of the three, but the filled shape feels heavier and can read as a headstone against some backgrounds.</p>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2>Size ladder</h2>
+  <p class="sub">Variant A from the Play Store listing down to a status bar notification. The critical test is on the far right.</p>
+  <div class="rule"></div>
+  <div class="ladder">
+    <div class="rung"><span class="ico mask-squircle" style="width:132px;height:132px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>512 px</span></div>
+    <div class="rung"><span class="ico mask-squircle" style="width:96px;height:96px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>192 px</span></div>
+    <div class="rung"><span class="ico mask-squircle" style="width:64px;height:64px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>96 px</span></div>
+    <div class="rung"><span class="ico mask-squircle" style="width:48px;height:48px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>48 px</span></div>
+    <div class="rung"><span class="ico mask-squircle" style="width:36px;height:36px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>36 px</span></div>
+    <div class="rung"><span class="ico mask-squircle" style="width:24px;height:24px"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>24 px</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Masks and themes</h2>
+  <p class="sub">Android clips the icon differently depending on the manufacturer. Because the arch sits well inside the safe zone, it survives every mask.</p>
+  <div class="rule"></div>
+  <div class="themes">
+    <div class="tcard">
+      <span class="ico mask-circle"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span>
+      <b>Circle</b><small>Pixel, Motorola</small>
+    </div>
+    <div class="tcard">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span>
+      <b>Squircle</b><small>Samsung One UI</small>
+    </div>
+    <div class="tcard">
+      <span class="ico mask-square"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span>
+      <b>Rounded square</b><small>Various launchers</small>
+    </div>
+    <div class="tcard">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-a-mono"/></svg></span>
+      <b>Themed icon</b><small>Android 13+, tinted from the wallpaper</small>
+    </div>
+    <div class="tcard on-light">
+      <span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-a-light"/></svg></span>
+      <b>Light version</b><small>For light contexts such as the website and press</small>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>On the home screen</h2>
+  <p class="sub">The real test: next to unrelated icons, on an arbitrary wallpaper.</p>
+  <div class="rule"></div>
+  <div class="homescreen">
+    <div class="app"><div class="ph"></div><span>Camera</span></div>
+    <div class="app"><span class="ico mask-squircle"><svg viewBox="0 0 108 108"><use href="#v-a"/></svg></span><span>Larova</span></div>
+    <div class="app"><div class="ph"></div><span>Maps</span></div>
+    <div class="app"><div class="ph"></div><span>Music</span></div>
+    <div class="app"><div class="ph"></div><span>Clock</span></div>
+    <div class="app"><div class="ph"></div><span>Gallery</span></div>
+    <div class="app"><div class="ph"></div><span>Notes</span></div>
+    <div class="app"><div class="ph"></div><span>Weather</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Safe zone</h2>
+  <p class="sub">Android scales and clips adaptive icons. The canvas is 108dp; only the inner 66dp circle is guaranteed to stay visible.</p>
+  <div class="rule"></div>
+  <div class="safe">
+    <svg class="diagram" viewBox="0 0 108 108">
+      <rect width="108" height="108" rx="6" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.2)" stroke-width=".7" stroke-dasharray="3 2"/>
+      <circle cx="54" cy="54" r="36" fill="none" stroke="rgba(255,255,255,.22)" stroke-width=".7" stroke-dasharray="3 2"/>
+      <circle cx="54" cy="54" r="33" fill="rgba(255,196,107,.1)" stroke="#FFC46B" stroke-width=".9"/>
+      <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#FBEFD9" stroke-width="6.5"/>
+      <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+      <circle cx="54" cy="56" r="8" fill="#FFC46B"/>
+      <text x="54" y="14" text-anchor="middle" fill="#8E85AE" font-family="Inter,sans-serif" font-size="5">108 dp canvas</text>
+      <text x="54" y="99" text-anchor="middle" fill="#FFC46B" font-family="Inter,sans-serif" font-size="5">66 dp safe</text>
+    </svg>
+    <ul>
+      <li>The outermost point of the drawing sits <strong>32 dp</strong> from the centre against a safe radius of 33 dp. It fits, with little margin at the ends of the threshold.</li>
+      <li>The layers ship as <code>icon-background.svg</code>, <code>icon-foreground.svg</code> and <code>icon-monochrome.svg</code>. Import them in Android Studio via <strong>New → Image Asset</strong>, which produces the <code>VectorDrawable</code> files and <code>ic_launcher.xml</code>.</li>
+      <li>The monochrome layer belongs in the same <code>ic_launcher.xml</code> as <code>&lt;monochrome&gt;</code>. Without it, themed icons fall back to a grey placeholder.</li>
+      <li>The Play Store listing additionally needs a <strong>512 × 512 PNG</strong> with no transparency and no corners of its own — the square at the top left is that version.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="note">
+  <h4>Deliberately left out</h4>
+  <p><strong>No child, no hand, no heart.</strong> Those three motifs occupy nearly every family app and make an icon indistinguishable in a grid. The arch is a rare shape in the Play Store and therefore easy to find again on a crowded home screen.</p>
+  <p><strong>No letter L.</strong> An initial explains only the name and says nothing about the product — and with an invented word nobody knows yet, there is nothing to recognise.</p>
+</div>
+
+</div>
+</body>
+</html>

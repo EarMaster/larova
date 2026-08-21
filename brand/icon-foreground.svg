@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <!-- Larova · Vordergrundebene für Android Adaptive Icon (108dp, Sicherheitsbereich 66dp) -->
+  <defs>
+    <radialGradient id="fgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFC46B" stop-opacity=".85"/>
+      <stop offset="45%" stop-color="#FFC46B" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#FFC46B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Lichtschein an der Nischenwand -->
+  <circle cx="54" cy="56" r="21" fill="url(#fgGlow)"/>
+
+  <!-- Die Nische -->
+  <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76"
+        fill="none" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="butt"/>
+
+  <!-- Schwelle -->
+  <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- Die Lampe -->
+  <circle cx="54" cy="56" r="8" fill="#FFC46B"/>
+</svg>

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larova — Screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --page:#1E1B33;
+  --brand:#FFC46B;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);background:var(--page);color:#EFECF7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(46rem 34rem at 24% 30%,rgba(255,196,107,.15),transparent 66%),
+             radial-gradient(36rem 30rem at 90% 4%,rgba(107,86,196,.26),transparent 70%)}
+.wrap{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:56px 28px 96px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;gap:26px;align-items:flex-start;max-width:56rem;margin-bottom:44px}
+.masthead .mark{width:76px;height:76px;flex:0 0 auto;border-radius:23.5%;overflow:hidden;
+  box-shadow:0 14px 30px -14px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.09)}
+.masthead .mark svg{display:block;width:100%;height:100%}
+.eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);margin:0 0 12px}
+h1{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;line-height:1.03;letter-spacing:-.025em;margin:0 0 16px}
+h1 em{font-style:normal;color:var(--brand)}
+.masthead p{font-size:1.03rem;line-height:1.62;color:#BDB6D2;margin:0;max-width:44rem}
+
+/* ---------- layout ---------- */
+.stage{display:grid;grid-template-columns:400px 1fr;gap:64px;align-items:start}
+.rail{position:sticky;top:36px}
+
+/* ---------- controls ---------- */
+.switch{display:flex;gap:4px;padding:4px;margin:0 0 12px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);border-radius:999px}
+.switch button{flex:1;border:0;background:transparent;color:#BDB6D2;cursor:pointer;font-family:var(--body);
+  font-size:.81rem;font-weight:600;padding:10px 6px;border-radius:999px;transition:background .18s,color .18s}
+.switch button[aria-pressed="true"]{background:var(--brand);color:#2B1D06}
+.switch button:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.switchlabel{font-size:.66rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8E85AE;margin:0 0 7px 4px}
+
+/* ---------- phone shell ---------- */
+.phone{width:400px;height:812px;background:#0E0C1A;border-radius:46px;padding:11px;margin-top:18px;
+  box-shadow:0 2px 0 rgba(255,255,255,.09) inset,0 40px 90px -30px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.07)}
+.viewport{position:relative;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;
+  background:var(--bg);color:var(--ink);transition:background .3s ease,color .3s ease}
+
+/* ==========================================================================
+   COLOUR TOKENS — the whole point of this file.
+   A tile carries a token class (.t-sand). The mode block resolves it.
+   The markup never contains a colour value, exactly as the database never will.
+   ========================================================================== */
+
+[data-appearance="light"] .viewport{
+  --bg:#FBF7F1; --raised:#FFFFFF; --ink:#241F35; --muted:#5A5470;
+  --line:rgba(36,31,53,.12); --field:rgba(36,31,53,.06); --chip:rgba(255,255,255,.72);
+  --accent:#9E5E0C; --alarm:#C0392B; --alarm-ink:#FFFFFF;
+  --t-sand:#F7E4C2;    --a-sand:#8A5B12;
+  --t-ton:#F4DBCB;     --a-ton:#8E4A2E;
+  --t-rose:#F6DBE1;    --a-rose:#8C3D57;
+  --t-flieder:#E4DCF6; --a-flieder:#4B3E86;
+  --t-himmel:#D8E5F5;  --a-himmel:#2F4E7C;
+  --t-salbei:#D5E9E1;  --a-salbei:#1F5F4E;
+  --t-moos:#DFEBD4;    --a-moos:#41652C;
+  --t-stein:#E7E2DA;   --a-stein:#5A5348;
+}
+[data-appearance="dark"] .viewport{
+  --bg:#1B1830; --raised:#241F3E; --ink:#F1ECF8; --muted:#B9B2CC;
+  --line:rgba(255,255,255,.11); --field:rgba(255,255,255,.07); --chip:rgba(255,255,255,.09);
+  --accent:#FFC46B; --alarm:#FF9B8F; --alarm-ink:#2A1512;
+  --t-sand:#4C3B1E;    --a-sand:#F0C88A;
+  --t-ton:#4E332A;     --a-ton:#EFB496;
+  --t-rose:#4A2C38;    --a-rose:#F0AEC0;
+  --t-flieder:#37305A; --a-flieder:#C6B8F0;
+  --t-himmel:#243B55;  --a-himmel:#A8C8EC;
+  --t-salbei:#22423A;  --a-salbei:#8FD0BC;
+  --t-moos:#2F4229;    --a-moos:#B4D69A;
+  --t-stein:#3A3733;   --a-stein:#CFC7BA;
+}
+[data-appearance="night"] .viewport{
+  --bg:#12101F; --raised:#1A1729; --ink:#E8D9BE; --muted:#A99781;
+  --line:rgba(232,217,190,.13); --field:rgba(232,217,190,.07); --chip:rgba(255,255,255,.07);
+  --accent:#FFC46B; --alarm:#FF9B8F; --alarm-ink:#2A1512;
+  --t-sand:#32281E;    --a-sand:#EBD3AC;
+  --t-ton:#332325;     --a-ton:#EACCB0;
+  --t-rose:#311F2D;    --a-rose:#EBCABF;
+  --t-flieder:#26223F; --a-flieder:#DCCDD0;
+  --t-himmel:#1C283D;  --a-himmel:#D2D3CE;
+  --t-salbei:#1B2C2E;  --a-salbei:#C9D6BD;
+  --t-moos:#222C24;    --a-moos:#D6D8B1;
+  --t-stein:#28252A;   --a-stein:#DFD3BD;
+}
+
+/* ---------- chrome ---------- */
+.statusbar{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;
+  padding:12px 24px 4px;font-size:.75rem;font-weight:600}
+.statusbar .dots{display:flex;gap:5px;align-items:center}
+.statusbar .dots i{display:block;width:4px;height:11px;border-radius:1px;background:currentColor}
+.statusbar .dots i:nth-child(1){height:5px}
+.statusbar .dots i:nth-child(2){height:8px}
+.statusbar .batt{width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative}
+.statusbar .batt::after{content:"";position:absolute;inset:2px;right:6px;background:currentColor;border-radius:1px}
+
+.canvas{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.canvas::-webkit-scrollbar{display:none}
+
+.screen{display:none;padding:0 0 132px}
+.screen.is-active{display:block}
+.pad{padding:0 20px}
+
+.appbar{display:flex;align-items:center;gap:12px;padding:8px 20px 14px}
+.iconbtn{width:44px;height:44px;flex:0 0 auto;border:0;border-radius:50%;background:transparent;
+  color:var(--ink);cursor:pointer;display:grid;place-items:center;transition:background .15s}
+.iconbtn:hover{background:var(--field)}
+.iconbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.iconbtn.on{color:var(--accent)}
+.appbar h2{font-family:var(--display);font-size:1.32rem;font-weight:600;letter-spacing:-.015em;margin:0;flex:1 1 auto}
+
+/* ---------- home ---------- */
+.greet{padding:10px 20px 4px}
+.greet-top{display:flex;align-items:center;justify-content:space-between;margin-right:-10px}
+.greet .kid{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.greet .kid span{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.greet h2{font-family:var(--display);font-size:1.9rem;font-weight:700;letter-spacing:-.03em;line-height:1.08;margin:12px 0 16px}
+
+.search{display:flex;align-items:center;gap:11px;margin:0 20px 20px;background:var(--field);
+  border-radius:999px;padding:13px 18px;color:var(--muted);font-size:.94rem}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px}
+.tile{position:relative;text-align:left;border:0;cursor:pointer;font-family:var(--body);color:var(--ink);
+  border-radius:24px;padding:18px 16px 16px;min-height:132px;display:flex;flex-direction:column;
+  transition:transform .16s ease,box-shadow .16s ease,background .3s ease}
+.tile:hover{transform:translateY(-2px);box-shadow:0 10px 22px -12px rgba(0,0,0,.45)}
+.tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tile .ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  background:var(--chip);margin-bottom:auto;transition:background .3s ease,color .3s ease}
+.tile b{display:block;font-family:var(--display);font-size:1.02rem;font-weight:600;letter-spacing:-.01em;margin-top:14px}
+.tile small{display:block;font-size:.79rem;color:var(--muted);margin-top:3px}
+
+.t-sand{background:var(--t-sand)}       .t-sand .ic{color:var(--a-sand)}
+.t-ton{background:var(--t-ton)}         .t-ton .ic{color:var(--a-ton)}
+.t-rose{background:var(--t-rose)}       .t-rose .ic{color:var(--a-rose)}
+.t-flieder{background:var(--t-flieder)} .t-flieder .ic{color:var(--a-flieder)}
+.t-himmel{background:var(--t-himmel)}   .t-himmel .ic{color:var(--a-himmel)}
+.t-salbei{background:var(--t-salbei)}   .t-salbei .ic{color:var(--a-salbei)}
+.t-moos{background:var(--t-moos)}       .t-moos .ic{color:var(--a-moos)}
+.t-stein{background:var(--t-stein)}     .t-stein .ic{color:var(--a-stein)}
+
+.tile .pencil{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;
+  background:var(--chip);display:none;place-items:center;color:var(--ink)}
+.tile.add{background:transparent;border:2px dashed var(--line);color:var(--muted);
+  display:none;align-items:center;justify-content:center;gap:9px;font-weight:600;font-size:.92rem}
+[data-view="parent"] .tile .pencil{display:grid}
+[data-view="parent"] .tile.add{display:flex}
+
+.modenote{margin:20px 20px 0;padding:12px 15px;border-radius:16px;background:var(--field);
+  border:1px solid var(--line);font-size:.79rem;line-height:1.5;color:var(--muted);display:none}
+[data-view="parent"] .modenote{display:block}
+
+/* ---------- guide ---------- */
+.steps-meta{display:flex;align-items:center;gap:10px;padding:0 20px 14px}
+.steps-meta .txt{font-size:.79rem;font-weight:600;color:var(--muted);letter-spacing:.03em}
+.pips{display:flex;gap:5px;flex:1 1 auto;justify-content:flex-end}
+.pips i{width:22px;height:5px;border-radius:3px;background:var(--line)}
+.pips i.on{background:var(--accent)}
+
+.illus{margin:0 20px 20px;border-radius:26px;overflow:hidden;aspect-ratio:16/10}
+.illus svg{display:block;width:100%;height:100%}
+
+.steptext{font-family:var(--display);font-size:1.42rem;font-weight:500;line-height:1.34;letter-spacing:-.015em;margin:0 0 8px}
+.stephint{font-size:.94rem;line-height:1.55;color:var(--muted);margin:0 0 20px}
+
+.media-row{display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:20px;
+  background:var(--t-sand);margin-bottom:14px}
+.media-row .play{width:42px;height:42px;flex:0 0 auto;border-radius:50%;background:var(--chip);
+  color:var(--a-sand);display:grid;place-items:center}
+.media-row b{display:block;font-size:.93rem;font-weight:600}
+.media-row small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
+
+.stepnav{display:flex;gap:10px;margin-top:18px}
+.btn{flex:1;border:0;cursor:pointer;font-family:var(--body);font-weight:600;font-size:.96rem;
+  padding:15px;border-radius:999px;transition:filter .15s}
+.btn:hover{filter:brightness(.95)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-ghost{background:var(--field);color:var(--ink)}
+.btn-solid{background:var(--ink);color:var(--bg)}
+
+.tinynote{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:.76rem;color:var(--muted)}
+
+/* ---------- checklist ---------- */
+.check{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;background:transparent;
+  font-family:var(--body);cursor:pointer;padding:15px 4px;border-bottom:1px solid var(--line);color:var(--ink)}
+.check:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
+.check .box{width:28px;height:28px;flex:0 0 auto;border-radius:9px;border:2px solid var(--line);
+  display:grid;place-items:center;color:transparent;transition:background .15s,border-color .15s,color .15s}
+.check[aria-checked="true"] .box{background:var(--a-salbei);border-color:var(--a-salbei);color:var(--t-salbei)}
+.check .lbl{font-size:1.02rem;font-weight:500}
+.check[aria-checked="true"] .lbl{color:var(--muted);text-decoration:line-through}
+.check .time{margin-left:auto;font-size:.77rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.progress{margin:4px 0 20px;display:flex;align-items:center;gap:12px}
+.progress .track{flex:1;height:8px;border-radius:4px;background:var(--field)}
+.progress .fill{height:100%;border-radius:4px;background:var(--accent);transition:width .3s ease}
+.progress .num{font-size:.82rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.footnote{margin-top:22px;padding:14px 16px;border-radius:18px;background:var(--field);
+  font-size:.82rem;line-height:1.5;color:var(--muted)}
+
+/* ---------- table ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th{text-align:left;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;padding:0 10px 10px 0}
+.tbl td{padding:13px 10px 13px 0;border-top:1px solid var(--line);vertical-align:top;line-height:1.45}
+.tbl td:first-child{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl td:last-child{color:var(--muted);font-size:.85rem}
+
+/* ---------- contacts ---------- */
+.sheetgrab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:10px auto 4px}
+.contact{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;font-family:var(--body);
+  border:0;background:var(--field);border-radius:22px;padding:14px 16px;margin-bottom:10px;color:var(--ink);transition:filter .15s}
+.contact:hover{filter:brightness(1.06)}
+.contact:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.contact .av{width:48px;height:48px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--display);font-weight:700;font-size:1.06rem;background:var(--t-flieder);color:var(--a-flieder)}
+.contact b{display:block;font-size:1rem;font-weight:600}
+.contact small{display:block;font-size:.8rem;color:var(--muted);margin-top:2px}
+.contact .call{margin-left:auto;width:44px;height:44px;flex:0 0 auto;border-radius:50%;
+  background:var(--t-salbei);color:var(--a-salbei);display:grid;place-items:center}
+.contact.urgent{background:var(--alarm);color:var(--alarm-ink)}
+.contact.urgent small{color:var(--alarm-ink);opacity:.82}
+.contact.urgent .av,.contact.urgent .call{background:rgba(255,255,255,.22);color:var(--alarm-ink)}
+
+/* ---------- type picker ---------- */
+.typerow{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;font-family:var(--body);
+  border:0;background:transparent;padding:14px 4px;border-bottom:1px solid var(--line);color:var(--ink)}
+.typerow:hover{background:var(--field)}
+.typerow:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
+.typerow .ic{width:42px;height:42px;flex:0 0 auto;border-radius:14px;background:var(--field);display:grid;place-items:center}
+.typerow b{display:block;font-size:.98rem;font-weight:600}
+.typerow small{display:block;font-size:.79rem;color:var(--muted);margin-top:2px}
+.typerow .chev{margin-left:auto;color:var(--line)}
+
+/* ---------- transfer ---------- */
+.bigaction{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;cursor:pointer;font-family:var(--body);
+  border:1px solid var(--line);background:var(--raised);border-radius:22px;padding:17px;margin-bottom:11px;
+  color:var(--ink);transition:border-color .15s}
+.bigaction:hover{border-color:var(--accent)}
+.bigaction:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bigaction .ic{width:40px;height:40px;flex:0 0 auto;border-radius:13px;background:var(--t-sand);
+  color:var(--a-sand);display:grid;place-items:center}
+.bigaction b{display:block;font-family:var(--display);font-size:1.04rem;font-weight:600}
+.bigaction p{margin:5px 0 0;font-size:.84rem;line-height:1.5;color:var(--muted)}
+.destlist{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.dest{font-size:.77rem;font-weight:600;padding:7px 13px;border-radius:999px;background:var(--field);color:var(--muted)}
+.sectionlabel{font-size:.71rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
+
+/* ---------- help bar ---------- */
+.helpbar{position:absolute;left:14px;right:14px;bottom:16px;z-index:5;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--alarm);color:var(--alarm-ink);border:0;cursor:pointer;
+  font-family:var(--display);font-size:1.06rem;font-weight:600;letter-spacing:-.01em;
+  padding:18px;border-radius:24px;box-shadow:0 14px 30px -14px rgba(0,0,0,.6);transition:filter .15s,background .3s}
+.helpbar:hover{filter:brightness(1.06)}
+.helpbar:focus-visible{outline:3px solid var(--alarm-ink);outline-offset:-6px}
+
+/* ---------- notes column ---------- */
+.notes{padding-top:4px}
+.notes > h3{font-family:var(--display);font-size:.74rem;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--brand);margin:0 0 20px}
+.note{border-left:2px solid rgba(255,255,255,.12);padding:2px 0 30px 26px;margin-bottom:2px;position:relative}
+.note::before{content:"";position:absolute;left:-6px;top:9px;width:10px;height:10px;border-radius:50%;
+  background:var(--page);border:2px solid rgba(255,255,255,.22);transition:background .2s,border-color .2s}
+.note.is-current{border-left-color:var(--brand)}
+.note.is-current::before{background:var(--brand);border-color:var(--brand)}
+.note h4{margin:0 0 6px}
+.note h4 button{border:0;background:transparent;padding:0;cursor:pointer;text-align:left;
+  font-family:var(--display);font-size:1.24rem;font-weight:600;letter-spacing:-.02em;color:#F3F0FA;transition:color .18s}
+.note h4 button:hover{color:var(--brand)}
+.note h4 button:focus-visible{outline:2px solid var(--brand);outline-offset:3px;border-radius:4px}
+.note .kind{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:#8E85AE;margin-bottom:9px}
+.note p{margin:0 0 11px;font-size:.94rem;line-height:1.62;color:#B7B0CC;max-width:38rem}
+.note ul{margin:0;padding-left:19px;color:#B7B0CC;font-size:.91rem;line-height:1.62}
+.note li{margin-bottom:5px}
+.note strong{color:#EDE9F7;font-weight:600}
+.note code{font-family:ui-monospace,Menlo,monospace;font-size:.86em;background:rgba(255,255,255,.09);padding:2px 6px;border-radius:5px}
+.closing{margin-top:16px;padding:26px 28px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.closing h4{font-family:var(--display);font-size:1.1rem;font-weight:600;margin:0 0 10px;color:#F3F0FA}
+.closing p{margin:0;font-size:.92rem;line-height:1.62;color:#B7B0CC}
+
+/* ---------- transitions ---------- */
+@keyframes slide-to-left{to{transform:translateX(-26%);opacity:0}}
+@keyframes slide-from-right{from{transform:translateX(26%);opacity:0}}
+@keyframes slide-to-right{to{transform:translateX(26%);opacity:0}}
+@keyframes slide-from-left{from{transform:translateX(-26%);opacity:0}}
+::view-transition-group(screen){animation-duration:.32s;animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-old(screen),::view-transition-new(screen){animation-fill-mode:both}
+html:active-view-transition-type(forward)::view-transition-old(screen){animation-name:slide-to-left}
+html:active-view-transition-type(forward)::view-transition-new(screen){animation-name:slide-from-right}
+html:active-view-transition-type(backward)::view-transition-old(screen){animation-name:slide-to-right}
+html:active-view-transition-type(backward)::view-transition-new(screen){animation-name:slide-from-left}
+.canvas{view-transition-name:screen}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  ::view-transition-group(screen){animation:none!important}
+  *{transition-duration:.01ms!important}
+}
+@media (max-width:980px){
+  .wrap{padding:36px 18px 72px}
+  .stage{grid-template-columns:1fr;gap:44px}
+  .rail{position:static}
+  .phone{width:min(400px,100%);height:min(812px,86vh)}
+  .masthead{flex-direction:column;gap:18px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <radialGradient id="room" cx="50%" cy="44%" r="72%">
+    <stop offset="0%" stop-color="#332B60"/><stop offset="60%" stop-color="#221E3C"/><stop offset="100%" stop-color="#171429"/>
+  </radialGradient>
+  <radialGradient id="warm" cx="50%" cy="52%" r="42%">
+    <stop offset="0%" stop-color="#E0913A" stop-opacity=".30"/><stop offset="100%" stop-color="#E0913A" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="lamp" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#FFC46B" stop-opacity=".85"/>
+    <stop offset="45%" stop-color="#FFC46B" stop-opacity=".28"/>
+    <stop offset="100%" stop-color="#FFC46B" stop-opacity="0"/>
+  </radialGradient>
+  <symbol id="app-icon" viewBox="0 0 108 108">
+    <rect width="108" height="108" fill="url(#room)"/><rect width="108" height="108" fill="url(#warm)"/>
+    <circle cx="54" cy="56" r="21" fill="url(#lamp)"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#FBEFD9" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="54" cy="56" r="8" fill="#FFC46B"/>
+  </symbol>
+
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.6 9 17.5 20 6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6.5h3v3H4zM4 15h3v3H4z" fill="currentColor"/><path d="M10 8h10M10 16.5h10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.6 4-2 1.6a12 12 0 0 0 5.8 5.8l1.6-2 4 1.6v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M5.5 3.5h13v17h-13z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 8h6M9 12h6M9 16h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M3.5 10h17M10 4.5v15" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2.5h9v11h-17z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><path d="M12 21s-7.6-4.6-7.6-10A4.4 4.4 0 0 1 12 8.2 4.4 4.4 0 0 1 19.6 11c0 5.4-7.6 10-7.6 10Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.5 5.5 18 12l-9.5 6.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15.5 4.5 19.5 8.5 8 20H4v-4Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><path d="M3.5 6.5h11v11h-11z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m14.5 11 6-3.5v9l-6-3.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 1 0-5.7-5.7L11.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 1 0 11 18.7L12.5 17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 17v3h15v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-open" viewBox="0 0 24 24"><path d="M12 20V9m0 0-4 4m4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 7V4h15v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5.5 10.5h13v10h-13z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="1.9"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+
+<header class="masthead">
+  <span class="mark"><svg viewBox="0 0 108 108"><use href="#app-icon"/></svg></span>
+  <div>
+    <p class="eyebrow">Prototype · Android · Version 1</p>
+    <h1>Larova — everything that matters, <em>even when you're not there.</em></h1>
+    <p>A clickable draft. Switch between the two views and the three appearance modes, then tap the tiles. The notes on the right explain why each screen looks the way it does; every heading jumps to its screen.</p>
+  </div>
+</header>
+
+<div class="stage">
+
+  <div class="rail">
+    <p class="switchlabel">View</p>
+    <div class="switch" role="group" aria-label="Switch view">
+      <button type="button" data-view-btn="caregiver" aria-pressed="true">Caregiver</button>
+      <button type="button" data-view-btn="parent" aria-pressed="false">Parent</button>
+    </div>
+
+    <p class="switchlabel" style="margin-top:16px">Appearance</p>
+    <div class="switch" role="group" aria-label="Switch appearance">
+      <button type="button" data-appearance-btn="light" aria-pressed="true">Light</button>
+      <button type="button" data-appearance-btn="dark" aria-pressed="false">Dark</button>
+      <button type="button" data-appearance-btn="night" aria-pressed="false">Night</button>
+    </div>
+
+    <div class="phone" id="phone" data-view="caregiver" data-appearance="light">
+      <div class="viewport">
+
+        <div class="statusbar">
+          <span>19:42</span>
+          <span class="dots"><i></i><i></i><i></i><i></i><span class="batt"></span></span>
+        </div>
+
+        <div class="canvas" id="canvas">
+
+          <!-- HOME -->
+          <section class="screen is-active" data-screen="home" aria-label="Start screen">
+            <div class="greet">
+              <div class="greet-top">
+                <span class="kid"><span></span>Jonas · 5 years</span>
+                <button class="iconbtn" type="button" data-go="transfer" aria-label="Menu"><svg width="21" height="21"><use href="#i-grid"/></svg></button>
+              </div>
+              <h2>Good to see you.</h2>
+            </div>
+            <div class="search"><svg width="19" height="19"><use href="#i-search"/></svg> Search</div>
+
+            <div class="grid">
+              <button class="tile t-sand" type="button" data-go="guide">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-moon"/></svg></span>
+                <b>Bedtime</b><small>Guide · 5 steps</small>
+              </button>
+              <button class="tile t-salbei" type="button" data-go="checklist">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-list"/></svg></span>
+                <b>Evening routine</b><small>Checklist · 6 items</small>
+              </button>
+              <button class="tile t-rose" type="button" data-go="contacts">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-phone"/></svg></span>
+                <b>Important contacts</b><small>Call · 4 numbers</small>
+              </button>
+              <button class="tile t-himmel" type="button" data-go="table">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-table"/></svg></span>
+                <b>A day with us</b><small>Table · 7 times</small>
+              </button>
+              <button class="tile t-moos" type="button" data-go="checklist">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-note"/></svg></span>
+                <b>Food and drink</b><small>Note</small>
+              </button>
+              <button class="tile t-flieder" type="button" data-go="guide">
+                <span class="pencil"><svg width="15" height="15"><use href="#i-pencil"/></svg></span>
+                <span class="ic"><svg width="22" height="22"><use href="#i-folder"/></svg></span>
+                <b>What helps when…</b><small>Folder · 4 tiles</small>
+              </button>
+              <button class="tile add" type="button" data-go="editor" style="grid-column:span 2;min-height:74px">
+                <svg width="19" height="19"><use href="#i-plus"/></svg> Add tile
+              </button>
+            </div>
+
+            <div class="modenote">
+              <strong>Parent view is on.</strong> Editing, reordering and backup are unlocked.
+              Larova returns to caregiver view after five minutes without input.
+            </div>
+          </section>
+
+          <!-- GUIDE -->
+          <section class="screen" data-screen="guide" aria-label="Guide: Bedtime">
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Back"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>Bedtime</h2>
+              <button class="iconbtn" type="button" id="nightbtn" aria-label="Night mode" aria-pressed="false"><svg width="21" height="21"><use href="#i-moon"/></svg></button>
+            </div>
+
+            <div class="steps-meta">
+              <span class="txt">Step 3 of 5</span>
+              <span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>
+            </div>
+
+            <div class="illus">
+              <svg viewBox="0 0 320 200" role="img" aria-label="Evening scene with a moon">
+                <rect width="320" height="200" fill="#2A2450"/>
+                <circle cx="252" cy="52" r="60" fill="#332C60"/>
+                <circle cx="252" cy="52" r="26" fill="#FFC46B"/>
+                <circle cx="240" cy="44" r="24" fill="#332C60"/>
+                <circle cx="62" cy="36" r="2.4" fill="#FFF3DC"/>
+                <circle cx="104" cy="66" r="1.7" fill="#FFF3DC" opacity=".8"/>
+                <circle cx="150" cy="30" r="1.9" fill="#FFF3DC" opacity=".7"/>
+                <circle cx="38" cy="86" r="1.6" fill="#FFF3DC" opacity=".6"/>
+                <rect x="34" y="128" width="252" height="46" rx="16" fill="#4A4180"/>
+                <rect x="34" y="118" width="94" height="30" rx="14" fill="#EFEBF4"/>
+                <path d="M118 148h168a16 16 0 0 1 16 16v10H118Z" fill="#7E6FC4"/>
+                <circle cx="86" cy="120" r="17" fill="#F0C9A4"/>
+                <path d="M34 174h252" stroke="#211E3B" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="pad">
+              <p class="steptext">Dim the lights and switch on the little lamp on the windowsill.</p>
+              <p class="stephint">Leave the ceiling light off. Jonas likes the door left slightly open.</p>
+
+              <div class="media-row">
+                <span class="play"><svg width="20" height="20"><use href="#i-play"/></svg></span>
+                <span><b>Mum's goodnight song</b><small>Voice recording · 1:24</small></span>
+              </div>
+
+              <div class="stepnav">
+                <button class="btn btn-ghost" type="button" data-go="home">Back</button>
+                <button class="btn btn-solid" type="button" data-go="checklist">Next</button>
+              </div>
+
+              <p class="tinynote"><svg width="15" height="15"><use href="#i-moon"/></svg> The screen stays on here.</p>
+            </div>
+          </section>
+
+          <!-- CHECKLIST -->
+          <section class="screen" data-screen="checklist" aria-label="Checklist: Evening routine">
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Back"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>Evening routine</h2>
+            </div>
+            <div class="pad">
+              <div class="progress">
+                <span class="track"><span class="fill" id="fill" style="width:33%"></span></span>
+                <span class="num" id="pnum">2 of 6</span>
+              </div>
+
+              <div id="checks">
+                <button class="check" type="button" role="checkbox" aria-checked="true">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Dinner</span><span class="time">18:10</span>
+                </button>
+                <button class="check" type="button" role="checkbox" aria-checked="true">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Brush teeth</span><span class="time">18:40</span>
+                </button>
+                <button class="check" type="button" role="checkbox" aria-checked="false">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Put on pyjamas</span>
+                </button>
+                <button class="check" type="button" role="checkbox" aria-checked="false">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Choose two books</span>
+                </button>
+                <button class="check" type="button" role="checkbox" aria-checked="false">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Fetch the soft toy</span>
+                </button>
+                <button class="check" type="button" role="checkbox" aria-checked="false">
+                  <span class="box"><svg width="17" height="17"><use href="#i-check"/></svg></span>
+                  <span class="lbl">Dim the lights</span>
+                </button>
+              </div>
+
+              <p class="footnote">Resets every morning at 06:00. Ticked items are noted with a time in the log.</p>
+            </div>
+          </section>
+
+          <!-- TABLE -->
+          <section class="screen" data-screen="table" aria-label="Table: A day with us">
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Back"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>A day with us</h2>
+            </div>
+            <div class="pad">
+              <table class="tbl">
+                <thead><tr><th>Time</th><th>What</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr><td>07:00</td><td>Wake up</td><td>Needs ten quiet minutes</td></tr>
+                  <tr><td>07:30</td><td>Breakfast</td><td>No milk</td></tr>
+                  <tr><td>12:00</td><td>Lunch</td><td>Eats slowly</td></tr>
+                  <tr><td>13:00</td><td>Quiet time</td><td>Rarely sleeps, reads instead</td></tr>
+                  <tr><td>15:30</td><td>Snack</td><td>Fruit, no yoghurt</td></tr>
+                  <tr><td>18:00</td><td>Dinner</td><td>—</td></tr>
+                  <tr><td>19:30</td><td>Bed</td><td>See the Bedtime tile</td></tr>
+                </tbody>
+              </table>
+              <p class="footnote">Parents define the columns and rows themselves. Larova has no predefined fields.</p>
+            </div>
+          </section>
+
+          <!-- CONTACTS -->
+          <section class="screen" data-screen="contacts" aria-label="Get help">
+            <div class="sheetgrab"></div>
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Close"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>Get help</h2>
+            </div>
+            <div class="pad">
+              <button class="contact" type="button">
+                <span class="av">SB</span>
+                <span><b>Sarah</b><small>Mum · always reachable</small></span>
+                <span class="call"><svg width="19" height="19"><use href="#i-phone"/></svg></span>
+              </button>
+              <button class="contact" type="button">
+                <span class="av">MB</span>
+                <span><b>Micha</b><small>Dad</small></span>
+                <span class="call"><svg width="19" height="19"><use href="#i-phone"/></svg></span>
+              </button>
+              <button class="contact" type="button">
+                <span class="av">KP</span>
+                <span><b>Dr Keller's practice</b><small>Paediatrician · Mon–Fri 8–17</small></span>
+                <span class="call"><svg width="19" height="19"><use href="#i-phone"/></svg></span>
+              </button>
+              <button class="contact urgent" type="button">
+                <span class="av">112</span>
+                <span><b>Emergency services</b><small>Ambulance and fire brigade</small></span>
+                <span class="call"><svg width="19" height="19"><use href="#i-phone"/></svg></span>
+              </button>
+
+              <p class="footnote">Tapping opens the phone app with the number ready. It only dials when the green handset is pressed — Larova never dials on its own.</p>
+            </div>
+          </section>
+
+          <!-- EDITOR -->
+          <section class="screen" data-screen="editor" aria-label="New tile">
+            <div class="sheetgrab"></div>
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Cancel"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>New tile</h2>
+            </div>
+            <div class="pad">
+              <button class="typerow" type="button" data-go="guide">
+                <span class="ic"><svg width="21" height="21"><use href="#i-moon"/></svg></span>
+                <span><b>Guide</b><small>Steps with text, pictures and sound</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="checklist">
+                <span class="ic"><svg width="21" height="21"><use href="#i-list"/></svg></span>
+                <span><b>Checklist</b><small>Things to tick off, optionally reset each day</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="table">
+                <span class="ic"><svg width="21" height="21"><use href="#i-table"/></svg></span>
+                <span><b>Table</b><small>Your own columns and rows</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="guide">
+                <span class="ic"><svg width="21" height="21"><use href="#i-video"/></svg></span>
+                <span><b>Video or sound</b><small>From your gallery, or record it now</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="contacts">
+                <span class="ic"><svg width="21" height="21"><use href="#i-phone"/></svg></span>
+                <span><b>Call</b><small>A name, a number and a relation</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="home">
+                <span class="ic"><svg width="21" height="21"><use href="#i-link"/></svg></span>
+                <span><b>Website or app</b><small>Opens a link or an app on this phone</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+              <button class="typerow" type="button" data-go="home">
+                <span class="ic"><svg width="21" height="21"><use href="#i-folder"/></svg></span>
+                <span><b>Folder</b><small>Groups several tiles together</small></span>
+                <span class="chev"><svg width="18" height="18"><use href="#i-chev"/></svg></span>
+              </button>
+            </div>
+          </section>
+
+          <!-- TRANSFER -->
+          <section class="screen" data-screen="transfer" aria-label="Backup and transfer">
+            <div class="appbar">
+              <button class="iconbtn" type="button" data-go="home" aria-label="Back"><svg width="22" height="22"><use href="#i-back"/></svg></button>
+              <h2>Backup &amp; transfer</h2>
+            </div>
+            <div class="pad">
+              <button class="bigaction" type="button">
+                <span class="ic"><svg width="20" height="20"><use href="#i-save"/></svg></span>
+                <span>
+                  <b>Back up</b>
+                  <p>Creates one file with all your tiles, pictures and recordings. You choose where it goes in the next step.</p>
+                  <span class="destlist"><span class="dest">This phone</span><span class="dest">Google Drive</span><span class="dest">Nextcloud</span><span class="dest">USB stick</span></span>
+                </span>
+              </button>
+
+              <button class="bigaction" type="button">
+                <span class="ic"><svg width="20" height="20"><use href="#i-open"/></svg></span>
+                <span>
+                  <b>Restore</b>
+                  <p>Pick a file, check the preview, then replace everything or merge with what is already here.</p>
+                </span>
+              </button>
+
+              <button class="bigaction" type="button">
+                <span class="ic"><svg width="20" height="20"><use href="#i-lock"/></svg></span>
+                <span>
+                  <b>Protect with a password</b>
+                  <p>Recommended whenever you send the file to someone. Without the password it cannot be opened.</p>
+                </span>
+              </button>
+
+              <p class="sectionlabel">Last backed up</p>
+              <p class="footnote">18 Aug 2026, 21:04 · Google Drive · 14 tiles, 9 files, 41 MB</p>
+            </div>
+          </section>
+
+        </div>
+
+        <button class="helpbar" type="button" data-go="contacts">
+          <svg width="21" height="21"><use href="#i-help"/></svg> Get help
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes">
+    <h3>Seven screens, seven decisions</h3>
+
+    <article class="note" data-note="home">
+      <span class="kind">Start screen</span>
+      <h4><button type="button" data-go="home">Two taps to the answer</button></h4>
+      <p>Large tiles instead of lists, a fixed colour per topic, subtitles naming the type and the size. Someone opening the app for the first time should know what is behind a tile without being told.</p>
+      <p>Every tile in this prototype carries a token class — <code>t-sand</code>, <code>t-salbei</code> — and the mode block resolves it. No colour value appears in the markup, exactly as no colour value will appear in the database.</p>
+      <ul>
+        <li><strong>Caregiver view:</strong> read and act, nothing else. No plus button, no handles, nothing that can break.</li>
+        <li><strong>Parent view:</strong> unlocked by PIN, revealing the pencils and the add tile.</li>
+      </ul>
+    </article>
+
+    <article class="note" data-note="guide">
+      <span class="kind">Guide</span>
+      <h4><button type="button" data-go="guide">One step per screen</button></h4>
+      <p>The core format. A step fills the screen: picture, one sentence in large type, an optional hint and a recording. Swipe or tap to move on.</p>
+      <p>The moon button in the app bar switches straight to night mode. This is the reason the third appearance mode exists — reading aloud in a darkened bedroom, where a white screen is a product defect. Try it.</p>
+    </article>
+
+    <article class="note" data-note="checklist">
+      <span class="kind">Checklist</span>
+      <h4><button type="button" data-go="checklist">Ticking creates the log</button></h4>
+      <p>Every tick writes a timestamp. In the evening the parents can see what happened when, without anyone having to document anything.</p>
+      <p>It stays a plain event list on purpose: no evaluation, no trends, no scoring. That restraint is what keeps the app outside medical device territory.</p>
+      <p>Note the progress bar: it is amber, the reserved system colour. That is why amber is not offered as a tile colour — once users could paint tiles amber, the signal would stop reading as the app speaking.</p>
+    </article>
+
+    <article class="note" data-note="table">
+      <span class="kind">Table</span>
+      <h4><button type="button" data-go="table">Free columns, not fixed fields</button></h4>
+      <p>The app imposes no structure. Someone who wants a "Time" column creates one; someone who needs "Place" instead does that. The same tile carries a daily schedule, a contact list or a packing list.</p>
+      <p>Technically this is a JSON payload of column names and rows, which means later tile types need no database migration.</p>
+    </article>
+
+    <article class="note" data-note="contacts">
+      <span class="kind">Get help</span>
+      <h4><button type="button" data-go="contacts">Always visible, never automatic</button></h4>
+      <p>The bar is pinned above every screen. Behind it are the stored numbers, large, labelled with a relation.</p>
+      <p>A tap opens the phone app with the number ready but does not dial. That needs no call permission, is harmless if triggered by mistake, and keeps the app out of emergency-services regulation.</p>
+      <p>The bar now uses <code>#C0392B</code> in light mode. The earlier draft used a lighter red on which white text reached only 3.95:1 — below the minimum, on the one element that has to be readable in a second under stress.</p>
+    </article>
+
+    <article class="note" data-note="editor">
+      <span class="kind">New tile</span>
+      <h4><button type="button" data-go="editor">Ten building blocks, no more</button></h4>
+      <p>Creating a tile starts with the type, followed by a form tailored to it. That is considerably easier to grasp than a construction kit where elements combine freely.</p>
+      <p>New types can be added later without touching existing content. Older app versions skip unknown types on import rather than failing on them.</p>
+    </article>
+
+    <article class="note" data-note="transfer">
+      <span class="kind">Backup &amp; transfer</span>
+      <h4><button type="button" data-go="transfer">Google Drive without Google integration</button></h4>
+      <p>Export produces a single file — a ZIP holding a manifest, the content and the media. For the destination the app opens the Android system dialog, where every installed cloud service appears as a target.</p>
+      <p>So the app needs no Drive API, no OAuth approval, and no internet permission at all. The same file doubles as the handover package for a second caregiver, optionally password-protected.</p>
+    </article>
+
+    <div class="closing">
+      <h4>Still open</h4>
+      <p>Template picker on first run, search results, the inside of a folder, PIN entry, and the editing form per tile type. Those screens are worth drawing once the structure above is settled.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  const ORDER = ['home','guide','checklist','table','contacts','editor','transfer'];
+  const canvas  = document.getElementById('canvas');
+  const phone   = document.getElementById('phone');
+  const screens = [...document.querySelectorAll('.screen')];
+  const notes   = [...document.querySelectorAll('.note')];
+  let current = 'home';
+
+  function paint(id) {
+    screens.forEach(s => s.classList.toggle('is-active', s.dataset.screen === id));
+    notes.forEach(n => n.classList.toggle('is-current', n.dataset.note === id));
+    canvas.scrollTop = 0;
+    current = id;
+  }
+
+  function go(id) {
+    if (!id || id === current) return;
+    const dir = ORDER.indexOf(id) > ORDER.indexOf(current) ? 'forward' : 'backward';
+    if (!document.startViewTransition) { paint(id); return; }
+    document.startViewTransition({ update: () => paint(id), types: [dir] });
+  }
+
+  function setAppearance(mode) {
+    phone.dataset.appearance = mode;
+    document.querySelectorAll('[data-appearance-btn]').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset.appearanceBtn === mode))
+    );
+    const nb = document.getElementById('nightbtn');
+    nb.classList.toggle('on', mode === 'night');
+    nb.setAttribute('aria-pressed', String(mode === 'night'));
+  }
+
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('[data-go]');
+    if (trigger) { go(trigger.dataset.go); return; }
+
+    const check = e.target.closest('.check');
+    if (check) {
+      check.setAttribute('aria-checked', check.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+      const all  = [...document.querySelectorAll('#checks .check')];
+      const done = all.filter(c => c.getAttribute('aria-checked') === 'true').length;
+      document.getElementById('fill').style.width = (done / all.length * 100) + '%';
+      document.getElementById('pnum').textContent = done + ' of ' + all.length;
+    }
+  });
+
+  document.querySelectorAll('[data-view-btn]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      phone.dataset.view = btn.dataset.viewBtn;
+      document.querySelectorAll('[data-view-btn]').forEach(b =>
+        b.setAttribute('aria-pressed', String(b === btn))
+      );
+      if (current !== 'home') go('home');
+    });
+  });
+
+  document.querySelectorAll('[data-appearance-btn]').forEach(btn => {
+    btn.addEventListener('click', () => setAppearance(btn.dataset.appearanceBtn));
+  });
+
+  document.getElementById('nightbtn').addEventListener('click', () => {
+    setAppearance(phone.dataset.appearance === 'night' ? 'light' : 'night');
+  });
+
+  paint('home');
+})();
+</script>
+</body>
+</html>

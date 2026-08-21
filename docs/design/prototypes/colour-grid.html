@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larova — Colour grid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --display:"Bricolage Grotesque","Inter",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --night:#1E1B33;--glow:#FFC46B;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);background:var(--night);color:#EFECF7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(44rem 32rem at 20% 14%,rgba(255,196,107,.14),transparent 66%),
+             radial-gradient(34rem 28rem at 94% 4%,rgba(107,86,196,.24),transparent 70%)}
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:56px 28px 100px}
+
+.eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--glow);margin:0 0 14px}
+h1{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;line-height:1.04;letter-spacing:-.025em;margin:0 0 18px}
+h1 em{font-style:normal;color:var(--glow)}
+.lede{font-size:1.04rem;line-height:1.62;color:#BDB6D2;margin:0;max-width:45rem}
+h2{font-family:var(--display);font-size:1.48rem;font-weight:600;letter-spacing:-.02em;margin:0 0 8px}
+.sub{font-size:.94rem;line-height:1.62;color:#B7B0CC;margin:0 0 24px;max-width:44rem}
+section{margin-top:70px}
+.rule{height:1px;background:rgba(255,255,255,.11);margin:0 0 28px}
+
+/* mode switch */
+.switch{display:inline-flex;gap:4px;padding:4px;margin:34px 0 0;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);border-radius:999px}
+.switch button{border:0;background:transparent;color:#BDB6D2;cursor:pointer;font-family:var(--body);
+  font-size:.84rem;font-weight:600;padding:10px 20px;border-radius:999px;transition:background .18s,color .18s}
+.switch button[aria-pressed="true"]{background:var(--glow);color:#2B1D06}
+.switch button:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+
+/* the swatch stage adopts the active mode */
+.stage{border-radius:26px;padding:30px;transition:background .3s ease}
+[data-mode="light"] .stage{background:#FBF7F1}
+[data-mode="dark"]  .stage{background:#1B1830}
+[data-mode="night"] .stage{background:#12101F}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}
+
+/* a swatch is a real tile */
+.tile{border-radius:22px;padding:18px 16px 16px;min-height:148px;display:flex;flex-direction:column;
+  transition:background .3s ease}
+.tile .chip{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;margin-bottom:auto;
+  transition:background .3s ease}
+.tile .chip svg{width:22px;height:22px}
+.tile b{font-family:var(--display);font-size:1.04rem;font-weight:600;letter-spacing:-.01em;margin-top:16px;transition:color .3s}
+.tile small{font-size:.79rem;margin-top:3px;transition:color .3s}
+.tile .hex{font-family:var(--mono);font-size:.68rem;letter-spacing:.02em;margin-top:11px;transition:color .3s}
+
+/* system colours */
+.sys{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.syscard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px;overflow:hidden}
+.syscard .bar{height:62px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);
+  font-size:1rem;font-weight:600;margin-bottom:15px}
+.syscard h3{font-family:var(--display);font-size:1.06rem;font-weight:600;margin:0 0 7px}
+.syscard p{margin:0;font-size:.86rem;line-height:1.58;color:#B0A9C6}
+.syscard code{font-family:var(--mono);font-size:.79em;background:rgba(255,255,255,.09);padding:2px 6px;border-radius:5px}
+
+/* table */
+.tblwrap{overflow-x:auto;border:1px solid rgba(255,255,255,.11);border-radius:18px}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.76rem;min-width:640px}
+th{text-align:left;font-family:var(--body);font-size:.67rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:#8E85AE;padding:14px 14px 11px;background:rgba(255,255,255,.04);white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid rgba(255,255,255,.08);color:#CFC8E0;white-space:nowrap}
+td:first-child{font-family:var(--body);font-weight:600;color:#F1ECF8}
+td .dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+td .ratio{color:#8E85AE}
+
+.note{margin-top:26px;padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.note h4{font-family:var(--display);font-size:1.05rem;font-weight:600;margin:0 0 10px}
+.note p{margin:0 0 11px;font-size:.93rem;line-height:1.66;color:#B7B0CC}
+.note p:last-child{margin:0}
+.note strong{color:#EDE9F7;font-weight:600}
+.note.warn{border-color:rgba(255,155,143,.4);background:rgba(255,155,143,.08)}
+
+@media (max-width:820px){.wrap{padding:40px 18px 72px}.stage{padding:18px}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body data-mode="light">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6.5h3v3H4zM4 15h3v3H4z" fill="currentColor"/><path d="M10 8h10M10 16.5h10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.6 4-2 1.6a12 12 0 0 0 5.8 5.8l1.6-2 4 1.6v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M5.5 3.5h13v17h-13z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 8h6M9 12h6M9 16h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-table" viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M3.5 10h17M10 4.5v15" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2.5h9v11h-17z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+<symbol id="i-video" viewBox="0 0 24 24"><path d="M3.5 6.5h11v11h-11z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="m14.5 11 6-3.5v9l-6-3.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 1 0-5.7-5.7L11.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 1 0 11 18.7L12.5 17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+
+<p class="eyebrow">Design system · Colour</p>
+<h1>Eight colours for the user, <em>two for the app.</em></h1>
+<p class="lede">The app speaks in amber and red — progress, active step, get help. Everything a user colours themselves speaks in the eight tile tones. That split is why the palette stops at ten values instead of eighteen.</p>
+
+<div class="switch" role="group" aria-label="Switch mode">
+  <button type="button" data-set="light" aria-pressed="true">Light</button>
+  <button type="button" data-set="dark" aria-pressed="false">Dark</button>
+  <button type="button" data-set="night" aria-pressed="false">Night</button>
+</div>
+
+<section style="margin-top:26px">
+  <div class="stage"><div class="grid" id="grid"></div></div>
+</section>
+
+<section>
+  <h2>The two reserved colours</h2>
+  <p class="sub">Neither is offered as a tile colour. They are the app’s voice, not the user’s.</p>
+  <div class="rule"></div>
+  <div class="sys">
+    <div class="syscard">
+      <div class="bar" style="background:#1B1830;color:#FFC46B">Amber · the brand</div>
+      <h3>Amber</h3>
+      <p>The lamp in the icon. In the app it marks the active step, progress, and anything happening right now. <code>#FFC46B</code> on dark surfaces, <code>#9E5E0C</code> for text and symbols on light ones — the bright tone carries no text at 2.4:1.</p>
+    </div>
+    <div class="syscard">
+      <div class="bar" style="background:#C0392B;color:#fff">Get help</div>
+      <h3>Alarm</h3>
+      <p>The help bar and nowhere else. <code>#C0392B</code> with white text in light mode, <code>#FF9B8F</code> on <code>#2A1512</code> in dark mode. Because this colour appears exactly once in the product, it is never misread.</p>
+    </div>
+  </div>
+  <div class="note warn">
+    <h4>A defect found in the first prototype</h4>
+    <p>The help bar used <code>#D9544A</code> there. White text reaches only <strong>3.95:1</strong> on it, below the minimum, on the one element that has to be readable in a second under stress. The corrected value <code>#C0392B</code> reaches 5.44:1 and is now applied in the screen prototype.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Every value</h2>
+  <p class="sub">Contrast is measured against the title colour of each mode. The threshold for body text is 4.5:1.</p>
+  <div class="rule"></div>
+  <div class="tblwrap"><table id="tbl"></table></div>
+</section>
+
+<section>
+  <h2>What the logo contributes — and what it does not</h2>
+  <div class="rule"></div>
+
+  <div class="note">
+    <h4>Taken over: indigo and cream</h4>
+    <p>The icon’s night blue is the dark mode surface, the cream is the light one. App and icon are literally made of the same material — on the home screen you see the app’s own background in miniature.</p>
+  </div>
+
+  <div class="note">
+    <h4>Not taken over: amber as a tile colour</h4>
+    <p>Offering the brand colour as a ninth tile colour would have been the obvious move, and a mistake. Amber marks <strong>what is happening right now</strong> — the active step in a guide, the filled part of a progress bar. Once every third tile is amber, that signal stops working, permanently, because users assign the colours themselves.</p>
+    <p>The same rule applies to red, which is why the palette contains <strong>no saturated red</strong>. Clay and Rose sit either side of it and are deliberately muted, so nothing on a tile can look like an alarm.</p>
+    <p><strong>The compromise is Sand.</strong> A desaturated relative of the brand amber: close enough for family resemblance, far enough not to be mistaken for the signal. That is why Sand comes first and is the default for new tiles.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Rules for implementation</h2>
+  <div class="rule"></div>
+  <div class="note">
+    <p><strong>Store the key, never the value.</strong> The database holds <code>colorToken = "salbei"</code>. The theme resolves it into one of three surfaces depending on the mode. Storing the hex value instead makes every user tile unreadable in dark mode — retroactively, with no way to repair it.</p>
+    <p><strong>Colour is never the only differentiator.</strong> Every tile also carries a symbol and a label. Under red-green colour blindness Moss and Clay converge visibly; the tile stays unambiguous because text and symbol do the work.</p>
+    <p><strong>Night is not a third palette.</strong> It is the dark palette pulled 55 % toward <code>#12101F</code> with warm rather than cool ink. That can be expressed as a function instead of another table — eight fewer values that can drift.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+const TOKENS = [
+  {k:'sand',    n:'Sand',    d:'default',          ic:'i-moon',
+   light:['#F7E4C2','#8A5B12'], dark:['#4C3B1E','#F0C88A'], night:['#32281E','#EBD3AC']},
+  {k:'ton',     n:'Clay',    d:'muted earth',      ic:'i-note',
+   light:['#F4DBCB','#8E4A2E'], dark:['#4E332A','#EFB496'], night:['#332325','#EACCB0']},
+  {k:'rose',    n:'Rose',    d:'muted pink',       ic:'i-phone',
+   light:['#F6DBE1','#8C3D57'], dark:['#4A2C38','#F0AEC0'], night:['#311F2D','#EBCABF']},
+  {k:'flieder', n:'Lilac',   d:'violet',           ic:'i-video',
+   light:['#E4DCF6','#4B3E86'], dark:['#37305A','#C6B8F0'], night:['#26223F','#DCCDD0']},
+  {k:'himmel',  n:'Sky',     d:'blue',             ic:'i-table',
+   light:['#D8E5F5','#2F4E7C'], dark:['#243B55','#A8C8EC'], night:['#1C283D','#D2D3CE']},
+  {k:'salbei',  n:'Sage',    d:'blue-green',       ic:'i-list',
+   light:['#D5E9E1','#1F5F4E'], dark:['#22423A','#8FD0BC'], night:['#1B2C2E','#C9D6BD']},
+  {k:'moos',    n:'Moss',    d:'green',            ic:'i-folder',
+   light:['#DFEBD4','#41652C'], dark:['#2F4229','#B4D69A'], night:['#222C24','#D6D8B1']},
+  {k:'stein',   n:'Stone',   d:'warm neutral',     ic:'i-link',
+   light:['#E7E2DA','#5A5348'], dark:['#3A3733','#CFC7BA'], night:['#28252A','#DFD3BD']},
+];
+const MODE = {
+  light:{ink:'#241F35', sub:'#5A5470', chip:['#FFFFFF',.72]},
+  dark: {ink:'#F1ECF8', sub:'#B9B2CC', chip:['#FFFFFF',.09]},
+  night:{ink:'#E8D9BE', sub:'#A99781', chip:['#FFFFFF',.07]},
+};
+
+const hex2rgb = h => [1,3,5].map(i => parseInt(h.substr(i,2),16));
+const mix = (fg,bg,a) => '#'+hex2rgb(fg).map((v,i)=>Math.round(v*a+hex2rgb(bg)[i]*(1-a)).toString(16).padStart(2,'0')).join('').toUpperCase();
+const lin = c => (c/=255) <= .04045 ? c/12.92 : Math.pow((c+.055)/1.055,2.4);
+const lum = h => {const[r,g,b]=hex2rgb(h); return .2126*lin(r)+.7152*lin(g)+.0722*lin(b)};
+const cr = (a,b) => {const l=[lum(a),lum(b)].sort((x,y)=>y-x); return (l[0]+.05)/(l[1]+.05)};
+
+let mode = 'light';
+
+function render(){
+  const m = MODE[mode];
+  document.getElementById('grid').innerHTML = TOKENS.map(t=>{
+    const [surface, accent] = t[mode];
+    const chip = mix(m.chip[0], surface, m.chip[1]);
+    return `<div class="tile" style="background:${surface}">
+      <span class="chip" style="background:${chip};color:${accent}"><svg><use href="#${t.ic}"/></svg></span>
+      <b style="color:${m.ink}">${t.n}</b>
+      <small style="color:${m.sub}">${t.d}</small>
+      <span class="hex" style="color:${m.sub}">${surface} · ${cr(m.ink,surface).toFixed(1)}:1</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tbl').innerHTML = `
+    <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Night</th><th>Accent light</th><th>Accent dark</th></tr></thead>
+    <tbody>${TOKENS.map(t=>`<tr>
+      <td>${t.k}</td>
+      <td><span class="dot" style="background:${t.light[0]}"></span>${t.light[0]} <span class="ratio">${cr(MODE.light.ink,t.light[0]).toFixed(1)}:1</span></td>
+      <td><span class="dot" style="background:${t.dark[0]}"></span>${t.dark[0]} <span class="ratio">${cr(MODE.dark.ink,t.dark[0]).toFixed(1)}:1</span></td>
+      <td><span class="dot" style="background:${t.night[0]}"></span>${t.night[0]} <span class="ratio">${cr(MODE.night.ink,t.night[0]).toFixed(1)}:1</span></td>
+      <td><span class="dot" style="background:${t.light[1]}"></span>${t.light[1]}</td>
+      <td><span class="dot" style="background:${t.dark[1]}"></span>${t.dark[1]}</td>
+    </tr>`).join('')}</tbody>`;
+}
+
+document.querySelectorAll('[data-set]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    mode = b.dataset.set;
+    document.body.dataset.mode = mode;
+    document.querySelectorAll('[data-set]').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>

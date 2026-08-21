@@ -1,0 +1,95 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!src/**/build/
+gradle-app.setting
+.gradletasknamecache
+
+# Kotlin
+.kotlin/
+*.hprof
+
+# Android build output
+*.apk
+*.aab
+*.ap_
+*.aar
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+captures/
+.cxx/
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+lint/reports/
+
+# Local configuration — machine-specific SDK paths, never committed
+local.properties
+
+# Signing material. Larova uses Play App Signing; nothing here belongs in git.
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# Android Studio / IntelliJ
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/runConfigurations/
+*.iml
+*.iws
+*.ipr
+.navigation/
+freeline/
+freeline_project_description.json
+
+# Native / NDK
+obj/
+.externalNativeBuild/
+
+# Screenshot tests (Roborazzi) — baselines are committed, diffs and actuals are not
+**/build/outputs/roborazzi/
+build/reports/roborazzi/
+
+# Test and coverage reports
+**/build/reports/
+**/build/test-results/
+.kover/
+
+# Xcode / iOS (M5)
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+DerivedData/
+Pods/
+*.xcuserdatad/
+
+# Editors
+.vscode/
+*.swp
+*~
+.fleet/
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Secrets and scratch
+.env
+.env.local
+*.log
+scratch/
+tmp/
+
+# Exported user content must never be committed — it contains real family data
+*.larova
