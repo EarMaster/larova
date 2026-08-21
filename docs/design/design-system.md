@@ -15,15 +15,15 @@ This split is the central decision. The app speaks in amber and red — progress
 | Token | Light | Dark | Night | Accent light | Accent dark |
 | --- | --- | --- | --- | --- | --- |
 | `sand` | `#F7E4C2` | `#4C3B1E` | `#32281E` | `#8A5B12` | `#F0C88A` |
-| `ton` | `#F4DBCB` | `#4E332A` | `#332325` | `#8E4A2E` | `#EFB496` |
+| `clay` | `#F4DBCB` | `#4E332A` | `#332325` | `#8E4A2E` | `#EFB496` |
 | `rose` | `#F6DBE1` | `#4A2C38` | `#311F2D` | `#8C3D57` | `#F0AEC0` |
-| `flieder` | `#E4DCF6` | `#37305A` | `#26223F` | `#4B3E86` | `#C6B8F0` |
-| `himmel` | `#D8E5F5` | `#243B55` | `#1C283D` | `#2F4E7C` | `#A8C8EC` |
-| `salbei` | `#D5E9E1` | `#22423A` | `#1B2C2E` | `#1F5F4E` | `#8FD0BC` |
-| `moos` | `#DFEBD4` | `#2F4229` | `#222C24` | `#41652C` | `#B4D69A` |
-| `stein` | `#E7E2DA` | `#3A3733` | `#28252A` | `#5A5348` | `#CFC7BA` |
+| `lilac` | `#E4DCF6` | `#37305A` | `#26223F` | `#4B3E86` | `#C6B8F0` |
+| `sky` | `#D8E5F5` | `#243B55` | `#1C283D` | `#2F4E7C` | `#A8C8EC` |
+| `sage` | `#D5E9E1` | `#22423A` | `#1B2C2E` | `#1F5F4E` | `#8FD0BC` |
+| `moss` | `#DFEBD4` | `#2F4229` | `#222C24` | `#41652C` | `#B4D69A` |
+| `stone` | `#E7E2DA` | `#3A3733` | `#28252A` | `#5A5348` | `#CFC7BA` |
 
-Token keys stay in German because they are internal identifiers that never reach a user; the labels shown in the picker are localized strings. If that inconsistency grates, rename them before any content exists — never after.
+Token keys are English and match the picker's English labels one for one. They were German until this rename, which happened while the app had no users — the only time it could. A key is not just an identifier: it is a value written into `Card.colorToken` and into every export file, so renaming one after content exists means migrating other people's data, including data sitting in backup files nobody can reach. The keys shown in the picker are still localized strings (`colour_<key>` in `strings.xml`); it is only the internal key that changed.
 
 Night accents are a sixth value per token, listed in `AppColors.kt` rather than here: they are the dark accents pulled 35 % toward the warm night ink, so nothing glows cool in a dark room.
 
@@ -45,13 +45,13 @@ Night uses warm ink rather than cool, so nothing glows blue in a dark bedroom.
 
 **Alarm** — the help bar and nothing else. `#C0392B` with white text in light mode (5.4:1), `#FF9B8F` with `#2A1512` text in dark mode (8.5:1).
 
-Because alarm red appears exactly once in the product, it is never misread. This is also why **no tile preset is a saturated red**: `ton` and `rose` sit either side of it and are deliberately muted.
+Because alarm red appears exactly once in the product, it is never misread. This is also why **no tile preset is a saturated red**: `clay` and `rose` sit either side of it and are deliberately muted.
 
 ## 2. Rules
 
-**Store the key, never the value.** The database holds `colorToken = "salbei"`. The theme resolves it per mode. Storing the hex value instead makes every user tile unreadable in dark mode, retroactively and unrepairably. Same for icons: symbol keys, not bitmaps.
+**Store the key, never the value.** The database holds `colorToken = "sage"`. The theme resolves it per mode. Storing the hex value instead makes every user tile unreadable in dark mode, retroactively and unrepairably. Same for icons: symbol keys, not bitmaps.
 
-**Colour is never the only differentiator.** Every tile also carries a symbol and a label. Under red-green colour blindness `moos` and `ton` converge visibly; the tile stays unambiguous because text and symbol do the work.
+**Colour is never the only differentiator.** Every tile also carries a symbol and a label. Under red-green colour blindness `moss` and `clay` converge visibly; the tile stays unambiguous because text and symbol do the work.
 
 **Night is not a third palette.** It is the dark palette pulled 55 % toward `#12101F` with warm ink. Express it as a function, not another table — eight fewer values that can drift.
 

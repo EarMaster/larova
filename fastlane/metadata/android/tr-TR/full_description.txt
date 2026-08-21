@@ -1,0 +1,53 @@
+Larova, çocuğunuzun telefonuna kurduğunuz bir uygulamadır. İçini, aksi hâlde her seferinde anlatmak zorunda kalacağınız şeylerle doldurursunuz: yatma saatinin nasıl geçtiği, çocuğunuzun ne yediği, kimin aranacağı, ağladığında neyin işe yaradığı.
+
+Büyükanne ve büyükbaba, bir bakıcı, bir anaokulu öğretmeni ya da bir antrenör uygulamayı açar, aradığını iki dokunuşta bulur ve bir şey olduğunda size hemen ulaşabilir.
+
+İÇİNE NELER KOYABİLİRSİNİZ
+
+Başlangıç ekranı, kendi düzenlediğiniz kutucuklardan oluşan bir ızgaradır. Her kutucuk bir tür içerik taşır:
+
+• Yönerge — numaralı adımlar, ekran başına bir adım, metinle ve isterseniz bir resim veya kayıtla
+• Video ve ses — galerinizden ya da o anda, kendi sesinizle kaydedilmiş
+• Not — başlıklar ve maddelerle serbest metin
+• Yapılacaklar listesi — işaretlemek için, isterseniz her sabah sıfırlanır
+• Tablo — sütun ve satırları kendiniz belirlersiniz
+• Arama — bir ad, bir numara ve bir fotoğraf; aramak için tek dokunuş
+• Web sitesi, başka bir uygulamaya kısayol, klasör
+
+Bir kutucuğun içindeki her şeyi siz yazarsınız. Larova biçimi verir, içeriği siz verirsiniz.
+
+İKİ GÖRÜNÜM
+
+Bakım görünümü, uygulamanın normalde gösterdiği hâldir: okumak, işaretlemek, aramak, bağlantı açmak. Hiçbir şey yanlışlıkla değiştirilemez, taşınamaz veya silinemez.
+
+Ebeveyn görünümü PIN veya parmak iziyle açılır. Düzenleme tutamakları, artı düğmesi ve yedekleme yalnızca orada görünür. Beş dakika işlem yapılmazsa uygulama kendiliğinden bakım görünümüne döner.
+
+Telefonu kimseye tek kelime açıklama yapmadan verebilmenizin nedeni budur.
+
+YARDIM İSTEMEK
+
+Her ekranın altında bir çubuk bulunur. Arkasında, seçtiğiniz numaralar durur: büyük puntoyla, bir fotoğraf ve yakınlık bilgisiyle — "Anne", "Baba", "Dr. Keller", "112".
+
+Dokunmak, numara hazır hâlde telefon uygulamasını açar. Uygulama asla kendiliğinden aramaz ve konumunuzu hiçbir yere göndermez. Kararı telefonu elinde tutan verir.
+
+VERİLERİNİZ SİZDE KALIR
+
+Larova her şeyi cihazda saklar, başka hiçbir yerde değil. Hesap yok, analiz yok, internet izni hiç yok. Yazdığınız hiçbir şey bize gönderilmez, çünkü gönderilecek bir "biz" yok.
+
+Menüdeki tek bir seçenek bütün kutucukları, resimleri ve kayıtları tek bir dosyaya toplar. Nereye gideceğine siz karar verirsiniz: telefonun kendisi, bir bulut alanı, bir USB bellek. Aynı dosya devir paketidir: eşinize ya da diğer büyükanne ve büyükbabaya gönderin, kendi Larova kopyalarında açsınlar, her şey orada olsun. Dosyayı bir parolayla koruyabilirsiniz.
+
+AÇIK, KOYU VE GECE
+
+Üç görünüm. Üçüncüsü tek bir nedenle var: karartılmış bir odada beyaz ekrandan masal okumak işe yaramıyor. Gece modu, neredeyse siyah bir zeminde sıcak kehribar rengi kullanır ve parlak yüzeylerden tümüyle kaçınır; böylece kimse uyanmaz.
+
+ON DÖRT DİL
+
+Larova'nın dili, telefonun dilinden bağımsız olarak ayarlanır. Torununun telefonu Almanca kalırken, Almanca okumayan bir büyükanne uygulamayı Türkçeye alabilir.
+
+Uygulama çevrilmiştir. Sizin yazdıklarınız çevrilmez: sözleriniz tam yazdığınız gibi kalır ve çevrilmek üzere hiçbir yere gönderilmez.
+
+LAROVA NE DEĞİLDİR
+
+Larova bir not defteridir. Teşhis koymaz, hesap yapmaz, yazdıklarınızı yorumlamaz ve öğüt vermez. Bir tıbbi cihaz değildir, acil yardım hizmeti de değildir. Acil bir durumda yerel acil yardım numaranızı arayın.
+
+GNU Affero General Public License v3.0 kapsamında özgür yazılım.

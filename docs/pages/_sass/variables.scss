@@ -1,0 +1,24 @@
+// Larova's palette, replacing Hydra's default blue.
+//
+// These are the app's own values from docs/design/design-system.md, so the site and the
+// product read as one thing: deep indigo ink for the header and hero — the dark room the
+// icon's lit niche sits in — with the brand amber as the accent.
+//
+// $link-color is the *light-surface* amber (#9E5E0C), not the bright one. The bright amber
+// carries no text on a light background at 2.4:1; that is recorded in the design system and
+// is just as true here as in the app.
+
+$brand-color: #241F35;            // deep ink, header and hero
+$secondary-brand-color: #1B1830;  // the app's dark background
+$middle-gradient-color: mix($brand-color, $secondary-brand-color, 55%);
+
+$accent-color: #FFC46B;           // brand amber, on dark surfaces only
+$link-color: #9E5E0C;             // amber for text on light surfaces, 5.3:1 on #FBF7F1
+$ink: #241F35;
+$ink-muted: #5A5470;
+$paper: #FBF7F1;                  // the app's light background
+
+// Breakpoints — Hydra's, unchanged.
+$tablet: "(min-width: 450px)";
+$mid-point: "(min-width: 620px)";
+$desktop: "(min-width: 768px)";

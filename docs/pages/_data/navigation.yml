@@ -1,0 +1,10 @@
+# The nav is deliberately short. This site has two pages, and one of them exists because
+# Google Play requires a reachable privacy policy URL.
+- name: Privacy
+  link: /privacy/
+  new_window: false
+  highlight: false
+- name: GitHub
+  link: https://github.com/EarMaster/larova
+  new_window: true
+  highlight: false

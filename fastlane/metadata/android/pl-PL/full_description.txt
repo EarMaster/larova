@@ -1,0 +1,53 @@
+Larova to aplikacja, którą przygotowujesz na telefonie swojego dziecka. Wypełniasz ją tym, co inaczej trzeba by tłumaczyć za każdym razem — jak wygląda kładzenie się spać, co dziecko je, do kogo zadzwonić, co pomaga, kiedy płacze.
+
+Dziadkowie, opiekunka, pani w przedszkolu czy trener otwierają aplikację, w dwóch dotknięciach znajdują to, czego szukają, i mogą się z tobą natychmiast skontaktować, jeśli coś się dzieje.
+
+CO MOŻNA W NIEJ UMIEŚCIĆ
+
+Ekran główny to siatka kafelków, które układasz sama lub sam. Każdy kafelek zawiera jeden rodzaj treści:
+
+• Instrukcja — numerowane kroki, po jednym na ekran, z tekstem i opcjonalnie zdjęciem lub nagraniem
+• Wideo i dźwięk — z galerii albo nagrane na miejscu, twoim własnym głosem
+• Notatka — dowolny tekst z nagłówkami i wypunktowaniem
+• Lista kontrolna — do odhaczania, opcjonalnie zerowana każdego rana
+• Tabela — kolumny i wiersze, które sama określasz
+• Połączenie — imię, numer i zdjęcie, jedno dotknięcie, by zadzwonić
+• Strona internetowa, skrót do innej aplikacji, folder
+
+Wszystko, co jest w kafelku, piszesz ty. Larova daje formę, treść dajesz ty.
+
+DWA WIDOKI
+
+Widok opiekuna to stan normalny: czytać, odhaczać, dzwonić, otwierać odnośniki. Niczego nie da się przypadkiem zmienić, przenieść ani usunąć.
+
+Widok rodzica otwiera się PIN-em albo odciskiem palca. Dopiero tam pojawiają się uchwyty edycji, przycisk plus i kopia zapasowa. Po pięciu minutach bez działania aplikacja sama wraca do widoku opiekuna.
+
+Właśnie dlatego telefon można podać komukolwiek bez słowa wyjaśnienia.
+
+WEZWAĆ POMOC
+
+Na dole każdego ekranu jest pasek. Za nim są numery, które wybrałaś — duże, ze zdjęciem i podpisem: „Mama", „Tata", „Dr Keller", „112".
+
+Dotknięcie otwiera telefon z gotowym numerem. Aplikacja nigdy nie dzwoni sama i nigdzie nie wysyła twojej lokalizacji. Decyduje ten, kto trzyma telefon.
+
+TWOJE DANE ZOSTAJĄ TWOJE
+
+Larova przechowuje wszystko na urządzeniu i nigdzie więcej. Bez konta, bez analityki, w ogóle bez uprawnienia do internetu. Nic z tego, co piszesz, nie jest do nas wysyłane, bo nie ma żadnych „nas", do których można by to wysłać.
+
+Jedna pozycja w menu pakuje wszystkie kafelki, obrazy i nagrania do jednego pliku. Gdzie trafi, decydujesz ty — sam telefon, dysk w chmurze, pendrive. Ten sam plik jest paczką do przekazania: wyślij go partnerowi albo drugim dziadkom, otworzą go w swojej własnej Larovie i wszystko tam będzie. Można go zabezpieczyć hasłem.
+
+JASNY, CIEMNY I NOCNY
+
+Trzy wyglądy. Trzeci istnieje z jednego powodu: czytanie wieczornej bajki w zaciemnionym pokoju z białego ekranu po prostu nie działa. Tryb nocny pokazuje ciepły bursztyn na niemal czarnym tle i unika jasnych powierzchni, żeby nikt się nie obudził.
+
+CZTERNAŚCIE JĘZYKÓW
+
+Język Larovy ustawia się niezależnie od języka telefonu. Babcia, która nie czyta po polsku, może przełączyć aplikację na turecki, podczas gdy telefon wnuka pozostaje polski.
+
+Aplikacja jest przetłumaczona. To, co piszesz ty, nie jest — twoje słowa zostają dokładnie takie, jakie je zapisałaś, i nigdy nie są nigdzie wysyłane do tłumaczenia.
+
+CZYM LAROVA NIE JEST
+
+Larova to notes. Nie stawia diagnoz, nic nie oblicza, nie interpretuje tego, co piszesz, i nie udziela porad. To nie wyrób medyczny ani służba ratunkowa. W nagłym wypadku zadzwoń na lokalny numer alarmowy.
+
+Wolne oprogramowanie na licencji GNU Affero General Public License v3.0.

@@ -154,6 +154,12 @@ Optional encryption: AES-256-GCM, key derived from the password with Argon2id. `
 
 ## 7. Android specifics
 
+**Identifiers.** The application ID is `app.larova`, and the domain is `larova.app` — the same two words either way round, which is the point: the ID is the reversed domain, so it is verifiably ours and cannot collide. Both are permanent. An application ID cannot be changed after the first Play release without shipping a different app that shares no update path, no signing identity and no installed base with this one.
+
+The domain earns its keep before any website does. Play requires a **privacy policy URL** on the listing, and it must resolve for a real reviewer — `https://larova.app/privacy` is that page, and it is the one store asset with no offline substitute. Two more uses follow from it and are worth reserving now rather than retrofitting: `larova.app` as the `android:host` for any App Link, and a documented MIME/extension registration for the `.larova` export file so a package arriving by messenger opens in the app rather than in a text viewer.
+
+Nothing about the domain weakens the no-internet claim. The app itself never resolves it: the privacy policy is a link the Play Store shows, opened in the browser by the person reading the listing, and the app has no internet permission with which to fetch anything.
+
 **Choosing a destination without a Drive SDK.** `ActivityResultContracts.CreateDocument("application/octet-stream")` opens the system dialog. Every installed cloud provider appears there as a destination, Google Drive included. No OAuth, no API approval, no Google verification. `OpenDocument` is the counterpart for import.
 
 **Calling.** `Intent.ACTION_DIAL` with a `tel:` URI. Hands off to the phone app rather than dialling — needs no `CALL_PHONE` permission and is harmless if triggered by mistake. Direct dialling only as a deliberately enabled option.

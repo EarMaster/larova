@@ -1,0 +1,53 @@
+Larova est une application que vous installez sur le téléphone de votre enfant. Vous y mettez tout ce qu'il vous faudrait sinon expliquer chaque fois — comment se passe le coucher, ce que votre enfant mange, qui appeler, ce qui l'apaise quand il pleure.
+
+Les grands-parents, une baby-sitter, une éducatrice ou un entraîneur ouvrent l'application, trouvent en deux gestes ce qu'ils cherchent, et vous joignent immédiatement si besoin.
+
+CE QUE VOUS POUVEZ Y METTRE
+
+L'écran d'accueil est une grille de tuiles que vous disposez vous-même. Chaque tuile contient un type de contenu :
+
+• Guide — des étapes numérotées, une par écran, avec du texte et, si vous voulez, une photo ou un enregistrement
+• Vidéo et audio — depuis votre galerie ou enregistrés sur le moment, avec votre propre voix
+• Note — du texte libre avec titres et listes
+• Liste à cocher — à cocher, et si vous voulez remise à zéro chaque matin
+• Tableau — des colonnes et des lignes que vous définissez
+• Appel — un nom, un numéro et une photo, un geste pour appeler
+• Site web, raccourci vers une application, dossier
+
+Tout ce qui se trouve dans une tuile, c'est vous qui l'écrivez. Larova donne la forme, vous donnez le contenu.
+
+DEUX MODES D'AFFICHAGE
+
+Le mode accompagnant est ce que l'application montre normalement : lire, cocher, appeler, ouvrir un lien. Rien ne peut être modifié, déplacé ni supprimé par accident.
+
+Le mode parent s'ouvre avec un code ou votre empreinte. Là seulement apparaissent les poignées de modification, le bouton plus et la sauvegarde. Après cinq minutes sans activité, l'application revient d'elle-même au mode accompagnant.
+
+C'est pour cela que vous pouvez confier le téléphone à n'importe qui sans un mot d'explication.
+
+DEMANDER DE L'AIDE
+
+Une barre est présente en bas de chaque écran. Derrière elle se trouvent les numéros que vous avez choisis, en grand, avec une photo et un lien de parenté — « Maman », « Papa », « Dr Keller », « 112 ».
+
+Un geste ouvre le téléphone avec le numéro prêt. L'application n'appelle jamais d'elle-même et n'envoie votre position nulle part. C'est la personne qui tient le téléphone qui décide.
+
+VOS DONNÉES RESTENT LES VÔTRES
+
+Larova enregistre tout sur l'appareil et nulle part ailleurs. Aucun compte, aucune analyse, aucune autorisation d'accès à Internet. Rien de ce que vous écrivez ne nous est envoyé, car il n'y a pas de « nous » à qui l'envoyer.
+
+Une entrée de menu rassemble toutes vos tuiles, images et enregistrements dans un seul fichier. Vous choisissez où il va — le téléphone, un espace en ligne, une clé USB. Ce fichier est aussi le paquet de transmission : envoyez-le à votre conjoint ou aux autres grands-parents, ils l'ouvrent dans leur propre Larova, et tout y est. Vous pouvez le protéger par un mot de passe.
+
+CLAIR, SOMBRE ET NUIT
+
+Trois apparences. La troisième existe pour une seule raison : lire une histoire du soir dans une chambre plongée dans le noir sur un écran blanc, cela ne marche pas. Le mode nuit affiche un ambre chaud sur un fond presque noir et évite toute surface lumineuse, pour que personne ne se réveille.
+
+QUATORZE LANGUES
+
+La langue de Larova se règle indépendamment de celle du téléphone. Une grand-mère qui ne lit pas le français peut mettre l'application en turc alors que le téléphone de son petit-enfant reste en français.
+
+L'application est traduite. Ce que vous écrivez ne l'est pas — vos mots restent exactement tels que vous les avez écrits, et ne sont jamais envoyés ailleurs pour être traduits.
+
+CE QUE LAROVA N'EST PAS
+
+Larova est un carnet. Elle ne pose aucun diagnostic, ne calcule rien, n'interprète pas ce que vous écrivez et ne donne aucun conseil. Ce n'est pas un dispositif médical ni un service d'urgence. En cas d'urgence, appelez votre numéro d'urgence local.
+
+Logiciel libre sous licence GNU Affero General Public License v3.0.

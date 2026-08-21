@@ -1,0 +1,17 @@
+---
+---
+// Hydra's own layers, vendored unmodified apart from variables.scss.
+// Dropped from the upstream import list: pricing, staff, contact, blog, forms and
+// cloudcannon — pages this site does not have, and the CloudCannon editor chrome.
+@import "mixins/flexbox";
+@import "mixins/columns";
+@import "variables";
+@import "elements";
+@import "landing-page";
+@import "layout";
+@import "navigation";
+@import "footer";
+
+// Ours, last so it wins. Everything Larova changes about the theme lives in this one file,
+// which keeps the vendored layers above diffable against upstream.
+@import "larova";

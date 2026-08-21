@@ -1,0 +1,53 @@
+A Larova é uma aplicação que configura no telefone do seu filho. Enche-a com as coisas que, de outro modo, teria de explicar de cada vez — como corre a hora de deitar, o que a criança come, a quem telefonar, o que a acalma quando chora.
+
+Os avós, uma babysitter, uma educadora ou um treinador abrem a aplicação, encontram em dois toques aquilo que procuram e conseguem falar consigo de imediato se for preciso.
+
+O QUE PODE PÔR LÁ DENTRO
+
+O ecrã inicial é uma grelha de mosaicos que organiza como quiser. Cada mosaico guarda um tipo de conteúdo:
+
+• Guia — passos numerados, um por ecrã, com texto e, se quiser, uma imagem ou uma gravação
+• Vídeo e áudio — da galeria ou gravados na hora, com a sua própria voz
+• Nota — texto livre com títulos e listas
+• Lista de verificação — para ir marcando, e se quiser reiniciada todas as manhãs
+• Tabela — colunas e linhas definidas por si
+• Chamada — um nome, um número e uma fotografia, um toque para ligar
+• Site, atalho para outra aplicação, pasta
+
+Tudo o que está dentro de um mosaico é escrito por si. A Larova dá a forma; o conteúdo é seu.
+
+DUAS VISTAS
+
+A vista de quem cuida é o que a aplicação mostra normalmente: ler, marcar, telefonar, abrir uma ligação. Nada pode ser alterado, movido ou apagado por acidente.
+
+A vista dos pais abre-se com um PIN ou com a impressão digital. Só aí aparecem os controlos de edição, o botão mais e a cópia de segurança. Depois de cinco minutos sem utilização, a aplicação regressa sozinha à vista de quem cuida.
+
+É por isso que pode entregar o telefone a qualquer pessoa sem uma palavra de explicação.
+
+PEDIR AJUDA
+
+Na parte de baixo de cada ecrã há uma barra. Atrás dela estão os números que escolheu, em grande, com uma fotografia e a relação — "Mãe", "Pai", "Dr. Keller", "112".
+
+Um toque abre o telefone com o número pronto. A aplicação nunca liga por iniciativa própria e nunca envia a sua localização para lugar algum. Decide quem tem o telefone na mão.
+
+OS SEUS DADOS CONTINUAM SEUS
+
+A Larova guarda tudo no aparelho e em mais nenhum lugar. Sem conta, sem análise de utilização, sem qualquer permissão de acesso à Internet. Nada do que escreve nos é enviado, porque não existe um "nós" a quem enviar.
+
+Uma opção do menu junta todos os mosaicos, imagens e gravações num único ficheiro. Escolhe para onde vai — o próprio telefone, um espaço na nuvem, uma pen USB. Esse ficheiro é também o pacote de entrega: envie-o ao seu companheiro ou aos outros avós, eles abrem-no na sua própria Larova e está tudo lá. Pode protegê-lo com uma palavra-passe.
+
+CLARO, ESCURO E NOITE
+
+Três aparências. A terceira existe por uma razão concreta: ler uma história ao deitar num quarto às escuras a partir de um ecrã branco não funciona. O modo noite usa um âmbar quente sobre um fundo quase negro e evita qualquer superfície luminosa, para que ninguém acorde.
+
+CATORZE IDIOMAS
+
+O idioma da Larova define-se independentemente do idioma do telefone. Uma avó que não lê português pode pôr a aplicação em turco enquanto o telefone do neto continua em português.
+
+A aplicação está traduzida. O que escreve não está — as suas palavras ficam exatamente como as escreveu e nunca são enviadas para nenhum lugar para serem traduzidas.
+
+O QUE A LAROVA NÃO É
+
+A Larova é um caderno. Não diagnostica, não calcula, não interpreta o que escreve e não dá conselhos. Não é um dispositivo médico nem um serviço de emergência. Numa emergência, ligue para o número de emergência da sua zona.
+
+Software livre sob a licença GNU Affero General Public License v3.0.
