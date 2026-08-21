@@ -166,7 +166,7 @@ td .ratio{color:#8E85AE}
   <h2>Rules for implementation</h2>
   <div class="rule"></div>
   <div class="note">
-    <p><strong>Store the key, never the value.</strong> The database holds <code>colorToken = "salbei"</code>. The theme resolves it into one of three surfaces depending on the mode. Storing the hex value instead makes every user tile unreadable in dark mode — retroactively, with no way to repair it.</p>
+    <p><strong>Store the key, never the value.</strong> The database holds <code>colorToken = "sage"</code>. The theme resolves it into one of three surfaces depending on the mode. Storing the hex value instead makes every user tile unreadable in dark mode — retroactively, with no way to repair it.</p>
     <p><strong>Colour is never the only differentiator.</strong> Every tile also carries a symbol and a label. Under red-green colour blindness Moss and Clay converge visibly; the tile stays unambiguous because text and symbol do the work.</p>
     <p><strong>Night is not a third palette.</strong> It is the dark palette pulled 55 % toward <code>#12101F</code> with warm rather than cool ink. That can be expressed as a function instead of another table — eight fewer values that can drift.</p>
   </div>
@@ -178,19 +178,19 @@ td .ratio{color:#8E85AE}
 const TOKENS = [
   {k:'sand',    n:'Sand',    d:'default',          ic:'i-moon',
    light:['#F7E4C2','#8A5B12'], dark:['#4C3B1E','#F0C88A'], night:['#32281E','#EBD3AC']},
-  {k:'ton',     n:'Clay',    d:'muted earth',      ic:'i-note',
+  {k:'clay',     n:'Clay',    d:'muted earth',      ic:'i-note',
    light:['#F4DBCB','#8E4A2E'], dark:['#4E332A','#EFB496'], night:['#332325','#EACCB0']},
   {k:'rose',    n:'Rose',    d:'muted pink',       ic:'i-phone',
    light:['#F6DBE1','#8C3D57'], dark:['#4A2C38','#F0AEC0'], night:['#311F2D','#EBCABF']},
-  {k:'flieder', n:'Lilac',   d:'violet',           ic:'i-video',
+  {k:'lilac', n:'Lilac',   d:'violet',           ic:'i-video',
    light:['#E4DCF6','#4B3E86'], dark:['#37305A','#C6B8F0'], night:['#26223F','#DCCDD0']},
-  {k:'himmel',  n:'Sky',     d:'blue',             ic:'i-table',
+  {k:'sky',  n:'Sky',     d:'blue',             ic:'i-table',
    light:['#D8E5F5','#2F4E7C'], dark:['#243B55','#A8C8EC'], night:['#1C283D','#D2D3CE']},
-  {k:'salbei',  n:'Sage',    d:'blue-green',       ic:'i-list',
+  {k:'sage',  n:'Sage',    d:'blue-green',       ic:'i-list',
    light:['#D5E9E1','#1F5F4E'], dark:['#22423A','#8FD0BC'], night:['#1B2C2E','#C9D6BD']},
-  {k:'moos',    n:'Moss',    d:'green',            ic:'i-folder',
+  {k:'moss',    n:'Moss',    d:'green',            ic:'i-folder',
    light:['#DFEBD4','#41652C'], dark:['#2F4229','#B4D69A'], night:['#222C24','#D6D8B1']},
-  {k:'stein',   n:'Stone',   d:'warm neutral',     ic:'i-link',
+  {k:'stone',   n:'Stone',   d:'warm neutral',     ic:'i-link',
    light:['#E7E2DA','#5A5348'], dark:['#3A3733','#CFC7BA'], night:['#28252A','#DFD3BD']},
 ];
 const MODE = {

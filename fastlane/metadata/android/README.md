@@ -6,25 +6,49 @@ reviewed in PRs like any other translated string instead of being retyped into t
 
 | File | Play limit | Status |
 |---|---|---|
-| `title.txt` | 30 characters | present |
-| `short_description.txt` | 80 characters | present |
-| `full_description.txt` | 4000 characters | present — **`de-DE` needs a native read-through** |
+| `title.txt` | 30 characters | present, all locales |
+| `short_description.txt` | 80 characters | present, all locales |
+| `full_description.txt` | 4000 characters | present, all locales — **twelve need a native read-through, see below** |
 | `changelogs/{versionCode}.txt` | 500 characters | written per release by `/release` |
 
-## Store locales are not app locales
+## All fourteen languages, and why
 
-Two directories here — `en-US` and `de-DE` — against fourteen in-app languages
-(`docs/localization.md`). That gap is deliberate, not an omission: the plan ships the Play listing
-in English and German at M3, and the remaining twelve translations land at M4 while the listing
-stays as it is.
+One directory per language the app itself speaks (`docs/localization.md` §3). The reason is the
+same one that motivates the per-app language picker: a caregiver who does not share the parents'
+language should be able to read the listing that offered them the app in the language they will
+actually use it in. A Turkish-speaking grandmother finding an English-only listing has already hit
+the problem the app exists to solve.
 
-The asymmetry that justifies it: a missing in-app string falls back to English, while a store
-locale with no text publishes **blank** in that language. An untranslated listing is worse than no
-listing, so a locale appears here only once its text actually exists.
+This is a standing cost, not a one-off. Every release needs a release note in all fourteen, and
+`google-play.yml` fails the deploy rather than shipping a gap — store text has no English
+fallback, so a locale with no file publishes **blank** in that language.
 
-Adding one means three files (`title`, `short_description`, `full_description`), a release-note
-file for the current versionCode, and adding the locale to `LOCALES` in
+**Play locale codes are not the app's language tags.** These directory names are what the Play API
+accepts, and four of them differ from what `locales_config.xml` uses: Chinese Simplified is
+`zh-CN` here and `zh-Hans` there, Hindi is `hi-IN`, Japanese `ja-JP`, and Ukrainian and Arabic
+carry no region at all (`uk`, `ar`). A code Play does not recognise is rejected at upload, not by
+the local check.
+
+Adding or changing a locale means three files (`title`, `short_description`, `full_description`),
+a release-note file for the current versionCode, and the locale being listed in `LOCALES` in
 `tools/check_store_metadata.sh` — the check only looks at locales named there.
+
+## Translation status
+
+`en-US` is the source. `de-DE` is maintained by the author. **The other twelve are drafts written
+by a language model and have not been read by a native speaker.** Per `docs/localization.md` §5
+that is not the standard this project holds itself to for anything a user reads, and store text
+deserves more care than in-app strings rather than less: a missing in-app string falls back to
+English, while store text is the first and sometimes only thing a caregiver reads.
+
+Highest priority for a review pass, because they are the load-bearing sentences: the short
+description (it appears in search results), the "two views" paragraph — "caregiver view" and
+"parent view" carry the whole mental model — and the closing "what Larova is not", which is a
+regulatory boundary and not just copy.
+
+The RTL languages need a second kind of check: Arabic listing text renders in the Play Store's own
+layout, so verify the punctuation and the Latin fragments (`Larova`, `112`, the licence name) read
+correctly in context rather than only in a text editor.
 
 ## Release notes are named after the versionCode
 

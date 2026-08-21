@@ -1,0 +1,53 @@
+Larova es una aplicación que configuras en el teléfono de tu hijo. La llenas con las cosas que, si no, tendrías que explicar cada vez — cómo funciona la hora de dormir, qué come, a quién llamar, qué le calma cuando llora.
+
+Los abuelos, una canguro, una educadora o un entrenador abren la aplicación, encuentran en dos toques lo que buscan y pueden localizarte de inmediato si hace falta.
+
+QUÉ PUEDES PONER DENTRO
+
+La pantalla de inicio es una cuadrícula de fichas que ordenas tú. Cada ficha contiene un tipo de contenido:
+
+• Guía — pasos numerados, uno por pantalla, con texto y, si quieres, una foto o una grabación
+• Vídeo y audio — de tu galería o grabados en el momento, con tu propia voz
+• Nota — texto libre con títulos y listas
+• Lista de tareas — para ir marcando, y si quieres se reinicia cada mañana
+• Tabla — columnas y filas que defines tú
+• Llamada — un nombre, un número y una foto, un toque para llamar
+• Sitio web, acceso a otra aplicación, carpeta
+
+Todo lo que hay dentro de una ficha lo escribes tú. Larova pone la forma; el contenido lo pones tú.
+
+DOS VISTAS
+
+La vista de cuidado es la que la aplicación muestra normalmente: leer, marcar, llamar, abrir un enlace. Nada se puede cambiar, mover ni borrar por accidente.
+
+La vista de madres y padres se abre con un PIN o con la huella. Solo ahí aparecen los controles de edición, el botón de más y la copia de seguridad. Después de cinco minutos sin actividad, la aplicación vuelve por sí sola a la vista de cuidado.
+
+Por eso puedes dejar el teléfono en manos de cualquiera sin una palabra de explicación.
+
+PEDIR AYUDA
+
+En la parte inferior de cada pantalla hay una barra. Detrás están los números que has elegido, en grande, con una foto y la relación: "Mamá", "Papá", "Dr. Keller", "112".
+
+Al tocar uno se abre el teléfono con el número preparado. La aplicación nunca llama por su cuenta y nunca envía tu ubicación a ningún sitio. Decide quien tiene el teléfono en la mano.
+
+TUS DATOS SIGUEN SIENDO TUYOS
+
+Larova guarda todo en el dispositivo y en ningún otro lugar. Sin cuenta, sin análisis, sin ningún permiso de acceso a Internet. Nada de lo que escribes se nos envía, porque no hay ningún "nosotros" a quien enviarlo.
+
+Una opción del menú reúne todas tus fichas, imágenes y grabaciones en un solo archivo. Tú eliges dónde va: el propio teléfono, un espacio en la nube, un lápiz USB. Ese mismo archivo es el paquete de entrega: mándalo a tu pareja o a los otros abuelos, lo abren en su propio Larova y está todo. Puedes protegerlo con una contraseña.
+
+CLARO, OSCURO Y NOCHE
+
+Tres apariencias. La tercera existe por un motivo concreto: leer un cuento en una habitación a oscuras desde una pantalla blanca no funciona. El modo noche usa un ámbar cálido sobre un fondo casi negro y evita cualquier superficie luminosa, para que nadie se despierte.
+
+CATORCE IDIOMAS
+
+El idioma de Larova se ajusta con independencia del idioma del teléfono. Una abuela que no lee español puede poner la aplicación en turco mientras el teléfono de su nieto sigue en español.
+
+La aplicación está traducida. Lo que escribes tú, no — tus palabras se quedan exactamente como las escribiste y nunca se envían a ninguna parte para traducirlas.
+
+QUÉ NO ES LAROVA
+
+Larova es un cuaderno. No diagnostica, no calcula, no interpreta lo que escribes y no da consejos. No es un producto sanitario ni un servicio de emergencias. En caso de emergencia, llama al número de emergencias de tu zona.
+
+Software libre bajo la licencia GNU Affero General Public License v3.0.

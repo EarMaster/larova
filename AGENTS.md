@@ -11,9 +11,25 @@ checklists, tables, contacts, media — that a caregiver can read in two taps.
 No account, no server, **no internet permission**.
 
 **The project is currently documentation and seed files only.** There is no
-Gradle build, no module structure and no commit history yet. `docs/` is the
-design of record; `app/` holds three files written ahead of the build to lock in
-decisions that are expensive to reverse.
+Gradle build and no module structure yet. `docs/` is the design of record; `app/`
+holds three files written ahead of the build to lock in decisions that are
+expensive to reverse.
+
+**Fixed identifiers.** Application ID `app.larova`; domain `larova.app` (the
+reversed domain, so the ID is verifiably ours). Neither can change after the
+first Play release. The domain's first job is the privacy policy URL Play
+requires on the listing, `https://larova.app/privacy` — the one store asset an
+offline app cannot supply for itself. It does not weaken the no-internet claim:
+the app never resolves the domain, and has no permission with which to.
+See `docs/technical-notes.md` §7.
+
+**Store listing is translated into all fourteen app languages**, not just the
+launch market's two — a caregiver who needs the per-app language picker will read
+the listing in that language first. `en-US` is the source and `de-DE` is
+author-maintained; the other twelve are model drafts awaiting a native
+read-through, which must be said out loud rather than quietly shipped. Play's
+locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
+`ja-JP`, bare `uk` and `ar`) — read the directory names, don't derive them.
 
 ## Current state of the tree
 
@@ -161,11 +177,19 @@ Two structural decisions carry most of the weight:
 
 Break one of these and it cannot be repaired later, because users own the data.
 
-1. **Store keys, never values.** `Card.colorToken` holds `"salbei"`;
+1. **Store keys, never values.** `Card.colorToken` holds `"sage"`;
    `Card.icon` holds a symbol key. The theme resolves a key per appearance mode.
    A stored hex value makes every user tile unreadable in dark mode,
    retroactively, with no fix — the values were chosen by users. Same for icons:
    symbol keys, not bitmaps.
+
+   The eight keys are `sand`, `clay`, `rose`, `lilac`, `sky`, `sage`, `moss`,
+   `stone`, and they are frozen from the first release. A key is a value in
+   `Card.colorToken` and in every export file, so renaming one later means
+   migrating data that may only exist in a backup file nobody can reach. Picker
+   labels come from `colour_<key>` in `strings.xml` and are localized; the key
+   itself never reaches a user. Unknown keys resolve to the default rather than
+   failing, which is what lets an export from a newer version still open.
 2. **No hardcoded user-facing strings, from the first line of UI code.** All
    strings live in `strings.xml`; positional placeholders (`%1$s`) only; no
    concatenation in code; counts via `<plurals>` (Polish, Russian and Arabic
@@ -209,20 +233,13 @@ Break one of these and it cannot be repaired later, because users own the data.
 
 ## Conventions
 
-- Colour token keys are German (`salbei`, `flieder`) because they are internal
-  identifiers that never reach a user; picker labels are localized strings. If
-  this is to change, it must change **before** any user content exists.
 - Comments in the seed files explain *why* a rule exists, not what the code
   does. Match that.
 - Accessibility is part of the work, not a later pass: 16sp body minimum, 22sp
   guide steps, 200 % font scale without clipping, 56dp touch targets, 4.5:1
   contrast, colour never the sole carrier of meaning, full TalkBack labelling.
-- The HTML prototypes predate the switch to English and still carry German
-  annotations. Sample content is fine to leave; annotations get translated when
-  those screens are next revised.
 - Project language is English throughout: code, comments, commit messages,
-  documentation. The exceptions are the colour token keys above and the German
-  store listing.
+  documentation.
 - Keep `CHANGELOG.md` current: an entry under `## [Unreleased]` for any
   user-facing change, in the same commit that makes it, not as a follow-up. CI,
   tooling and docs-only changes do not belong there.

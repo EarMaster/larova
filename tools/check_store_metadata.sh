@@ -26,12 +26,19 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 META="$ROOT/fastlane/metadata/android"
 
-# Larova's *store listing* locales. Deliberately only two: the plan ships the Play listing in
-# English and German at M3, while the app itself is translated into fourteen languages at M4
-# (docs/localization.md). The store set is not the res/values-* set and should not be padded out
-# to match it — a listing locale with no text publishes blank, whereas a missing in-app string
-# falls back to English. Add a locale here only once its listing text actually exists.
-LOCALES=(en-US de-DE)
+# Larova's store listing locales — all fourteen the app itself is translated into
+# (docs/localization.md §3), because a caregiver who set the app to their own language should be
+# able to read the listing that offered it to them in that language too.
+#
+# These are *Play* locale codes, which are not the Android resource qualifiers in
+# res/values-* and not the BCP-47 tags in locales_config.xml. The ones that differ and are easy
+# to get wrong: Chinese Simplified is zh-CN here and zh-Hans there; Hindi is hi-IN, Japanese
+# ja-JP; Ukrainian and Arabic carry no region at all. A code Play does not recognise is rejected
+# at upload, not here.
+#
+# Every locale in this list is required for every release: unlike an in-app string, store text
+# has no English fallback, so a locale with no file publishes blank in that language.
+LOCALES=(en-US de-DE fr-FR it-IT es-ES pt-PT uk pl-PL ru-RU tr-TR ar hi-IN zh-CN ja-JP)
 
 VERSION_CODE="${1:-}"
 

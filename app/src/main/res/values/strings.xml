@@ -103,13 +103,13 @@
 
     <!-- ===== Colour names shown in the tile picker ===== -->
     <string name="colour_sand">Sand</string>
-    <string name="colour_ton">Clay</string>
+    <string name="colour_clay">Clay</string>
     <string name="colour_rose">Rose</string>
-    <string name="colour_flieder">Lilac</string>
-    <string name="colour_himmel">Sky</string>
-    <string name="colour_salbei">Sage</string>
-    <string name="colour_moos">Moss</string>
-    <string name="colour_stein">Stone</string>
+    <string name="colour_lilac">Lilac</string>
+    <string name="colour_sky">Sky</string>
+    <string name="colour_sage">Sage</string>
+    <string name="colour_moss">Moss</string>
+    <string name="colour_stone">Stone</string>
 
     <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
     <string name="template_bedtime">Bedtime</string>

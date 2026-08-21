@@ -44,6 +44,9 @@ As long as the right column stays empty, Larova is a notebook with templates.
 - **Google Play target audience:** 18+. The app is configured and read by adults, even though it lives on a child's device. Declaring a child audience triggers the entire Families policy, which is neither necessary nor desirable here.
 - **Data safety form:** no data collected, no data shared. This can be answered honestly and is a genuine selling point.
 - **Health apps declaration:** not applicable, as no health functionality is advertised.
+- **Package name:** `app.larova`, from the registered domain `larova.app`. Fixed from the first release — see `technical-notes.md` §7.
+- **Privacy policy:** `https://larova.app/privacy`. Play requires a working URL on the listing, and it is the one store asset the offline architecture cannot supply for itself.
+- **Listing languages:** all fourteen the app speaks, not just the launch market's two. A caregiver who needs the per-app language picker is exactly the person who will read the listing in that language first — see `localization.md` §2 and `fastlane/metadata/android/README.md`.
 
 ### 2.4 Privacy as a feature
 

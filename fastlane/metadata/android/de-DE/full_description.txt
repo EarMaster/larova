@@ -7,15 +7,12 @@ WAS HINEINPASST
 Der Startbildschirm ist ein Raster aus Kacheln, das Sie selbst anordnen. Jede Kachel enthält eine Art von Inhalt:
 
 • Anleitung — nummerierte Schritte, einer pro Bildschirm, mit Text und auf Wunsch mit Bild oder Aufnahme
-• Video — aus der Galerie oder direkt aufgenommen
-• Audio — ein Lied oder Ihre eigene Stimme
+• Video und Audio — aus der Galerie oder direkt aufgenommen, in Ihrer eigenen Stimme
 • Notiz — freier Text mit Überschriften und Aufzählungen
 • Checkliste — zum Abhaken, auf Wunsch jeden Morgen zurückgesetzt
 • Tabelle — Spalten und Zeilen, die Sie selbst festlegen
 • Anruf — Name, Nummer und Foto, ein Tipp zum Wählen
-• Website — ein Link, der im Browser öffnet
-• App-Verknüpfung — öffnet eine andere App auf dem Telefon
-• Ordner — fasst Kacheln zusammen
+• Website, App-Verknüpfung, Ordner
 
 Alles in einer Kachel schreiben Sie selbst. Larova gibt die Form vor, den Inhalt geben Sie.
 
@@ -35,22 +32,22 @@ Ein Tipp öffnet die Telefon-App mit der eingetragenen Nummer. Die App wählt ni
 
 IHRE DATEN BLEIBEN IHRE
 
-Larova speichert alles auf dem Gerät und nirgendwo sonst. Kein Konto, keine Analyse, und überhaupt keine Internetberechtigung. Nichts, was Sie schreiben, wird an uns gesendet, weil es kein „uns" gibt, an das man senden könnte.
+Larova speichert alles auf dem Gerät und nirgendwo sonst. Kein Konto, keine Analyse, überhaupt keine Internetberechtigung. Nichts, was Sie schreiben, wird an uns gesendet, weil es kein „uns" gibt, an das man senden könnte.
 
-Ein Menüpunkt erzeugt eine einzige Datei mit allen Kacheln, Bildern und Aufnahmen. Wohin sie geht, entscheiden Sie — das Telefon selbst, ein Cloud-Speicher, ein USB-Stick, was eben installiert ist. Dieselbe Datei ist auch das Übergabepaket: Schicken Sie sie Ihrem Partner oder den anderen Großeltern, sie öffnen sie in ihrem eigenen Larova, und alles ist da. Mit einem Passwort können Sie sie schützen.
+Ein Menüpunkt packt alle Kacheln, Bilder und Aufnahmen in eine einzige Datei. Wohin sie geht, entscheiden Sie — das Telefon selbst, ein Cloud-Speicher, ein USB-Stick. Dieselbe Datei ist das Übergabepaket: Schicken Sie sie Ihrem Partner oder den anderen Großeltern, sie öffnen sie in ihrem eigenen Larova, und alles ist da. Mit einem Passwort können Sie sie schützen.
 
 HELL, DUNKEL UND NACHT
 
-Drei Darstellungen. Die dritte gibt es aus einem bestimmten Grund: eine Gutenachtgeschichte im abgedunkelten Zimmer von einem weißen Bildschirm vorzulesen, funktioniert nicht. Nacht zeigt warmes Bernstein auf fast Schwarz, dimmt die Anzeige und vermeidet helle Flächen, damit niemand aufwacht.
+Drei Darstellungen. Die dritte gibt es aus einem einzigen Grund: eine Gutenachtgeschichte im abgedunkelten Zimmer von einem weißen Bildschirm vorzulesen, funktioniert nicht. Nacht zeigt warmes Bernstein auf fast Schwarz und vermeidet helle Flächen, damit niemand aufwacht.
 
-SPRACHEN
+VIERZEHN SPRACHEN
 
-Larova spricht Englisch, Deutsch, Französisch, Italienisch, Spanisch, Portugiesisch, Ukrainisch, Polnisch, Russisch, Türkisch, Arabisch, Hindi, Chinesisch und Japanisch — und die Sprache der App lässt sich unabhängig von der des Telefons einstellen. Das ist wichtig: Eine Großmutter, die kein Deutsch liest, kann Larova auf Türkisch stellen, während das Telefon des Enkelkindes auf Deutsch bleibt.
+Die Sprache von Larova lässt sich unabhängig von der des Telefons einstellen. Eine Großmutter, die kein Deutsch liest, kann die App auf Türkisch stellen, während das Telefon des Enkelkindes auf Deutsch bleibt.
 
-Die App ist übersetzt. Was Sie schreiben, ist es nicht — Ihre eigenen Worte bleiben genau so, wie Sie sie geschrieben haben, und werden nirgendwohin zum Übersetzen gesendet.
+Die App ist übersetzt. Was Sie schreiben, ist es nicht — Ihre Worte bleiben genau so, wie Sie sie geschrieben haben, und werden nirgendwohin zum Übersetzen gesendet.
 
 WAS LAROVA NICHT IST
 
 Larova ist ein Notizbuch. Es stellt keine Diagnose, berechnet nichts, deutet nicht, was Sie schreiben, und gibt keine Ratschläge. Es ist kein Medizinprodukt und kein Notrufdienst. Rufen Sie im Notfall Ihre örtliche Notrufnummer.
 
-Larova ist freie Software unter der GNU Affero General Public License v3.0.
+Freie Software unter der GNU Affero General Public License v3.0.

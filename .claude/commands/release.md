@@ -77,22 +77,23 @@ Release notes live in the fastlane metadata tree, one file per locale, named aft
 fastlane/metadata/android/{LOCALE}/changelogs/{NEW_VERSION_CODE}.txt
 ```
 
-So bumping to versionCode 7 means creating `fastlane/metadata/android/en-US/changelogs/7.txt` and its sibling. Getting this wrong is the most likely mistake in this step: a file named `0.2.0.txt` or one using the *old* versionCode will simply never be picked up, and the release ships with no notes.
+So bumping to versionCode 7 means creating `fastlane/metadata/android/en-US/changelogs/7.txt` and its thirteen siblings. Getting this wrong is the most likely mistake in this step: a file named `0.2.0.txt` or one using the *old* versionCode will simply never be picked up, and the release ships with no notes.
 
-**Both store locales are mandatory.** There is no English fallback for store text — a locale with no file gets a blank What's New in the Play Store for that language. `google-play.yml` fails the deploy if any locale is missing a file for the versionCode being released, so an incomplete set blocks the release rather than shipping quietly:
+**All fourteen locales are mandatory.** There is no English fallback for store text — a locale with no file gets a blank What's New in the Play Store for that language. `google-play.yml` fails the deploy if any locale is missing a file for the versionCode being released, so an incomplete set blocks the release rather than shipping quietly:
 
-- `en-US` (source language — write this one first; the other is a translation of it)
-- `de-DE`
+`en-US` (source — write this one first, the rest are translations of it), `de-DE`, `fr-FR`, `it-IT`, `es-ES`, `pt-PT`, `uk`, `pl-PL`, `ru-RU`, `tr-TR`, `ar`, `hi-IN`, `zh-CN`, `ja-JP`.
 
-Note this is the **store listing** set, not the app's language set. Larova is translated into fourteen languages (`docs/localization.md`), but the Play listing ships in English and German at M3 and grows later. Adding a locale here means writing its `title.txt`, `short_description.txt` and `full_description.txt` too, and adding it to `LOCALES` in `tools/check_store_metadata.sh` — otherwise the check will not look at it.
+Those are **Play locale codes**, which are not the language tags in `locales_config.xml`. Do not "correct" `zh-CN` to `zh-Hans`, or drop the region from `hi-IN` or `ja-JP`, or add one to `uk` or `ar` — the directory names as they stand are what the Play API accepts. Read the existing directory names rather than deriving them from `docs/localization.md`, and if a directory is missing, create it rather than skipping the locale.
 
-Each file contains a short user-facing summary of the release. Aim for **max 300 characters in the English draft** to leave headroom for translation expansion; the hard limit is 500 per locale (see the check below). German runs about 30 % longer than English, so a 400-character English note will not fit. Base the content on the `## [Unreleased]` section of `CHANGELOG.md`, but write it in plain language for the person who set the app up — not a technical log. Do not copy changelog bullet points verbatim.
+Each file contains a short user-facing summary of the release. Aim for **max 300 characters in the English draft** to leave headroom for translation expansion; the hard limit is 500 per locale (see the check below). German runs about 30 % longer than English and French about 20 %, so a 400-character English note will not fit. Chinese and Japanese compress to roughly half, which is not a licence to write more there — keep the same note, not a longer one. Base the content on the `## [Unreleased]` section of `CHANGELOG.md`, but write it in plain language for the person who set the app up — not a technical log. Do not copy changelog bullet points verbatim.
 
 Only include changes that are visible or relevant to someone using the app. Exclude anything related to CI/CD workflows, GitHub Actions, internal tooling, or other infrastructure — users don't see these.
 
 **Register, not reach:** the audience for this text is a parent, and often a grandparent reading the store listing before installing. Say what changed in the words they would use. And keep it inside the product's boundary — Larova is a notebook that stores and displays, so release notes never describe it as advising, tracking, monitoring or interpreting anything about a child. That boundary is what keeps the app outside the EU MDR definition of a medical device (`docs/concept.md` §2.2), and store text is exactly where it gets crossed by accident.
 
-**Translation quality:** per `docs/localization.md`, unreviewed machine translation is not acceptable for anything a user reads. Draft the `de-DE` text yourself, but flag clearly to the user that it needs a fluent-speaker review pass before the release ships — the same standard as the in-app strings. Store text deserves *more* care than in-app strings, not less: in-app strings fall back to English when missing, store text does not.
+**Translation quality:** per `docs/localization.md` §5, unreviewed machine translation is not acceptable for anything a user reads. Draft all fourteen yourself, then **state plainly, in the final message, which ones have not been read by a native speaker** — that is twelve of them by default, since only `en-US` and `de-DE` are maintained by the author. Do not present the set as finished translations. Store text deserves *more* care than in-app strings, not less: in-app strings fall back to English when missing, store text does not.
+
+Fourteen locales is enough work that the temptation is to shorten the loop. Two things not to do: do not write English into a non-English file to fill the slot (a blank note is a visible gap; an English note in the Japanese listing looks like a bug and is one), and do not reuse the previous release's note for a locale you did not get to. Both pass the character check and both ship.
 
 **4c. Verify the character limits**
 

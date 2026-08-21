@@ -6,13 +6,19 @@ import androidx.compose.ui.graphics.Color
 /**
  * Larova colour tokens.
  *
- * Rule: the database stores the key only (for example "salbei"). The hex value is
+ * Rule: the database stores the key only (for example "sage"). The hex value is
  * resolved here at runtime. Storing the colour itself instead makes every
  * user-created tile unreadable in dark mode — retroactively, with no way to
  * repair it, because the values were chosen by users.
  *
  * Token keys are internal identifiers and never reach a user; the labels shown
  * in the picker come from strings.xml. See docs/design/design-system.md.
+ *
+ * The keys were German until the rename in this file's history — deliberately
+ * done while the app had no users, because a key is a value in an export file
+ * and renaming one after content exists means migrating other people's data.
+ * The `label` below is a development convenience only; the picker reads
+ * `colour_<key>` from strings.xml, which is localized.
  */
 
 enum class AppMode { LIGHT, DARK, NIGHT }
@@ -20,13 +26,13 @@ enum class AppMode { LIGHT, DARK, NIGHT }
 /** The eight colours a user can pick for a tile. */
 enum class TileColor(val key: String, val label: String) {
     SAND("sand", "Sand"),
-    TON("ton", "Ton"),
+    CLAY("clay", "Clay"),
     ROSE("rose", "Rose"),
-    FLIEDER("flieder", "Flieder"),
-    HIMMEL("himmel", "Himmel"),
-    SALBEI("salbei", "Salbei"),
-    MOOS("moos", "Moos"),
-    STEIN("stein", "Stein");
+    LILAC("lilac", "Lilac"),
+    SKY("sky", "Sky"),
+    SAGE("sage", "Sage"),
+    MOSS("moss", "Moss"),
+    STONE("stone", "Stone");
 
     companion object {
         val DEFAULT = SAND
@@ -41,36 +47,36 @@ enum class TileColor(val key: String, val label: String) {
 data class TileColors(val surface: Color, val accent: Color)
 
 private val LIGHT = mapOf(
-    TileColor.SAND    to TileColors(Color(0xFFF7E4C2), Color(0xFF8A5B12)),
-    TileColor.TON     to TileColors(Color(0xFFF4DBCB), Color(0xFF8E4A2E)),
-    TileColor.ROSE    to TileColors(Color(0xFFF6DBE1), Color(0xFF8C3D57)),
-    TileColor.FLIEDER to TileColors(Color(0xFFE4DCF6), Color(0xFF4B3E86)),
-    TileColor.HIMMEL  to TileColors(Color(0xFFD8E5F5), Color(0xFF2F4E7C)),
-    TileColor.SALBEI  to TileColors(Color(0xFFD5E9E1), Color(0xFF1F5F4E)),
-    TileColor.MOOS    to TileColors(Color(0xFFDFEBD4), Color(0xFF41652C)),
-    TileColor.STEIN   to TileColors(Color(0xFFE7E2DA), Color(0xFF5A5348)),
+    TileColor.SAND  to TileColors(Color(0xFFF7E4C2), Color(0xFF8A5B12)),
+    TileColor.CLAY  to TileColors(Color(0xFFF4DBCB), Color(0xFF8E4A2E)),
+    TileColor.ROSE  to TileColors(Color(0xFFF6DBE1), Color(0xFF8C3D57)),
+    TileColor.LILAC to TileColors(Color(0xFFE4DCF6), Color(0xFF4B3E86)),
+    TileColor.SKY   to TileColors(Color(0xFFD8E5F5), Color(0xFF2F4E7C)),
+    TileColor.SAGE  to TileColors(Color(0xFFD5E9E1), Color(0xFF1F5F4E)),
+    TileColor.MOSS  to TileColors(Color(0xFFDFEBD4), Color(0xFF41652C)),
+    TileColor.STONE to TileColors(Color(0xFFE7E2DA), Color(0xFF5A5348)),
 )
 
 private val DARK = mapOf(
-    TileColor.SAND    to TileColors(Color(0xFF4C3B1E), Color(0xFFF0C88A)),
-    TileColor.TON     to TileColors(Color(0xFF4E332A), Color(0xFFEFB496)),
-    TileColor.ROSE    to TileColors(Color(0xFF4A2C38), Color(0xFFF0AEC0)),
-    TileColor.FLIEDER to TileColors(Color(0xFF37305A), Color(0xFFC6B8F0)),
-    TileColor.HIMMEL  to TileColors(Color(0xFF243B55), Color(0xFFA8C8EC)),
-    TileColor.SALBEI  to TileColors(Color(0xFF22423A), Color(0xFF8FD0BC)),
-    TileColor.MOOS    to TileColors(Color(0xFF2F4229), Color(0xFFB4D69A)),
-    TileColor.STEIN   to TileColors(Color(0xFF3A3733), Color(0xFFCFC7BA)),
+    TileColor.SAND  to TileColors(Color(0xFF4C3B1E), Color(0xFFF0C88A)),
+    TileColor.CLAY  to TileColors(Color(0xFF4E332A), Color(0xFFEFB496)),
+    TileColor.ROSE  to TileColors(Color(0xFF4A2C38), Color(0xFFF0AEC0)),
+    TileColor.LILAC to TileColors(Color(0xFF37305A), Color(0xFFC6B8F0)),
+    TileColor.SKY   to TileColors(Color(0xFF243B55), Color(0xFFA8C8EC)),
+    TileColor.SAGE  to TileColors(Color(0xFF22423A), Color(0xFF8FD0BC)),
+    TileColor.MOSS  to TileColors(Color(0xFF2F4229), Color(0xFFB4D69A)),
+    TileColor.STONE to TileColors(Color(0xFF3A3733), Color(0xFFCFC7BA)),
 )
 
 private val NIGHT = mapOf(
-    TileColor.SAND    to TileColors(Color(0xFF32281E), Color(0xFFEBD3AC)),
-    TileColor.TON     to TileColors(Color(0xFF332325), Color(0xFFEACCB0)),
-    TileColor.ROSE    to TileColors(Color(0xFF311F2D), Color(0xFFEBCABF)),
-    TileColor.FLIEDER to TileColors(Color(0xFF26223F), Color(0xFFDCCDD0)),
-    TileColor.HIMMEL  to TileColors(Color(0xFF1C283D), Color(0xFFD2D3CE)),
-    TileColor.SALBEI  to TileColors(Color(0xFF1B2C2E), Color(0xFFC9D6BD)),
-    TileColor.MOOS    to TileColors(Color(0xFF222C24), Color(0xFFD6D8B1)),
-    TileColor.STEIN   to TileColors(Color(0xFF28252A), Color(0xFFDFD3BD)),
+    TileColor.SAND  to TileColors(Color(0xFF32281E), Color(0xFFEBD3AC)),
+    TileColor.CLAY  to TileColors(Color(0xFF332325), Color(0xFFEACCB0)),
+    TileColor.ROSE  to TileColors(Color(0xFF311F2D), Color(0xFFEBCABF)),
+    TileColor.LILAC to TileColors(Color(0xFF26223F), Color(0xFFDCCDD0)),
+    TileColor.SKY   to TileColors(Color(0xFF1C283D), Color(0xFFD2D3CE)),
+    TileColor.SAGE  to TileColors(Color(0xFF1B2C2E), Color(0xFFC9D6BD)),
+    TileColor.MOSS  to TileColors(Color(0xFF222C24), Color(0xFFD6D8B1)),
+    TileColor.STONE to TileColors(Color(0xFF28252A), Color(0xFFDFD3BD)),
 )
 
 fun TileColor.resolve(mode: AppMode): TileColors = when (mode) {
