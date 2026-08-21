@@ -106,3 +106,9 @@ tmp/
 
 # Exported user content must never be committed — it contains real family data
 *.larova
+
+# Jekyll build output for docs/pages. The sibling project has its .jekyll-cache tracked by
+# accident, which is pure noise in diffs — ignore it before that can happen here.
+_site/
+.jekyll-cache/
+.sass-cache/

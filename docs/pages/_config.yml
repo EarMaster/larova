@@ -1,0 +1,72 @@
+# Larova's landing page and privacy policy.
+#
+# Built on the "Hydra" Jekyll template by CloudCannon
+# (https://github.com/CloudCannon/hydra-jekyll-template), MIT — see `_THEME-LICENSE.txt`.
+# Vendored rather than used via `remote_theme` because Hydra puts `index.html` and `css/`
+# at its repo root, and `remote_theme` only pulls `_layouts`, `_includes`, `_sass` and
+# `assets`. Same reason the sibling project vendored its theme.
+#
+# What was removed from the upstream template, and why it matters here:
+#   - the Google Analytics snippet in `_layouts/default.html`
+#   - the Unsplash-hosted testimonial portrait on the landing page
+#   - the CloudCannon editor-link buttons in the header, nav and footer
+#   - the pricing, blog, staff, contact and forms stylesheets and pages
+#
+# The first two were the template's only third-party requests. Removing them makes the
+# site fully self-contained: no CDN, no fonts fetched at load, no analytics, nothing that
+# would put a visitor's IP in someone else's log. That is not tidiness — it is the same
+# claim the app makes, and a privacy policy served from a page that phones a third party
+# would contradict itself. It is also why there is no web font: `_sass/elements.scss`
+# falls back to the system stack. Keep it that way, and check any future addition against
+# it — embedding Google Fonts has been held to be a GDPR violation in Germany, which is
+# the launch market.
+
+title: Larova
+description: Everything that matters about your child, in a place anyone can understand.
+url: "https://larova.app"
+baseurl:
+
+# jekyll-seo-tag
+logo: /assets/larova-mark.svg
+author:
+  name: Nico Wiedemann
+social:
+  name: Larova
+  links:
+    - https://github.com/EarMaster/larova
+
+github_link: https://github.com/EarMaster/larova
+releases_link: https://github.com/EarMaster/larova/releases
+# Filled in once the listing is live; the download button hides itself while it is blank.
+playstore_link:
+
+timezone: Etc/UTC
+permalink: pretty
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "page"
+  - scope:
+      path: "index.html"
+    values:
+      layout: "default"
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+sass:
+  style: compressed
+
+markdown: kramdown
+
+# No `exclude` key on purpose, and note what that means for CNAME: `github-pages build`
+# adds `exclude: [CNAME]` of its own accord whenever the site's `exclude` is Jekyll's
+# default, so `docs/pages/CNAME` never reaches `_site`. That is GitHub's intended
+# behaviour — for an Actions deployment the custom domain comes from the repository's
+# Pages settings, not from a file in the artifact. Setting any non-default `exclude`
+# here would suppress that and copy CNAME through; there is no reason to want that.
+#
+# A local `jekyll build` has no such rule and does copy CNAME, so the two disagree.

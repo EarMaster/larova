@@ -49,6 +49,7 @@ locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
 | `fastlane/metadata/android/` | Play Store listing text, one folder per store locale in `fastlane supply` layout. Written by `/release`, validated by `tools/check_store_metadata.sh`, consumed by `google-play.yml`. See that folder's `README.md` |
 | `tools/check_store_metadata.sh` | Validates listing text against Play's per-locale character limits (title 30, short 80, full 4000, release notes 500) and listing images (24-bit PNG, no alpha, 320–3840 px a side, long side at most twice the short one, at least two per set). Pass a versionCode to also require release notes in every store locale |
 | `.claude/commands/` | Repo slash commands: `/commit` and `/release` — see "Slash commands" |
+| `docs/pages/` | The GitHub Pages site (Jekyll), deployed by `pages.yml` — landing page and privacy policy, served at `larova.app`. Built on the MIT-licensed Hydra template, vendored; see its `_config.yml` for what was stripped out and why |
 | `docs/release-setup.md` | One-time signing and publishing setup: upload key, the four GitHub secrets, Play Console prerequisites, branch protection |
 
 ## Commands
@@ -135,6 +136,14 @@ regression that cannot be walked back, because that file may be the only copy of
   APK/AAB, and cuts a GitHub Release with notes from `CHANGELOG.md`. Gated on
   `app/build.gradle.kts` existing. Needs `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and
   `KEY_PASSWORD` repo secrets before it can sign anything.
+- `pages.yml` — deploys `docs/pages/` via Jekyll to GitHub Pages on push to `main`, path-filtered
+  to `docs/pages/**`. Pages must be enabled in repo settings with source "GitHub Actions", the
+  custom domain set there, and `larova.app` DNS pointed at GitHub Pages. The domain comes from
+  that setting, **not** from `docs/pages/CNAME` — the official builder strips that file from the
+  output on purpose. `ci.yml`'s `Pages Site` job builds the same source on every PR, because
+  `pages.yml` only runs on `main` and a broken template would otherwise reach the live site
+  first. That job also asserts no page loads an asset over the network: this host serves the
+  privacy policy, so a CDN font here would contradict the page it styles.
 - `google-play.yml` — reusable workflow (`workflow_call`/manual dispatch) that uploads a tagged
   release's AAB to Google Play, package `app.larova`. Needs a `SERVICE_ACCOUNT_JSON` secret and an
   active Play Console listing. Checks out the *tag* rather than the default branch so the

@@ -1,0 +1,91 @@
+---
+title: Larova — everything that matters about your child, in a place anyone can understand
+description: An offline app you set up on your child's phone, so grandparents, a babysitter or a daycare teacher find what they need in two taps. No account, no cloud, no internet permission.
+---
+<section class="hero">
+	<div class="text-container">
+		<h1>Everything that matters about your child, <strong>in a place anyone can understand</strong></h1>
+		<p class="subtext">Larova is an app you set up on your child's phone. You fill it with the things you would otherwise have to explain — how bedtime works, what your child eats, who to call, what helps when they are upset.</p>
+
+		<div class="buttons">
+			{% if site.playstore_link and site.playstore_link != '' %}
+				<a href="{{ site.playstore_link }}">Get it on Google Play</a>
+			{% endif %}
+			<a class="secondary" href="{{ site.github_link }}">Source on GitHub</a>
+		</div>
+		<p class="button-note">
+			{% if site.playstore_link and site.playstore_link != '' %}
+				Android only. iOS is planned but not scheduled.
+			{% else %}
+				Not released yet. The app is in development in the open — the concept, design system and plan are all in the repository.
+			{% endif %}
+		</p>
+	</div>
+</section>
+
+<div class="content">
+	<section>
+		<div class="container flex">
+			<div class="text">
+				<h2>Hand someone the phone, <strong>without a word of explanation</strong></h2>
+				<p>Caregiver view is what the app normally shows: read, tick things off, make a call, open a link. Nothing can be changed, moved or deleted by accident.</p>
+				<p>Parent view unlocks with a PIN or your fingerprint, and only there do the edit handles and the backup options appear. After five minutes without input, the app returns to caregiver view by itself.</p>
+			</div>
+			<div class="text">
+				<h2>A bar on every screen that says <strong>Get help</strong></h2>
+				<p>Behind it are the numbers you chose, shown large, with a photo and a relation — “Mum”, “Dad”, the doctor, the local emergency number.</p>
+				<p>Tapping one opens the phone app with the number ready. It never dials on its own, and it never sends anyone's location anywhere. The person holding the phone decides.</p>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<h2>Ten kinds of tile, arranged by you</h2>
+			<p class="subtext">Everything inside a tile is written by you. Larova provides the shape; you provide the content.</p>
+			<ul class="tiles">
+				<li><strong>Guide</strong><span>Numbered steps, one per screen, each with text and optionally a picture or a recording.</span></li>
+				<li><strong>Video and audio</strong><span>From the gallery, or recorded on the spot in your own voice.</span></li>
+				<li><strong>Note</strong><span>Free text with headings and bullet points.</span></li>
+				<li><strong>Checklist</strong><span>Items to tick off, optionally resetting each morning.</span></li>
+				<li><strong>Table</strong><span>Columns and rows you define yourself.</span></li>
+				<li><strong>Call</strong><span>A name, a number and a photo. One tap to dial.</span></li>
+				<li><strong>Website</strong><span>A link that opens in the browser.</span></li>
+				<li><strong>App shortcut</strong><span>Opens another app already installed on the phone.</span></li>
+				<li><strong>Folder</strong><span>Groups tiles together.</span></li>
+			</ul>
+		</div>
+	</section>
+
+	<section>
+		<div class="container flex">
+			<div class="text">
+				<h2>Nothing leaves the device. <strong>There is nowhere for it to go.</strong></h2>
+				<p>Larova stores everything on the phone and nowhere else. No account, no analytics, and no internet permission at all — not a setting, an absent Android permission. Nothing you write is ever sent to us, because there is no “us” to send it to.</p>
+				<p>One menu item packs every tile, picture and recording into a single file. You choose where it goes: the phone itself, a cloud drive, a USB stick. That same file is the handover package — send it to your partner or the other grandparents, they open it in their own copy, and everything is there. You can protect it with a password.</p>
+			</div>
+			<div class="text">
+				<h2>A <strong>night mode</strong> that exists for one specific reason</h2>
+				<p>Reading a bedtime guide aloud in a darkened room from a white screen does not work. Night uses warm amber on near-black, dims the display and avoids bright surfaces entirely, so nobody wakes up.</p>
+				<h2>Fourteen languages, <strong>set independently of the phone</strong></h2>
+				<p>A grandmother who does not read German can put Larova into Turkish while her grandchild's phone stays in German. The app is translated; what you write is not — your words stay exactly as you wrote them, and are never sent anywhere to be translated.</p>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<div class="note">
+				<p><strong>Larova is a notebook.</strong> It does not diagnose anything, does not calculate doses, does not interpret what you write, and does not give advice. If you use it to note down what a caregiver should know about your child's health, that note is your text — the same as the one you would tape to the fridge. Larova just carries it and shows it to the right person at the right moment.</p>
+				<p><strong>It is not a medical device, and it is not an emergency service.</strong> In an emergency, call your local emergency number.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="bottom-cta">
+		<h2>Free software, <strong>and built in the open</strong></h2>
+		<div class="buttons">
+			<a class="secondary" href="{{ site.github_link }}">Read the source</a>
+		</div>
+	</section>
+</div>

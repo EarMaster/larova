@@ -171,3 +171,57 @@ jobs:
             app/build/reports/lint-results-debug.html
             **/build/reports/detekt/
           retention-days: 14
+
+  # The site only deploys from main, so without this a broken Liquid tag or a renamed SCSS
+  # partial would reach the live page before anyone found out. Same build action pages.yml
+  # uses, so a pass here means that workflow will get through too.
+  #
+  # Deliberately no `needs: detect` — the site has nothing to do with Gradle, which is also
+  # why this is the one job in this file that actually runs today.
+  pages:
+    name: Pages Site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs/pages
+          destination: ./_site
+
+      # Do NOT assert that _site/CNAME exists — it never will. `github-pages build` forces
+      # `exclude => ["CNAME"]` whenever the site's own `exclude` is Jekyll's default, so the
+      # official builder strips it on purpose. The custom domain comes from the repository's
+      # Pages settings, not from a file in the artifact.
+      #
+      # A local `jekyll build` does copy CNAME, having no such rule, so this difference does
+      # not show up until it runs here.
+      - name: Check the pages and stylesheet rendered
+        run: |
+          test -s ./_site/css/screen.css || { echo "::error::screen.css missing or empty — check the @import list in css/screen.scss"; exit 1; }
+          test -f ./_site/index.html || { echo "::error::index.html missing"; exit 1; }
+          test -f ./_site/privacy/index.html || { echo "::error::privacy page missing"; exit 1; }
+          grep -q 'tiles' ./_site/index.html || { echo "::error::the tile grid did not render"; exit 1; }
+          if grep -q '{%' ./_site/index.html ./_site/privacy/index.html; then echo "::error::unrendered Liquid tag left in a page"; exit 1; fi
+
+      # The whole product claim is that nothing leaves the device, and this site hosts the
+      # privacy policy that says so. A stylesheet or font pulled from a CDN would put a
+      # visitor's IP in a third party's log and contradict the page it is styling — and
+      # embedding Google Fonts has been held to breach the GDPR in Germany, the launch
+      # market. Cheap to assert, so assert it rather than trusting review.
+      - name: Check nothing loads from a third party
+        run: |
+          # Only *asset loads* are checked — a stylesheet, script, image, iframe or a CSS
+          # url(). Anchors are deliberately not matched: linking out to GitHub or to the
+          # GDPR text is normal, and a check that broke on a new prose link would get
+          # deleted rather than fixed.
+          if grep -rInoE '<(link[^>]+href|script[^>]+src|img[^>]+src|iframe[^>]+src)="https?://[^"]+' ./_site --include='*.html'; then
+            echo "::error::a page loads an asset over the network — inline or self-host it instead"
+            exit 1
+          fi
+          if grep -rInoE 'url\(\s*['\''"]?https?:' ./_site --include='*.css'; then
+            echo "::error::a stylesheet fetches something over the network — inline it as a data: URI instead"
+            exit 1
+          fi
+          echo "no external asset loads"

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Larova · Play Store listing icon. Export to 512x512 PNG, no transparency, no rounded corners. -->
+  <defs>
+    <radialGradient id="room" cx="50%" cy="44%" r="72%">
+      <stop offset="0%" stop-color="#332B60"/><stop offset="60%" stop-color="#221E3C"/><stop offset="100%" stop-color="#171429"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="50%" cy="52%" r="42%">
+      <stop offset="0%" stop-color="#E0913A" stop-opacity=".30"/><stop offset="100%" stop-color="#E0913A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lamp" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFC46B" stop-opacity=".85"/>
+      <stop offset="45%" stop-color="#FFC46B" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#FFC46B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#room)"/>
+  <rect width="512" height="512" fill="url(#warm)"/>
+  <g transform="scale(4.7407)">
+    <circle cx="54" cy="56" r="21" fill="url(#lamp)"/>
+    <path d="M36 76 L36 50 A18 18 0 0 1 72 50 L72 76" fill="none" stroke="#FBEFD9" stroke-width="6.5"/>
+    <path d="M34 79 L74 79" stroke="#FBEFD9" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="54" cy="56" r="8" fill="#FFC46B"/>
+  </g>
+</svg>

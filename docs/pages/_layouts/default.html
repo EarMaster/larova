@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		{% seo %}
+
+		<link rel="stylesheet" href="{{ site.baseurl }}/css/screen.css">
+		<link rel="icon" type="image/svg+xml" href="{{ site.baseurl }}/assets/larova-mark.svg">
+
+		{% comment %}
+			Upstream Hydra put a Google Analytics snippet here, gated on a config key, and
+			`{% feed_meta %}` for a blog this site does not have. Both are gone on purpose.
+			Nothing on this site may load from a third party: it is the privacy policy's own
+			host, and the app's claim is that nothing leaves the device. See `_config.yml`.
+		{% endcomment %}
+	</head>
+	<body>
+		<header>
+			<div class="container">
+				<div class="company-name">
+					<a href="{{ site.baseurl }}/">
+						<img src="{{ site.baseurl }}/assets/larova-mark.svg" alt="" width="40" height="40" />
+						<span>Larova</span>
+					</a>
+				</div>
+				{% include navigation.html %}
+			</div>
+		</header>
+		{{ content }}
+		<footer>
+			<div class="container">
+				<div class="footer-columns">
+					{% for column in site.data.footer %}
+					<ul class="footer-links">
+						{% for link in column.links %}
+							<li><a {% if link.new_window %}target="_blank" rel="noopener"{% endif %} href="{% include relative-src.html src=link.link %}">{{ link.name }}</a></li>
+						{% endfor %}
+					</ul>
+					{% endfor %}
+				</div>
+				<p class="copyright">
+					&copy; {{ site.time | date: '%Y' }} {{ site.author.name }} &bull;
+					Free software under <a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL-3.0</a> &bull;
+					<a href="{{ site.baseurl }}/privacy/">Privacy</a> &bull;
+					Template by <a href="https://cloudcannon.com/">CloudCannon</a>
+				</p>
+			</div>
+		</footer>
+		<script>
+			document.getElementById("open-nav").onclick = function () {
+				document.body.classList.toggle("nav-open");
+				return false;
+			};
+		</script>
+	</body>
+</html>

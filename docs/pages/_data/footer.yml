@@ -1,0 +1,10 @@
+- links:
+  - name: Privacy policy
+    link: /privacy/
+- links:
+  - name: Source on GitHub
+    link: https://github.com/EarMaster/larova
+    new_window: true
+  - name: Releases
+    link: https://github.com/EarMaster/larova/releases
+    new_window: true
