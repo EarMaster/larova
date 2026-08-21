@@ -33,10 +33,19 @@ lint/reports/
 local.properties
 
 # Signing material. Larova uses Play App Signing; nothing here belongs in git.
+# PKCS12 is keytool's default store type on modern JDKs, so *.jks alone is not enough —
+# an upload key generated with the documented command lands as .p12.
 *.jks
 *.keystore
+*.p12
+*.pfx
+*.b64
 keystore.properties
 signing.properties
+
+# Google Play service account credentials. Lives only in the SERVICE_ACCOUNT_JSON secret.
+play-service-account*.json
+*-service-account.json
 
 # Android Studio / IntelliJ
 .idea/*

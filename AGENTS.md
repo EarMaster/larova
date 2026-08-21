@@ -49,6 +49,7 @@ locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
 | `fastlane/metadata/android/` | Play Store listing text, one folder per store locale in `fastlane supply` layout. Written by `/release`, validated by `tools/check_store_metadata.sh`, consumed by `google-play.yml`. See that folder's `README.md` |
 | `tools/check_store_metadata.sh` | Validates listing text against Play's per-locale character limits (title 30, short 80, full 4000, release notes 500) and listing images (24-bit PNG, no alpha, 320–3840 px a side, long side at most twice the short one, at least two per set). Pass a versionCode to also require release notes in every store locale |
 | `.claude/commands/` | Repo slash commands: `/commit` and `/release` — see "Slash commands" |
+| `docs/release-setup.md` | One-time signing and publishing setup: upload key, the four GitHub secrets, Play Console prerequisites, branch protection |
 
 ## Commands
 
@@ -87,7 +88,9 @@ which is what triggers `release.yml`'s tag/build/publish.
 
 **Never open a pull request targeting `main`.** Base every branch and PR on `develop` instead.
 Promoting `develop` to `main` for a release is the maintainer's call to make, not something to
-initiate unprompted.
+initiate unprompted — and it is now enforced rather than conventional: `main` requires a pull
+request with admin enforcement on, so a direct push is refused whoever makes it. Signing keys,
+secrets and that protection are documented in `docs/release-setup.md`.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope):
 description`, imperative and lowercase. Scopes track the module layout — `home`, `card`, `help`,
@@ -102,7 +105,10 @@ description`, imperative and lowercase. Scopes track the module layout — `home
    writes per-locale Play release notes to
    `fastlane/metadata/android/{locale}/changelogs/{versionCode}.txt`, and validates them. It
    commits `chore(release): bump version to X.Y.Z` and stops — it does not promote to `main`.
-3. The maintainer merges `develop` into `main`.
+3. The maintainer opens and merges a `develop` → `main` pull request. `main` is branch-protected
+   with admin enforcement, so this is the only way it advances — a direct push is refused. This
+   promotion PR is the one exception to "never open a PR targeting `main`", and it is the
+   maintainer's to open, never an agent's.
 4. `release.yml` reads `versionName`, tags `vX.Y.Z`, builds a signed APK and AAB, and cuts a
    GitHub Release with notes pulled from the matching `CHANGELOG.md` heading. It then calls
    `google-play.yml` for the `internal` track.
