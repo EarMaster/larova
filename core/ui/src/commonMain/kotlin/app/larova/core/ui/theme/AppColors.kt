@@ -133,6 +133,9 @@ object Signal {
     val amberOnDark  = Color(0xFFFFC46B)
     val amberOnLight = Color(0xFF9E5E0C)
 
+    /** Text and symbols on top of amberOnDark, 9.7:1. Lives here so the theme writes no hex. */
+    val amberInk     = Color(0xFF2A1B04)
+
     /** The help bar and nothing else, anywhere in the product. */
     val alarmLight     = Color(0xFFC0392B) // with white text, 5.4:1
     val alarmDark      = Color(0xFFFF9B8F)

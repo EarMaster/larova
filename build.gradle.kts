@@ -28,8 +28,8 @@ allprojects {
     }
 
     // `ci.yml` runs `./gradlew test`, and AGENTS.md documents `./gradlew :core:domain:test`.
-    // Multiplatform modules have `allTests` and `androidHostTest`, no `test` — without this
-    // alias those tests would silently never run in CI, which is worse than not having them.
+    // Multiplatform modules have `allTests` and `testAndroid`, no `test` — without this alias
+    // those tests would silently never run in CI, which is worse than not having them.
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         // Detekt looks in src/main/kotlin by default, which no multiplatform module has. Without
         // this the task reports NO-SOURCE and static analysis silently covers only :app.
@@ -40,7 +40,7 @@ allprojects {
         tasks.register("test") {
             group = "verification"
             description = "Runs the host-side tests of this multiplatform module."
-            dependsOn(tasks.matching { it.name == "androidHostTest" })
+            dependsOn(tasks.matching { it.name == "allTests" || it.name == "testAndroid" })
         }
     }
 }

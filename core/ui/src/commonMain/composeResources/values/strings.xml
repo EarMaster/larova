@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · English base strings. This is the single source of truth.
+
+  Never edit a translated file to fix wording. Fix the English and re-translate,
+  or the languages drift apart. See docs/localization.md.
+
+  Rules:
+    · No string concatenation in code.
+    · Placeholders are always positional (%1$s), because word order changes.
+    · Counts use <plurals>. Polish, Russian and Arabic have more than two forms.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Good to see you</string>
+    <string name="home_search">Search</string>
+    <string name="home_add_tile">Add tile</string>
+    <string name="home_child_age">%1$s · %2$d years</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Caregiver view</string>
+    <string name="view_parent">Parent view</string>
+    <string name="view_parent_active">Parent view is on. Editing and backup are unlocked. Larova returns to caregiver view after five minutes without input.</string>
+    <string name="view_unlock_title">Unlock parent view</string>
+    <string name="view_unlock_pin">Enter your PIN</string>
+    <string name="view_unlock_biometric">Use fingerprint instead</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Guide</string>
+    <string name="tile_guide_hint">Steps with text, pictures and sound</string>
+    <string name="tile_checklist">Checklist</string>
+    <string name="tile_checklist_hint">Things to tick off, optionally reset each day</string>
+    <string name="tile_table">Table</string>
+    <string name="tile_table_hint">Your own columns and rows</string>
+    <string name="tile_note">Note</string>
+    <string name="tile_note_hint">Free text with headings and lists</string>
+    <string name="tile_video">Video or sound</string>
+    <string name="tile_video_hint">From your gallery, or record it now</string>
+    <string name="tile_call">Call</string>
+    <string name="tile_call_hint">A name, a number and a relation</string>
+    <string name="tile_link">Website or app</string>
+    <string name="tile_link_hint">Opens a link or an app on this phone</string>
+    <string name="tile_folder">Folder</string>
+    <string name="tile_folder_hint">Groups several tiles together</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Guide · %1$d step</item>
+        <item quantity="other">Guide · %1$d steps</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Checklist · %1$d item</item>
+        <item quantity="other">Checklist · %1$d items</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Step %1$d of %2$d</string>
+    <string name="guide_previous">Back</string>
+    <string name="guide_next">Next</string>
+    <string name="guide_finish">Done</string>
+    <string name="guide_read_aloud">Read aloud</string>
+    <string name="guide_screen_stays_on">The screen stays on here.</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d of %2$d</string>
+    <string name="checklist_resets_daily">Resets every morning at %1$s. Ticked items are noted with a time in the log.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Get help</string>
+    <string name="help_sheet_title">Get help</string>
+    <string name="help_call_note">Tapping opens the phone app with the number ready. Larova never dials on its own.</string>
+    <string name="help_emergency">Emergency services</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Backup &amp; transfer</string>
+    <string name="transfer_backup">Back up</string>
+    <string name="transfer_backup_hint">Creates one file with all your tiles, pictures and recordings. You choose where it goes.</string>
+    <string name="transfer_restore">Restore</string>
+    <string name="transfer_restore_hint">Pick a file, check the preview, then replace or merge with what is already here.</string>
+    <string name="transfer_protect">Protect with a password</string>
+    <string name="transfer_protect_hint">Recommended whenever you send the file to someone. Without the password it cannot be opened.</string>
+    <string name="transfer_last_backup">Last backed up %1$s</string>
+    <string name="transfer_preview">%1$d tiles, %2$d files, %3$s</string>
+    <string name="transfer_replace">Replace everything</string>
+    <string name="transfer_merge">Add to what is here</string>
+    <string name="transfer_version_too_new">This file was made with a newer version of Larova. Update the app to open it.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_appearance_system">Follow the phone</string>
+    <string name="settings_appearance_light">Light</string>
+    <string name="settings_appearance_dark">Dark</string>
+    <string name="settings_appearance_night">Night</string>
+    <string name="settings_appearance_night_hint">Warm and very dim, for reading aloud in a dark room.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_hint">Larova can use a different language from the rest of the phone.</string>
+    <string name="settings_log">Activity log</string>
+    <string name="settings_log_retention">Keep for %1$d days</string>
+    <string name="settings_log_clear">Clear the log</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Sand</string>
+    <string name="colour_clay">Clay</string>
+    <string name="colour_rose">Rose</string>
+    <string name="colour_lilac">Lilac</string>
+    <string name="colour_sky">Sky</string>
+    <string name="colour_sage">Sage</string>
+    <string name="colour_moss">Moss</string>
+    <string name="colour_stone">Stone</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Bedtime</string>
+    <string name="template_evening">Evening routine</string>
+    <string name="template_contacts">Important contacts</string>
+    <string name="template_food">Food and drink</string>
+    <string name="template_day">A day with us</string>
+    <string name="template_what_helps">What helps when…</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_back">Back</string>
+    <string name="cd_close">Close</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_edit_tile">Edit %1$s</string>
+    <string name="cd_play">Play</string>
+
+</resources>

@@ -38,3 +38,12 @@ room {
 dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
 }
+
+// KSP registers its generated directories as sources for every compilation of the module,
+// including the host-test one where no processor runs. AGP's lint tasks then read those
+// directories without declaring the dependency, and Gradle fails the build rather than risk an
+// ordering bug. Wiring it explicitly is preferable to switching the validation off.
+tasks.matching { it.name.startsWith("lintAnalyze") || it.name.endsWith("LintModel") }
+    .configureEach {
+        dependsOn(tasks.matching { it.name.startsWith("ksp") })
+    }
