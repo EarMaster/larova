@@ -19,9 +19,6 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core:ui"))
             implementation(project(":core:domain"))
-            implementation(libs.jetbrains.lifecycle.viewmodel.compose)
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

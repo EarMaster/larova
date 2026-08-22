@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
+    // Navigation routes are @Serializable data objects, which is what makes them type-safe.
+    alias(libs.plugins.kotlin.serialization)
 }
 
 // The only Android-specific module, and the only one that is not multiplatform: there is no KMP
@@ -68,6 +70,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.jetbrains.navigation.compose)
     implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

@@ -23,6 +23,8 @@ okio = "3.18.1"
 koin = "4.2.2"
 
 activityCompose = "1.13.0"
+# 2.11 requires compileSdk 37; staying on 36 until there is a reason to move the whole project.
+androidxLifecycle = "2.10.0"
 # The org.jetbrains.androidx.* artifacts are the multiplatform builds of the AndroidX libraries;
 # they carry their own version line, which is not the AndroidX one.
 navigation = "2.9.2"
@@ -41,6 +43,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 

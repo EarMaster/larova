@@ -18,9 +18,11 @@ kotlin {
         commonMain.dependencies {
             api(project(":core:domain"))
             implementation(project(":core:platform"))
-            implementation(libs.androidx.room.runtime)
+            // api, not implementation: the composition root in :app names LarovaDatabase and
+            // DataStore when wiring them, and LarovaDatabase's supertype is Room's.
+            api(libs.androidx.room.runtime)
+            api(libs.androidx.datastore.preferences.core)
             implementation(libs.androidx.sqlite.bundled)
-            implementation(libs.androidx.datastore.preferences.core)
             implementation(libs.okio)
         }
         commonTest.dependencies {

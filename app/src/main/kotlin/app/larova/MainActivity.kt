@@ -4,21 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import app.larova.core.ui.component.HelpBar
-import app.larova.core.ui.resources.Res
-import app.larova.core.ui.resources.app_name
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.larova.core.ui.theme.LarovaTheme
-import org.jetbrains.compose.resources.stringResource
+import app.larova.core.ui.theme.resolve
+import app.larova.navigation.LarovaNavHost
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,23 +20,21 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * The theme sits above the navigation graph, so the appearance setting applies to every screen
+ * including the ones not yet written. Night in particular has to reach the guide screen, which is
+ * the reason the mode exists.
+ */
 @Composable
 private fun LarovaApp() {
-    LarovaTheme {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.background,
-            bottomBar = { HelpBar(onClick = {}) },
-        ) { padding ->
-            Column(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(Res.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-        }
+    val viewModel = koinViewModel<AppViewModel>()
+    val appearance by viewModel.appearance.collectAsStateWithLifecycle()
+
+    LarovaTheme(mode = appearance.resolve()) {
+        LarovaNavHost(
+            tiles = sampleTiles(),
+            appearance = appearance,
+            onAppearanceChange = viewModel::setAppearance,
+        )
     }
 }
