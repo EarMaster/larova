@@ -102,6 +102,30 @@ data class Step(
 @Serializable
 data class CheckItem(val text: String, val done: Boolean = false)
 
+/**
+ * Every media asset this payload refers to.
+ *
+ * The reference lives inside the payload JSON, so this is the only way to answer "is that file
+ * still needed". Cleaning up media by any other route means either deleting a picture a guide
+ * still shows, or keeping every file a user ever picked — which is how a backup ends up larger
+ * than the app that made it.
+ */
+@OptIn(ExperimentalUuidApi::class)
+val CardPayload.referencedMediaIds: Set<Uuid>
+    get() = when (this) {
+        is CardPayload.Guide -> steps.flatMapTo(mutableSetOf()) { listOfNotNull(it.mediaId, it.audioId) }
+        is CardPayload.Video -> setOf(mediaId)
+        is CardPayload.Audio -> setOf(mediaId)
+        is CardPayload.Note,
+        is CardPayload.Checklist,
+        is CardPayload.Table,
+        is CardPayload.Phone,
+        is CardPayload.Web,
+        is CardPayload.AppLink,
+        is CardPayload.Folder,
+        -> emptySet()
+    }
+
 /** The type a payload serializes as, so no caller has to hardcode a discriminator string. */
 val CardPayload.cardType: CardType
     get() = when (this) {

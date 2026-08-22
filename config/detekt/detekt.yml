@@ -25,6 +25,11 @@ style:
     ignoreCompanionObjectPropertyDeclaration: true
   MaxLineLength:
     maxLineLength: 110
+  # The mappers read a row field by field and bail out on the first one that cannot be turned into
+  # a model. Written as guard clauses that is obvious; restructured to satisfy a return counter it
+  # becomes nested lets, which is where a silently wrong fallback would hide.
+  ReturnCount:
+    excludeGuardClauses: true
   # A Compose screen legitimately takes many state and callback parameters. Hoisting them into a
   # holder class to satisfy a counter makes the call site worse, not better.
   UnusedPrivateMember:
