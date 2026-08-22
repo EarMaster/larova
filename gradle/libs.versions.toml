@@ -27,6 +27,12 @@ navigation = "2.9.2"
 lifecycle = "2.9.6"
 
 [libraries]
+# Compose Multiplatform artifacts are not listed here. They come from the plugin's `compose.*`
+# accessors instead, which is the only way to get a matched set: material3 has its own version
+# line under org.jetbrains.compose.material3 and is stable at 1.9.0 while runtime, ui and
+# foundation are at 1.11.1, so pinning them all to one version in this file does not resolve.
+# The accessors are deprecated in 1.11; revisit when material3 catches up.
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }

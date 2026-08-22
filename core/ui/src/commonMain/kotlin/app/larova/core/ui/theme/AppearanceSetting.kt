@@ -3,16 +3,16 @@ package app.larova.core.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import app.larova.core.domain.model.AppearanceSetting
 
 /**
- * What the user chose in settings — including "follow the phone", which is the default.
+ * Turns the stored setting into the mode the colour tables are keyed by.
  *
- * Distinct from [AppMode], which is what that choice resolves to once the phone's own dark setting
- * is known. Only [AppMode] reaches the colour tables, so night can never be reached by accident:
- * it is a deliberate choice for reading aloud in a dark room, not a system state.
+ * The setting lives in `:core:domain` because it is persisted; the resolution lives here because
+ * it needs to ask the phone what it is currently doing. Only [AppMode] reaches the tables, which
+ * is why night can never be arrived at by following the system: it is a deliberate choice for
+ * reading aloud in a darkened room.
  */
-enum class AppearanceSetting { SYSTEM, LIGHT, DARK, NIGHT }
-
 @Composable
 @ReadOnlyComposable
 fun AppearanceSetting.resolve(): AppMode = when (this) {
