@@ -13,5 +13,11 @@ docs-only changes do not belong here.
 ## [Unreleased]
 
 ### Added
-- Nothing yet. The repository holds the concept, design system and brand assets; the Gradle
-  project arrives with M0 (`docs/implementation-plan.md`).
+- Larova installs and opens on a start screen of tiles.
+- Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
+  dim, for reading aloud in a darkened room. The setting is remembered.
+- The "Get help" bar is on every screen.
+- A home-screen icon: the lit niche, including the monochrome version themed launchers use.
+
+The tiles on the start screen are still examples rather than your own, and nothing can be edited
+yet. Both arrive with the tile editor.
