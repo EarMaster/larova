@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · adaptive icon foreground, converted from brand/icon-foreground.svg.
+
+  The lararium: the arched wall niche in a Roman home where a lamp burned while the house was lived
+  in. It reads as a shrine, as a doorway with the light left on, and as a nightlight — which is the
+  whole product in one mark, and why it is not a child, a hand or a heart like every other family
+  app in the store.
+
+  The drawing stays inside the 66dp safe area, so no launcher mask can clip the arch.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- The glow on the niche wall. -->
+    <path android:pathData="M54,35 a21,21 0 1,0 0,42 a21,21 0 1,0 0,-42z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="54"
+                android:centerY="56"
+                android:gradientRadius="21"
+                android:type="radial">
+                <item android:color="#D9FFC46B" android:offset="0" />
+                <item android:color="#47FFC46B" android:offset="0.45" />
+                <item android:color="#00FFC46B" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- The niche. -->
+    <path
+        android:pathData="M36,76 L36,50 A18,18 0 0 1 72,50 L72,76"
+        android:strokeColor="#FBEFD9"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="butt" />
+
+    <!-- The threshold. -->
+    <path
+        android:pathData="M34,79 L74,79"
+        android:strokeColor="#FBEFD9"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="round" />
+
+    <!-- The lamp. Amber, and the only amber in the icon — it means the same thing here as it does
+         in the app: this is what is happening right now. -->
+    <path
+        android:pathData="M54,48 a8,8 0 1,0 0,16 a8,8 0 1,0 0,-16z"
+        android:fillColor="#FFC46B" />
+</vector>
