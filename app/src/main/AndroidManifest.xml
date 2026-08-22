@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Android manifest.
+
+  There is deliberately no <uses-permission android:name="android.permission.INTERNET" /> here,
+  and there never will be. It is on the store listing and in the data safety form; see
+  docs/technical-notes.md §7. Calling goes through ACTION_DIAL, media through the photo picker,
+  and backups through the system file dialog, so none of those need a permission either.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:name=".LarovaApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/full_backup_content"
+        android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Larova">
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode|fontScale"
+            android:exported="true"
+            android:theme="@style/Theme.Larova">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
