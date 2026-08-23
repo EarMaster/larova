@@ -41,6 +41,27 @@ fun rememberBiometricUnlock(onAccepted: () -> Unit): (() -> Unit)? {
         val prompt = BiometricPrompt(
             activity,
             object : BiometricPrompt.AuthenticationCallback() {
+                /**
+                 * Deliberately not backed by a `CryptoObject`, which CodeQL flags as insecure local
+                 * authentication (`java/android/insecure-local-authentication`). The rule is right
+                 * about the mechanism: without a Keystore key behind it, this callback is a boolean
+                 * that code running in the process could reach on its own.
+                 *
+                 * Accepted here because of what the gate is for. Parent view keeps a caregiver or a
+                 * child from editing tiles on a phone they are holding. Anyone able to invoke this
+                 * callback directly already has code execution in the app and can read the database
+                 * next to it, so a crypto-backed prompt would move no attacker out of reach.
+                 *
+                 * The cost of the alternative is not theoretical: a `CryptoObject` requires
+                 * BIOMETRIC_STRONG, which would remove biometric unlock from every device whose only
+                 * sensor is weak face unlock — common on exactly the older phones this app is meant
+                 * to be usable on. The PIN is what carries the security, and it is always available.
+                 *
+                 * Revisit in M3, when the PIN hash moves into the Keystore
+                 * (docs/technical-notes.md §8) and there is a device to test the key lifecycle on —
+                 * a key invalidated by biometric re-enrolment must fall back to the PIN, not lock a
+                 * parent out of their own content.
+                 */
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     onAccepted()
                 }
