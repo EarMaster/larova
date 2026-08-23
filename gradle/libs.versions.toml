@@ -1,0 +1,72 @@
+# Larova · dependency versions.
+#
+# One place for every version, because ten module files that each name their own drift apart.
+# AGP 9.3 requires JDK 17+ and Gradle 9.5+; CI runs Temurin 17, so the toolchain target below
+# must not move above that without changing .github/workflows/.
+
+[versions]
+agp = "9.3.1"
+kotlin = "2.4.10"
+ksp = "2.3.11"
+compose = "1.11.1"
+detekt = "1.23.8"
+
+coroutines = "1.11.0"
+serialization = "1.11.0"
+
+room = "2.8.4"
+sqlite = "2.7.0"
+datastore = "1.2.1"
+# DataStore is multiplatform through okio, so the file API has to be named explicitly.
+okio = "3.18.1"
+
+koin = "4.2.2"
+
+activityCompose = "1.13.0"
+# 2.11 requires compileSdk 37; staying on 36 until there is a reason to move the whole project.
+androidxLifecycle = "2.10.0"
+# The org.jetbrains.androidx.* artifacts are the multiplatform builds of the AndroidX libraries;
+# they carry their own version line, which is not the AndroidX one.
+navigation = "2.9.2"
+lifecycle = "2.9.6"
+
+[libraries]
+# Compose Multiplatform artifacts are not listed here. They come from the plugin's `compose.*`
+# accessors instead, which is the only way to get a matched set: material3 has its own version
+# line under org.jetbrains.compose.material3 and is stable at 1.9.0 while runtime, ui and
+# foundation are at 1.11.1, so pinning them all to one version in this file does not resolve.
+# The accessors are deprecated in 1.11; revisit when material3 catches up.
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

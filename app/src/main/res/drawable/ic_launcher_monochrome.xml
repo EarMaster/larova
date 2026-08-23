@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · monochrome layer for themed icons, Android 13+, converted from
+  brand/icon-monochrome.svg.
+
+  Only the silhouette: the launcher recolours it to match the wallpaper, so the glow and the amber
+  lamp are dropped and what is left has to read on its own. Without this layer a themed launcher
+  falls back to a grey placeholder, which is the one state the mark cannot survive.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:pathData="M36,76 L36,50 A18,18 0 0 1 72,50 L72,76"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="6.5" />
+
+    <path
+        android:pathData="M34,79 L74,79"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M54,48 a8,8 0 1,0 0,16 a8,8 0 1,0 0,-16z"
+        android:fillColor="#FFFFFF" />
+</vector>

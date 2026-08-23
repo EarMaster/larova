@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · nothing is eligible for automatic backup or device transfer.
+
+  Content here may include a special category of personal data under GDPR Art. 9. The explicit,
+  user-triggered export (docs/technical-notes.md §6) replaces cloud backup entirely, so both
+  paths deny everything rather than leaving the default in place.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="file" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="file" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

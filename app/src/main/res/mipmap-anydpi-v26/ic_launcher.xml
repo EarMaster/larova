@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The three layers have to be declared together. A missing <monochrome> is not a missing nicety:
+  themed-icon launchers fall back to a grey placeholder rather than deriving one.
+
+  No density-specific PNG fallback exists, and none is needed — minSdk is 26, which is where
+  adaptive icons start.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+</adaptive-icon>

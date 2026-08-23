@@ -10,10 +10,10 @@ set up on their child's phone: a grid of self-authored tiles — guides, notes,
 checklists, tables, contacts, media — that a caregiver can read in two taps.
 No account, no server, **no internet permission**.
 
-**The project is currently documentation and seed files only.** There is no
-Gradle build and no module structure yet. `docs/` is the design of record; `app/`
-holds three files written ahead of the build to lock in decisions that are
-expensive to reverse.
+**M0 has landed: the project builds.** Ten Gradle modules, the design system, the
+data model, and a navigable shell that switches between light, dark and night.
+Everything user-facing beyond that is still ahead — see `docs/implementation-plan.md`.
+`docs/` remains the design of record and outranks the code where the two disagree.
 
 **Fixed identifiers.** Application ID `app.larova`; domain `larova.app` (the
 reversed domain, so the ID is verifiably ours). Neither can change after the
@@ -41,8 +41,16 @@ locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
 | `docs/localization.md` | The fourteen launch languages and the rules around them |
 | `docs/design/design-system.md` | Colour tokens, icon, typography, layout |
 | `docs/design/prototypes/*.html` | Clickable references: screen flow, icon sheet, colour grid |
-| `app/src/main/kotlin/app/larova/core/ui/theme/AppColors.kt` | The colour token table and mode resolution |
-| `app/src/main/res/values/strings.xml` | English base strings — the single source |
+| `settings.gradle.kts`, `build.gradle.kts`, `gradle/libs.versions.toml` | The ten modules; Detekt and the `test` alias applied to all of them; every dependency version in one place |
+| `gradle.properties` | `larova.compileSdk` / `targetSdk` / `minSdk` / `jvmTarget`, read by every module build file so they cannot drift |
+| `config/detekt/detekt.yml` | Deltas on Detekt's defaults, each with the reason it exists |
+| `app/` | The only Android-specific module: manifest, launcher icon, navigation graph, Koin composition root |
+| `core/ui/src/commonMain/kotlin/.../theme/AppColors.kt` | The colour token table and mode resolution |
+| `core/ui/src/commonMain/composeResources/values/strings.xml` | English base strings — the single source. Compose resources, **not** an Android resource directory: the screens live in `commonMain` and cannot see an `R` class |
+| `core/{domain,data,platform}/` | Models and the payload codec; Room schema, DAOs and repositories; `expect`/`actual` paths |
+| `core/data/schemas/` | Generated Room schema JSON. **Committed** — the only record of what a released database version looked like |
+| `feature/{home,card,help,transfer,settings}/` | One screen each, all still placeholders except the appearance switch |
+| `app/src/main/res/values/strings.xml` | The launcher label alone. The manifest can only reference an Android resource; everything else lives in `:core:ui` |
 | `app/src/main/res/xml/locales_config.xml` | Per-app language list |
 | `brand/*.svg` | Adaptive icon layers and the store icon |
 | `CHANGELOG.md` | [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) history. **Update `## [Unreleased]` in the same commit as any user-facing change.** `release.yml` extracts GitHub Release notes from the `## [x.y.z]` heading matching `versionName`, so headings must stay exact |
@@ -54,21 +62,28 @@ locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
 
 ## Commands
 
-There is **no Gradle wrapper in the tree yet**, so nothing builds or tests today.
-Creating it is the first task of M0 (`docs/implementation-plan.md`). Do not
-invent build commands until it exists; once it does, the intended entry points
-are the standard ones:
-
 ```bash
 ./gradlew assembleDebug                        # build
 ./gradlew test                                 # unit tests, all modules
 ./gradlew :core:domain:test                    # unit tests, one module
-./gradlew :core:domain:test --tests "*ExportRoundTripTest*"   # a single test
-./gradlew connectedAndroidTest                 # instrumented tests, device/emulator
 ./gradlew lint detekt                          # Android Lint + Detekt
-./gradlew verifyRoborazziDebug                 # screenshot comparison
-./gradlew recordRoborazziDebug                 # re-record screenshot baselines
+./gradlew installDebug                         # to a device or emulator
+./gradlew connectedAndroidTest                 # instrumented tests (none yet; M1)
+./gradlew verifyRoborazziDebug                 # screenshot comparison (M3)
+./gradlew recordRoborazziDebug                 # re-record screenshot baselines (M3)
 ```
+
+Two things about that list are not obvious.
+
+**`test` in a multiplatform module is an alias this repository registers.** The real task is
+`testAndroidHostTest`, aggregated by `allTests` and `testAndroid`; such a module has no `test` task
+of its own. The alias is in the root build file because `ci.yml` runs `./gradlew test` — without it
+that command reports success while running nothing.
+
+**Gradle needs JDK 17 or newer, and the JDK on `PATH` here is not it.** Use the JBR that ships with
+Android Studio: `JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"`. `local.properties` must
+carry `sdk.dir` — it is gitignored, and Lint fails the build if the drive letter's colon is
+unescaped (`sdk.dir=D\:/Users/...`).
 
 ```bash
 bash tools/check_store_metadata.sh          # listing text and images
@@ -128,10 +143,10 @@ regression that cannot be walked back, because that file may be the only copy of
 - `ci.yml` / `codeql.yml` — build, unit tests, lint + Detekt, screenshot verification and CodeQL
   analysis on PRs to `main` or `develop`. **On pull requests only** — a direct push to `develop`
   runs neither, so work pushed straight to that branch has had no build, no lint and no golden
-  verification until it reaches a PR. Both start with a `detect` job gated on a root `./gradlew`,
-  which does not exist yet, so **every job currently passes by skipping**. `ci.yml`'s screenshot
-  job has a second gate on a `*ScreenshotTest*.kt` existing, and reports a golden mismatch as a
-  warning rather than a failure — read the comment in the file for what that costs.
+  verification until it reaches a PR. Both start with a `detect` job gated on a root `./gradlew`;
+  that gate is satisfied since M0, so those jobs now actually run. `ci.yml`'s screenshot job has a
+  second gate on a `*ScreenshotTest*.kt` existing and still skips, and it reports a golden mismatch
+  as a warning rather than a failure — read the comment in the file for what that costs.
 - `release.yml` — tags `main` from `app/build.gradle.kts`'s `versionName`, builds a signed
   APK/AAB, and cuts a GitHub Release with notes from `CHANGELOG.md`. Gated on
   `app/build.gradle.kts` existing. Needs `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and
@@ -158,8 +173,11 @@ regression that cannot be walked back, because that file may be the only copy of
 - `/commit` — syncs, stages, drafts a conventional commit message, updates `CHANGELOG.md`'s
   `Unreleased` section when the change is user-facing, checks the staged diff against the
   invariants below, and offers to push.
-- `/release` — the version bump and store-metadata step described above. Gated on
-  `app/build.gradle.kts` existing, which it does not yet.
+- `/release` — the version bump and store-metadata step described above. `app/build.gradle.kts`
+  now exists at `versionName 0.1.0` / `versionCode 1`, so the command works — and so does
+  `release.yml`, which builds and publishes as soon as `main` moves. Both read those two fields
+  with `grep`/`sed` and take the **first** match in the file, so keep them plain assignments and do
+  not mention either identifier in a comment above them.
 
 ## Architecture
 
@@ -167,7 +185,21 @@ Kotlin Multiplatform with Compose Multiplatform, **Android as the only active
 target for v1**. iOS is a later milestone, so platform-near code goes behind
 `expect`/`actual` in `:core:platform` from the start rather than being sprinkled
 through features. Module boundaries and the full stack table are in
-`docs/technical-notes.md` §2–3:
+`docs/technical-notes.md` §2–3.
+
+Three things about how that is built are worth knowing before editing a build file. AGP 9 has
+**built-in Kotlin support**, and applying `org.jetbrains.kotlin.android` beside it fails outright.
+Library modules use **`com.android.kotlin.multiplatform.library`**, configured inside
+`kotlin { android { … } }`, rather than `com.android.library` plus `androidTarget()` — the old
+pairing needs an opt-in under AGP 9 and disappears in AGP 10; the price is single-variant libraries
+and host tests behind `withHostTestBuilder {}`. And **`:app` is a plain Android application
+module**, because there is no multiplatform equivalent of `com.android.application`; iOS will bring
+its own entry point beside it rather than through it.
+
+Compose artifacts come from the plugin's `compose.*` accessors instead of the version catalog:
+`material3` has its own version line and is stable at 1.9.0 while runtime, ui and foundation are at
+1.11.x, so a single catalog version does not resolve. The accessors are deprecated as of 1.11;
+revisit when material3 catches up.
 
 ```
 :app  :feature:{home,card,help,transfer,settings}

@@ -1,0 +1,45 @@
+# Larova · Detekt configuration.
+#
+# Deltas only. `buildUponDefaultConfig = true` in the root build file means everything not named
+# here keeps Detekt's default, so this file stays readable and does not have to be regenerated
+# when Detekt adds rules.
+#
+# Every exception below exists because Compose's conventions and Kotlin's linting conventions
+# genuinely disagree, not because a rule was inconvenient.
+
+naming:
+  # @Composable functions are PascalCase by convention, and a Compose codebase that fights this
+  # rule instead of configuring it ends up with suppressions on every screen.
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  # Compose design-system values are PascalCase too: LightSurfaces, DarkSurfaces, NightSurfaces.
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_A-Za-z0-9]*'
+
+style:
+  MagicNumber:
+    # Colour tokens, dp and sp values are literal by nature; naming each one hides the design
+    # system rather than documenting it.
+    ignoreAnnotated: ['Composable', 'Preview']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  MaxLineLength:
+    maxLineLength: 110
+  # The mappers read a row field by field and bail out on the first one that cannot be turned into
+  # a model. Written as guard clauses that is obvious; restructured to satisfy a return counter it
+  # becomes nested lets, which is where a silently wrong fallback would hide.
+  ReturnCount:
+    excludeGuardClauses: true
+  # A Compose screen legitimately takes many state and callback parameters. Hoisting them into a
+  # holder class to satisfy a counter makes the call site worse, not better.
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Composable', 'Preview']
+
+complexity:
+  LongParameterList:
+    ignoreAnnotated: ['Composable']
+  LongMethod:
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    thresholdInFiles: 20
+    thresholdInClasses: 20
