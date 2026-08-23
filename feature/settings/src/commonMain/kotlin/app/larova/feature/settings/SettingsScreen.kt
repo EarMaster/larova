@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,11 @@ import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
 import app.larova.core.ui.resources.settings_title
+import app.larova.core.ui.resources.view_leave
+import app.larova.core.ui.resources.view_locked_note
+import app.larova.core.ui.resources.view_parent_active
+import app.larova.core.ui.resources.view_pin_change
+import app.larova.core.ui.resources.view_unlock_title
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -44,6 +51,10 @@ import org.jetbrains.compose.resources.stringResource
 fun SettingsScreen(
     appearance: AppearanceSetting,
     onAppearanceChange: (AppearanceSetting) -> Unit,
+    isParentView: Boolean,
+    onUnlock: () -> Unit,
+    onLock: () -> Unit,
+    onChangePin: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
@@ -62,6 +73,15 @@ fun SettingsScreen(
                 .padding(horizontal = Dimens.ScreenMargin),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
+            // Above appearance, because it is the reason most people open this screen: they
+            // came here to change something and found they could not.
+            ViewModeSection(
+                isParentView = isParentView,
+                onUnlock = onUnlock,
+                onLock = onLock,
+                onChangePin = onChangePin,
+            )
+
             Text(
                 text = stringResource(Res.string.settings_appearance),
                 style = MaterialTheme.typography.titleMedium,
@@ -120,3 +140,54 @@ private val AppearanceSetting.label: StringResource
         AppearanceSetting.DARK -> Res.string.settings_appearance_dark
         AppearanceSetting.NIGHT -> Res.string.settings_appearance_night
     }
+
+/**
+ * Which view the app is in, and the way out of it.
+ *
+ * Stated in words rather than shown as a switch. A toggle labelled "parent view" invites a
+ * caregiver to try it, and the honest answer to that tap — a PIN prompt — is better reached from a
+ * button that says what it will do.
+ */
+@Composable
+private fun ViewModeSection(
+    isParentView: Boolean,
+    onUnlock: () -> Unit,
+    onLock: () -> Unit,
+    onChangePin: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = stringResource(
+                if (isParentView) Res.string.view_parent_active else Res.string.view_locked_note,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        if (isParentView) {
+            OutlinedButton(
+                onClick = onLock,
+                modifier = Modifier.fillMaxWidth().heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.view_leave))
+            }
+            OutlinedButton(
+                onClick = onChangePin,
+                modifier = Modifier.fillMaxWidth().heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.view_pin_change))
+            }
+        } else {
+            Button(
+                onClick = onUnlock,
+                modifier = Modifier.fillMaxWidth().heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.view_unlock_title))
+            }
+        }
+    }
+}

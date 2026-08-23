@@ -81,3 +81,23 @@ interface PreferencesRepository {
 
     suspend fun setAppearance(setting: AppearanceSetting)
 }
+
+/**
+ * The parent-view PIN.
+ *
+ * Only ever a hash crosses this boundary in either direction — the PIN itself is passed in to be
+ * checked and is never stored, returned or logged. There is deliberately no way to read it back:
+ * a forgotten PIN is answered by setting a new one, not by recovering the old.
+ */
+interface PinRepository {
+
+    /** Whether parent view has a way in at all. False on a fresh installation. */
+    suspend fun hasPin(): Boolean
+
+    suspend fun setPin(pin: String)
+
+    suspend fun verify(pin: String): Boolean
+
+    /** Removes it. Parent view then has no lock, which is a decision the parents get to make. */
+    suspend fun clear()
+}

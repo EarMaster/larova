@@ -33,6 +33,18 @@
     <string name="view_unlock_pin">Enter your PIN</string>
     <string name="view_unlock_biometric">Use fingerprint instead</string>
 
+    <string name="view_locked_note">Editing and backup are in parent view.</string>
+    <string name="view_leave">Leave parent view</string>
+    <string name="view_pin_create_title">Choose a PIN</string>
+    <string name="view_pin_create_hint">Four to twelve digits. It keeps the tiles from being changed by accident; it does not hide them.</string>
+    <string name="view_pin_repeat">Type it again</string>
+    <string name="view_pin_mismatch">Those two do not match.</string>
+    <string name="view_pin_too_short">At least four digits.</string>
+    <string name="view_pin_digits_only">Digits only.</string>
+    <string name="view_pin_wrong">That is not the PIN.</string>
+    <string name="view_pin_change">Change the PIN</string>
+    <string name="view_unlock">Unlock</string>
+
     <!-- ===== Tile types ===== -->
     <string name="tile_guide">Guide</string>
     <string name="tile_guide_hint">Steps with text, pictures and sound</string>

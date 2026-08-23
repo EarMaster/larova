@@ -20,6 +20,10 @@ kotlin {
             implementation(project(":core:domain"))
             implementation(libs.kotlinx.coroutines.core)
         }
+        androidMain.dependencies {
+            // Argon2id for the parent-view PIN, and for password-protected exports in M3.
+            implementation(libs.argon2kt)
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

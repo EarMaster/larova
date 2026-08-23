@@ -68,6 +68,9 @@ dependencies {
     implementation(compose.components.resources)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.biometric)
+    // Named in the composition root, which owns the single instance for the preferences file.
+    implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.jetbrains.navigation.compose)
     implementation(libs.jetbrains.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)

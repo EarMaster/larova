@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import app.larova.rememberBiometricUnlock
 import app.larova.core.domain.model.AppearanceSetting
 import androidx.compose.runtime.LaunchedEffect
 import app.larova.di.cardViewModelParameters
@@ -22,7 +23,11 @@ import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.PinSetupScreen
+import app.larova.feature.settings.PinSetupViewModel
 import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.UnlockScreen
+import app.larova.feature.settings.UnlockViewModel
 import app.larova.feature.transfer.TransferScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -34,6 +39,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LarovaNavHost(
     appearance: AppearanceSetting,
     onAppearanceChange: (AppearanceSetting) -> Unit,
+    isParentView: Boolean,
+    onLockParentView: () -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -52,6 +59,7 @@ fun LarovaNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state,
+                isParentView = isParentView,
                 onQueryChange = viewModel::onQueryChange,
                 onClearQuery = viewModel::onClearQuery,
                 onOpenTile = { id -> navController.navigate(CardRoute(id)) },
@@ -74,6 +82,7 @@ fun LarovaNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             CardScreen(
                 state = state,
+                isParentView = isParentView,
                 onToggleItem = viewModel::onToggleItem,
                 onPrepareCall = onPrepareCall,
                 onOpenUrl = onOpenUrl,
@@ -121,6 +130,54 @@ fun LarovaNavHost(
             )
         }
 
+        composable<UnlockRoute> {
+            val viewModel = koinViewModel<UnlockViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            // A fresh installation has no PIN to check, so the first unlock is a set-up instead.
+            // Handled here rather than inside the screen: it is a change of destination.
+            LaunchedEffect(state.needsPinSetup) {
+                if (state.needsPinSetup) {
+                    navController.navigate(PinSetupRoute) {
+                        popUpTo(UnlockRoute) { inclusive = true }
+                    }
+                }
+            }
+            LaunchedEffect(state.unlocked) {
+                if (state.unlocked) navController.popBackStack()
+            }
+
+            UnlockScreen(
+                pin = state.pin,
+                onPinChange = viewModel::onPinChange,
+                onUnlock = viewModel::onUnlock,
+                onUseBiometrics = rememberBiometricUnlock(onAccepted = viewModel::onBiometricsAccepted),
+                wrongPin = state.wrongPin,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
+        composable<PinSetupRoute> {
+            val viewModel = koinViewModel<PinSetupViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(state.saved) {
+                if (state.saved) navController.popBackStack()
+            }
+
+            PinSetupScreen(
+                pin = state.pin,
+                repeated = state.repeated,
+                onPinChange = viewModel::onPinChange,
+                onRepeatChange = viewModel::onRepeatChange,
+                onSave = viewModel::onSave,
+                error = state.error,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
         composable<HelpRoute> {
             HelpScreen(onBack = goBack, onHelp = openHelp)
         }
@@ -133,6 +190,10 @@ fun LarovaNavHost(
             SettingsScreen(
                 appearance = appearance,
                 onAppearanceChange = onAppearanceChange,
+                isParentView = isParentView,
+                onUnlock = { navController.navigate(UnlockRoute) },
+                onLock = onLockParentView,
+                onChangePin = { navController.navigate(PinSetupRoute) },
                 onBack = goBack,
                 onHelp = openHelp,
             )
