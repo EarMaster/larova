@@ -43,6 +43,8 @@ class RoomBoardRepository(private val dao: BoardDao) : BoardRepository {
 
     override suspend fun find(id: Uuid): Board? = dao.find(id.toString())?.toDomainOrNull()
 
+    override suspend fun all(): List<Board> = dao.all().mapNotNull { it.toDomainOrNull() }
+
     override suspend fun upsert(board: Board) = dao.upsert(board.toEntity())
 
     override suspend fun delete(id: Uuid) = dao.delete(id.toString())

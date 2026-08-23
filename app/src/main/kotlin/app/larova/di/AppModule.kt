@@ -1,6 +1,7 @@
 package app.larova.di
 
 import app.larova.AppViewModel
+import app.larova.BuildConfig
 import app.larova.core.data.db.LarovaDatabase
 import app.larova.core.data.db.createLarovaDatabase
 import app.larova.core.data.prefs.DataStorePinRepository
@@ -19,7 +20,14 @@ import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PinRepository
 import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
+import app.larova.core.domain.export.Digest
+import app.larova.core.domain.export.PackageIo
+import app.larova.core.domain.export.MediaFiles
+import app.larova.core.domain.export.PackageStore
 import app.larova.core.domain.usecase.DeleteCard
+import app.larova.core.domain.usecase.ExportPackage
+import app.larova.core.domain.usecase.ImportPackage
+import app.larova.core.domain.usecase.ReadPackagePreview
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.EnsureRootBoard
@@ -35,6 +43,9 @@ import app.larova.core.domain.usecase.UnlockWithBiometrics
 import app.larova.core.domain.usecase.UnlockWithPin
 import app.larova.core.platform.AndroidExternalActions
 import app.larova.core.platform.AndroidPlatformPaths
+import app.larova.core.platform.AndroidDigest
+import app.larova.core.platform.AndroidMediaFiles
+import app.larova.core.platform.AndroidPackageStore
 import app.larova.core.platform.Argon2PasswordHasher
 import app.larova.core.platform.ExternalActions
 import app.larova.core.platform.PasswordHasher
@@ -46,6 +57,7 @@ import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeViewModel
 import app.larova.feature.settings.PinSetupViewModel
+import app.larova.feature.transfer.TransferViewModel
 import app.larova.feature.settings.UnlockViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +82,10 @@ val appModule = module {
     single<PlatformPaths> { AndroidPlatformPaths(androidContext()) }
     single<ExternalActions> { AndroidExternalActions(androidContext()) }
     single<PasswordHasher> { Argon2PasswordHasher() }
+    single<PackageStore> { AndroidPackageStore(androidContext()) }
+    single<Digest> { AndroidDigest() }
+    single<MediaFiles> { AndroidMediaFiles(get()) }
+    single { PackageIo(store = get(), digest = get(), mediaFiles = get()) }
 
     // One session for the whole process, with a scope that outlives every screen: the five-minute
     // timer has to keep running while the user is on a screen that knows nothing about it.
@@ -114,12 +130,18 @@ val appModule = module {
     factory { UnlockWithBiometrics(get(), get()) }
     factory { LockParentView(get()) }
 
+    // The version in the manifest is the app's own, read from the build rather than written twice.
+    factory { ExportPackage(get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ReadPackagePreview(get()) }
+    factory { ImportPackage(get(), get(), get(), get(), get()) }
+
     viewModel { AppViewModel(get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { ArrangeTilesViewModel(get(), get()) }
     viewModel { HelpViewModel(get()) }
+    viewModel { TransferViewModel(get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters -> CardViewModel(parameters.get(), get(), get()) }
     viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get()) }

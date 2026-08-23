@@ -30,6 +30,10 @@ import app.larova.feature.settings.SettingsScreen
 import app.larova.feature.settings.UnlockScreen
 import app.larova.feature.settings.UnlockViewModel
 import app.larova.feature.transfer.TransferScreen
+import app.larova.feature.transfer.TransferViewModel
+import app.larova.formatExportDate
+import app.larova.rememberBackupPicker
+import app.larova.rememberRestorePicker
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -193,7 +197,23 @@ fun LarovaNavHost(
         }
 
         composable<TransferRoute> {
-            TransferScreen(onBack = goBack, onHelp = openHelp)
+            val viewModel = koinViewModel<TransferViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val pickDestination = rememberBackupPicker { destination ->
+                viewModel.onDestinationChosen(destination, label = null)
+            }
+            val pickSource = rememberRestorePicker(viewModel::onSourceChosen)
+
+            TransferScreen(
+                state = state,
+                formatDate = ::formatExportDate,
+                onBackup = pickDestination,
+                onRestore = pickSource,
+                onConfirmImport = viewModel::onConfirmImport,
+                onCancelImport = viewModel::onCancelImport,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
         }
 
         composable<SettingsRoute> {

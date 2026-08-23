@@ -25,6 +25,9 @@ interface BoardRepository {
 
     suspend fun find(id: Uuid): Board?
 
+    /** Every board. Needed to replace an installation wholesale, and to find the start screen. */
+    suspend fun all(): List<Board>
+
     suspend fun upsert(board: Board)
 
     suspend fun delete(id: Uuid)
