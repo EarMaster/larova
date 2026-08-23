@@ -19,6 +19,7 @@ import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditCardViewModel
 import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
+import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
@@ -179,7 +180,16 @@ fun LarovaNavHost(
         }
 
         composable<HelpRoute> {
-            HelpScreen(onBack = goBack, onHelp = openHelp)
+            val viewModel = koinViewModel<HelpViewModel>()
+            val contacts by viewModel.contacts.collectAsStateWithLifecycle()
+            HelpScreen(
+                contacts = contacts,
+                onPrepareCall = onPrepareCall,
+                onBack = goBack,
+                // Already here: tapping the bar on this screen does nothing rather than stacking a
+                // second copy of it on the back stack.
+                onHelp = {},
+            )
         }
 
         composable<TransferRoute> {

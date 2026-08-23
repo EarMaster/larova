@@ -34,6 +34,13 @@ interface BoardRepository {
 interface CardRepository {
     fun observeCards(boardId: Uuid): Flow<List<Card>>
 
+    /**
+     * Every tile, whichever board it is on. The help sheet needs this: a number worth reaching in
+     * a hurry might be on a tile inside a folder, and being one level deep must not make it
+     * unreachable from the bar.
+     */
+    fun observeAllCards(): Flow<List<Card>>
+
     /** Search runs over titles and subtitles only. Payload content is never interpreted. */
     fun search(query: String): Flow<List<Card>>
 

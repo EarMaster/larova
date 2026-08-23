@@ -23,6 +23,7 @@ import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.EnsureRootBoard
+import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
 import app.larova.core.domain.usecase.ReorderTiles
@@ -41,6 +42,7 @@ import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeViewModel
 import app.larova.feature.settings.PinSetupViewModel
@@ -100,6 +102,7 @@ val appModule = module {
     factory { EnsureRootBoard(get()) }
     factory { ObserveHomeTiles(get(), get()) }
     factory { ObserveTile(get()) }
+    factory { ObserveHelpContacts(get()) }
     factory { ToggleChecklistItem(get()) }
     factory { SaveCard(get(), get()) }
     factory { DeleteCard(get()) }
@@ -116,6 +119,7 @@ val appModule = module {
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { ArrangeTilesViewModel(get(), get()) }
+    viewModel { HelpViewModel(get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters -> CardViewModel(parameters.get(), get(), get()) }
     viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get()) }

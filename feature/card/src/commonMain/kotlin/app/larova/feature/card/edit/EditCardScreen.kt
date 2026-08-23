@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.CardType
@@ -40,6 +42,7 @@ import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_remove_line
 import app.larova.core.ui.resources.edit_add_item
 import app.larova.core.ui.resources.edit_add_step
+import app.larova.core.ui.resources.edit_call_in_help
 import app.larova.core.ui.resources.edit_call_name
 import app.larova.core.ui.resources.edit_call_number
 import app.larova.core.ui.resources.edit_call_relation
@@ -243,19 +246,11 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 onAdd = callbacks.onAddItem,
                 onRemove = callbacks.onRemoveItem,
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = Dimens.MinTouchTarget),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(Res.string.edit_reset_daily),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Switch(checked = state.resetDaily, onCheckedChange = callbacks.onResetDailyChange)
-            }
+            SwitchRow(
+                label = stringResource(Res.string.edit_reset_daily),
+                checked = state.resetDaily,
+                onCheckedChange = callbacks.onResetDailyChange,
+            )
         }
 
         CardType.NOTE -> OutlinedTextField(
@@ -287,6 +282,11 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 onValueChange = callbacks.onCallRelationChange,
                 label = { Text(stringResource(Res.string.edit_call_relation)) },
                 modifier = Modifier.fillMaxWidth(),
+            )
+            SwitchRow(
+                label = stringResource(Res.string.edit_call_in_help),
+                checked = state.callInHelpSheet,
+                onCheckedChange = callbacks.onCallInHelpSheetChange,
             )
         }
 
@@ -390,6 +390,28 @@ private fun TypePicker(selected: CardType, onSelect: (CardType) -> Unit) {
     }
 }
 
+/** One switch and its label, with the whole row as the target. */
+@Composable
+private fun SwitchRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = Dimens.MinTouchTarget)
+            .toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        // null: the row above carries the semantics, so a screen reader announces one switch.
+        Switch(checked = checked, onCheckedChange = null)
+    }
+}
+
 @Composable
 private fun Section(title: String, content: @Composable () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -434,6 +456,7 @@ data class EditCardCallbacks(
     val onCallNameChange: (String) -> Unit,
     val onCallNumberChange: (String) -> Unit,
     val onCallRelationChange: (String) -> Unit,
+    val onCallInHelpSheetChange: (Boolean) -> Unit,
     val onWebUrlChange: (String) -> Unit,
     val onWebLabelChange: (String) -> Unit,
     val onSave: () -> Unit,
@@ -458,6 +481,7 @@ fun EditCardViewModel.callbacks() = EditCardCallbacks(
     onCallNameChange = ::onCallNameChange,
     onCallNumberChange = ::onCallNumberChange,
     onCallRelationChange = ::onCallRelationChange,
+    onCallInHelpSheetChange = ::onCallInHelpSheetChange,
     onWebUrlChange = ::onWebUrlChange,
     onWebLabelChange = ::onWebLabelChange,
     onSave = ::onSave,

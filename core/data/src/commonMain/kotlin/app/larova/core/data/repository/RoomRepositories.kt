@@ -54,6 +54,9 @@ class RoomCardRepository(private val dao: CardDao) : CardRepository {
     override fun observeCards(boardId: Uuid): Flow<List<Card>> =
         dao.observeByBoard(boardId.toString()).map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
 
+    override fun observeAllCards(): Flow<List<Card>> =
+        dao.observeAll().map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
+
     override fun search(query: String): Flow<List<Card>> =
         dao.search(query).map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
 

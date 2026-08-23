@@ -17,7 +17,9 @@ docs-only changes do not belong here.
 - Tiles can hold a guide, a note, a checklist, a number to call, or a website. Guides show one
   step at a time at reading size, and the screen stays awake while one is open. Checklist items
   can be ticked off without unlocking anything.
-- A call tile opens the phone app with the number ready. Larova never dials by itself.
+- A call tile opens the phone app with the number ready. Larova never dials by itself, and a call
+  tile can be marked to appear behind "Get help" as well — a short list of large rows, capped so it
+  stays readable when it is needed.
 - Tiles can be made, changed and deleted: pick what goes on it, give it a title, choose one of the
   eight colours and a symbol. Deleting asks first, because there is no undo and no bin.
 - Two views. Caregiver view is what the app opens in: read, tick, call, open. Editing, rearranging

@@ -91,6 +91,7 @@
     <string name="help_sheet_title">Get help</string>
     <string name="help_call_note">Tapping opens the phone app with the number ready. Larova never dials on its own.</string>
     <string name="help_emergency">Emergency services</string>
+    <string name="help_no_contacts">No numbers have been added here yet.</string>
 
     <!-- ===== Backup and transfer ===== -->
     <string name="transfer_title">Backup &amp; transfer</string>
@@ -145,6 +146,7 @@
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Phone number</string>
     <string name="edit_call_relation">Relation (optional)</string>
+    <string name="edit_call_in_help">Also show under Get help</string>
     <string name="edit_web_address">Web address</string>
     <string name="edit_web_label">Label (optional)</string>
     <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>
