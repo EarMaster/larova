@@ -7,9 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.larova.core.platform.ExternalActions
 import app.larova.core.ui.theme.LarovaTheme
 import app.larova.core.ui.theme.resolve
 import app.larova.navigation.LarovaNavHost
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -28,13 +30,15 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun LarovaApp() {
     val viewModel = koinViewModel<AppViewModel>()
+    val actions = koinInject<ExternalActions>()
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
 
     LarovaTheme(mode = appearance.resolve()) {
         LarovaNavHost(
-            tiles = sampleTiles(),
             appearance = appearance,
             onAppearanceChange = viewModel::setAppearance,
+            onPrepareCall = actions::prepareCall,
+            onOpenUrl = actions::openUrl,
         )
     }
 }

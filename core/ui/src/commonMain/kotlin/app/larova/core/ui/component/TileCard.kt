@@ -10,25 +10,30 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.image
 import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.LocalAppMode
+import app.larova.core.ui.theme.LocalSurfaces
 import app.larova.core.ui.theme.TileColor
 import app.larova.core.ui.theme.resolve
 
 /**
  * One tile on the start screen.
  *
- * Takes a [TileColor] — a token — and resolves it against the active mode here. Callers holding a
- * stored `Card.colorToken` string go through `TileColor.fromKey(...)`, which falls back to the
- * default instead of failing, so a tile written by a newer version still draws.
+ * Takes the stored **keys** — a colour token and a symbol — and resolves both here, against the
+ * active appearance mode. Unknown keys fall back rather than failing, which is what lets a tile
+ * written by a newer version still draw. Neither fallback touches what is stored.
  *
  * Colour is never the only differentiator: every tile also carries a symbol and a label, which is
  * what keeps `moss` and `clay` apart under red-green colour blindness.
@@ -36,13 +41,13 @@ import app.larova.core.ui.theme.resolve
 @Composable
 fun TileCard(
     title: String,
-    symbol: String,
-    color: TileColor,
+    colorToken: String,
+    symbolKey: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
 ) {
-    val colors = color.resolve(LocalAppMode.current)
+    val colors = TileColor.fromKey(colorToken).resolve(LocalAppMode.current)
 
     Card(
         onClick = onClick,
@@ -57,7 +62,11 @@ fun TileCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            SymbolChip(symbol = symbol, modifier = Modifier.size(44.dp))
+            SymbolChip(
+                symbolKey = symbolKey,
+                tint = colors.accent,
+                modifier = Modifier.size(44.dp),
+            )
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -82,18 +91,23 @@ fun TileCard(
  * The symbol sits on a translucent overlay rather than a second opaque colour, so one chip style
  * works on all eight tile surfaces in all three modes.
  *
- * The symbol arrives as text for now. The registry that maps a stored symbol key to a drawing
- * comes with the tile editor; what matters at this point is that the key is what gets stored.
+ * No content description: the symbol repeats what the title says, and a screen reader announcing
+ * "star, Bedtime" is worse than one announcing "Bedtime".
  */
 @Composable
-private fun SymbolChip(symbol: String, modifier: Modifier = Modifier) {
+private fun SymbolChip(symbolKey: String, tint: Color, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(Dimens.ChipRadius),
-        color = app.larova.core.ui.theme.LocalSurfaces.current.chipOverlay,
+        color = LocalSurfaces.current.chipOverlay,
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Text(text = symbol, style = MaterialTheme.typography.titleMedium)
+            Icon(
+                imageVector = TileSymbol.fromKey(symbolKey).image,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(24.dp),
+            )
         }
     }
 }

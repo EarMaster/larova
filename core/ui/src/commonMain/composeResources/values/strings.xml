@@ -19,6 +19,11 @@
     <string name="home_search">Search</string>
     <string name="home_add_tile">Add tile</string>
     <string name="home_child_age">%1$s · %2$d years</string>
+    <string name="home_empty_title">Nothing here yet</string>
+    <string name="home_search_empty">Nothing matches that.</string>
+    <string name="arrange_title">Arrange tiles</string>
+    <string name="arrange_hint">Move tiles up or down. The order is the order on the start screen.</string>
+    <string name="home_empty_hint">Tiles you add appear here. A tile can hold a guide, a list, a note, a number to call, or a website.</string>
 
     <!-- ===== Views ===== -->
     <string name="view_caregiver">Caregiver view</string>
@@ -63,6 +68,8 @@
     <string name="guide_read_aloud">Read aloud</string>
     <string name="guide_screen_stays_on">The screen stays on here.</string>
 
+    <string name="guide_step_current">Now</string>
+
     <!-- ===== Checklist ===== -->
     <string name="checklist_progress">%1$d of %2$d</string>
     <string name="checklist_resets_daily">Resets every morning at %1$s. Ticked items are noted with a time in the log.</string>
@@ -101,6 +108,36 @@
     <string name="settings_log_retention">Keep for %1$d days</string>
     <string name="settings_log_clear">Clear the log</string>
 
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">New tile</string>
+    <string name="edit_edit_tile">Edit tile</string>
+    <string name="edit_choose_type">What goes on this tile?</string>
+    <string name="edit_title">Title</string>
+    <string name="edit_subtitle">Second line (optional)</string>
+    <string name="edit_colour">Colour</string>
+    <string name="edit_symbol">Symbol</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_cancel">Cancel</string>
+    <string name="edit_delete">Delete tile</string>
+    <string name="edit_delete_question">Delete this tile? What is on it cannot be brought back.</string>
+    <string name="edit_title_required">A tile needs a title.</string>
+    <string name="edit_steps">Steps</string>
+    <string name="edit_add_step">Add step</string>
+    <string name="edit_step_number">Step %1$d</string>
+    <string name="edit_items">Things to tick off</string>
+    <string name="edit_add_item">Add item</string>
+    <string name="edit_item_number">Item %1$d</string>
+    <string name="edit_reset_daily">Start again every morning</string>
+    <string name="edit_note_text">Text</string>
+    <string name="edit_call_name">Name</string>
+    <string name="edit_call_number">Phone number</string>
+    <string name="edit_call_relation">Relation (optional)</string>
+    <string name="edit_web_address">Web address</string>
+    <string name="edit_web_label">Label (optional)</string>
+    <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>
+    <string name="edit_remove">Remove</string>
+
     <!-- ===== Colour names shown in the tile picker ===== -->
     <string name="colour_sand">Sand</string>
     <string name="colour_clay">Clay</string>
@@ -120,6 +157,15 @@
     <string name="template_what_helps">What helps when…</string>
 
     <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Open %1$s</string>
+    <string name="cd_add_tile">Add a tile</string>
+    <string name="cd_clear_search">Clear the search</string>
+    <string name="cd_move_up">Move %1$s up</string>
+    <string name="cd_move_down">Move %1$s down</string>
+    <string name="cd_colour_selected">%1$s, selected</string>
+    <string name="cd_remove_line">Remove %1$s</string>
+    <string name="cd_check_item">%1$s, done</string>
+    <string name="cd_uncheck_item">%1$s, not done</string>
     <string name="cd_back">Back</string>
     <string name="cd_close">Close</string>
     <string name="cd_menu">Menu</string>

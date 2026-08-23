@@ -6,9 +6,9 @@ import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.LogKind
 import app.larova.core.domain.model.MediaAsset
+import app.larova.core.domain.model.parseUuidOrNull
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 /**
  * Rows to models and back.
@@ -23,10 +23,10 @@ import kotlin.uuid.Uuid
  */
 @OptIn(ExperimentalUuidApi::class)
 internal fun BoardEntity.toDomainOrNull(): Board? {
-    val id = uuidOrNull(id) ?: return null
+    val id = parseUuidOrNull(id) ?: return null
     return Board(
         id = id,
-        parentId = parentId?.let { uuidOrNull(it) },
+        parentId = parentId?.let { parseUuidOrNull(it) },
         title = title,
         sortIndex = sortIndex,
         updatedAt = Instant.fromEpochMilliseconds(updatedAtEpochMillis),
@@ -44,8 +44,8 @@ internal fun Board.toEntity() = BoardEntity(
 
 @OptIn(ExperimentalUuidApi::class)
 internal fun CardEntity.toDomainOrNull(): Card? {
-    val id = uuidOrNull(id) ?: return null
-    val boardId = uuidOrNull(boardId) ?: return null
+    val id = parseUuidOrNull(id) ?: return null
+    val boardId = parseUuidOrNull(boardId) ?: return null
     // An unknown type is skipped for display but stays in the table, so an export from here still
     // carries the tile a newer version wrote.
     val type = CardType.fromKey(type) ?: return null
@@ -83,7 +83,7 @@ internal fun Card.toEntity() = CardEntity(
 
 @OptIn(ExperimentalUuidApi::class)
 internal fun MediaAssetEntity.toDomainOrNull(): MediaAsset? {
-    val id = uuidOrNull(id) ?: return null
+    val id = parseUuidOrNull(id) ?: return null
     return MediaAsset(
         id = id,
         relativePath = relativePath,
@@ -104,13 +104,13 @@ internal fun MediaAsset.toEntity() = MediaAssetEntity(
 
 @OptIn(ExperimentalUuidApi::class)
 internal fun LogEntryEntity.toDomainOrNull(): LogEntry? {
-    val id = uuidOrNull(id) ?: return null
+    val id = parseUuidOrNull(id) ?: return null
     val kind = LogKind.fromKey(kind) ?: return null
     return LogEntry(
         id = id,
         at = Instant.fromEpochMilliseconds(atEpochMillis),
         kind = kind,
-        cardId = cardId?.let { uuidOrNull(it) },
+        cardId = cardId?.let { parseUuidOrNull(it) },
         note = note,
     )
 }
@@ -123,10 +123,3 @@ internal fun LogEntry.toEntity() = LogEntryEntity(
     cardId = cardId?.toString(),
     note = note,
 )
-
-@OptIn(ExperimentalUuidApi::class)
-private fun uuidOrNull(raw: String): Uuid? = try {
-    Uuid.parse(raw)
-} catch (_: IllegalArgumentException) {
-    null
-}

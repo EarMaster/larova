@@ -1,16 +1,36 @@
 package app.larova.feature.home
 
 /**
- * One tile as the grid needs it: a title, a symbol and a colour **key**.
+ * One tile as the grid needs it: a title, a symbol **key** and a colour **key**.
  *
- * The key rather than a colour is the whole point. It is resolved against the active appearance
- * mode inside `TileCard`, which is why a tile drawn from a stored token looks right in light, dark
- * and night without anything being converted on the way in.
+ * The keys rather than the values are the whole point. Both are resolved against the active
+ * appearance mode inside `TileCard`, which is why a tile drawn from stored keys looks right in
+ * light, dark and night with nothing converted on the way in.
  */
 data class HomeTile(
     val id: String,
     val title: String,
-    val symbol: String,
     val colorToken: String,
-    val subtitle: String? = null,
+    val symbolKey: String,
+    val subtitle: TileSubtitle = TileSubtitle.None,
 )
+
+/**
+ * What the second line of a tile says.
+ *
+ * A type rather than a formatted string, because the formatting needs plurals and plurals need the
+ * language — which the ViewModel has no business knowing. Polish, Russian and Arabic have more
+ * than two forms, so "1 step / 2 steps" is not something to assemble in Kotlin.
+ */
+sealed interface TileSubtitle {
+
+    /** Nothing to say. Most tiles, and deliberately so — the grid is read at a glance. */
+    data object None : TileSubtitle
+
+    /** What the parents typed. Always wins over anything derived. */
+    data class Custom(val text: String) : TileSubtitle
+
+    data class Steps(val count: Int) : TileSubtitle
+
+    data class Items(val count: Int) : TileSubtitle
+}
