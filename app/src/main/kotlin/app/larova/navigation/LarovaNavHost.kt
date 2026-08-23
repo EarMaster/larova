@@ -9,9 +9,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import app.larova.core.domain.model.AppearanceSetting
+import androidx.compose.runtime.LaunchedEffect
 import app.larova.di.cardViewModelParameters
+import app.larova.di.editCardViewModelParameters
 import app.larova.feature.card.CardScreen
 import app.larova.feature.card.CardViewModel
+import app.larova.feature.card.edit.EditCardScreen
+import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
@@ -46,6 +51,7 @@ fun LarovaNavHost(
             HomeScreen(
                 state = state,
                 onOpenTile = { id -> navController.navigate(CardRoute(id)) },
+                onAddTile = { navController.navigate(CardEditRoute()) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
                 onHelp = openHelp,
@@ -66,6 +72,33 @@ fun LarovaNavHost(
                 onToggleItem = viewModel::onToggleItem,
                 onPrepareCall = onPrepareCall,
                 onOpenUrl = onOpenUrl,
+                onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
+        composable<CardEditRoute> { entry ->
+            val route = entry.toRoute<CardEditRoute>()
+            val viewModel = koinViewModel<EditCardViewModel>(
+                key = "edit-" + route.cardId,
+                parameters = { editCardViewModelParameters(route.cardId) },
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            // Leaving is the navigator's job, not the ViewModel's: it is the only thing here that
+            // knows a deleted tile also has to take its detail screen off the back stack.
+            LaunchedEffect(state.saved, state.deleted) {
+                if (state.saved) {
+                    navController.popBackStack()
+                } else if (state.deleted) {
+                    navController.popBackStack(route = HomeRoute, inclusive = false)
+                }
+            }
+
+            EditCardScreen(
+                state = state,
+                callbacks = viewModel.callbacks(),
                 onBack = goBack,
                 onHelp = openHelp,
             )

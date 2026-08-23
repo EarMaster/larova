@@ -15,6 +15,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            // For the content rules the platform side has to apply — what counts as a dialable
+            // number, what counts as an openable address.
+            implementation(project(":core:domain"))
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {

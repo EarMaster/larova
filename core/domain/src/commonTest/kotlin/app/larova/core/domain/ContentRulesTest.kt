@@ -1,15 +1,17 @@
-package app.larova.core.platform
+package app.larova.core.domain
 
+import app.larova.core.domain.model.isOpenableUrl
+import app.larova.core.domain.model.sanitizePhoneNumber
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * Both helpers decide what Larova hands to another app. A tile's contents are typed by a parent,
+ * Both rules decide what Larova hands to another app. A tile's contents are typed by a parent,
  * but an import can come from anywhere, so this is the boundary where content stops being trusted.
  */
-class ExternalActionsTest {
+class ContentRulesTest {
 
     @Test
     fun websiteTilesOpenWebsites() {

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +27,11 @@ import androidx.compose.ui.unit.dp
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.component.TileCard
 import app.larova.core.ui.icon.MoreVertical
+import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_menu
+import app.larova.core.ui.resources.home_add_tile
 import app.larova.core.ui.resources.home_empty_hint
 import app.larova.core.ui.resources.home_empty_title
 import app.larova.core.ui.resources.home_greeting
@@ -50,6 +54,7 @@ import org.jetbrains.compose.resources.stringResource
 fun HomeScreen(
     state: HomeUiState,
     onOpenTile: (String) -> Unit,
+    onAddTile: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
     onHelp: () -> Unit,
@@ -63,6 +68,16 @@ fun HomeScreen(
             // Everything a caregiver does not need is behind this one control: settings, backup,
             // and later the switch to parent view. The grid stays the whole screen.
             HomeMenu(onOpenSettings = onOpenSettings, onOpenTransfer = onOpenTransfer)
+        },
+        floatingActionButton = {
+            // Shown unconditionally for now; parent view gates it in the slice that adds the PIN.
+            // Extended rather than an icon alone: "+" on a grid of tiles is not self-explanatory
+            // to someone who did not choose this phone.
+            ExtendedFloatingActionButton(
+                onClick = onAddTile,
+                icon = { Icon(imageVector = TileSymbol.STAR.image, contentDescription = null) },
+                text = { Text(stringResource(Res.string.home_add_tile)) },
+            )
         },
     ) { insets ->
         when {

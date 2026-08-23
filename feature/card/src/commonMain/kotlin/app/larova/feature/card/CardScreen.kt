@@ -1,10 +1,17 @@
 package app.larova.feature.card
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.ui.component.LarovaScaffold
+import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.image
+import app.larova.core.ui.resources.Res
+import app.larova.core.ui.resources.cd_edit_tile
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * What opening a tile leads to.
@@ -22,6 +29,7 @@ fun CardScreen(
     onToggleItem: (Int) -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onEdit: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
@@ -31,6 +39,18 @@ fun CardScreen(
         onHelp = onHelp,
         onBack = onBack,
         modifier = modifier,
+        actions = {
+            if (!state.missing) {
+                // Unconditional for now. Parent view gates it in the slice that adds the PIN —
+                // until then editing is reachable, which is the honest state of the app.
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        imageVector = TileSymbol.NOTE.image,
+                        contentDescription = stringResource(Res.string.cd_edit_tile, state.title),
+                    )
+                }
+            }
+        },
     ) { insets ->
         val content = Modifier.padding(insets)
 

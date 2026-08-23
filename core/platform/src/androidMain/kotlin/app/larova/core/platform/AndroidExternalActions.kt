@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import app.larova.core.domain.model.isOpenableUrl
+import app.larova.core.domain.model.sanitizePhoneNumber
 
 /**
  * `ACTION_DIAL`, never `ACTION_CALL`. The dialler opens with the number in it and the person

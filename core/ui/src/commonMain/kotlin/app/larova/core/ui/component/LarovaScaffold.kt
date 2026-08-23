@@ -33,6 +33,7 @@ fun LarovaScaffold(
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -61,6 +62,9 @@ fun LarovaScaffold(
             )
         },
         bottomBar = { HelpBar(onClick = onHelp) },
+        // Above the help bar rather than over it: the bar is the one thing on screen that must
+        // never be covered.
+        floatingActionButton = floatingActionButton,
         content = content,
     )
 }

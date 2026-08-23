@@ -14,9 +14,11 @@ import app.larova.core.domain.repository.CardRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PreferencesRepository
+import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.EnsureRootBoard
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.ToggleChecklistItem
 import app.larova.core.platform.AndroidExternalActions
 import app.larova.core.platform.AndroidPlatformPaths
@@ -24,6 +26,7 @@ import app.larova.core.platform.ExternalActions
 import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
+import app.larova.feature.card.edit.EditCardViewModel
 import app.larova.feature.home.HomeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -68,12 +71,18 @@ val appModule = module {
     factory { ObserveHomeTiles(get(), get()) }
     factory { ObserveTile(get()) }
     factory { ToggleChecklistItem(get()) }
+    factory { SaveCard(get(), get()) }
+    factory { DeleteCard(get()) }
 
     viewModel { AppViewModel(get()) }
     viewModel { HomeViewModel(get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters -> CardViewModel(parameters.get(), get(), get()) }
+    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get()) }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */
 fun cardViewModelParameters(cardId: String) = parametersOf(cardId)
+
+/** An empty id is a new tile; the editor treats it as such rather than looking one up. */
+fun editCardViewModelParameters(cardId: String) = parametersOf(cardId)
