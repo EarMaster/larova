@@ -24,6 +24,9 @@ data class CardRoute(val cardId: String)
 data class CardEditRoute(val cardId: String = "")
 
 @Serializable
+data object ArrangeRoute
+
+@Serializable
 data object HelpRoute
 
 @Serializable

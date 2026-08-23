@@ -20,6 +20,8 @@ docs-only changes do not belong here.
 - A call tile opens the phone app with the number ready. Larova never dials by itself.
 - Tiles can be made, changed and deleted: pick what goes on it, give it a title, choose one of the
   eight colours and a symbol. Deleting asks first, because there is no undo and no bin.
+- Search sits at the top of the start screen and looks at tile names, not at what is inside them.
+- Tiles can be rearranged from the menu, with buttons rather than dragging.
 - Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.

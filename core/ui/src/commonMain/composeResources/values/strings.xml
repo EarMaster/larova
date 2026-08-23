@@ -20,6 +20,9 @@
     <string name="home_add_tile">Add tile</string>
     <string name="home_child_age">%1$s · %2$d years</string>
     <string name="home_empty_title">Nothing here yet</string>
+    <string name="home_search_empty">Nothing matches that.</string>
+    <string name="arrange_title">Arrange tiles</string>
+    <string name="arrange_hint">Move tiles up or down. The order is the order on the start screen.</string>
     <string name="home_empty_hint">Tiles you add appear here. A tile can hold a guide, a list, a note, a number to call, or a website.</string>
 
     <!-- ===== Views ===== -->
@@ -156,6 +159,9 @@
     <!-- ===== Content descriptions ===== -->
     <string name="cd_open_tile">Open %1$s</string>
     <string name="cd_add_tile">Add a tile</string>
+    <string name="cd_clear_search">Clear the search</string>
+    <string name="cd_move_up">Move %1$s up</string>
+    <string name="cd_move_down">Move %1$s down</string>
     <string name="cd_colour_selected">%1$s, selected</string>
     <string name="cd_remove_line">Remove %1$s</string>
     <string name="cd_check_item">%1$s, done</string>

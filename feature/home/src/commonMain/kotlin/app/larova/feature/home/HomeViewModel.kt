@@ -5,10 +5,15 @@ import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.usecase.EnsureRootBoard
 import app.larova.core.domain.usecase.ObserveHomeTiles
+import app.larova.core.domain.usecase.SearchTiles
 import app.larova.core.domain.usecase.Tile
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
@@ -18,32 +23,60 @@ import kotlinx.coroutines.launch
  */
 data class HomeUiState(
     val tiles: List<HomeTile> = emptyList(),
+    val query: String = "",
     val isLoading: Boolean = true,
-)
+) {
+    val isSearching: Boolean get() = query.isNotBlank()
+}
 
 class HomeViewModel(
-    private val ensureRootBoard: EnsureRootBoard,
+    ensureRootBoard: EnsureRootBoard,
     observeHomeTiles: ObserveHomeTiles,
+    searchTiles: SearchTiles,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeUiState())
-    val state: StateFlow<HomeUiState> = _state.asStateFlow()
+    private val query = MutableStateFlow("")
 
-    init {
-        viewModelScope.launch {
-            // Before collecting: without a start screen there is nowhere for the first tile to go,
-            // and the empty state would be describing a board that does not exist.
-            ensureRootBoard()
-        }
-        viewModelScope.launch {
-            observeHomeTiles().collect { tiles ->
-                _state.value = HomeUiState(tiles = tiles.map { it.toHomeTile() }, isLoading = false)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state: StateFlow<HomeUiState> = query
+        .flatMapLatest { text ->
+            // Searching replaces the grid rather than filtering it in place, so the ordered start
+            // screen is never shown in an order the parents did not choose.
+            val source = if (text.isBlank()) observeHomeTiles() else searchTiles(text)
+            source.map { tiles ->
+                HomeUiState(
+                    tiles = tiles.map { it.toHomeTile() },
+                    query = text,
+                    isLoading = false,
+                )
             }
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+            initialValue = HomeUiState(),
+        )
+
+    init {
+        // Without a start screen there is nowhere for the first tile to go, and the empty state
+        // would be describing a board that does not exist.
+        viewModelScope.launch { ensureRootBoard() }
+    }
+
+    fun onQueryChange(text: String) {
+        query.value = text
+    }
+
+    fun onClearQuery() {
+        query.value = ""
+    }
+
+    private companion object {
+        const val STOP_TIMEOUT_MILLIS = 5_000L
     }
 }
 
-private fun Tile.toHomeTile() = HomeTile(
+internal fun Tile.toHomeTile() = HomeTile(
     id = card.id.toString(),
     title = card.title,
     colorToken = card.colorToken,

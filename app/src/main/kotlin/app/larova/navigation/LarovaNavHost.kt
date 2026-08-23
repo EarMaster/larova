@@ -18,6 +18,8 @@ import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditCardViewModel
 import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
+import app.larova.feature.home.ArrangeTilesScreen
+import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
 import app.larova.feature.settings.SettingsScreen
@@ -50,8 +52,11 @@ fun LarovaNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state,
+                onQueryChange = viewModel::onQueryChange,
+                onClearQuery = viewModel::onClearQuery,
                 onOpenTile = { id -> navController.navigate(CardRoute(id)) },
                 onAddTile = { navController.navigate(CardEditRoute()) },
+                onArrange = { navController.navigate(ArrangeRoute) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
                 onHelp = openHelp,
@@ -99,6 +104,18 @@ fun LarovaNavHost(
             EditCardScreen(
                 state = state,
                 callbacks = viewModel.callbacks(),
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
+        composable<ArrangeRoute> {
+            val viewModel = koinViewModel<ArrangeTilesViewModel>()
+            val tiles by viewModel.tiles.collectAsStateWithLifecycle()
+            ArrangeTilesScreen(
+                tiles = tiles,
+                onMoveUp = viewModel::onMoveUp,
+                onMoveDown = viewModel::onMoveDown,
                 onBack = goBack,
                 onHelp = openHelp,
             )

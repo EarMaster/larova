@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,6 +15,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,9 +34,13 @@ import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_menu
 import app.larova.core.ui.resources.home_add_tile
+import app.larova.core.ui.resources.arrange_title
+import app.larova.core.ui.resources.cd_clear_search
 import app.larova.core.ui.resources.home_empty_hint
 import app.larova.core.ui.resources.home_empty_title
 import app.larova.core.ui.resources.home_greeting
+import app.larova.core.ui.resources.home_search
+import app.larova.core.ui.resources.home_search_empty
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.tile_item_count
 import app.larova.core.ui.resources.tile_step_count
@@ -53,8 +59,11 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun HomeScreen(
     state: HomeUiState,
+    onQueryChange: (String) -> Unit,
+    onClearQuery: () -> Unit,
     onOpenTile: (String) -> Unit,
     onAddTile: () -> Unit,
+    onArrange: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
     onHelp: () -> Unit,
@@ -67,7 +76,11 @@ fun HomeScreen(
         actions = {
             // Everything a caregiver does not need is behind this one control: settings, backup,
             // and later the switch to parent view. The grid stays the whole screen.
-            HomeMenu(onOpenSettings = onOpenSettings, onOpenTransfer = onOpenTransfer)
+            HomeMenu(
+                onArrange = onArrange,
+                onOpenSettings = onOpenSettings,
+                onOpenTransfer = onOpenTransfer,
+            )
         },
         floatingActionButton = {
             // Shown unconditionally for now; parent view gates it in the slice that adds the PIN.
@@ -80,20 +93,76 @@ fun HomeScreen(
             )
         },
     ) { insets ->
-        when {
-            // Nothing is drawn while loading. A grid that is about to have tiles and a grid that
-            // has none look the same, and flashing "Nothing here yet" at someone whose content is
-            // one frame away is a lie the app can avoid telling.
-            state.isLoading -> Unit
-
-            state.tiles.isEmpty() -> HomeEmptyState(modifier = Modifier.padding(insets))
-
-            else -> TileGrid(
-                tiles = state.tiles,
-                onOpenTile = onOpenTile,
-                modifier = Modifier.padding(insets),
+        Column(modifier = Modifier.fillMaxSize().padding(insets)) {
+            // Always visible, per docs/concept.md 4.1. Someone looking for one thing under time
+            // pressure should not have to find the search first.
+            SearchField(
+                query = state.query,
+                onQueryChange = onQueryChange,
+                onClear = onClearQuery,
             )
+
+            when {
+                // Nothing is drawn while loading. A grid that is about to have tiles and a grid
+                // that has none look the same, and flashing "Nothing here yet" at someone whose
+                // content is one frame away is a lie the app can avoid telling.
+                state.isLoading -> Unit
+
+                state.tiles.isNotEmpty() -> TileGrid(tiles = state.tiles, onOpenTile = onOpenTile)
+
+                state.isSearching -> Message(text = stringResource(Res.string.home_search_empty))
+
+                else -> HomeEmptyState()
+            }
         }
+    }
+}
+
+@Composable
+private fun SearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        label = { Text(stringResource(Res.string.home_search)) },
+        singleLine = true,
+        trailingIcon = if (query.isNotEmpty()) {
+            {
+                IconButton(onClick = onClear) {
+                    Icon(
+                        imageVector = MoreVertical,
+                        contentDescription = stringResource(Res.string.cd_clear_search),
+                    )
+                }
+            }
+        } else {
+            null
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.ScreenMargin, vertical = 4.dp),
+    )
+}
+
+@Composable
+private fun Message(text: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Dimens.ScreenMargin),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -106,6 +175,9 @@ private fun TileGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.fillMaxSize(),
+        // Deliberately no key on the grid itself: the search results and the ordered board are two
+        // different lists, and animating between them as though tiles had moved would suggest the
+        // start screen had been rearranged.
         contentPadding = PaddingValues(
             start = Dimens.ScreenMargin,
             end = Dimens.ScreenMargin,
@@ -137,13 +209,24 @@ private fun TileSubtitle.text(): String? = when (this) {
 }
 
 @Composable
-private fun HomeMenu(onOpenSettings: () -> Unit, onOpenTransfer: () -> Unit) {
+private fun HomeMenu(
+    onArrange: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenTransfer: () -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
 
     IconButton(onClick = { expanded = true }) {
         Icon(imageVector = MoreVertical, contentDescription = stringResource(Res.string.cd_menu))
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(Res.string.arrange_title)) },
+            onClick = {
+                expanded = false
+                onArrange()
+            },
+        )
         DropdownMenuItem(
             text = { Text(stringResource(Res.string.settings_title)) },
             onClick = {
