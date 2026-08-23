@@ -26,6 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CardScreen(
     state: CardUiState,
+    isParentView: Boolean,
     onToggleItem: (Int) -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
@@ -40,9 +41,7 @@ fun CardScreen(
         onBack = onBack,
         modifier = modifier,
         actions = {
-            if (!state.missing) {
-                // Unconditional for now. Parent view gates it in the slice that adds the PIN —
-                // until then editing is reachable, which is the honest state of the app.
+            if (isParentView && !state.missing) {
                 IconButton(onClick = onEdit) {
                     Icon(
                         imageVector = TileSymbol.NOTE.image,

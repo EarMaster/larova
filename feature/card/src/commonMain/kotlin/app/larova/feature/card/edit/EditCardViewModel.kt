@@ -43,6 +43,7 @@ data class EditUiState(
     val callName: String = "",
     val callNumber: String = "",
     val callRelation: String = "",
+    val callInHelpSheet: Boolean = false,
     val webUrl: String = "",
     val webLabel: String = "",
     val titleMissing: Boolean = false,
@@ -95,6 +96,8 @@ class EditCardViewModel(
     fun onCallNumberChange(value: String) = _state.update { it.copy(callNumber = value) }
 
     fun onCallRelationChange(value: String) = _state.update { it.copy(callRelation = value) }
+
+    fun onCallInHelpSheetChange(value: Boolean) = _state.update { it.copy(callInHelpSheet = value) }
 
     fun onWebLabelChange(value: String) = _state.update { it.copy(webLabel = value) }
 
@@ -208,6 +211,7 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
         displayName = callName.trim().ifEmpty { title.trim() },
         number = callNumber.trim(),
         relation = callRelation.trim().takeIf { it.isNotEmpty() },
+        inHelpSheet = callInHelpSheet,
     )
 
     CardType.WEB -> CardPayload.Web(
@@ -248,6 +252,7 @@ private fun Tile.toEditState(): EditUiState {
             callName = payload.displayName,
             callNumber = payload.number,
             callRelation = payload.relation.orEmpty(),
+            callInHelpSheet = payload.inHelpSheet,
         )
 
         is CardPayload.Web -> base.copy(

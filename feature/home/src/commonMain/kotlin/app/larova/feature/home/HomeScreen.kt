@@ -59,6 +59,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun HomeScreen(
     state: HomeUiState,
+    isParentView: Boolean,
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
     onOpenTile: (String) -> Unit,
@@ -77,20 +78,26 @@ fun HomeScreen(
             // Everything a caregiver does not need is behind this one control: settings, backup,
             // and later the switch to parent view. The grid stays the whole screen.
             HomeMenu(
+                isParentView = isParentView,
                 onArrange = onArrange,
                 onOpenSettings = onOpenSettings,
                 onOpenTransfer = onOpenTransfer,
             )
         },
         floatingActionButton = {
-            // Shown unconditionally for now; parent view gates it in the slice that adds the PIN.
-            // Extended rather than an icon alone: "+" on a grid of tiles is not self-explanatory
-            // to someone who did not choose this phone.
-            ExtendedFloatingActionButton(
-                onClick = onAddTile,
-                icon = { Icon(imageVector = TileSymbol.STAR.image, contentDescription = null) },
-                text = { Text(stringResource(Res.string.home_add_tile)) },
-            )
+            // Absent in caregiver view rather than disabled. A greyed-out button is a question
+            // ("why not?") asked of someone who is here to read a bedtime routine, and the answer
+            // does not concern them.
+            //
+            // Extended rather than an icon alone: "+" on a grid of tiles is not self-explanatory to
+            // someone who did not choose this phone.
+            if (isParentView) {
+                ExtendedFloatingActionButton(
+                    onClick = onAddTile,
+                    icon = { Icon(imageVector = TileSymbol.STAR.image, contentDescription = null) },
+                    text = { Text(stringResource(Res.string.home_add_tile)) },
+                )
+            }
         },
     ) { insets ->
         Column(modifier = Modifier.fillMaxSize().padding(insets)) {
@@ -210,6 +217,7 @@ private fun TileSubtitle.text(): String? = when (this) {
 
 @Composable
 private fun HomeMenu(
+    isParentView: Boolean,
     onArrange: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
@@ -220,25 +228,28 @@ private fun HomeMenu(
         Icon(imageVector = MoreVertical, contentDescription = stringResource(Res.string.cd_menu))
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        DropdownMenuItem(
-            text = { Text(stringResource(Res.string.arrange_title)) },
-            onClick = {
-                expanded = false
-                onArrange()
-            },
-        )
+        // Rearranging and backup are parent-view work. Settings stays, because it is the way in.
+        if (isParentView) {
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.arrange_title)) },
+                onClick = {
+                    expanded = false
+                    onArrange()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.transfer_title)) },
+                onClick = {
+                    expanded = false
+                    onOpenTransfer()
+                },
+            )
+        }
         DropdownMenuItem(
             text = { Text(stringResource(Res.string.settings_title)) },
             onClick = {
                 expanded = false
                 onOpenSettings()
-            },
-        )
-        DropdownMenuItem(
-            text = { Text(stringResource(Res.string.transfer_title)) },
-            onClick = {
-                expanded = false
-                onOpenTransfer()
             },
         )
     }

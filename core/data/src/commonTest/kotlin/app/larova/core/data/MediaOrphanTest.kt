@@ -93,6 +93,7 @@ class MediaOrphanTest {
 
 private class FakeCardDao(private val cards: List<CardEntity>) : CardDao {
     override fun observeByBoard(boardId: String): Flow<List<CardEntity>> = flowOf(cards)
+    override fun observeAll(): Flow<List<CardEntity>> = flowOf(cards)
     override fun search(query: String): Flow<List<CardEntity>> = flowOf(cards)
     override suspend fun find(id: String): CardEntity? = cards.firstOrNull { it.id == id }
     override suspend fun all(): List<CardEntity> = cards

@@ -43,6 +43,8 @@ class RoomBoardRepository(private val dao: BoardDao) : BoardRepository {
 
     override suspend fun find(id: Uuid): Board? = dao.find(id.toString())?.toDomainOrNull()
 
+    override suspend fun all(): List<Board> = dao.all().mapNotNull { it.toDomainOrNull() }
+
     override suspend fun upsert(board: Board) = dao.upsert(board.toEntity())
 
     override suspend fun delete(id: Uuid) = dao.delete(id.toString())
@@ -53,6 +55,9 @@ class RoomCardRepository(private val dao: CardDao) : CardRepository {
 
     override fun observeCards(boardId: Uuid): Flow<List<Card>> =
         dao.observeByBoard(boardId.toString()).map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
+
+    override fun observeAllCards(): Flow<List<Card>> =
+        dao.observeAll().map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
 
     override fun search(query: String): Flow<List<Card>> =
         dao.search(query).map { rows -> rows.mapNotNull { it.toDomainOrNull() } }

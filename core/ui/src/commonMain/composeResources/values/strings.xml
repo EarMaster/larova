@@ -33,6 +33,18 @@
     <string name="view_unlock_pin">Enter your PIN</string>
     <string name="view_unlock_biometric">Use fingerprint instead</string>
 
+    <string name="view_locked_note">Editing and backup are in parent view.</string>
+    <string name="view_leave">Leave parent view</string>
+    <string name="view_pin_create_title">Choose a PIN</string>
+    <string name="view_pin_create_hint">Four to twelve digits. It keeps the tiles from being changed by accident; it does not hide them.</string>
+    <string name="view_pin_repeat">Type it again</string>
+    <string name="view_pin_mismatch">Those two do not match.</string>
+    <string name="view_pin_too_short">At least four digits.</string>
+    <string name="view_pin_digits_only">Digits only.</string>
+    <string name="view_pin_wrong">That is not the PIN.</string>
+    <string name="view_pin_change">Change the PIN</string>
+    <string name="view_unlock">Unlock</string>
+
     <!-- ===== Tile types ===== -->
     <string name="tile_guide">Guide</string>
     <string name="tile_guide_hint">Steps with text, pictures and sound</string>
@@ -79,6 +91,7 @@
     <string name="help_sheet_title">Get help</string>
     <string name="help_call_note">Tapping opens the phone app with the number ready. Larova never dials on its own.</string>
     <string name="help_emergency">Emergency services</string>
+    <string name="help_no_contacts">No numbers have been added here yet.</string>
 
     <!-- ===== Backup and transfer ===== -->
     <string name="transfer_title">Backup &amp; transfer</string>
@@ -93,6 +106,11 @@
     <string name="transfer_replace">Replace everything</string>
     <string name="transfer_merge">Add to what is here</string>
     <string name="transfer_version_too_new">This file was made with a newer version of Larova. Update the app to open it.</string>
+    <string name="transfer_saved">Backed up: %1$d tiles and %2$d files.</string>
+    <string name="transfer_restored">Restored: %1$d tiles and %2$d files.</string>
+    <string name="transfer_backup_failed">The backup could not be written. Try a different place to save it.</string>
+    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed.</string>
+    <string name="transfer_unreadable">This is not a Larova backup.</string>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Settings</string>
@@ -133,6 +151,7 @@
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Phone number</string>
     <string name="edit_call_relation">Relation (optional)</string>
+    <string name="edit_call_in_help">Also show under Get help</string>
     <string name="edit_web_address">Web address</string>
     <string name="edit_web_label">Label (optional)</string>
     <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>

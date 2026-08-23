@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import app.larova.rememberBiometricUnlock
 import app.larova.core.domain.model.AppearanceSetting
 import androidx.compose.runtime.LaunchedEffect
 import app.larova.di.cardViewModelParameters
@@ -18,12 +19,21 @@ import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditCardViewModel
 import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
+import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.PinSetupScreen
+import app.larova.feature.settings.PinSetupViewModel
 import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.UnlockScreen
+import app.larova.feature.settings.UnlockViewModel
 import app.larova.feature.transfer.TransferScreen
+import app.larova.feature.transfer.TransferViewModel
+import app.larova.formatExportDate
+import app.larova.rememberBackupPicker
+import app.larova.rememberRestorePicker
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -34,6 +44,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LarovaNavHost(
     appearance: AppearanceSetting,
     onAppearanceChange: (AppearanceSetting) -> Unit,
+    isParentView: Boolean,
+    onLockParentView: () -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -52,6 +64,7 @@ fun LarovaNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state,
+                isParentView = isParentView,
                 onQueryChange = viewModel::onQueryChange,
                 onClearQuery = viewModel::onClearQuery,
                 onOpenTile = { id -> navController.navigate(CardRoute(id)) },
@@ -74,6 +87,7 @@ fun LarovaNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             CardScreen(
                 state = state,
+                isParentView = isParentView,
                 onToggleItem = viewModel::onToggleItem,
                 onPrepareCall = onPrepareCall,
                 onOpenUrl = onOpenUrl,
@@ -121,18 +135,95 @@ fun LarovaNavHost(
             )
         }
 
+        composable<UnlockRoute> {
+            val viewModel = koinViewModel<UnlockViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            // A fresh installation has no PIN to check, so the first unlock is a set-up instead.
+            // Handled here rather than inside the screen: it is a change of destination.
+            LaunchedEffect(state.needsPinSetup) {
+                if (state.needsPinSetup) {
+                    navController.navigate(PinSetupRoute) {
+                        popUpTo(UnlockRoute) { inclusive = true }
+                    }
+                }
+            }
+            LaunchedEffect(state.unlocked) {
+                if (state.unlocked) navController.popBackStack()
+            }
+
+            UnlockScreen(
+                pin = state.pin,
+                onPinChange = viewModel::onPinChange,
+                onUnlock = viewModel::onUnlock,
+                onUseBiometrics = rememberBiometricUnlock(onAccepted = viewModel::onBiometricsAccepted),
+                wrongPin = state.wrongPin,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
+        composable<PinSetupRoute> {
+            val viewModel = koinViewModel<PinSetupViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(state.saved) {
+                if (state.saved) navController.popBackStack()
+            }
+
+            PinSetupScreen(
+                pin = state.pin,
+                repeated = state.repeated,
+                onPinChange = viewModel::onPinChange,
+                onRepeatChange = viewModel::onRepeatChange,
+                onSave = viewModel::onSave,
+                error = state.error,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
         composable<HelpRoute> {
-            HelpScreen(onBack = goBack, onHelp = openHelp)
+            val viewModel = koinViewModel<HelpViewModel>()
+            val contacts by viewModel.contacts.collectAsStateWithLifecycle()
+            HelpScreen(
+                contacts = contacts,
+                onPrepareCall = onPrepareCall,
+                onBack = goBack,
+                // Already here: tapping the bar on this screen does nothing rather than stacking a
+                // second copy of it on the back stack.
+                onHelp = {},
+            )
         }
 
         composable<TransferRoute> {
-            TransferScreen(onBack = goBack, onHelp = openHelp)
+            val viewModel = koinViewModel<TransferViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val pickDestination = rememberBackupPicker { destination ->
+                viewModel.onDestinationChosen(destination, label = null)
+            }
+            val pickSource = rememberRestorePicker(viewModel::onSourceChosen)
+
+            TransferScreen(
+                state = state,
+                formatDate = ::formatExportDate,
+                onBackup = pickDestination,
+                onRestore = pickSource,
+                onConfirmImport = viewModel::onConfirmImport,
+                onCancelImport = viewModel::onCancelImport,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
         }
 
         composable<SettingsRoute> {
             SettingsScreen(
                 appearance = appearance,
                 onAppearanceChange = onAppearanceChange,
+                isParentView = isParentView,
+                onUnlock = { navController.navigate(UnlockRoute) },
+                onLock = onLockParentView,
+                onChangePin = { navController.navigate(PinSetupRoute) },
                 onBack = goBack,
                 onHelp = openHelp,
             )

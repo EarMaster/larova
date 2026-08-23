@@ -37,6 +37,12 @@ android {
         }
     }
 
+    buildFeatures {
+        // Only for VERSION_NAME, which goes into every export manifest. Reading it from the build
+        // rather than repeating the version in a constant that would drift.
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -68,6 +74,10 @@ dependencies {
     implementation(compose.components.resources)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.biometric)
+    // Named in the composition root, which owns the single instance for the preferences file.
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.jetbrains.navigation.compose)
     implementation(libs.jetbrains.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)

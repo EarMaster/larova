@@ -34,3 +34,9 @@ data object TransferRoute
 
 @Serializable
 data object SettingsRoute
+
+@Serializable
+data object UnlockRoute
+
+@Serializable
+data object PinSetupRoute

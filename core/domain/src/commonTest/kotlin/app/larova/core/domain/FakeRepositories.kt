@@ -2,8 +2,10 @@ package app.larova.core.domain
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.MediaRepository
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +33,8 @@ class FakeBoardRepository(initial: List<Board> = emptyList()) : BoardRepository 
 
     override suspend fun find(id: Uuid): Board? = boards.value.firstOrNull { it.id == id }
 
+    override suspend fun all(): List<Board> = boards.value
+
     override suspend fun upsert(board: Board) {
         upsertCount++
         boards.value = boards.value.filterNot { it.id == board.id } + board
@@ -48,6 +52,9 @@ class FakeCardRepository(initial: List<Card> = emptyList()) : CardRepository {
 
     override fun observeCards(boardId: Uuid): Flow<List<Card>> =
         cards.map { list -> list.filter { it.boardId == boardId }.sortedBy { it.sortIndex } }
+
+    override fun observeAllCards(): Flow<List<Card>> =
+        cards.map { list -> list.sortedBy { it.sortIndex } }
 
     override fun search(query: String): Flow<List<Card>> =
         cards.map { list ->
@@ -73,4 +80,25 @@ class FakeCardRepository(initial: List<Card> = emptyList()) : CardRepository {
     override suspend fun delete(id: Uuid) {
         cards.value = cards.value.filterNot { it.id == id }
     }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+class FakeMediaRepository(initial: List<MediaAsset> = emptyList()) : MediaRepository {
+
+    val assets = MutableStateFlow(initial)
+
+    override fun observeAll(): Flow<List<MediaAsset>> = assets
+
+    override suspend fun find(id: Uuid): MediaAsset? = assets.value.firstOrNull { it.id == id }
+
+    override suspend fun register(asset: MediaAsset) {
+        assets.value = assets.value.filterNot { it.id == asset.id } + asset
+    }
+
+    override suspend fun delete(id: Uuid) {
+        assets.value = assets.value.filterNot { it.id == id }
+    }
+
+    /** The real one walks the payloads; nothing here needs that, so it reports nothing removed. */
+    override suspend fun deleteOrphans(): Int = 0
 }

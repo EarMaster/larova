@@ -25,6 +25,9 @@ interface BoardRepository {
 
     suspend fun find(id: Uuid): Board?
 
+    /** Every board. Needed to replace an installation wholesale, and to find the start screen. */
+    suspend fun all(): List<Board>
+
     suspend fun upsert(board: Board)
 
     suspend fun delete(id: Uuid)
@@ -33,6 +36,13 @@ interface BoardRepository {
 @OptIn(ExperimentalUuidApi::class)
 interface CardRepository {
     fun observeCards(boardId: Uuid): Flow<List<Card>>
+
+    /**
+     * Every tile, whichever board it is on. The help sheet needs this: a number worth reaching in
+     * a hurry might be on a tile inside a folder, and being one level deep must not make it
+     * unreachable from the bar.
+     */
+    fun observeAllCards(): Flow<List<Card>>
 
     /** Search runs over titles and subtitles only. Payload content is never interpreted. */
     fun search(query: String): Flow<List<Card>>
@@ -80,4 +90,24 @@ interface PreferencesRepository {
     fun observeAppearance(): Flow<AppearanceSetting>
 
     suspend fun setAppearance(setting: AppearanceSetting)
+}
+
+/**
+ * The parent-view PIN.
+ *
+ * Only ever a hash crosses this boundary in either direction — the PIN itself is passed in to be
+ * checked and is never stored, returned or logged. There is deliberately no way to read it back:
+ * a forgotten PIN is answered by setting a new one, not by recovering the old.
+ */
+interface PinRepository {
+
+    /** Whether parent view has a way in at all. False on a fresh installation. */
+    suspend fun hasPin(): Boolean
+
+    suspend fun setPin(pin: String)
+
+    suspend fun verify(pin: String): Boolean
+
+    /** Removes it. Parent view then has no lock, which is a decision the parents get to make. */
+    suspend fun clear()
 }

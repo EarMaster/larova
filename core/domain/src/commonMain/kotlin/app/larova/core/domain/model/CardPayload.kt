@@ -58,6 +58,11 @@ sealed interface CardPayload {
     /**
      * A stored number. Larova never dials by itself: tapping hands off to the phone app with the
      * number ready, which needs no permission and is harmless if triggered by mistake.
+     *
+     * [inHelpSheet] puts it behind the help bar as well as on the grid. Opt-in rather than
+     * automatic, because the sheet is read under stress and a list of nine numbers is not a list —
+     * two or three is (docs/concept.md §4.3). Defaulted to false so a payload written before this
+     * field existed still reads.
      */
     @Serializable
     @SerialName("phone")
@@ -65,6 +70,7 @@ sealed interface CardPayload {
         val displayName: String,
         val number: String,
         val relation: String? = null,
+        val inHelpSheet: Boolean = false,
     ) : CardPayload
 
     @Serializable
