@@ -19,6 +19,8 @@
     <string name="home_search">Search</string>
     <string name="home_add_tile">Add tile</string>
     <string name="home_child_age">%1$s · %2$d years</string>
+    <string name="home_empty_title">Nothing here yet</string>
+    <string name="home_empty_hint">Tiles you add appear here. A tile can hold a guide, a list, a note, a number to call, or a website.</string>
 
     <!-- ===== Views ===== -->
     <string name="view_caregiver">Caregiver view</string>
@@ -62,6 +64,8 @@
     <string name="guide_finish">Done</string>
     <string name="guide_read_aloud">Read aloud</string>
     <string name="guide_screen_stays_on">The screen stays on here.</string>
+
+    <string name="guide_step_current">Now</string>
 
     <!-- ===== Checklist ===== -->
     <string name="checklist_progress">%1$d of %2$d</string>
@@ -120,6 +124,9 @@
     <string name="template_what_helps">What helps when…</string>
 
     <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Open %1$s</string>
+    <string name="cd_check_item">%1$s, done</string>
+    <string name="cd_uncheck_item">%1$s, not done</string>
     <string name="cd_back">Back</string>
     <string name="cd_close">Close</string>
     <string name="cd_menu">Menu</string>

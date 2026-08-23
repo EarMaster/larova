@@ -13,7 +13,11 @@ docs-only changes do not belong here.
 ## [Unreleased]
 
 ### Added
-- Larova installs and opens on a start screen of tiles.
+- Larova installs and opens on a start screen of your own tiles.
+- Tiles can hold a guide, a note, a checklist, a number to call, or a website. Guides show one
+  step at a time at reading size, and the screen stays awake while one is open. Checklist items
+  can be ticked off without unlocking anything.
+- A call tile opens the phone app with the number ready. Larova never dials by itself.
 - Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.
