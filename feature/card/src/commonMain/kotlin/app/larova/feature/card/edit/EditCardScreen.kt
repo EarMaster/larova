@@ -1,5 +1,6 @@
 package app.larova.feature.card.edit
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -40,8 +45,11 @@ import app.larova.core.ui.component.SymbolPicker
 import app.larova.core.ui.icon.BackArrow
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_remove_line
+import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_item
+import app.larova.core.ui.resources.edit_add_picture
 import app.larova.core.ui.resources.edit_add_step
+import app.larova.core.ui.resources.edit_change_picture
 import app.larova.core.ui.resources.edit_call_in_help
 import app.larova.core.ui.resources.edit_call_name
 import app.larova.core.ui.resources.edit_call_number
@@ -56,7 +64,9 @@ import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
 import app.larova.core.ui.resources.edit_new_tile
 import app.larova.core.ui.resources.edit_note_text
+import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_remove
+import app.larova.core.ui.resources.edit_remove_picture
 import app.larova.core.ui.resources.edit_reset_daily
 import app.larova.core.ui.resources.edit_save
 import app.larova.core.ui.resources.edit_step_number
@@ -226,15 +236,7 @@ fun EditCardScreen(
 @Composable
 private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
     when (state.type) {
-        CardType.GUIDE -> LineList(
-            title = stringResource(Res.string.edit_steps),
-            addLabel = stringResource(Res.string.edit_add_step),
-            lines = state.steps,
-            label = { index -> stringResource(Res.string.edit_step_number, index + 1) },
-            onChange = callbacks.onStepChange,
-            onAdd = callbacks.onAddStep,
-            onRemove = callbacks.onRemoveStep,
-        )
+        CardType.GUIDE -> StepList(state = state, callbacks = callbacks)
 
         CardType.CHECKLIST -> {
             LineList(
@@ -320,8 +322,128 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
 }
 
 /**
- * Steps and checklist items are the same shape of thing: a numbered line, a way to remove it, and
- * a way to add another. One component for both, so they cannot drift apart.
+ * A guide step: the line of text, and the picture that goes with it.
+ *
+ * Steps have the picture and checklist items do not, which is why this is not [LineList] with a
+ * flag. A picture belongs to a step of a guide — showing which cupboard, which button, which of
+ * the two blue boxes — and a list of things to tick off has nowhere to put one.
+ */
+@Composable
+private fun StepList(state: EditUiState, callbacks: EditCardCallbacks) {
+    Section(title = stringResource(Res.string.edit_steps)) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            state.steps.forEachIndexed { index, step ->
+                val label = stringResource(Res.string.edit_step_number, index + 1)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        OutlinedTextField(
+                            value = step.text,
+                            onValueChange = { callbacks.onStepChange(index, it) },
+                            label = { Text(label) },
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(
+                            onClick = { callbacks.onRemoveStep(index) },
+                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Icon(
+                                imageVector = BackArrow,
+                                contentDescription = stringResource(Res.string.cd_remove_line, label),
+                            )
+                        }
+                    }
+                    StepPicture(
+                        stepNumber = index + 1,
+                        picture = step.mediaId?.let { state.pictures[it] },
+                        hasPicture = step.mediaId != null,
+                        onPick = { callbacks.onPickPicture(index) },
+                        onRemove = { callbacks.onRemovePicture(index) },
+                    )
+                }
+            }
+
+            if (state.pictureFailed) {
+                // Said rather than swallowed: the person watched the gallery close and has no other
+                // way to tell that nothing arrived.
+                Text(
+                    text = stringResource(Res.string.edit_picture_failed),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+
+            OutlinedButton(
+                onClick = callbacks.onAddStep,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_add_step))
+            }
+        }
+    }
+}
+
+/**
+ * The picture on one step, with the two things that can be done to it.
+ *
+ * Wrapping rather than one fixed row: at 200 % font scale a thumbnail and two buttons do not fit
+ * across a phone, and the alternative to wrapping is a label cut in half.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun StepPicture(
+    stepNumber: Int,
+    picture: ImageBitmap?,
+    hasPicture: Boolean,
+    onPick: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (picture != null) {
+            Image(
+                bitmap = picture,
+                contentDescription = stringResource(Res.string.cd_step_picture, stepNumber),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(72.dp)
+                    .clip(MaterialTheme.shapes.extraSmall),
+            )
+        }
+        TextButton(
+            onClick = onPick,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(
+                stringResource(
+                    if (hasPicture) Res.string.edit_change_picture else Res.string.edit_add_picture,
+                ),
+            )
+        }
+        if (hasPicture) {
+            TextButton(
+                onClick = onRemove,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_remove_picture))
+            }
+        }
+    }
+}
+
+/**
+ * Checklist items: a numbered line, a way to remove it, and a way to add another.
  */
 @Composable
 private fun LineList(
@@ -448,6 +570,9 @@ data class EditCardCallbacks(
     val onStepChange: (Int, String) -> Unit,
     val onAddStep: () -> Unit,
     val onRemoveStep: (Int) -> Unit,
+    /** Opens the photo picker for one step. Both halves of it live outside the ViewModel. */
+    val onPickPicture: (Int) -> Unit,
+    val onRemovePicture: (Int) -> Unit,
     val onItemChange: (Int, String) -> Unit,
     val onAddItem: () -> Unit,
     val onRemoveItem: (Int) -> Unit,
@@ -463,8 +588,14 @@ data class EditCardCallbacks(
     val onDelete: () -> Unit,
 )
 
-/** Built from a ViewModel in one place, so a screen cannot be wired to the wrong handler. */
-fun EditCardViewModel.callbacks() = EditCardCallbacks(
+/**
+ * Built from a ViewModel in one place, so a screen cannot be wired to the wrong handler.
+ *
+ * [openPicturePicker] comes from outside: the photo picker is the platform's, and this module is
+ * the same code on a phone that has no such thing. The ViewModel is told which step first, so that
+ * whatever comes back has somewhere to land.
+ */
+fun EditCardViewModel.callbacks(openPicturePicker: () -> Unit = {}) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
     onTitleChange = ::onTitleChange,
     onSubtitleChange = ::onSubtitleChange,
@@ -473,6 +604,11 @@ fun EditCardViewModel.callbacks() = EditCardCallbacks(
     onStepChange = ::onStepChange,
     onAddStep = ::onAddStep,
     onRemoveStep = ::onRemoveStep,
+    onPickPicture = { index ->
+        onPickPictureFor(index)
+        openPicturePicker()
+    },
+    onRemovePicture = ::onRemovePicture,
     onItemChange = ::onItemChange,
     onAddItem = ::onAddItem,
     onRemoveItem = ::onRemoveItem,

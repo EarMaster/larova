@@ -191,8 +191,11 @@ Three things about how that is built are worth knowing before editing a build fi
 **built-in Kotlin support**, and applying `org.jetbrains.kotlin.android` beside it fails outright.
 Library modules use **`com.android.kotlin.multiplatform.library`**, configured inside
 `kotlin { android { … } }`, rather than `com.android.library` plus `androidTarget()` — the old
-pairing needs an opt-in under AGP 9 and disappears in AGP 10; the price is single-variant libraries
-and host tests behind `withHostTestBuilder {}`. And **`:app` is a plain Android application
+pairing needs an opt-in under AGP 9 and disappears in AGP 10; the price is single-variant libraries,
+host tests behind `withHostTestBuilder {}`, and **Android resources switched off by default** —
+which is not a resource question but a packaging one. `:core:ui` has to set
+`androidResources.enable = true` or the Compose plugin has nowhere to put the compiled strings, and
+the app builds green with no text in it at all. See the comment in `core/ui/build.gradle.kts`. And **`:app` is a plain Android application
 module**, because there is no multiplatform equivalent of `com.android.application`; iOS will bring
 its own entry point beside it rather than through it.
 

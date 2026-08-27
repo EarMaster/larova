@@ -31,12 +31,18 @@ docs-only changes do not belong here.
   is in a file before it touches anything, then either replaces what is here or adds to it. A file
   that arrived incomplete is refused rather than half-applied, and one written by a newer Larova
   says so instead of losing what it cannot read.
+- A step of a guide can carry a picture, picked from the photos on the phone. It is copied into
+  Larova rather than pointed at, so tidying up the gallery later cannot empty a guide, and it is
+  made smaller on the way in — a backup full of camera-sized photographs is one nobody can send
+  anywhere. A picture that is taken off a step is deleted once no step wants it.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
 - Tiles can be rearranged from the menu, with buttons rather than dragging.
 - Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.
 - A home-screen icon: the lit niche, including the monochrome version themed launchers use.
+- Larova speaks German as well as English. On Android 13 and newer the phone can be told to show
+  Larova in either one, whatever language the rest of the phone is set to — so a grandmother can
+  read it in hers on a phone that stays in another.
 
-The tiles on the start screen are still examples rather than your own, and nothing can be edited
-yet. Both arrive with the tile editor.
+The other twelve languages of the launch set are still to come.

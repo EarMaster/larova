@@ -156,6 +156,10 @@
     <string name="edit_web_label">Label (optional)</string>
     <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>
     <string name="edit_remove">Remove</string>
+    <string name="edit_add_picture">Add a picture</string>
+    <string name="edit_change_picture">Change the picture</string>
+    <string name="edit_remove_picture">Remove the picture</string>
+    <string name="edit_picture_failed">That picture could not be added.</string>
 
     <!-- ===== Colour names shown in the tile picker ===== -->
     <string name="colour_sand">Sand</string>
@@ -190,5 +194,6 @@
     <string name="cd_menu">Menu</string>
     <string name="cd_edit_tile">Edit %1$s</string>
     <string name="cd_play">Play</string>
+    <string name="cd_step_picture">Picture for step %1$d</string>
 
 </resources>

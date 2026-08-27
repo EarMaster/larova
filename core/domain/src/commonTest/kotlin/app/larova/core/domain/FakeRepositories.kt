@@ -99,6 +99,17 @@ class FakeMediaRepository(initial: List<MediaAsset> = emptyList()) : MediaReposi
         assets.value = assets.value.filterNot { it.id == id }
     }
 
-    /** The real one walks the payloads; nothing here needs that, so it reports nothing removed. */
-    override suspend fun deleteOrphans(): Int = 0
+    /**
+     * Which rows no tile refers to any more.
+     *
+     * The real one answers that by decoding every payload. A test says it outright instead: what is
+     * being checked here is what happens to the files afterwards, not the walk that finds them.
+     */
+    var orphans: Set<Uuid> = emptySet()
+
+    override suspend fun deleteOrphans(): Int {
+        val removed = assets.value.filter { it.id in orphans }
+        assets.value = assets.value - removed.toSet()
+        return removed.size
+    }
 }

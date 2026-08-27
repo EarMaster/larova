@@ -49,6 +49,7 @@ complexity:
     ignoreAnnotated: ['Composable']
   TooManyFunctions:
     thresholdInFiles: 20
-    # A form ViewModel has one handler per field, and the editor has a lot of fields. Collapsing
-    # them into one onFieldChange(name, value) would trade the compiler's checking for a counter.
-    thresholdInClasses: 24
+    # A form ViewModel has one handler per field, and the editor has a lot of fields — five tile
+    # types worth, plus the three things that can happen to a picture. Collapsing them into one
+    # onFieldChange(name, value) would trade the compiler's checking for a counter.
+    thresholdInClasses: 27
