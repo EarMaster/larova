@@ -36,8 +36,20 @@ android {
     // hold the key, which is everyone but the maintainer. What must not happen is silence — an
     // unsigned AAB is refused by Play at the end of a ten-minute pipeline, so the build says so
     // while it is running.
-    val keystorePath = providers.environmentVariable("KEYSTORE_PATH").orNull
-    val keystore = keystorePath?.takeIf { it.isNotBlank() }?.let(::file)?.takeIf { it.isFile }
+    val keystorePath = providers.environmentVariable("KEYSTORE_PATH").orNull?.takeIf { it.isNotBlank() }
+    val keystore = keystorePath?.let(::keystoreFile)
+
+    // Set but not there is a mistake, and a different one from not set at all. Unset means a local
+    // build by somebody without the key, which is fine and silent; set to a path with no file at it
+    // means CI decoded the secret somewhere else, or somebody mistyped, and the only useful moment
+    // to say so is now rather than after twenty minutes of R8.
+    if (keystorePath != null && keystore == null) {
+        error(
+            "KEYSTORE_PATH is set to '$keystorePath' but there is no file there. Relative paths " +
+                "resolve against the repository root ($rootDir), not this module. Unset it to " +
+                "build unsigned — see docs/release-setup.md §1.",
+        )
+    }
 
     signingConfigs {
         if (keystore != null) {
@@ -109,8 +121,19 @@ tasks.register("reportSigning") {
 fun keystoreConfigured(): Boolean =
     providers.environmentVariable("KEYSTORE_PATH").orNull
         ?.takeIf { it.isNotBlank() }
-        ?.let(::file)
-        ?.isFile == true
+        ?.let(::keystoreFile) != null
+
+/**
+ * The keystore named by `KEYSTORE_PATH`, or null if there is no file there.
+ *
+ * Relative to the **repository root**, which is the whole reason this function exists. `file(...)`
+ * in a module's build script resolves against that module — `app/` — so `KEYSTORE_PATH=keystore.p12`
+ * pointed at `app/keystore.p12` while CI had written the decoded key beside the settings file. The
+ * build then signed nothing, said so in one line of a two-hundred-line log, and failed four minutes
+ * later on an artifact name. `rootDir.resolve` takes an absolute path as it is and a relative one
+ * from the root, which is what every caller means either way.
+ */
+fun keystoreFile(path: String): java.io.File? = rootDir.resolve(path).takeIf { it.isFile }
 
 dependencies {
     implementation(project(":core:ui"))
