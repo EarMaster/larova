@@ -1,0 +1,6 @@
+# The package, and nothing else.
+#
+# The service-account key is deliberately not named here. It arrives as SERVICE_ACCOUNT_JSON and is
+# passed to supply as data rather than as a path, so the credential never lands on a disk — not in
+# a runner's workspace and not in anybody's clone.
+package_name("app.larova")

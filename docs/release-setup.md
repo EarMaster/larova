@@ -146,8 +146,12 @@ None of this can be automated from here; it needs a browser and, for the first s
 5. **Target audience 18+**, category Tools or Lifestyle. Not Medical, not Health & Fitness. See
    `concept.md` §2.3 for why: declaring a child audience triggers the whole Families policy.
 6. **Service account for automated upload** — in Google Cloud, create a service account, grant it
-   access in the Play Console under Users and permissions (Release manager is enough), download
-   the JSON key, then:
+   access in the Play Console under Users and permissions, download the JSON key, then:
+
+   Release manager covers the AAB upload. The listing upload in `play-listing.yml` needs one more
+   box: **Edit store listing, pricing and distribution**. Without it `fastlane supply` fails with a
+   permissions error on the store-listing call while the release upload keeps working, which reads
+   as the workflow being broken rather than the account being short a tick.
 
    ```bash
    gh secret set SERVICE_ACCOUNT_JSON < ~/Downloads/play-service-account.json
@@ -217,4 +221,5 @@ gh api -X DELETE repos/EarMaster/larova/branches/main/protection
 | Console questionnaires: data safety, content rating, target audience, ads, app access | **yours, §3** — Play blocks a new app's first release until all five are answered |
 | First AAB uploaded by hand | **yours, §3.7** — the API cannot open a track that has never had a release |
 | Privacy policy at `https://larova.app/privacy` | needs DNS and a page; blocks store review, not development |
-| Listing screenshots | M3 — `google-play.yml` uploads only the AAB, mapping and release notes, so these are a Console job whenever you get to them |
+| Listing text pushed from the repo | done, M2 — `play-listing.yml`, `fastlane supply`. Needs the service account to also hold **Edit store listing, pricing and distribution**, and a release on the internal track to attach the edit to: it publishes the listing of an app that has shipped, it cannot bootstrap one |
+| Listing screenshots | M3. `play-listing.yml` will upload them once they exist at `en-US/images/phoneScreenshots/`; until then Console-uploaded images are left untouched |
