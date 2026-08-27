@@ -6,6 +6,8 @@ import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -41,6 +43,21 @@ class ObserveHomeTiles(
                 cards.observeCards(board.id).map { list -> list.mapNotNull { it.toTileOrNull() } }
             }
         }
+}
+
+/**
+ * The tiles inside one folder.
+ *
+ * Separate from [ObserveHomeTiles] rather than one use case with a nullable board: the start screen
+ * is found by having no parent and is created if it is missing, while a folder's board is named by
+ * the tile that opens it and simply exists or does not. Collapsing the two would mean a folder whose
+ * board went missing quietly showing the start screen instead.
+ */
+class ObserveBoardTiles(private val cards: CardRepository) {
+
+    @OptIn(ExperimentalUuidApi::class)
+    operator fun invoke(boardId: Uuid): Flow<List<Tile>> =
+        cards.observeCards(boardId).map { list -> list.mapNotNull { it.toTileOrNull() } }
 }
 
 /** One tile by id, or null if it is gone or unreadable. */

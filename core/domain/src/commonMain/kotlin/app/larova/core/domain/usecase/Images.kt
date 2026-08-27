@@ -21,6 +21,18 @@ class Pictures(
 )
 
 /**
+ * The two things a folder needs from the domain, in one dependency.
+ *
+ * Making the board and reading what is on it, together for the same reason [Pictures] groups its
+ * three: the screen that can make a folder is the screen that has to say what deleting it would
+ * take with it, and a ViewModel constructor listing every use case one by one is one nobody reads.
+ */
+class Folders(
+    val create: CreateFolderBoard,
+    val observeTiles: ObserveBoardTiles,
+)
+
+/**
  * Brings a picked picture in and records it.
  *
  * The file is written first and the row second, in that order on purpose: a row pointing at a file

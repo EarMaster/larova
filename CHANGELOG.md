@@ -14,9 +14,10 @@ docs-only changes do not belong here.
 
 ### Added
 - Larova installs and opens on a start screen of your own tiles.
-- Tiles can hold a guide, a note, a checklist, a number to call, or a website. Guides show one
-  step at a time at reading size, and the screen stays awake while one is open. Checklist items
-  can be ticked off without unlocking anything.
+- Tiles can hold a guide, a note, a checklist, a table, a number to call, or a website. Guides
+  show one step at a time at reading size, and the screen stays awake while one is open. Checklist
+  items can be ticked off without unlocking anything. A table takes your own headings, up to four
+  of them, and each cell is read out under the heading it belongs to.
 - A call tile opens the phone app with the number ready. Larova never dials by itself, and a call
   tile can be marked to appear behind "Get help" as well — a short list of large rows, capped so it
   stays readable when it is needed.
@@ -36,7 +37,11 @@ docs-only changes do not belong here.
   made smaller on the way in — a backup full of camera-sized photographs is one nobody can send
   anywhere. A picture that is taken off a step is deleted once no step wants it.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
-- Tiles can be rearranged from the menu, with buttons rather than dragging.
+- A folder tile holds other tiles: open it and the grid inside looks and works like the start
+  screen. One level deep, on purpose — nobody searching under pressure should have to navigate.
+  Deleting a folder says how many tiles go with it before it happens.
+- Tiles can be rearranged from the menu, with buttons rather than dragging, on the start screen and
+  inside a folder.
 - Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.

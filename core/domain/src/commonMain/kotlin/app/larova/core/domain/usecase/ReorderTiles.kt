@@ -7,11 +7,14 @@ import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.first
 
 /**
- * Writes a new order for the start screen.
+ * Writes a new order for a board.
  *
  * The whole order goes in one call rather than one swap at a time. A caregiver learns where things
  * are by position, so a half-applied rearrangement — two tiles claiming the same place, or an
  * order that depends on which write landed first — is worse than one that did not happen.
+ *
+ * A null board is the start screen. Naming it that way rather than looking it up at every call site
+ * keeps the arrange screen from having to know how the start screen is found.
  */
 class ReorderTiles(
     private val boards: BoardRepository,
@@ -19,10 +22,10 @@ class ReorderTiles(
 ) {
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend operator fun invoke(orderedIds: List<Uuid>): Boolean {
+    suspend operator fun invoke(orderedIds: List<Uuid>, boardId: Uuid? = null): Boolean {
         if (orderedIds.isEmpty()) return false
-        val boardId = boards.observeRootBoard().first()?.id ?: return false
-        cards.reorder(boardId, orderedIds)
+        val target = boardId ?: boards.observeRootBoard().first()?.id ?: return false
+        cards.reorder(target, orderedIds)
         return true
     }
 }

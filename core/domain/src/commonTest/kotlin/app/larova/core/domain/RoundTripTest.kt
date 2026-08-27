@@ -57,11 +57,14 @@ class RoundTripTest {
 
         assertIs<ImportPackage.Result.Imported>(result)
         assertEquals(2, result.boards)
-        assertEquals(4, result.cards)
+        assertEquals(6, result.cards)
         assertEquals(1, result.media)
 
         val titles = world.cards.observeAllCards().first().map { it.title }
-        assertEquals(setOf("Bedtime", "Evening", "Grandma", "From the future"), titles.toSet())
+        assertEquals(
+            setOf("Bedtime", "Evening", "Grandma", "Holidays", "The week", "From the future"),
+            titles.toSet(),
+        )
 
         // The guide's picture is on disk again, byte for byte.
         assertEquals("a picture", world.mediaFiles.contentOf("media/$MEDIA_ID.jpg"))
@@ -92,6 +95,48 @@ class RoundTripTest {
         assertEquals(Uuid.parse(MEDIA_ID), payload.steps.first().mediaId)
     }
 
+    /**
+     * A folder is the one tile that points at something other than itself, so a restore has to put
+     * the board back **and** leave the tile pointing at it. A folder tile whose board did not
+     * survive is a tile that opens nothing, with the tiles that were inside it stranded on a board
+     * nothing reaches.
+     */
+    @Test
+    fun aFolderStillOpensItsOwnTilesAfterARestore() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+        world.wipe()
+        world.import(destination, ImportMode.REPLACE)
+
+        val folderTile = world.cards.observeAllCards().first().single { it.title == "Holidays" }
+        val payload = CardPayloadCodec.decodeOrNull(folderTile.payload)
+        assertIs<CardPayload.Folder>(payload)
+
+        val board = world.boards.boards.value.singleOrNull { it.id == payload.boardId }
+        assertNotNull(board, "the folder points at a board that is not there any more")
+        assertEquals(
+            listOf("From the future"),
+            world.cards.observeCards(payload.boardId).first().map { it.title },
+        )
+    }
+
+    @Test
+    fun aTableComesBackWithItsHeadingsAndItsEmptyCell() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+        world.wipe()
+        world.import(destination, ImportMode.REPLACE)
+
+        val tile = world.cards.observeAllCards().first().single { it.title == "The week" }
+        val payload = CardPayloadCodec.decodeOrNull(tile.payload)
+        assertIs<CardPayload.Table>(payload)
+        assertEquals(listOf("Day", "Who fetches"), payload.columns)
+        // The blank cell is content: "nobody yet" is an answer, and dropping it would shift the row.
+        assertEquals(listOf(listOf("Monday", "Grandma"), listOf("Tuesday", "")), payload.rows)
+    }
+
     @Test
     fun theManifestDescribesWhatIsInThePackage() = runTest {
         val world = World()
@@ -104,7 +149,7 @@ class RoundTripTest {
         val manifest = preview.manifest
         assertEquals(ExportManifest.CURRENT_SCHEMA_VERSION, manifest.schemaVersion)
         assertEquals("Larova for Jonas", manifest.label)
-        assertEquals(4, manifest.counts.cards)
+        assertEquals(6, manifest.counts.cards)
         assertEquals(2, manifest.counts.boards)
         assertEquals(1, manifest.counts.media)
     }
@@ -318,7 +363,14 @@ class RoundTripTest {
             )
         }
 
+        /** Split by where the tiles live, because one function listing six of them reads as none. */
         private suspend fun addTiles(rootId: Uuid, folderId: Uuid) {
+            addReadingTiles(rootId)
+            addFolderAndTable(rootId = rootId, folderId = folderId)
+            addTileFromTheFuture(folderId)
+        }
+
+        private suspend fun addReadingTiles(rootId: Uuid) {
             cards.upsert(
                 card(
                     boardId = rootId,
@@ -359,6 +411,37 @@ class RoundTripTest {
                     sortIndex = 2,
                 ),
             )
+        }
+
+        /** The folder tile points at the board `addFolder` made, which is what a restore must keep. */
+        private suspend fun addFolderAndTable(rootId: Uuid, folderId: Uuid) {
+            cards.upsert(
+                card(
+                    boardId = rootId,
+                    title = "Holidays",
+                    type = CardType.FOLDER,
+                    payload = CardPayloadCodec.encode(CardPayload.Folder(boardId = folderId)),
+                    sortIndex = 3,
+                ),
+            )
+            cards.upsert(
+                card(
+                    boardId = rootId,
+                    title = "The week",
+                    type = CardType.TABLE,
+                    payload = CardPayloadCodec.encode(
+                        CardPayload.Table(
+                            columns = listOf("Day", "Who fetches"),
+                            rows = listOf(listOf("Monday", "Grandma"), listOf("Tuesday", "")),
+                        ),
+                    ),
+                    sortIndex = 4,
+                ),
+            )
+        }
+
+        /** A type this build has never heard of, inside the folder, to be carried through untouched. */
+        private suspend fun addTileFromTheFuture(folderId: Uuid) {
             cards.upsert(
                 card(
                     boardId = folderId,

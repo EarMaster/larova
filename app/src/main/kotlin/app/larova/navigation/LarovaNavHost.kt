@@ -11,6 +11,7 @@ import androidx.navigation.toRoute
 import app.larova.rememberBiometricUnlock
 import app.larova.core.domain.model.AppearanceSetting
 import androidx.compose.runtime.LaunchedEffect
+import app.larova.di.arrangeViewModelParameters
 import app.larova.di.cardViewModelParameters
 import app.larova.di.editCardViewModelParameters
 import app.larova.feature.card.CardScreen
@@ -70,7 +71,7 @@ fun LarovaNavHost(
                 onClearQuery = viewModel::onClearQuery,
                 onOpenTile = { id -> navController.navigate(CardRoute(id)) },
                 onAddTile = { navController.navigate(CardEditRoute()) },
-                onArrange = { navController.navigate(ArrangeRoute) },
+                onArrange = { navController.navigate(ArrangeRoute()) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
                 onHelp = openHelp,
@@ -96,14 +97,25 @@ fun LarovaNavHost(
                 onBack = goBack,
                 onHelp = openHelp,
                 loadPicture = viewModel::pictureFor,
+                // Only a folder uses these three. A tile inside one opens the same card screen as
+                // a tile on the start screen, which is what keeps the graph two levels deep.
+                onOpenTile = { id -> navController.navigate(CardRoute(id)) },
+                onAddTileHere = {
+                    state.folderBoardId?.let { navController.navigate(CardEditRoute(boardId = it)) }
+                },
+                onArrange = {
+                    state.folderBoardId?.let { navController.navigate(ArrangeRoute(boardId = it)) }
+                },
             )
         }
 
         composable<CardEditRoute> { entry ->
             val route = entry.toRoute<CardEditRoute>()
             val viewModel = koinViewModel<EditCardViewModel>(
-                key = "edit-" + route.cardId,
-                parameters = { editCardViewModelParameters(route.cardId) },
+                // Keyed on both: "a new tile on the start screen" and "a new tile in this folder"
+                // are two different editors, and sharing one would put the tile on the wrong board.
+                key = "edit-" + route.cardId + "-" + route.boardId,
+                parameters = { editCardViewModelParameters(route.cardId, route.boardId) },
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -129,8 +141,12 @@ fun LarovaNavHost(
             )
         }
 
-        composable<ArrangeRoute> {
-            val viewModel = koinViewModel<ArrangeTilesViewModel>()
+        composable<ArrangeRoute> { entry ->
+            val route = entry.toRoute<ArrangeRoute>()
+            val viewModel = koinViewModel<ArrangeTilesViewModel>(
+                key = "arrange-" + route.boardId,
+                parameters = { arrangeViewModelParameters(route.boardId) },
+            )
             val tiles by viewModel.tiles.collectAsStateWithLifecycle()
             ArrangeTilesScreen(
                 tiles = tiles,

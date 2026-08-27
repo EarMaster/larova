@@ -7,6 +7,7 @@ import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.usecase.CardDraft
+import app.larova.core.domain.usecase.CreateFolderBoard
 import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.SaveCard
 import kotlin.test.Test
@@ -118,12 +119,81 @@ class SaveCardTest {
     fun deletingRemovesTheTileAndSaysWhetherItWasThere() = runTest {
         val stored = existing("Bedtime", 0)
         val cards = FakeCardRepository(listOf(stored))
-        val delete = DeleteCard(cards)
+        val delete = DeleteCard(cards, FakeBoardRepository(listOf(root())))
 
         assertTrue(delete(stored.id))
         assertTrue(cards.cards.value.isEmpty())
         // Deleting the same tile twice — a double tap, or a stale screen.
         assertFalse(delete(stored.id))
+    }
+
+    /**
+     * A folder owns its board. Deleting the tile and leaving the board behind would leave the tiles
+     * on it in the database with no way to reach them: not on the start screen, not in a folder,
+     * and still in every backup from then on.
+     */
+    @Test
+    fun deletingAFolderTakesTheTilesInsideItWithIt() = runTest {
+        val folderBoard = Uuid.random()
+        val folderTile = existing("Holidays", 0).copy(
+            type = CardType.FOLDER,
+            payload = CardPayloadCodec.encode(CardPayload.Folder(boardId = folderBoard)),
+        )
+        val inside = existing("Beach", 0).copy(boardId = folderBoard)
+        val elsewhere = existing("Bedtime", 1)
+
+        val cards = FakeCardRepository(listOf(folderTile, inside, elsewhere))
+        val boards = FakeBoardRepository(
+            listOf(root(), Board(folderBoard, boardId, "Holidays", 0, at)),
+        )
+
+        assertTrue(DeleteCard(cards, boards)(folderTile.id))
+
+        assertEquals(listOf("Bedtime"), cards.cards.value.map { it.title })
+        assertEquals(listOf(boardId), boards.boards.value.map { it.id })
+    }
+
+    @Test
+    fun aNewTileGoesOnTheBoardTheEditorWasOpenedFrom() = runTest {
+        val folderBoard = Uuid.random()
+        val cards = FakeCardRepository()
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        save(draft(title = "Beach").copy(boardId = folderBoard))
+
+        assertEquals(folderBoard, cards.cards.value.single().boardId)
+    }
+
+    /** Saving a tile is not a way to move it: an existing one keeps the board it is already on. */
+    @Test
+    fun anExistingTileKeepsItsBoard() = runTest {
+        val folderBoard = Uuid.random()
+        val stored = existing("Beach", 0).copy(boardId = folderBoard)
+        val cards = FakeCardRepository(listOf(stored))
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        save(draft(title = "Beach again", id = stored.id).copy(boardId = null))
+
+        assertEquals(folderBoard, cards.cards.value.single().boardId)
+    }
+
+    @Test
+    fun aFolderBoardHangsOffTheStartScreen() = runTest {
+        val boards = FakeBoardRepository(listOf(root(), Board(Uuid.random(), boardId, "First", 0, at)))
+
+        val created = CreateFolderBoard(boards)("Holidays")
+
+        val board = boards.boards.value.single { it.id == created }
+        assertEquals(boardId, board.parentId)
+        assertEquals("Holidays", board.title)
+        // After the folder that is already there, not on top of it.
+        assertEquals(1, board.sortIndex)
+    }
+
+    /** No start screen means no parent to hang it off, and a board with no parent is a second one. */
+    @Test
+    fun aFolderBoardNeedsAStartScreen() = runTest {
+        assertNull(CreateFolderBoard(FakeBoardRepository())("Holidays"))
     }
 
     private fun root() = Board(id = boardId, parentId = null, title = "", sortIndex = 0, updatedAt = at)

@@ -33,4 +33,13 @@ sealed interface TileSubtitle {
     data class Steps(val count: Int) : TileSubtitle
 
     data class Items(val count: Int) : TileSubtitle
+
+    /**
+     * A folder says so.
+     *
+     * The one type that names itself rather than counting: the symbol is the parents' choice, so
+     * nothing else on the tile distinguishes "opens further tiles" from "opens a note". A count of
+     * what is inside would mean a query per tile on the screen that has to appear fastest.
+     */
+    data object Folder : TileSubtitle
 }

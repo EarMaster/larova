@@ -1,7 +1,9 @@
 package app.larova.core.domain
 
+import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.sanitizePhoneNumber
+import app.larova.core.domain.model.tableOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -51,5 +53,56 @@ class ContentRulesTest {
         assertEquals("4917012345", sanitizePhoneNumber("49+170 12345"))
         assertEquals("", sanitizePhoneNumber("+"))
         assertEquals("", sanitizePhoneNumber("call grandma"))
+    }
+
+    /**
+     * A table is read by position, so a row that is short by one cell would put the last value
+     * under the wrong heading. On a tile that says "Time | What" that is not a cosmetic problem,
+     * and the row can arrive short from an import as easily as from an editor.
+     */
+    @Test
+    fun aTableIsSquare() {
+        val table = tableOf(
+            columns = listOf("Time", "What"),
+            rows = listOf(
+                listOf("18:00"),
+                listOf("19:00", "Bath", "left over from a third column"),
+            ),
+        )
+
+        assertEquals(listOf("Time", "What"), table.columns)
+        assertEquals(listOf(listOf("18:00", ""), listOf("19:00", "Bath")), table.rows)
+    }
+
+    @Test
+    fun aTableDropsTheRowsNobodyFilledIn() {
+        val table = tableOf(
+            columns = listOf(" Time ", "What"),
+            rows = listOf(listOf("", ""), listOf(" 18:00 ", ""), listOf("  ", "   ")),
+        )
+
+        // Headings and cells are trimmed; a row with one value in it stays, blank cell and all.
+        assertEquals(listOf("Time", "What"), table.columns)
+        assertEquals(listOf(listOf("18:00", "")), table.rows)
+    }
+
+    @Test
+    fun aTableStopsAtFourColumns() {
+        val table = tableOf(
+            columns = listOf("a", "b", "c", "d", "e"),
+            rows = listOf(listOf("1", "2", "3", "4", "5")),
+        )
+
+        assertEquals(MAX_TABLE_COLUMNS, table.columns.size)
+        assertEquals(listOf(listOf("1", "2", "3", "4")), table.rows)
+    }
+
+    /** No columns means nothing to put a value under, so there is no table to keep. */
+    @Test
+    fun aTableWithNoHeadingsIsEmpty() {
+        val table = tableOf(columns = emptyList(), rows = listOf(listOf("orphaned")))
+
+        assertEquals(emptyList(), table.columns)
+        assertEquals(emptyList(), table.rows)
     }
 }
