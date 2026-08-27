@@ -1,0 +1,86 @@
+# frozen_string_literal: true
+
+# The store listing, from the repository to Google Play.
+#
+# `fastlane/metadata/android` has been the canonical source for the listing text since M0 — it is
+# reviewed in pull requests like any other translated string — but until now the Play Console held
+# a copy somebody had retyped by hand, in fourteen languages. This closes that: the tree is the
+# source and the Console is downstream of it.
+#
+# What this deliberately does **not** do is upload the app. The AAB, its mapping file and the
+# per-release notes go through `google-play.yml`, which is gated on a tag and on the metadata check
+# passing. Listing text changes on a different clock from releases — a typo fixed in the Turkish
+# description is not a reason to publish a build — so it has its own workflow and its own lane.
+
+default_platform(:android)
+
+platform :android do
+  desc "Push the store listing text and images to Play. Pass dry_run:true to validate only."
+  lane :listing do |options|
+    dry_run = options.fetch(:dry_run, false)
+
+    supply(
+      json_key_data: service_account_json,
+      metadata_path: "fastlane/metadata/android",
+
+      # No binaries. This lane exists to change words and pictures, and an accidental release from
+      # a listing edit is exactly the kind of surprise a store entry should never produce.
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+
+      # Release notes belong to the release that contains them: they are keyed by versionCode and
+      # uploaded beside the AAB. Uploading them here would attach whatever is in the tree to
+      # whatever is currently live, which is how a build ships with somebody else's notes.
+      skip_upload_changelogs: true,
+
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+
+      # Absent local images leave the ones already on Play alone. With sync_image_upload the tree
+      # would be authoritative for graphics too, which it is not yet — screenshots are M3, and
+      # anything uploaded through the Console in the meantime should survive a text fix.
+      sync_image_upload: false,
+
+      # A new app whose first release has not been reviewed cannot have changes sent for review
+      # through the API; Play refuses the edit outright and says to set exactly this. So the edit is
+      # committed and left waiting, and somebody presses "Send for review" in the Console — which
+      # is the right shape for this anyway: fourteen languages of text going live unattended is not
+      # something to automate on the way to a first test release.
+      changes_not_sent_for_review: true,
+
+      # Named even though nothing here touches a release, because supply's own default is
+      # production. A parameter that only matters when something goes wrong is a parameter worth
+      # setting on purpose.
+      track: "internal",
+
+      validate_only: dry_run
+    )
+
+    UI.success(
+      dry_run ? "Listing validated. Nothing was changed." : "Listing uploaded. Send it for review in the Play Console."
+    )
+  end
+
+  desc "Validate the listing against Play without changing anything."
+  lane :listing_check do
+    listing(dry_run: true)
+  end
+end
+
+# The service-account key, as data.
+#
+# Read from the environment rather than from a file so the credential exists only in the process
+# that needs it. Failing here with a sentence beats failing inside supply with a stack trace about
+# a nil key.
+def service_account_json
+  json = ENV["SERVICE_ACCOUNT_JSON"].to_s
+
+  if json.strip.empty?
+    UI.user_error!(
+      "SERVICE_ACCOUNT_JSON is not set. It is a repository secret; see docs/release-setup.md §3.6."
+    )
+  end
+
+  json
+end

@@ -54,7 +54,8 @@ locale codes are not the app's language tags (`zh-CN` not `zh-Hans`, `hi-IN`,
 | `app/src/main/res/xml/locales_config.xml` | Per-app language list |
 | `brand/*.svg` | Adaptive icon layers and the store icon |
 | `CHANGELOG.md` | [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) history. **Update `## [Unreleased]` in the same commit as any user-facing change.** `release.yml` extracts GitHub Release notes from the `## [x.y.z]` heading matching `versionName`, so headings must stay exact |
-| `fastlane/metadata/android/` | Play Store listing text, one folder per store locale in `fastlane supply` layout. Written by `/release`, validated by `tools/check_store_metadata.sh`, consumed by `google-play.yml`. See that folder's `README.md` |
+| `fastlane/metadata/android/` | Play Store listing text, one folder per store locale in `fastlane supply` layout. Written by `/release`, validated by `tools/check_store_metadata.sh`, consumed by `google-play.yml` (release notes) and `play-listing.yml` (the listing itself). See that folder's `README.md` |
+| `fastlane/Fastfile`, `fastlane/Appfile`, `Gemfile` | The one Ruby in the project: `fastlane supply` pushing the listing to Play. Nobody runs it locally — `play-listing.yml` resolves the gems on the runner, which is why there is no committed `Gemfile.lock` |
 | `tools/check_store_metadata.sh` | Validates listing text against Play's per-locale character limits (title 30, short 80, full 4000, release notes 500) and listing images (24-bit PNG, no alpha, 320–3840 px a side, long side at most twice the short one, at least two per set). Pass a versionCode to also require release notes in every store locale |
 | `.claude/commands/` | Repo slash commands: `/commit` and `/release` — see "Slash commands" |
 | `docs/pages/` | The GitHub Pages site (Jekyll), deployed by `pages.yml` — landing page and privacy policy, served at `larova.app`. Built on the MIT-licensed Hydra template, vendored; see its `_config.yml` for what was stripped out and why |
@@ -163,8 +164,13 @@ regression that cannot be walked back, because that file may be the only copy of
   release's AAB to Google Play, package `app.larova`. Needs a `SERVICE_ACCOUNT_JSON` secret and an
   active Play Console listing. Checks out the *tag* rather than the default branch so the
   `versionCode` it reads matches the AAB, and aborts if `versionName` disagrees with the tag. It
-  does **not** upload listing text or screenshots — `r0adkll/upload-google-play` handles only the
-  AAB, mapping and release notes.
+  handles the AAB, the mapping and the release notes only.
+- `play-listing.yml` — the listing text and images, through `fastlane supply`, on pushes to `main`
+  that touch `fastlane/**` plus manual dispatch (with a validate-only option). Uploads no binary
+  and no release notes, and leaves the edit **committed but not sent for review** — a new app whose
+  first release has not been reviewed cannot submit changes through the API, and unattended copy in
+  fourteen languages is not something to publish without a human. A pull request touching those
+  paths validates the same payload against Play without changing anything.
 
 ## Slash commands
 
