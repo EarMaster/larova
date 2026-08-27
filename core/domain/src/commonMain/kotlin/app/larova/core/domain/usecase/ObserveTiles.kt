@@ -60,6 +60,19 @@ class ObserveBoardTiles(private val cards: CardRepository) {
         cards.observeCards(boardId).map { list -> list.mapNotNull { it.toTileOrNull() } }
 }
 
+/**
+ * Where a card screen gets its content: the tile itself, and — when that tile is a folder — the
+ * tiles inside it.
+ *
+ * The two travel together because the screen cannot know which it needs until the payload is
+ * decoded, and it decodes the payload by asking for the tile. Grouped like the export ports are, so
+ * a ViewModel constructor stays short enough to read.
+ */
+class TileSource(
+    val observe: ObserveTile,
+    val onBoard: ObserveBoardTiles,
+)
+
 /** One tile by id, or null if it is gone or unreadable. */
 class ObserveTile(private val cards: CardRepository) {
 

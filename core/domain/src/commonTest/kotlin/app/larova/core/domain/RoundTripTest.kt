@@ -10,9 +10,12 @@ import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
+import app.larova.core.domain.model.LogEntry
+import app.larova.core.domain.model.LogKind
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.usecase.EnsureRootBoard
+import app.larova.core.domain.usecase.LOG_RETENTION_DAYS
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ImportPackage
 import app.larova.core.domain.usecase.ReadPackagePreview
@@ -22,6 +25,8 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -57,12 +62,14 @@ class RoundTripTest {
 
         assertIs<ImportPackage.Result.Imported>(result)
         assertEquals(2, result.boards)
-        assertEquals(6, result.cards)
+        assertEquals(7, result.cards)
         assertEquals(1, result.media)
 
         val titles = world.cards.observeAllCards().first().map { it.title }
         assertEquals(
-            setOf("Bedtime", "Evening", "Grandma", "Holidays", "The week", "From the future"),
+            setOf(
+                "Bedtime", "Evening", "Grandma", "Holidays", "The week", "Music", "From the future",
+            ),
             titles.toSet(),
         )
 
@@ -121,6 +128,74 @@ class RoundTripTest {
         )
     }
 
+    /**
+     * A shortcut carries a package name, and a package name means nothing on the phone that
+     * restores it — the app may not be installed there at all. What has to survive is the tile:
+     * the label the parents wrote and the package it points at, so it works again on a phone that
+     * does have the app.
+     */
+    /**
+     * The log is part of what a family typed, so it is in the backup — and the retention window
+     * applies to what comes back out of one. Restoring a two-year-old package must not resurrect
+     * two years of events, and the rule about how long a log is kept lives in one place.
+     */
+    @Test
+    fun theLogComesBackWithoutWhatTheWindowHasDropped() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+        world.wipe()
+        world.import(destination, ImportMode.REPLACE)
+
+        val notes = world.log.entries.value.map { it.note }
+        assertTrue("he would not eat lunch" in notes, "a line a caregiver wrote did not survive")
+        assertTrue(
+            "from long before the window" !in notes,
+            "an entry older than the retention window came back",
+        )
+        // The line the app wrote about a tile came back with the tile it refers to.
+        val opened = world.log.entries.value.single { it.kind == LogKind.CARD_OPENED }
+        val titles = world.cards.observeAllCards().first().associate { it.id to it.title }
+        assertEquals("Bedtime", titles[opened.cardId])
+    }
+
+    /** A replacing import throws the old log away with everything else. */
+    @Test
+    fun replacingTheContentReplacesTheLog() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+
+        val other = World(world.store.packages)
+        other.log.append(
+            LogEntry(
+                id = Uuid.random(),
+                at = Clock.System.now(),
+                kind = LogKind.MANUAL_NOTE,
+                note = "their own line",
+            ),
+        )
+
+        other.import(destination, ImportMode.REPLACE)
+
+        assertTrue("their own line" !in other.log.entries.value.map { it.note })
+    }
+
+    @Test
+    fun aShortcutKeepsTheAppItPointsAtAndTheWordsOnIt() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+        world.wipe()
+        world.import(destination, ImportMode.REPLACE)
+
+        val tile = world.cards.observeAllCards().first().single { it.title == "Music" }
+        val payload = CardPayloadCodec.decodeOrNull(tile.payload)
+        assertIs<CardPayload.AppLink>(payload)
+        assertEquals("com.example.music", payload.packageName)
+        assertEquals("Music for the car", payload.label)
+    }
+
     @Test
     fun aTableComesBackWithItsHeadingsAndItsEmptyCell() = runTest {
         val world = World()
@@ -149,7 +224,7 @@ class RoundTripTest {
         val manifest = preview.manifest
         assertEquals(ExportManifest.CURRENT_SCHEMA_VERSION, manifest.schemaVersion)
         assertEquals("Larova for Jonas", manifest.label)
-        assertEquals(6, manifest.counts.cards)
+        assertEquals(7, manifest.counts.cards)
         assertEquals(2, manifest.counts.boards)
         assertEquals(1, manifest.counts.media)
     }
@@ -314,16 +389,17 @@ class RoundTripTest {
         val boards = FakeBoardRepository()
         val cards = FakeCardRepository()
         val media = FakeMediaRepository()
+        val log = FakeLogRepository()
         val mediaFiles = FakeMediaFiles()
         val store = FakePackageStore(mediaFiles, shelf)
         val io = PackageIo(store = store, digest = FakeDigest(), mediaFiles = mediaFiles)
         private val ensureRoot = EnsureRootBoard(boards)
 
         suspend fun export(destination: String, label: String? = null) =
-            ExportPackage(boards, cards, media, io, APP_VERSION)(destination, label)
+            ExportPackage(boards, cards, media, log, io, APP_VERSION)(destination, label)
 
         suspend fun import(source: String, mode: ImportMode) =
-            ImportPackage(boards, cards, media, io, ensureRoot)(source, mode)
+            ImportPackage(boards, cards, media, log, io, ensureRoot)(source, mode)
 
         suspend fun rootId(): Uuid = ensureRoot().id
 
@@ -336,6 +412,39 @@ class RoundTripTest {
             val folder = addFolder(root.id)
             addPicture()
             addTiles(rootId = root.id, folderId = folder.id)
+            addLog()
+        }
+
+        /**
+         * One line the app wrote and one a caregiver did, plus one from long enough ago that the
+         * retention window has to drop it on the way back in.
+         */
+        private suspend fun addLog() {
+            val opened = cards.observeAllCards().first().first { it.title == "Bedtime" }
+            log.append(
+                LogEntry(
+                    id = Uuid.random(),
+                    at = Clock.System.now(),
+                    kind = LogKind.CARD_OPENED,
+                    cardId = opened.id,
+                ),
+            )
+            log.append(
+                LogEntry(
+                    id = Uuid.random(),
+                    at = Clock.System.now(),
+                    kind = LogKind.MANUAL_NOTE,
+                    note = "he would not eat lunch",
+                ),
+            )
+            log.append(
+                LogEntry(
+                    id = Uuid.random(),
+                    at = Clock.System.now() - (LOG_RETENTION_DAYS + 10).days,
+                    kind = LogKind.MANUAL_NOTE,
+                    note = "from long before the window",
+                ),
+            )
         }
 
         private suspend fun addFolder(parentId: Uuid): Board {
@@ -367,6 +476,7 @@ class RoundTripTest {
         private suspend fun addTiles(rootId: Uuid, folderId: Uuid) {
             addReadingTiles(rootId)
             addFolderAndTable(rootId = rootId, folderId = folderId)
+            addShortcut(rootId)
             addTileFromTheFuture(folderId)
         }
 
@@ -414,6 +524,23 @@ class RoundTripTest {
         }
 
         /** The folder tile points at the board `addFolder` made, which is what a restore must keep. */
+        private suspend fun addShortcut(rootId: Uuid) {
+            cards.upsert(
+                card(
+                    boardId = rootId,
+                    title = "Music",
+                    type = CardType.APP_LINK,
+                    payload = CardPayloadCodec.encode(
+                        CardPayload.AppLink(
+                            packageName = "com.example.music",
+                            label = "Music for the car",
+                        ),
+                    ),
+                    sortIndex = 5,
+                ),
+            )
+        }
+
         private suspend fun addFolderAndTable(rootId: Uuid, folderId: Uuid) {
             cards.upsert(
                 card(
@@ -471,6 +598,7 @@ class RoundTripTest {
             boards.boards.value = emptyList()
             cards.cards.value = emptyList()
             media.assets.value = emptyList()
+            log.entries.value = emptyList()
             mediaFiles.deleteAll()
         }
 

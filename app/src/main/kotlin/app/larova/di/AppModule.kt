@@ -27,14 +27,22 @@ import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.export.PackageStore
 import app.larova.core.domain.usecase.AddImage
 import app.larova.core.domain.usecase.CleanUpMedia
+import app.larova.core.domain.app.InstalledApps
+import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CreateFolderBoard
 import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ExportPackage
+import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
+import app.larova.core.domain.usecase.ObserveLog
+import app.larova.core.domain.usecase.PruneLog
+import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.ReadPackagePreview
 import app.larova.core.domain.usecase.HasPin
+import app.larova.core.domain.usecase.IsAppInstalled
+import app.larova.core.domain.usecase.PickableApps
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.EnsureRootBoard
 import app.larova.core.domain.usecase.ObserveBoardTiles
@@ -46,11 +54,14 @@ import app.larova.core.domain.usecase.ReorderTiles
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.SearchTiles
 import app.larova.core.domain.usecase.SetPin
+import app.larova.core.domain.usecase.TileEditing
+import app.larova.core.domain.usecase.TileSource
 import app.larova.core.domain.usecase.ToggleChecklistItem
 import app.larova.core.domain.usecase.UnlockWithBiometrics
 import app.larova.core.domain.usecase.UnlockWithPin
 import app.larova.core.platform.AndroidExternalActions
 import app.larova.core.platform.AndroidImageStore
+import app.larova.core.platform.AndroidInstalledApps
 import app.larova.core.platform.AndroidPlatformPaths
 import app.larova.core.platform.AndroidDigest
 import app.larova.core.platform.AndroidMediaFiles
@@ -66,6 +77,7 @@ import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.LogViewModel
 import app.larova.feature.settings.PinSetupViewModel
 import app.larova.feature.transfer.TransferViewModel
 import app.larova.feature.settings.UnlockViewModel
@@ -96,6 +108,7 @@ val appModule = module {
     single<Digest> { AndroidDigest() }
     single<MediaFiles> { AndroidMediaFiles(get()) }
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
+    single<InstalledApps> { AndroidInstalledApps(androidContext()) }
     single { PackageIo(store = get(), digest = get(), mediaFiles = get()) }
 
     // One session for the whole process, with a scope that outlives every screen: the five-minute
@@ -132,10 +145,19 @@ val appModule = module {
     factory { ObserveTile(get()) }
     factory { ObserveHelpContacts(get()) }
     factory { ToggleChecklistItem(get()) }
+    factory { RecordEvent(get()) }
+    factory { ObserveLog(get(), get()) }
+    factory { ClearLog(get()) }
+    factory { PruneLog(get()) }
     factory { SaveCard(get(), get()) }
     factory { DeleteCard(get(), get()) }
+    factory { TileEditing(get(), get(), get()) }
+    factory { TileSource(get(), get()) }
     factory { CreateFolderBoard(get()) }
     factory { Folders(get(), get()) }
+    factory { PickableApps(get()) }
+    factory { IsAppInstalled(get()) }
+    factory { Apps(get(), get()) }
     factory { AddImage(get(), get()) }
     factory { LoadImage(get(), get()) }
     factory { CleanUpMedia(get(), get()) }
@@ -149,21 +171,26 @@ val appModule = module {
     factory { LockParentView(get()) }
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
-    factory { ExportPackage(get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
     factory { ReadPackagePreview(get()) }
-    factory { ImportPackage(get(), get(), get(), get(), get()) }
+    factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     // The board comes from the route: the start screen when it is empty, a folder otherwise.
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
-    viewModel { HelpViewModel(get()) }
+    viewModel { HelpViewModel(get(), get()) }
+    viewModel { LogViewModel(get(), get(), get()) }
     viewModel { TransferViewModel(get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
-    viewModel { parameters -> CardViewModel(parameters.get(), get(), get(), get(), get()) }
-    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get(), get(), get()) }
+    viewModel { parameters ->
+        CardViewModel(parameters.get(), get(), get(), get(), get(), get())
+    }
+    viewModel { parameters ->
+        EditCardViewModel(parameters.get(), get(), get(), get(), get())
+    }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */

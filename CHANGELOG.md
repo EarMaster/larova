@@ -36,7 +36,16 @@ docs-only changes do not belong here.
   Larova rather than pointed at, so tidying up the gallery later cannot empty a guide, and it is
   made smaller on the way in — a backup full of camera-sized photographs is one nobody can send
   anywhere. A picture that is taken off a step is deleted once no step wants it.
+- An activity log, behind the menu in both views. Larova writes a line when a tile is opened, when
+  something is ticked off and when a call is prepared, and whoever is with the child can add lines
+  of their own — that is the part the parents come home to read. It is a list of what happened and
+  nothing more: no totals, no trends, no interpretation. Lines older than 30 days are dropped, the
+  log travels in a backup, and clearing it needs parent view.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
+- A tile can open another app on the phone — the music player, the camera, the bus timetable.
+  Pick it from a list of what is installed, and give the tile words a caregiver will recognise
+  rather than the app store name. If the app is uninstalled later the tile says so instead of doing
+  nothing when it is tapped.
 - A folder tile holds other tiles: open it and the grid inside looks and works like the start
   screen. One level deep, on purpose — nobody searching under pressure should have to navigate.
   Deleting a folder says how many tiles go with it before it happens.

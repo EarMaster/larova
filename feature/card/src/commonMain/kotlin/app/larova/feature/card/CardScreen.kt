@@ -46,6 +46,7 @@ fun CardScreen(
     onToggleItem: (Int) -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onOpenApp: (String) -> Unit,
     onEdit: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
@@ -89,6 +90,7 @@ fun CardScreen(
             onToggleItem = onToggleItem,
             onPrepareCall = onPrepareCall,
             onOpenUrl = onOpenUrl,
+            onOpenApp = onOpenApp,
             onOpenTile = onOpenTile,
             onBack = onBack,
             loadPicture = loadPicture,
@@ -141,6 +143,7 @@ private fun CardContent(
     onToggleItem: (Int) -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onOpenApp: (String) -> Unit,
     onOpenTile: (String) -> Unit,
     onBack: () -> Unit,
     loadPicture: suspend (String) -> ImageBitmap?,
@@ -186,12 +189,18 @@ private fun CardContent(
             modifier = modifier,
         )
 
-        // Media and app shortcuts are still to come. They cannot be reached from the grid before
-        // then, because nothing can create one — but the branch is here rather than a wildcard, so
-        // adding a type is a compile error until it has a renderer.
+        is CardPayload.AppLink -> AppLinkView(
+            appLink = payload,
+            isInstalled = state.appInstalled,
+            onOpenApp = onOpenApp,
+            modifier = modifier,
+        )
+
+        // Video and audio are still to come. They cannot be reached from the grid before then,
+        // because nothing can create one — but the branch is here rather than a wildcard, so adding
+        // a type is a compile error until it has a renderer.
         is CardPayload.Video,
         is CardPayload.Audio,
-        is CardPayload.AppLink,
         -> EmptyPayloadNote(modifier = modifier)
     }
 }

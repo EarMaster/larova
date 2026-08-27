@@ -30,6 +30,15 @@ class AndroidExternalActions(private val context: Context) : ExternalActions {
         launch(Intent(Intent.ACTION_VIEW, Uri.parse(url.trim())))
     }
 
+    override fun openApp(packageName: String) {
+        if (packageName.isBlank()) return
+        // Null for an app that is gone, disabled, or has no launcher entry — all three of which are
+        // ordinary things to happen to a tile made months ago. The screen has already asked and
+        // will be showing that instead of a button, so there is nothing to report here.
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return
+        launch(intent)
+    }
+
     private fun launch(intent: Intent) {
         // The application context has no task of its own to start an activity in.
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

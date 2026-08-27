@@ -104,6 +104,12 @@
     <string name="help_emergency">Notruf</string>
     <string name="help_no_contacts">Hier sind noch keine Nummern eingetragen.</string>
 
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">App öffnen</string>
+    <string name="app_missing">Diese App ist nicht mehr auf diesem Telefon.</string>
+    <string name="app_choose">Welche App?</string>
+    <string name="app_none_found">Dazu passt keine App.</string>
+
     <!-- ===== Backup and transfer ===== -->
     <string name="transfer_title">Sichern &amp; übertragen</string>
     <string name="transfer_backup">Sichern</string>
@@ -136,6 +142,17 @@
     <string name="settings_log">Protokoll</string>
     <string name="settings_log_retention">%1$d Tage aufbewahren</string>
     <string name="settings_log_clear">Protokoll löschen</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Bisher ist nichts passiert.</string>
+    <string name="log_note_hint">Eintrag hinzufügen</string>
+    <string name="log_add">Ins Protokoll schreiben</string>
+    <string name="log_retention">Einträge, die älter als %1$d Tage sind, werden entfernt.</string>
+    <string name="log_clear_question">Das ganze Protokoll löschen? Die Einträge lassen sich nicht zurückholen.</string>
+    <string name="log_card_opened">%1$s geöffnet</string>
+    <string name="log_check_toggled">In %1$s etwas abgehakt</string>
+    <string name="log_call_prepared">Anruf vorbereitet: %1$s</string>
+    <string name="log_tile_gone">eine inzwischen gelöschte Kachel</string>
 
     <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
          more specific — but they are still read once, quickly, on a phone. ===== -->
@@ -174,6 +191,11 @@
     <string name="edit_call_number">Rufnummer</string>
     <string name="edit_call_relation">Wer das ist (optional)</string>
     <string name="edit_call_in_help">Auch unter „Hilfe holen“ zeigen</string>
+    <string name="edit_choose_app">App auswählen</string>
+    <string name="edit_app_none_chosen">Noch keine App ausgewählt.</string>
+    <string name="edit_app_chosen">Öffnet %1$s</string>
+    <string name="edit_app_label">Was auf der Kachel steht</string>
+    <string name="edit_app_required">Bitte die App auswählen, die diese Kachel öffnet.</string>
     <string name="edit_web_address">Webadresse</string>
     <string name="edit_web_label">Bezeichnung (optional)</string>
     <string name="edit_web_address_invalid">Eine Webadresse muss mit http:// oder https:// beginnen</string>

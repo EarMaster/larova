@@ -2,10 +2,14 @@ package app.larova.core.domain
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
@@ -111,5 +115,32 @@ class FakeMediaRepository(initial: List<MediaAsset> = emptyList()) : MediaReposi
         val removed = assets.value.filter { it.id in orphans }
         assets.value = assets.value - removed.toSet()
         return removed.size
+    }
+}
+
+/**
+ * The log, in memory and newest first.
+ *
+ * `observeRecent` sorts rather than trusting insertion order, because the real one is an ORDER BY
+ * and an import writes entries in whatever order the file had them.
+ */
+class FakeLogRepository(initial: List<LogEntry> = emptyList()) : LogRepository {
+
+    val entries = MutableStateFlow(initial)
+
+    override fun observeRecent(limit: Int): Flow<List<LogEntry>> =
+        entries.map { list -> list.sortedByDescending { it.at }.take(limit) }
+
+    override suspend fun append(entry: LogEntry) {
+        entries.value = entries.value.filterNot { it.id == entry.id } + entry
+    }
+
+    override suspend fun pruneOlderThanDays(days: Int) {
+        val cutoff = Clock.System.now() - days.days
+        entries.value = entries.value.filter { it.at >= cutoff }
+    }
+
+    override suspend fun clear() {
+        entries.value = emptyList()
     }
 }

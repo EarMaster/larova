@@ -25,6 +25,8 @@ import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.LogScreen
+import app.larova.feature.settings.LogViewModel
 import app.larova.feature.settings.PinSetupScreen
 import app.larova.feature.settings.PinSetupViewModel
 import app.larova.feature.settings.SettingsScreen
@@ -33,6 +35,7 @@ import app.larova.feature.settings.UnlockViewModel
 import app.larova.feature.transfer.TransferScreen
 import app.larova.feature.transfer.TransferViewModel
 import app.larova.formatExportDate
+import app.larova.formatLogTime
 import app.larova.rememberBackupPicker
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
@@ -50,6 +53,7 @@ fun LarovaNavHost(
     onLockParentView: () -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onOpenApp: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -74,6 +78,7 @@ fun LarovaNavHost(
                 onArrange = { navController.navigate(ArrangeRoute()) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
+                onOpenLog = { navController.navigate(LogRoute) },
                 onHelp = openHelp,
             )
         }
@@ -87,12 +92,23 @@ fun LarovaNavHost(
                 parameters = { cardViewModelParameters(route.cardId) },
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
+
+            // Recorded when the screen arrives, not when the tile was tapped: what the log is for is
+            // what was actually read.
+            LaunchedEffect(route.cardId) { viewModel.onOpened() }
+
             CardScreen(
                 state = state,
                 isParentView = isParentView,
                 onToggleItem = viewModel::onToggleItem,
-                onPrepareCall = onPrepareCall,
+                // Two calls rather than one: the ViewModel writes the log line, the platform opens
+                // the dialler. Neither belongs inside the other.
+                onPrepareCall = { number ->
+                    viewModel.onCallPrepared()
+                    onPrepareCall(number)
+                },
                 onOpenUrl = onOpenUrl,
+                onOpenApp = onOpenApp,
                 onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
                 onBack = goBack,
                 onHelp = openHelp,
@@ -210,7 +226,11 @@ fun LarovaNavHost(
             val contacts by viewModel.contacts.collectAsStateWithLifecycle()
             HelpScreen(
                 contacts = contacts,
-                onPrepareCall = onPrepareCall,
+                onPrepareCall = { number ->
+                    contacts.firstOrNull { it.number == number }
+                        ?.let { viewModel.onCallPrepared(it.cardId) }
+                    onPrepareCall(number)
+                },
                 onBack = goBack,
                 // Already here: tapping the bar on this screen does nothing rather than stacking a
                 // second copy of it on the back stack.
@@ -233,6 +253,24 @@ fun LarovaNavHost(
                 onRestore = pickSource,
                 onConfirmImport = viewModel::onConfirmImport,
                 onCancelImport = viewModel::onCancelImport,
+                onBack = goBack,
+                onHelp = openHelp,
+            )
+        }
+
+        composable<LogRoute> {
+            val viewModel = koinViewModel<LogViewModel>()
+            val lines by viewModel.lines.collectAsStateWithLifecycle()
+            val note by viewModel.note.collectAsStateWithLifecycle()
+
+            LogScreen(
+                lines = lines,
+                note = note,
+                isParentView = isParentView,
+                formatTime = ::formatLogTime,
+                onNoteChange = viewModel::onNoteChange,
+                onAddNote = viewModel::onAddNote,
+                onClear = viewModel::onClear,
                 onBack = goBack,
                 onHelp = openHelp,
             )

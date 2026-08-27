@@ -60,6 +60,7 @@ private fun LarovaApp() {
             onLockParentView = viewModel::leaveParentView,
             onPrepareCall = actions::prepareCall,
             onOpenUrl = actions::openUrl,
+            onOpenApp = actions::openApp,
         )
     }
 }

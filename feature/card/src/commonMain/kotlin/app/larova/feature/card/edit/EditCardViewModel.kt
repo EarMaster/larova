@@ -12,13 +12,13 @@ import app.larova.core.domain.model.Step
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.parseUuidOrNull
+import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
-import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.Folders
-import app.larova.core.domain.usecase.ObserveTile
 import app.larova.core.domain.usecase.Pictures
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
+import app.larova.core.domain.usecase.TileEditing
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.theme.TileColor
 import app.larova.feature.card.toImageBitmapOrNull
@@ -71,8 +71,17 @@ data class EditUiState(
     val callInHelpSheet: Boolean = false,
     val webUrl: String = "",
     val webLabel: String = "",
+    /** The app a shortcut tile opens, and the words the parents put on it. */
+    val appPackage: String = "",
+    val appLabel: String = "",
+    /** What the picker is showing. Empty until it is opened — a phone has a hundred apps on it. */
+    val apps: List<AppChoice> = emptyList(),
+    val appQuery: String = "",
+    val appPickerOpen: Boolean = false,
     val titleMissing: Boolean = false,
     val urlInvalid: Boolean = false,
+    /** A shortcut tile was saved without an app chosen. */
+    val appMissing: Boolean = false,
     val isLoading: Boolean = false,
     val saved: Boolean = false,
     val deleted: Boolean = false,
@@ -115,6 +124,7 @@ fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
     CardType.TABLE,
     CardType.PHONE,
     CardType.WEB,
+    CardType.APP_LINK,
     CardType.FOLDER.takeUnless { isNested },
 )
 
@@ -141,11 +151,10 @@ data class EditTarget(val cardId: String = "", val boardId: String = "")
 @Suppress("TooManyFunctions")
 class EditCardViewModel(
     target: EditTarget,
-    private val observeTile: ObserveTile,
-    private val saveCard: SaveCard,
-    private val deleteCard: DeleteCard,
+    private val tile: TileEditing,
     private val pictures: Pictures,
     private val folders: Folders,
+    private val apps: Apps,
 ) : ViewModel() {
 
     private val cardId: String? = target.cardId.takeIf { it.isNotEmpty() }
@@ -193,6 +202,58 @@ class EditCardViewModel(
     fun onWebLabelChange(value: String) = _state.update { it.copy(webLabel = value) }
 
     fun onWebUrlChange(value: String) = _state.update { it.copy(webUrl = value, urlInvalid = false) }
+
+    fun onAppLabelChange(value: String) = _state.update { it.copy(appLabel = value) }
+
+    /**
+     * Opens the picker and loads the list behind it.
+     *
+     * Loaded on opening rather than when the editor appears: reading a hundred labels and drawing a
+     * hundred icons is not work to do for a parent who came to write a bedtime guide.
+     */
+    fun onChooseApp() {
+        _state.update { it.copy(appPickerOpen = true) }
+        loadApps()
+    }
+
+    fun onAppQueryChange(value: String) {
+        _state.update { it.copy(appQuery = value) }
+        loadApps()
+    }
+
+    fun onDismissAppPicker() = _state.update { it.copy(appPickerOpen = false, appQuery = "") }
+
+    /**
+     * The app's own name is filled in as the label, and stays editable.
+     *
+     * A caregiver reads the tile, not the app store: "Music for the car" is what they recognise,
+     * and the app's own name is only the best first guess at it.
+     */
+    fun onAppPicked(choice: AppChoice) = _state.update { state ->
+        state.copy(
+            appPackage = choice.packageName,
+            appLabel = state.appLabel.ifBlank { choice.label },
+            appPickerOpen = false,
+            appQuery = "",
+            appMissing = false,
+        )
+    }
+
+    private fun loadApps() {
+        viewModelScope.launch {
+            val query = _state.value.appQuery
+            val choices = apps.pickable(query).map { app ->
+                AppChoice(
+                    packageName = app.packageName,
+                    label = app.label,
+                    icon = app.icon?.toImageBitmapOrNull(),
+                )
+            }
+            // Dropped if the picker was closed while this was running, so a list cannot arrive
+            // after the dialog it belongs to.
+            if (_state.value.appPickerOpen) _state.update { it.copy(apps = choices) }
+        }
+    }
 
     /** Offered while creating only: changing the type of a filled-in tile would discard content. */
     fun onTypeChange(type: CardType) = _state.update { it.copy(type = type) }
@@ -345,13 +406,19 @@ class EditCardViewModel(
             _state.update { it.copy(urlInvalid = true) }
             return
         }
+        // A shortcut with no app behind it is a tile that does nothing when tapped, which the parent
+        // who made it will not be there to see.
+        if (current.type == CardType.APP_LINK && current.appPackage.isBlank()) {
+            _state.update { it.copy(appMissing = true) }
+            return
+        }
 
         viewModelScope.launch {
             // The board a folder opens has to exist before the payload can point at it. Made here
             // rather than when the type was picked, so a parent who changed their mind and left
             // has left nothing behind.
             val folderBoardId = folderBoardIdFor(current) ?: return@launch
-            val result = saveCard(
+            val result = tile.save(
                 CardDraft(
                     id = parseUuidOrNull(cardId),
                     boardId = boardId,
@@ -380,7 +447,7 @@ class EditCardViewModel(
     fun onDelete() {
         val id = parseUuidOrNull(cardId) ?: return
         viewModelScope.launch {
-            deleteCard(id)
+            tile.delete(id)
             // The pictures of a deleted guide are what nothing points at now.
             pictures.cleanUp()
             _state.update { it.copy(deleted = true) }
@@ -390,13 +457,13 @@ class EditCardViewModel(
     private fun load(id: String) {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val tile = observeTile(id)
-            _state.value = if (tile == null) {
+            val existing = tile.observe(id)
+            _state.value = if (existing == null) {
                 // Deleted from under the editor, or never a tile. Treated as gone rather than as a
                 // new tile, so saving cannot resurrect it with half its content.
                 EditUiState(isNew = false, isLoading = false, deleted = true)
             } else {
-                tile.toEditState()
+                existing.toEditState()
             }
             loadPictures()
             loadFolderCount()
@@ -482,6 +549,11 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
         inHelpSheet = callInHelpSheet,
     )
 
+    CardType.APP_LINK -> CardPayload.AppLink(
+        packageName = appPackage,
+        label = appLabel.trim().ifEmpty { title.trim() },
+    )
+
     CardType.WEB -> CardPayload.Web(
         url = webUrl.trim(),
         label = webLabel.trim().takeIf { it.isNotEmpty() },
@@ -496,7 +568,7 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
 
     // Not offered by the picker, so not reachable — but a `when` without a branch for them would
     // stop compiling the day one is added, which is exactly when this needs revisiting.
-    CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK ->
+    CardType.VIDEO, CardType.AUDIO ->
         CardPayload.Note(text = noteText.trim())
 }
 
@@ -541,6 +613,11 @@ private fun Tile.toEditState(): EditUiState {
             callNumber = payload.number,
             callRelation = payload.relation.orEmpty(),
             callInHelpSheet = payload.inHelpSheet,
+        )
+
+        is CardPayload.AppLink -> base.copy(
+            appPackage = payload.packageName,
+            appLabel = payload.label,
         )
 
         is CardPayload.Web -> base.copy(

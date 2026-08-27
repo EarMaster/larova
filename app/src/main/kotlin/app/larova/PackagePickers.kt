@@ -53,6 +53,20 @@ private fun suggestedFileName(): String =
     "larova-${LocalDate.now()}.${ExportManifest.FILE_EXTENSION}"
 
 /**
+ * The time a log line happened, in the phone's own format.
+ *
+ * Date and time, because a log kept for thirty days is read across days: "18:12" alone is only
+ * useful for the last few hours of it. Both come from the platform, so whether this person reads
+ * 18:12 or 6:12 pm — and 23.8. or 8/23 — is the phone's business and not this screen's.
+ */
+fun formatLogTime(instant: Instant): String {
+    val local = java.time.Instant.ofEpochMilli(instant.toEpochMilliseconds())
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+    return local.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
+}
+
+/**
  * The date in the import preview, in the phone's own format.
  *
  * Localized here rather than in the shared screen: the platform knows whether this person writes
