@@ -17,6 +17,7 @@ import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.Media
+import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.TileEditing
@@ -87,6 +88,10 @@ data class EditUiState(
      * limit — the parents decide — but a backup is one file and they are the ones sending it.
      */
     val mediaSizeBytes: Long = 0,
+    /** The microphone is running. The only state in this editor that is a device rather than a field. */
+    val isRecording: Boolean = false,
+    /** The microphone could not be opened, or gave back nothing usable. */
+    val recordingFailed: Boolean = false,
     val titleMissing: Boolean = false,
     val urlInvalid: Boolean = false,
     /** A shortcut tile was saved without an app chosen. */
@@ -169,6 +174,7 @@ class EditCardViewModel(
     target: EditTarget,
     private val tile: TileEditing,
     private val media: Media,
+    private val recording: Recording,
     private val folders: Folders,
     private val apps: Apps,
 ) : ViewModel() {
@@ -222,6 +228,44 @@ class EditCardViewModel(
     fun onAppLabelChange(value: String) = _state.update { it.copy(appLabel = value) }
 
     fun onMediaCaptionChange(value: String) = _state.update { it.copy(mediaCaption = value) }
+
+    /**
+     * Starts recording. Called only once the microphone has been granted, which the screen arranges
+     * — the permission belongs to the platform and the question is asked there.
+     */
+    fun onStartRecording() {
+        if (_state.value.isRecording) return
+        viewModelScope.launch {
+            val started = recording.start()
+            _state.update { it.copy(isRecording = started, recordingFailed = !started) }
+        }
+    }
+
+    /**
+     * Stops, and puts what was recorded on the tile.
+     *
+     * A recording that produced nothing leaves the tile as it was. Somebody who taps record and stop
+     * in the same second has not replaced the recording that was already there.
+     */
+    fun onStopRecording() {
+        if (!_state.value.isRecording) return
+        viewModelScope.launch {
+            val asset = recording.stop()
+            _state.update { state ->
+                if (asset == null) {
+                    state.copy(isRecording = false, recordingFailed = true)
+                } else {
+                    state.copy(
+                        isRecording = false,
+                        recordingFailed = false,
+                        mediaId = asset.id.toString(),
+                        mediaSizeBytes = asset.sizeBytes,
+                        mediaMissing = false,
+                    )
+                }
+            }
+        }
+    }
 
     /**
      * A picked video or recording, copied in and put on the tile.
@@ -498,6 +542,18 @@ class EditCardViewModel(
             loadPictures()
             loadFolderCount()
         }
+    }
+
+    /**
+     * A recording left running when the screen goes is thrown away.
+     *
+     * `viewModelScope` is cancelled by the time this runs, which is why cancelling is the one
+     * recorder call that does not suspend. A microphone left open is the one thing this editor can
+     * leak that a person would actually notice.
+     */
+    override fun onCleared() {
+        if (_state.value.isRecording) recording.cancel()
+        super.onCleared()
     }
 
     /**

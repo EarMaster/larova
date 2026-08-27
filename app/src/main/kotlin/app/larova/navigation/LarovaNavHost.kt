@@ -37,6 +37,7 @@ import app.larova.feature.transfer.TransferViewModel
 import app.larova.formatExportDate
 import app.larova.formatLogTime
 import app.larova.rememberBackupPicker
+import app.larova.rememberMicrophoneRequest
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import app.larova.rememberSoundPicker
@@ -152,6 +153,7 @@ fun LarovaNavHost(
             val pickPicture = rememberPicturePicker(viewModel::onPictureChosen)
             val pickVideo = rememberVideoPicker(viewModel::onMediaChosen)
             val pickSound = rememberSoundPicker(viewModel::onMediaChosen)
+            val requestMicrophone = rememberMicrophoneRequest(viewModel::onStartRecording)
 
             EditCardScreen(
                 state = state,
@@ -159,6 +161,7 @@ fun LarovaNavHost(
                     openPicturePicker = pickPicture,
                     openVideoPicker = pickVideo,
                     openSoundPicker = pickSound,
+                    requestMicrophone = requestMicrophone,
                 ),
                 onBack = goBack,
                 onHelp = openHelp,

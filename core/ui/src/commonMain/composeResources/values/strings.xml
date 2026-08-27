@@ -183,6 +183,10 @@
     <string name="edit_call_number">Phone number</string>
     <string name="edit_call_relation">Relation (optional)</string>
     <string name="edit_call_in_help">Also show under Get help</string>
+    <string name="edit_record">Record with the microphone</string>
+    <string name="edit_recording">Recording…</string>
+    <string name="edit_record_stop">Stop and keep it</string>
+    <string name="edit_record_failed">The microphone could not be used, or nothing was recorded.</string>
     <string name="edit_choose_video">Choose a video</string>
     <string name="edit_choose_sound">Choose a sound file</string>
     <string name="edit_media_none_chosen">Nothing chosen yet.</string>

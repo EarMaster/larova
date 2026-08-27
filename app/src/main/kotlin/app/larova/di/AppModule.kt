@@ -22,6 +22,7 @@ import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.export.Digest
 import app.larova.core.domain.media.ImageStore
+import app.larova.core.domain.media.AudioRecorder
 import app.larova.core.domain.media.MediaIntake
 import app.larova.core.domain.export.PackageIo
 import app.larova.core.domain.export.MediaFiles
@@ -44,6 +45,7 @@ import app.larova.core.domain.usecase.ObserveLog
 import app.larova.core.domain.usecase.PruneLog
 import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.ReadPackagePreview
+import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.IsAppInstalled
 import app.larova.core.domain.usecase.PickableApps
@@ -65,6 +67,7 @@ import app.larova.core.domain.usecase.UnlockWithPin
 import app.larova.core.platform.AndroidExternalActions
 import app.larova.core.platform.AndroidImageStore
 import app.larova.core.platform.AndroidInstalledApps
+import app.larova.core.platform.AndroidAudioRecorder
 import app.larova.core.platform.AndroidMediaIntake
 import app.larova.core.platform.AndroidPlatformPaths
 import app.larova.core.platform.AndroidDigest
@@ -114,6 +117,9 @@ val appModule = module {
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
     single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
+    // A singleton because a microphone is: two recorders on one device is not an error the framework
+    // reports usefully, it simply produces silence.
+    single<AudioRecorder> { AndroidAudioRecorder(androidContext(), get()) }
     single { PackageIo(store = get(), digest = get(), mediaFiles = get()) }
 
     // One session for the whole process, with a scope that outlives every screen: the five-minute
@@ -169,6 +175,7 @@ val appModule = module {
     factory { FindMediaFile(get(), get()) }
     factory { CleanUpMedia(get(), get()) }
     factory { Media(get(), get(), get(), get(), get()) }
+    factory { Recording(get(), get()) }
     factory { SearchTiles(get()) }
     factory { ReorderTiles(get(), get()) }
     factory { HasPin(get()) }
@@ -196,7 +203,7 @@ val appModule = module {
         CardViewModel(parameters.get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
-        EditCardViewModel(parameters.get(), get(), get(), get(), get())
+        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get())
     }
 }
 

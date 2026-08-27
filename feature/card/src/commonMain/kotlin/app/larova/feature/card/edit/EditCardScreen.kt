@@ -81,6 +81,10 @@ import app.larova.core.ui.resources.edit_media_chosen
 import app.larova.core.ui.resources.edit_media_large
 import app.larova.core.ui.resources.edit_media_none_chosen
 import app.larova.core.ui.resources.edit_media_required
+import app.larova.core.ui.resources.edit_record
+import app.larova.core.ui.resources.edit_record_failed
+import app.larova.core.ui.resources.edit_record_stop
+import app.larova.core.ui.resources.edit_recording
 import app.larova.core.ui.resources.edit_new_tile
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
@@ -400,6 +404,7 @@ private fun MediaFields(state: EditUiState, callbacks: EditCardCallbacks) {
 
         OutlinedButton(
             onClick = callbacks.onChooseMedia,
+            enabled = !state.isRecording,
             modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
         ) {
             Text(
@@ -411,6 +416,13 @@ private fun MediaFields(state: EditUiState, callbacks: EditCardCallbacks) {
                     },
                 ),
             )
+        }
+
+        // Recording is offered for sound only. A video tile takes a film the phone's own camera app
+        // made, because a camera preview inside Larova would buy a permission for something the
+        // phone already does better.
+        if (state.type == CardType.AUDIO) {
+            RecordingControls(state = state, callbacks = callbacks)
         }
 
         if (state.mediaIsLarge) {
@@ -435,6 +447,48 @@ private fun MediaFields(state: EditUiState, callbacks: EditCardCallbacks) {
             label = { Text(stringResource(Res.string.edit_media_caption)) },
             modifier = Modifier.fillMaxWidth(),
         )
+    }
+}
+
+/**
+ * Record, and then stop.
+ *
+ * Two states and one button, because that is the whole of it. No level meter and no waveform: a
+ * parent recording a bedtime song is looking at the child, not the phone, and the thing they need to
+ * be certain of is which of the two states they are in.
+ *
+ * The word "Recording…" is next to the button rather than only on it, so a screen reader announces
+ * that something is happening rather than only what the button would now do.
+ */
+@Composable
+private fun RecordingControls(state: EditUiState, callbacks: EditCardCallbacks) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (state.isRecording) {
+            Text(
+                text = stringResource(Res.string.edit_recording),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        OutlinedButton(
+            onClick = if (state.isRecording) callbacks.onStopRecording else callbacks.onRecord,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(
+                stringResource(
+                    if (state.isRecording) Res.string.edit_record_stop else Res.string.edit_record,
+                ),
+            )
+        }
+
+        if (state.recordingFailed) {
+            Text(
+                text = stringResource(Res.string.edit_record_failed),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
     }
 }
 
@@ -880,6 +934,9 @@ data class EditCardCallbacks(
     val onAppLabelChange: (String) -> Unit,
     val onChooseMedia: () -> Unit,
     val onMediaCaptionChange: (String) -> Unit,
+    /** Asks for the microphone if it has not been granted, and starts once it has. */
+    val onRecord: () -> Unit,
+    val onStopRecording: () -> Unit,
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
 )
@@ -895,6 +952,7 @@ fun EditCardViewModel.callbacks(
     openPicturePicker: () -> Unit = {},
     openVideoPicker: () -> Unit = {},
     openSoundPicker: () -> Unit = {},
+    requestMicrophone: () -> Unit = {},
 ) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
     onTitleChange = ::onTitleChange,
@@ -937,6 +995,10 @@ fun EditCardViewModel.callbacks(
         if (state.value.type == CardType.VIDEO) openVideoPicker() else openSoundPicker()
     },
     onMediaCaptionChange = ::onMediaCaptionChange,
+    // The permission question is the platform's; starting the recorder once it is answered is this
+    // ViewModel's. The screen wires the first to the second.
+    onRecord = requestMicrophone,
+    onStopRecording = ::onStopRecording,
     onSave = ::onSave,
     onDelete = ::onDelete,
 )

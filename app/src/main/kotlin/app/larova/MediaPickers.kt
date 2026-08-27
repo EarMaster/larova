@@ -1,10 +1,14 @@
 package app.larova
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 
 /**
  * The photo picker.
@@ -66,4 +70,31 @@ fun rememberSoundPicker(onPicked: (String) -> Unit): () -> Unit {
     ) { uri -> uri?.let { onPicked(it.toString()) } }
 
     return remember(launcher) { { launcher.launch(arrayOf("audio/*")) } }
+}
+
+/**
+ * The microphone, asked for at the moment it is needed.
+ *
+ * Returns a function that either runs [onGranted] straight away or puts the system dialog in front
+ * of it. Asked when somebody taps record and never on first launch: a permission requested before
+ * there is anything to explain it is a permission people refuse, and this one they only need if
+ * they want to record their own voice.
+ *
+ * A refusal is silent here. The dialog said what it was for, the person said no, and repeating the
+ * question is what makes an app feel like it is arguing.
+ */
+@Composable
+fun rememberMicrophoneRequest(onGranted: () -> Unit): () -> Unit {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted -> if (granted) onGranted() }
+
+    return remember(launcher, context, onGranted) {
+        {
+            val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED
+            if (granted) onGranted() else launcher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
 }
