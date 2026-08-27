@@ -72,7 +72,31 @@ jobs:
       # Invoked via `bash` deliberately: the repo is developed on Windows with core.filemode=false,
       # so the script's executable bit is not recorded and `./tools/...` would fail here.
       - name: Validate store metadata
+        id: metadata
         run: tools/check_store_metadata.sh "${{ steps.resolve.outputs.code }}"
+
+      # Twice now a workflow here has failed with a message that said what was wrong and not what to
+      # do about it. Release notes are the likeliest reason this job stops, and the fix depends on
+      # which release it is — so it says both.
+      - name: Explain a metadata failure
+        if: failure() && steps.metadata.outcome == 'failure'
+        run: |
+          {
+            echo "### Not uploaded to Play"
+            echo
+            echo "Store text failed the check above. If the missing files are"
+            echo "\`changelogs/${{ steps.resolve.outputs.code }}.txt\`, this release has no What's New"
+            echo "text, and store text has no English fallback — a locale with no file publishes"
+            echo "blank, so the deploy stops rather than shipping the gap."
+            echo
+            echo "- For a **normal release**: run \`/release\` on \`develop\`. It writes the notes for"
+            echo "  the new versionCode in all fourteen locales, and promoting that is what triggers"
+            echo "  this workflow again."
+            echo "- For the **first release of the app**: the API cannot open a track that has never"
+            echo "  had a release anyway. Upload the AAB from the GitHub Release by hand"
+            echo "  (docs/release-setup.md §3.7); Play does not ask for What's New on a first"
+            echo "  release, and every automated upload after it carries notes."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Download AAB and mapping from GitHub Release
         env:
