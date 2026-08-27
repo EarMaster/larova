@@ -7,11 +7,15 @@ import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.LoadImage
+import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.ToggleChecklistItem
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -26,6 +30,13 @@ data class CardUiState(
     val payload: CardPayload? = null,
     val isLoading: Boolean = true,
     val missing: Boolean = false,
+    /** The tiles inside this one, when it is a folder. Empty for every other type. */
+    val folderTiles: List<FolderTile> = emptyList(),
+    /**
+     * The board those tiles live on, for the two things parent view can do here: put another tile
+     * inside the folder, and rearrange what is already in it.
+     */
+    val folderBoardId: String? = null,
 )
 
 class CardViewModel(
@@ -33,10 +44,20 @@ class CardViewModel(
     private val observeTile: ObserveTile,
     private val toggleChecklistItem: ToggleChecklistItem,
     private val loadImage: LoadImage,
+    private val observeBoardTiles: ObserveBoardTiles,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CardUiState())
     val state: StateFlow<CardUiState> = _state.asStateFlow()
+
+    /**
+     * The subscription to a folder's contents.
+     *
+     * Cancelled and restarted with each reload rather than left running: a reload can find the tile
+     * pointing at a different board, or gone, and two collectors writing the same field would leave
+     * whichever finished last on screen.
+     */
+    private var folderTiles: Job? = null
 
     init {
         reload()
@@ -76,8 +97,38 @@ class CardViewModel(
                     colorToken = tile.card.colorToken,
                     payload = tile.payload,
                     isLoading = false,
+                    folderBoardId = (tile.payload as? CardPayload.Folder)?.boardId?.toString(),
                 )
+            }
+            watchFolder(tile?.payload as? CardPayload.Folder)
+        }
+    }
+
+    /**
+     * A folder is the one tile whose contents can change while it is open — something added to it
+     * from this very screen, or a tile inside it deleted — so it is observed rather than read once.
+     */
+    private fun watchFolder(folder: CardPayload.Folder?) {
+        folderTiles?.cancel()
+        if (folder == null) return
+
+        folderTiles = viewModelScope.launch {
+            observeBoardTiles(folder.boardId).collect { tiles ->
+                _state.update { it.copy(folderTiles = tiles.map { tile -> tile.toFolderTile() }) }
             }
         }
     }
 }
+
+/**
+ * What the parents wrote is the second line. Nothing is derived here — a count of steps helps on
+ * the start screen, where a tile is all there is to go on, but inside a folder the tile has just
+ * been chosen from a short list and another number on it only adds noise.
+ */
+private fun Tile.toFolderTile() = FolderTile(
+    id = card.id.toString(),
+    title = card.title,
+    colorToken = card.colorToken,
+    symbolKey = card.icon,
+    subtitle = card.subtitle?.takeIf { it.isNotBlank() },
+)

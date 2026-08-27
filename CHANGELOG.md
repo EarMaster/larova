@@ -37,7 +37,11 @@ docs-only changes do not belong here.
   made smaller on the way in — a backup full of camera-sized photographs is one nobody can send
   anywhere. A picture that is taken off a step is deleted once no step wants it.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
-- Tiles can be rearranged from the menu, with buttons rather than dragging.
+- A folder tile holds other tiles: open it and the grid inside looks and works like the start
+  screen. One level deep, on purpose — nobody searching under pressure should have to navigate.
+  Deleting a folder says how many tiles go with it before it happens.
+- Tiles can be rearranged from the menu, with buttons rather than dragging, on the start screen and
+  inside a folder.
 - Appearance can be set to follow the phone, or fixed to light, dark or **night** — warm and very
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.

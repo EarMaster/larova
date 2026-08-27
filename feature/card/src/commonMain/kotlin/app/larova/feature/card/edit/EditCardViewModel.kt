@@ -14,6 +14,7 @@ import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.DeleteCard
+import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.ObserveTile
 import app.larova.core.domain.usecase.Pictures
 import app.larova.core.domain.usecase.SaveCard
@@ -21,9 +22,12 @@ import app.larova.core.domain.usecase.Tile
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.theme.TileColor
 import app.larova.feature.card.toImageBitmapOrNull
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -81,20 +85,48 @@ data class EditUiState(
     val pictures: Map<String, ImageBitmap> = emptyMap(),
     /** The last picked picture could not be read. Said out loud rather than silently ignored. */
     val pictureFailed: Boolean = false,
+    /**
+     * The board this folder tile opens, once there is one. Null while a folder is still being
+     * created: the board is made when the tile is saved, so leaving the editor cannot leave an
+     * empty board behind.
+     */
+    val folderBoardId: String? = null,
+    /** How many tiles are inside, so that deleting the folder can say what goes with it. */
+    val folderTileCount: Int = 0,
+    /**
+     * Whether the editor was opened from inside a folder. One level is all the information
+     * architecture allows, so a folder cannot be offered here (docs/concept.md §4.1).
+     */
+    val isNested: Boolean = false,
 )
 
 /**
- * The five types M1 can create. Tables, media, app shortcuts and folders arrive in M2 — offering a
- * type that cannot be filled in yet would be worse than not offering it.
+ * The types that can be made today. Media and app shortcuts are still to come — offering a type
+ * that cannot be filled in yet would be worse than not offering it.
+ *
+ * A folder is missing from the list when the editor was opened inside one. Not greyed out, not
+ * refused on save: absent, because one level deep is the shape of the product rather than a limit
+ * to explain (docs/concept.md §4.1).
  */
-val EDITABLE_TYPES = listOf(
+fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
     CardType.GUIDE,
     CardType.CHECKLIST,
     CardType.NOTE,
     CardType.TABLE,
     CardType.PHONE,
     CardType.WEB,
+    CardType.FOLDER.takeUnless { isNested },
 )
+
+/**
+ * Where the editor was opened, as one parameter.
+ *
+ * Both halves come from the navigation route and neither means anything without the other: an empty
+ * [cardId] is a new tile, and [boardId] is the folder it is being made inside — the start screen
+ * when it is empty. Passing them together also keeps them from being swapped at the call site,
+ * which two bare strings invite.
+ */
+data class EditTarget(val cardId: String = "", val boardId: String = "")
 
 /**
  * One handler per field, and six tile types worth of fields.
@@ -105,16 +137,25 @@ val EDITABLE_TYPES = listOf(
  * compiler's checking for the counter, which is the worse trade — a misspelt field name would then
  * be a silent no-op on a screen a parent only sees once.
  */
+@OptIn(ExperimentalUuidApi::class)
 @Suppress("TooManyFunctions")
 class EditCardViewModel(
-    private val cardId: String?,
+    target: EditTarget,
     private val observeTile: ObserveTile,
     private val saveCard: SaveCard,
     private val deleteCard: DeleteCard,
     private val pictures: Pictures,
+    private val folders: Folders,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(EditUiState(isNew = cardId.isNullOrEmpty()))
+    private val cardId: String? = target.cardId.takeIf { it.isNotEmpty() }
+
+    /** The folder the new tile is being made inside, or null for the start screen. */
+    private val boardId: Uuid? = parseUuidOrNull(target.boardId)
+
+    private val _state = MutableStateFlow(
+        EditUiState(isNew = cardId.isNullOrEmpty(), isNested = boardId != null),
+    )
     val state: StateFlow<EditUiState> = _state.asStateFlow()
 
     /**
@@ -306,14 +347,19 @@ class EditCardViewModel(
         }
 
         viewModelScope.launch {
+            // The board a folder opens has to exist before the payload can point at it. Made here
+            // rather than when the type was picked, so a parent who changed their mind and left
+            // has left nothing behind.
+            val folderBoardId = folderBoardIdFor(current) ?: return@launch
             val result = saveCard(
                 CardDraft(
                     id = parseUuidOrNull(cardId),
+                    boardId = boardId,
                     title = current.title,
                     subtitle = current.subtitle,
                     colorToken = current.colorToken,
                     icon = current.symbolKey,
-                    payload = current.toPayload(),
+                    payload = current.copy(folderBoardId = folderBoardId).toPayload(),
                 ),
             )
             // Whatever the save changed, a picture may now be on no step at all: taken off one, or
@@ -353,6 +399,32 @@ class EditCardViewModel(
                 tile.toEditState()
             }
             loadPictures()
+            loadFolderCount()
+        }
+    }
+
+    /**
+     * The board id a folder tile needs, creating it if this is the first save.
+     *
+     * Returns an empty string for every other type — there is nothing to make, and nothing that
+     * could fail. Null means the board could not be created, which is the same situation as having
+     * no start screen to write to: the save stops and what the parent typed stays on screen.
+     */
+    private suspend fun folderBoardIdFor(current: EditUiState): String? {
+        if (current.type != CardType.FOLDER) return ""
+        current.folderBoardId?.let { return it }
+
+        val created = folders.create(current.title.trim())?.toString() ?: return null
+        _state.update { it.copy(folderBoardId = created) }
+        return created
+    }
+
+    /** What deleting this folder would take with it. Read once, when the editor opens. */
+    private fun loadFolderCount() {
+        val boardId = parseUuidOrNull(_state.value.folderBoardId) ?: return
+        viewModelScope.launch {
+            val inside = folders.observeTiles(boardId).first().size
+            _state.update { it.copy(folderTileCount = inside) }
         }
     }
 
@@ -415,9 +487,16 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
         label = webLabel.trim().takeIf { it.isNotEmpty() },
     )
 
+    // The board is created before this runs, so an id with nothing behind it means a folder that
+    // was never saved. A note keeps the title and colour rather than writing a folder that opens
+    // nothing.
+    CardType.FOLDER -> parseUuidOrNull(folderBoardId)
+        ?.let { CardPayload.Folder(boardId = it) }
+        ?: CardPayload.Note(text = noteText.trim())
+
     // Not offered by the picker, so not reachable — but a `when` without a branch for them would
     // stop compiling the day one is added, which is exactly when this needs revisiting.
-    CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER ->
+    CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK ->
         CardPayload.Note(text = noteText.trim())
 }
 
@@ -445,6 +524,8 @@ private fun Tile.toEditState(): EditUiState {
         )
 
         is CardPayload.Note -> base.copy(noteText = payload.text)
+
+        is CardPayload.Folder -> base.copy(folderBoardId = payload.boardId.toString())
 
         is CardPayload.Table -> base.copy(
             // A stored table is square, but a payload written by hand or by a future version may

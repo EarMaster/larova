@@ -140,6 +140,11 @@
     <string name="edit_delete">Delete tile</string>
     <string name="edit_delete_question">Delete this tile? What is on it cannot be brought back.</string>
     <string name="edit_title_required">A tile needs a title.</string>
+    <string name="edit_folder_note">A folder holds other tiles. Save it, open it, and add tiles inside.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Delete this folder? The %1$d tile inside it goes too, and cannot be brought back.</item>
+        <item quantity="other">Delete this folder? The %1$d tiles inside it go too, and cannot be brought back.</item>
+    </plurals>
     <string name="edit_steps">Steps</string>
     <string name="edit_add_step">Add step</string>
     <string name="edit_step_number">Step %1$d</string>

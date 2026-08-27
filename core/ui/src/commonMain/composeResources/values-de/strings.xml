@@ -151,6 +151,11 @@
     <string name="edit_delete">Kachel löschen</string>
     <string name="edit_delete_question">Diese Kachel löschen? Was darauf liegt, lässt sich nicht zurückholen.</string>
     <string name="edit_title_required">Eine Kachel braucht einen Titel.</string>
+    <string name="edit_folder_note">Ein Ordner enthält andere Kacheln. Speichern, öffnen, und darin Kacheln anlegen.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Diesen Ordner löschen? Die %1$d Kachel darin verschwindet mit und lässt sich nicht zurückholen.</item>
+        <item quantity="other">Diesen Ordner löschen? Die %1$d Kacheln darin verschwinden mit und lassen sich nicht zurückholen.</item>
+    </plurals>
     <string name="edit_steps">Schritte</string>
     <string name="edit_add_step">Schritt hinzufügen</string>
     <string name="edit_step_number">Schritt %1$d</string>

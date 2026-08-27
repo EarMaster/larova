@@ -63,7 +63,9 @@ import app.larova.core.ui.resources.edit_colour
 import app.larova.core.ui.resources.edit_column_number
 import app.larova.core.ui.resources.edit_columns
 import app.larova.core.ui.resources.edit_delete
+import app.larova.core.ui.resources.edit_delete_folder_question
 import app.larova.core.ui.resources.edit_delete_question
+import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_edit_tile
 import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
@@ -87,12 +89,14 @@ import app.larova.core.ui.resources.edit_web_address_invalid
 import app.larova.core.ui.resources.edit_web_label
 import app.larova.core.ui.resources.tile_call
 import app.larova.core.ui.resources.tile_checklist
+import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
 import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_note
 import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -132,7 +136,11 @@ fun EditCardScreen(
         ) {
             if (state.isNew) {
                 Section(title = stringResource(Res.string.edit_choose_type)) {
-                    TypePicker(selected = state.type, onSelect = callbacks.onTypeChange)
+                    TypePicker(
+                        types = editableTypes(state.isNested),
+                        selected = state.type,
+                        onSelect = callbacks.onTypeChange,
+                    )
                 }
             }
 
@@ -218,7 +226,21 @@ fun EditCardScreen(
         AlertDialog(
             onDismissRequest = { confirmingDelete = false },
             title = { Text(stringResource(Res.string.edit_delete)) },
-            text = { Text(stringResource(Res.string.edit_delete_question)) },
+            text = {
+                Text(
+                    // A folder takes its contents with it, and the only honest moment to say how
+                    // many is before it happens.
+                    if (state.type == CardType.FOLDER && state.folderTileCount > 0) {
+                        pluralStringResource(
+                            Res.plurals.edit_delete_folder_question,
+                            state.folderTileCount,
+                            state.folderTileCount,
+                        )
+                    } else {
+                        stringResource(Res.string.edit_delete_question)
+                    },
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -264,6 +286,14 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
         }
 
         CardType.TABLE -> TableFields(state = state, callbacks = callbacks)
+
+        // Nothing to fill in: what a folder holds is tiles, and they are made inside it afterwards.
+        // The line says so, because a form with no fields looks like one that failed to load.
+        CardType.FOLDER -> Text(
+            text = stringResource(Res.string.edit_folder_note),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
 
         CardType.NOTE -> OutlinedTextField(
             value = state.noteText,
@@ -327,7 +357,7 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
         }
 
         // Not offered while creating and not reachable while editing, since nothing can create one.
-        CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER -> Unit
+        CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK -> Unit
     }
 }
 
@@ -607,13 +637,17 @@ private fun LineList(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TypePicker(selected: CardType, onSelect: (CardType) -> Unit) {
+private fun TypePicker(
+    types: List<CardType>,
+    selected: CardType,
+    onSelect: (CardType) -> Unit,
+) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        for (type in EDITABLE_TYPES) {
+        for (type in types) {
             FilterChip(
                 selected = type == selected,
                 onClick = { onSelect(type) },
@@ -661,6 +695,7 @@ private val CardType.label: StringResource
         CardType.CHECKLIST -> Res.string.tile_checklist
         CardType.NOTE -> Res.string.tile_note
         CardType.TABLE -> Res.string.tile_table
+        CardType.FOLDER -> Res.string.tile_folder
         CardType.PHONE -> Res.string.tile_call
         else -> Res.string.tile_link
     }

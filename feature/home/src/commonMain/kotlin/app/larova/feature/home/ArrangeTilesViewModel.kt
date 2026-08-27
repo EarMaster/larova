@@ -3,6 +3,7 @@ package app.larova.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.model.parseUuidOrNull
+import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ReorderTiles
 import app.larova.core.domain.usecase.moved
@@ -18,11 +19,16 @@ import kotlinx.coroutines.launch
  * not move — which is the correct thing for it to do.
  */
 class ArrangeTilesViewModel(
+    boardId: String,
     observeHomeTiles: ObserveHomeTiles,
+    observeBoardTiles: ObserveBoardTiles,
     private val reorderTiles: ReorderTiles,
 ) : ViewModel() {
 
-    val tiles: StateFlow<List<HomeTile>> = observeHomeTiles()
+    /** Null is the start screen, which is found rather than named. */
+    private val board = parseUuidOrNull(boardId)
+
+    val tiles: StateFlow<List<HomeTile>> = (board?.let(observeBoardTiles::invoke) ?: observeHomeTiles())
         .map { list -> list.map { it.toHomeTile() } }
         .stateIn(
             scope = viewModelScope,
@@ -44,7 +50,7 @@ class ArrangeTilesViewModel(
         val ids = reordered.mapNotNull { parseUuidOrNull(it.id) }
         if (ids.size != reordered.size) return
 
-        viewModelScope.launch { reorderTiles(ids) }
+        viewModelScope.launch { reorderTiles(ids, board) }
     }
 
     private companion object {

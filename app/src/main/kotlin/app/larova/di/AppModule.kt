@@ -27,7 +27,9 @@ import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.export.PackageStore
 import app.larova.core.domain.usecase.AddImage
 import app.larova.core.domain.usecase.CleanUpMedia
+import app.larova.core.domain.usecase.CreateFolderBoard
 import app.larova.core.domain.usecase.DeleteCard
+import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ImportPackage
@@ -35,6 +37,7 @@ import app.larova.core.domain.usecase.ReadPackagePreview
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.EnsureRootBoard
+import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
@@ -59,6 +62,7 @@ import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeViewModel
@@ -124,11 +128,14 @@ val appModule = module {
     // repository, and none of them holds state worth sharing.
     factory { EnsureRootBoard(get()) }
     factory { ObserveHomeTiles(get(), get()) }
+    factory { ObserveBoardTiles(get()) }
     factory { ObserveTile(get()) }
     factory { ObserveHelpContacts(get()) }
     factory { ToggleChecklistItem(get()) }
     factory { SaveCard(get(), get()) }
-    factory { DeleteCard(get()) }
+    factory { DeleteCard(get(), get()) }
+    factory { CreateFolderBoard(get()) }
+    factory { Folders(get(), get()) }
     factory { AddImage(get(), get()) }
     factory { LoadImage(get(), get()) }
     factory { CleanUpMedia(get(), get()) }
@@ -150,16 +157,24 @@ val appModule = module {
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
-    viewModel { ArrangeTilesViewModel(get(), get()) }
+    // The board comes from the route: the start screen when it is empty, a folder otherwise.
+    viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
     viewModel { HelpViewModel(get()) }
     viewModel { TransferViewModel(get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
-    viewModel { parameters -> CardViewModel(parameters.get(), get(), get(), get()) }
-    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get(), get()) }
+    viewModel { parameters -> CardViewModel(parameters.get(), get(), get(), get(), get()) }
+    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get(), get(), get()) }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */
 fun cardViewModelParameters(cardId: String) = parametersOf(cardId)
 
-/** An empty id is a new tile; the editor treats it as such rather than looking one up. */
-fun editCardViewModelParameters(cardId: String) = parametersOf(cardId)
+/**
+ * An empty card id is a new tile; the editor treats it as such rather than looking one up. An empty
+ * board id is the start screen. The two travel as one [EditTarget] so they cannot be swapped.
+ */
+fun editCardViewModelParameters(cardId: String, boardId: String) =
+    parametersOf(EditTarget(cardId = cardId, boardId = boardId))
+
+/** An empty board id is the start screen. */
+fun arrangeViewModelParameters(boardId: String) = parametersOf(boardId)
