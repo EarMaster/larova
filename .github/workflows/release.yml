@@ -73,25 +73,48 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
 
+      # The upload key is PKCS12 (docs/release-setup.md §1); the extension here is cosmetic, since
+      # the Gradle signingConfig names the store type explicitly rather than inferring it.
+      #
+      # An empty or truncated secret decodes to an empty file, which would otherwise reach Gradle as
+      # a keystore it cannot open — a confusing failure several minutes into the build. Checked here
+      # instead, where the fix is obviously "re-set the secret".
       - name: Decode keystore
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.p12
+          if [ ! -s keystore.p12 ]; then
+            echo "::error::KEYSTORE_BASE64 decoded to an empty file. Re-set the secret — see docs/release-setup.md §2."
+            exit 1
+          fi
 
       - name: Build signed APK and AAB
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
         env:
-          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PATH: keystore.p12
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease bundleRelease
+        # reportSigning first: it says in the log whether this build will be signed, before the
+        # twenty minutes that produce something Play would refuse.
+        run: ./gradlew reportSigning assembleRelease bundleRelease
 
+      # AGP names an unsigned APK `app-release-unsigned.apk`, so a signing config that did not take
+      # effect shows up here as a `mv` that cannot find its source — after the tag has already been
+      # pushed. Said plainly instead, because the tag is the part that is awkward to undo.
       - name: Rename artifacts
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
         run: |
           BASE="${{ steps.version.outputs.artifact_base }}"
-          mv app/build/outputs/apk/release/app-release.apk "app/build/outputs/apk/release/${BASE}.apk"
-          mv app/build/outputs/bundle/release/app-release.aab "app/build/outputs/bundle/release/${BASE}.aab"
+          APK=app/build/outputs/apk/release/app-release.apk
+          AAB=app/build/outputs/bundle/release/app-release.aab
+          if [ ! -f "$APK" ]; then
+            echo "::error::$APK is missing. An unsigned build writes app-release-unsigned.apk instead, and Play refuses unsigned uploads — check KEYSTORE_PATH reached Gradle (see docs/release-setup.md §1)."
+            ls -la app/build/outputs/apk/release/ || true
+            exit 1
+          fi
+          mv "$APK" "app/build/outputs/apk/release/${BASE}.apk"
+          mv "$AAB" "app/build/outputs/bundle/release/${BASE}.aab"
 
       - name: Create GitHub Release
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
