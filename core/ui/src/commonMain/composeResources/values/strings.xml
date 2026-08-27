@@ -132,6 +132,17 @@
     <string name="settings_log_retention">Keep for %1$d days</string>
     <string name="settings_log_clear">Clear the log</string>
 
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Nothing has happened yet.</string>
+    <string name="log_note_hint">Add a line</string>
+    <string name="log_add">Add to the log</string>
+    <string name="log_retention">Lines older than %1$d days are removed.</string>
+    <string name="log_clear_question">Clear the whole log? The lines cannot be brought back.</string>
+    <string name="log_card_opened">Opened %1$s</string>
+    <string name="log_check_toggled">Ticked something off in %1$s</string>
+    <string name="log_call_prepared">Prepared a call: %1$s</string>
+    <string name="log_tile_gone">a tile that has since been deleted</string>
+
     <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
          more specific — but they are still read once, quickly, on a phone. ===== -->
     <string name="edit_new_tile">New tile</string>

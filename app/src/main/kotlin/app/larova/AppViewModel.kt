@@ -8,6 +8,7 @@ import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
+import app.larova.core.domain.usecase.PruneLog
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -28,6 +29,7 @@ class AppViewModel(
     private val lockParentView: LockParentView,
     session: ViewModeSession,
     cleanUpMedia: CleanUpMedia,
+    pruneLog: PruneLog,
 ) : ViewModel() {
 
     /**
@@ -54,6 +56,9 @@ class AppViewModel(
         // by the back gesture. The editor sweeps after a save and after a delete, and this is the
         // one way out of it that neither of those covers.
         viewModelScope.launch { cleanUpMedia() }
+        // An offline app with no background work has one reliable moment to drop what is older than
+        // the retention window, and that is when somebody opens it.
+        viewModelScope.launch { pruneLog() }
     }
 
     private companion object {

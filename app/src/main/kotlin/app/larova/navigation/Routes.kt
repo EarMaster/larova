@@ -32,6 +32,9 @@ data class CardEditRoute(val cardId: String = "", val boardId: String = "")
 data class ArrangeRoute(val boardId: String = "")
 
 @Serializable
+data object LogRoute
+
+@Serializable
 data object HelpRoute
 
 @Serializable

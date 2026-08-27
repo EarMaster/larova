@@ -34,7 +34,11 @@ import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ExportPackage
+import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
+import app.larova.core.domain.usecase.ObserveLog
+import app.larova.core.domain.usecase.PruneLog
+import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.ReadPackagePreview
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.IsAppInstalled
@@ -51,6 +55,7 @@ import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.SearchTiles
 import app.larova.core.domain.usecase.SetPin
 import app.larova.core.domain.usecase.TileEditing
+import app.larova.core.domain.usecase.TileSource
 import app.larova.core.domain.usecase.ToggleChecklistItem
 import app.larova.core.domain.usecase.UnlockWithBiometrics
 import app.larova.core.domain.usecase.UnlockWithPin
@@ -72,6 +77,7 @@ import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.LogViewModel
 import app.larova.feature.settings.PinSetupViewModel
 import app.larova.feature.transfer.TransferViewModel
 import app.larova.feature.settings.UnlockViewModel
@@ -139,9 +145,14 @@ val appModule = module {
     factory { ObserveTile(get()) }
     factory { ObserveHelpContacts(get()) }
     factory { ToggleChecklistItem(get()) }
+    factory { RecordEvent(get()) }
+    factory { ObserveLog(get(), get()) }
+    factory { ClearLog(get()) }
+    factory { PruneLog(get()) }
     factory { SaveCard(get(), get()) }
     factory { DeleteCard(get(), get()) }
     factory { TileEditing(get(), get(), get()) }
+    factory { TileSource(get(), get()) }
     factory { CreateFolderBoard(get()) }
     factory { Folders(get(), get()) }
     factory { PickableApps(get()) }
@@ -160,20 +171,23 @@ val appModule = module {
     factory { LockParentView(get()) }
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
-    factory { ExportPackage(get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
     factory { ReadPackagePreview(get()) }
-    factory { ImportPackage(get(), get(), get(), get(), get()) }
+    factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     // The board comes from the route: the start screen when it is empty, a folder otherwise.
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
-    viewModel { HelpViewModel(get()) }
+    viewModel { HelpViewModel(get(), get()) }
+    viewModel { LogViewModel(get(), get(), get()) }
     viewModel { TransferViewModel(get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
-    viewModel { parameters -> CardViewModel(parameters.get(), get(), get(), get(), get(), get()) }
+    viewModel { parameters ->
+        CardViewModel(parameters.get(), get(), get(), get(), get(), get())
+    }
     viewModel { parameters ->
         EditCardViewModel(parameters.get(), get(), get(), get(), get())
     }

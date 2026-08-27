@@ -8,9 +8,9 @@ import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.LoadImage
-import app.larova.core.domain.usecase.ObserveBoardTiles
-import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.Tile
+import app.larova.core.domain.usecase.TileSource
 import app.larova.core.domain.usecase.ToggleChecklistItem
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,11 +47,11 @@ data class CardUiState(
 
 class CardViewModel(
     private val cardId: String,
-    private val observeTile: ObserveTile,
+    private val tiles: TileSource,
     private val toggleChecklistItem: ToggleChecklistItem,
     private val loadImage: LoadImage,
-    private val observeBoardTiles: ObserveBoardTiles,
     private val apps: Apps,
+    private val recordEvent: RecordEvent,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CardUiState())
@@ -70,6 +70,21 @@ class CardViewModel(
         reload()
     }
 
+    /**
+     * Recorded here rather than by the screen, so that a tile opened from the start screen, from a
+     * folder and from a search result all read the same in the log.
+     */
+    fun onOpened() {
+        val id = parseUuidOrNull(cardId) ?: return
+        viewModelScope.launch { recordEvent.cardOpened(id) }
+    }
+
+    /** The call is placed by the phone app; what Larova can honestly log is that it handed it over. */
+    fun onCallPrepared() {
+        val id = parseUuidOrNull(cardId) ?: return
+        viewModelScope.launch { recordEvent.callPrepared(id) }
+    }
+
     fun onToggleItem(index: Int) {
         val id = parseUuidOrNull(cardId) ?: return
         viewModelScope.launch {
@@ -77,6 +92,7 @@ class CardViewModel(
             // state here: the stored payload is the truth, and a tick that failed must not leave a
             // checkbox looking as though it succeeded.
             toggleChecklistItem(id, index)
+            recordEvent.checkToggled(id)
             reload()
         }
     }
@@ -95,7 +111,7 @@ class CardViewModel(
 
     private fun reload() {
         viewModelScope.launch {
-            val tile = observeTile(cardId)
+            val tile = tiles.observe(cardId)
             _state.value = if (tile == null) {
                 CardUiState(isLoading = false, missing = true)
             } else {
@@ -127,8 +143,8 @@ class CardViewModel(
         if (folder == null) return
 
         folderTiles = viewModelScope.launch {
-            observeBoardTiles(folder.boardId).collect { tiles ->
-                _state.update { it.copy(folderTiles = tiles.map { tile -> tile.toFolderTile() }) }
+            tiles.onBoard(folder.boardId).collect { inside ->
+                _state.update { it.copy(folderTiles = inside.map { tile -> tile.toFolderTile() }) }
             }
         }
     }

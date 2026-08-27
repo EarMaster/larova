@@ -2,6 +2,7 @@ package app.larova.core.domain
 
 import app.larova.core.domain.export.Encryption
 import app.larova.core.domain.export.ExportCodec
+import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportCounts
 import app.larova.core.domain.export.ExportManifest
 import kotlin.test.Test
@@ -13,6 +14,21 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 class ExportManifestTest {
+
+    /**
+     * `content.json` written before the log existed has no `log` key at all. It has to read as an
+     * empty log rather than as a damaged file: the field was declared with a default from the first
+     * release for exactly this reason, which is why filling it in M2 is not a format change and
+     * needs no `schemaVersion` bump.
+     */
+    @Test
+    fun contentWrittenBeforeTheLogExistedStillReads() {
+        val content = ExportCodec.json.decodeFromString<ExportContent>(
+            """{"boards":[],"cards":[],"media":[]}""",
+        )
+
+        assertEquals(emptyList(), content.log)
+    }
 
     private fun manifest(schemaVersion: Int = ExportManifest.CURRENT_SCHEMA_VERSION) = ExportManifest(
         schemaVersion = schemaVersion,

@@ -41,6 +41,7 @@ import app.larova.core.ui.resources.home_empty_title
 import app.larova.core.ui.resources.home_greeting
 import app.larova.core.ui.resources.home_search
 import app.larova.core.ui.resources.home_search_empty
+import app.larova.core.ui.resources.settings_log
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_item_count
@@ -68,6 +69,7 @@ fun HomeScreen(
     onArrange: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
+    onOpenLog: () -> Unit,
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,6 +85,7 @@ fun HomeScreen(
                 onArrange = onArrange,
                 onOpenSettings = onOpenSettings,
                 onOpenTransfer = onOpenTransfer,
+                onOpenLog = onOpenLog,
             )
         },
         floatingActionButton = {
@@ -223,6 +226,7 @@ private fun HomeMenu(
     onArrange: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
+    onOpenLog: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -247,6 +251,15 @@ private fun HomeMenu(
                 },
             )
         }
+        // The log is in both views. Whoever is with the child is the person who knows that lunch
+        // did not happen, and asking them for a PIN first means it never gets written down.
+        DropdownMenuItem(
+            text = { Text(stringResource(Res.string.settings_log)) },
+            onClick = {
+                expanded = false
+                onOpenLog()
+            },
+        )
         DropdownMenuItem(
             text = { Text(stringResource(Res.string.settings_title)) },
             onClick = {

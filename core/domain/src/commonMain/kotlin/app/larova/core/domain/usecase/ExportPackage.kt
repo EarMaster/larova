@@ -5,6 +5,7 @@ import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.export.PackageIo
 import kotlin.time.Clock
@@ -25,6 +26,7 @@ class ExportPackage(
     private val boards: BoardRepository,
     private val cards: CardRepository,
     private val media: MediaRepository,
+    private val log: LogRepository,
     private val io: PackageIo,
     private val appVersion: String,
 ) {
@@ -40,8 +42,16 @@ class ExportPackage(
         val allBoards = boards.all()
         val allCards = cards.observeAllCards().first()
         val presentMedia = media.observeAll().first().filter { io.mediaFiles.exists(it.relativePath) }
+        // The log is part of what a family typed, so it goes into the backup. Bounded by the same
+        // retention that bounds the screen: a backup is not the place a pruned event comes back.
+        val entries = log.observeRecent(LOG_EXPORT_LIMIT).first()
 
-        val content = ExportContent(boards = allBoards, cards = allCards, media = presentMedia)
+        val content = ExportContent(
+            boards = allBoards,
+            cards = allCards,
+            media = presentMedia,
+            log = entries,
+        )
         val contentJson = ExportCodec.json.encodeToString(content)
 
         val manifest = ExportManifest(
@@ -67,6 +77,13 @@ class ExportPackage(
         }
     }
 }
+
+/**
+ * As many entries as thirty days of a busy family can produce, and no more. A number rather than
+ * everything, because `observeRecent` needs one and an unbounded read of a table that only ever
+ * grows is the kind of thing that works until it does not.
+ */
+private const val LOG_EXPORT_LIMIT = 5_000
 
 /**
  * What a package says about itself, read without applying any of it.

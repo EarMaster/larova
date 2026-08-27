@@ -143,6 +143,17 @@
     <string name="settings_log_retention">%1$d Tage aufbewahren</string>
     <string name="settings_log_clear">Protokoll löschen</string>
 
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Bisher ist nichts passiert.</string>
+    <string name="log_note_hint">Eintrag hinzufügen</string>
+    <string name="log_add">Ins Protokoll schreiben</string>
+    <string name="log_retention">Einträge, die älter als %1$d Tage sind, werden entfernt.</string>
+    <string name="log_clear_question">Das ganze Protokoll löschen? Die Einträge lassen sich nicht zurückholen.</string>
+    <string name="log_card_opened">%1$s geöffnet</string>
+    <string name="log_check_toggled">In %1$s etwas abgehakt</string>
+    <string name="log_call_prepared">Anruf vorbereitet: %1$s</string>
+    <string name="log_tile_gone">eine inzwischen gelöschte Kachel</string>
+
     <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
          more specific — but they are still read once, quickly, on a phone. ===== -->
     <string name="edit_new_tile">Neue Kachel</string>

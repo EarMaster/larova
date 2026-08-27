@@ -4,9 +4,11 @@ import app.larova.core.domain.export.ExportCodec
 import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.export.ImportMode
+import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.export.PackageIo
 import kotlin.uuid.ExperimentalUuidApi
@@ -37,6 +39,7 @@ class ImportPackage(
     private val boards: BoardRepository,
     private val cards: CardRepository,
     private val media: MediaRepository,
+    private val log: LogRepository,
     private val io: PackageIo,
     private val ensureRootBoard: EnsureRootBoard,
 ) {
@@ -128,12 +131,31 @@ class ImportPackage(
         }
 
         val restored = restoreMedia(source, content.media, mediaNames)
+        restoreLog(content.log)
 
         return Result.Imported(
             boards = content.boards.size,
             cards = content.cards.size,
             media = restored,
         )
+    }
+
+    /**
+     * The log, then pruned.
+     *
+     * Entries are written whatever their age and the retention window is applied afterwards, rather
+     * than filtering on the way in: the rule about how long a log is kept lives in one place, and
+     * restoring a two-year-old backup must not resurrect two years of events either way.
+     *
+     * Not cleared first, even by a replacing import — [clearEverything] has already done that, and
+     * a merge deliberately keeps both sides. An entry that arrives twice is one row, because the
+     * identifier came with it.
+     */
+    private suspend fun restoreLog(entries: List<LogEntry>) {
+        for (entry in entries) {
+            log.append(entry)
+        }
+        log.pruneOlderThanDays(LOG_RETENTION_DAYS)
     }
 
     /** Only the media the content actually refers to, and only what the archive really contains. */
@@ -172,6 +194,7 @@ class ImportPackage(
         for (asset in media.observeAll().first()) {
             media.delete(asset.id)
         }
+        log.clear()
         for (board in boards.all()) {
             boards.delete(board.id)
         }
