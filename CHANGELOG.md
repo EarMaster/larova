@@ -14,9 +14,10 @@ docs-only changes do not belong here.
 
 ### Added
 - Larova installs and opens on a start screen of your own tiles.
-- Tiles can hold a guide, a note, a checklist, a number to call, or a website. Guides show one
-  step at a time at reading size, and the screen stays awake while one is open. Checklist items
-  can be ticked off without unlocking anything.
+- Tiles can hold a guide, a note, a checklist, a table, a number to call, or a website. Guides
+  show one step at a time at reading size, and the screen stays awake while one is open. Checklist
+  items can be ticked off without unlocking anything. A table takes your own headings, up to four
+  of them, and each cell is read out under the heading it belongs to.
 - A call tile opens the phone app with the number ready. Larova never dials by itself, and a call
   tile can be marked to appear behind "Get help" as well — a short list of large rows, capped so it
   stays readable when it is needed.

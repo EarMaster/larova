@@ -147,6 +147,12 @@
     <string name="edit_add_item">Add item</string>
     <string name="edit_item_number">Item %1$d</string>
     <string name="edit_reset_daily">Start again every morning</string>
+    <string name="edit_columns">Headings</string>
+    <string name="edit_add_column">Add heading</string>
+    <string name="edit_column_number">Heading %1$d</string>
+    <string name="edit_rows">Rows</string>
+    <string name="edit_add_row">Add row</string>
+    <string name="edit_row_number">Row %1$d</string>
     <string name="edit_note_text">Text</string>
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Phone number</string>
@@ -195,5 +201,8 @@
     <string name="cd_edit_tile">Edit %1$s</string>
     <string name="cd_play">Play</string>
     <string name="cd_step_picture">Picture for step %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
 
 </resources>

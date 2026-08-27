@@ -70,6 +70,8 @@ fun CardScreen(
 
                 is CardPayload.Note -> NoteView(note = payload, modifier = content)
 
+                is CardPayload.Table -> TableView(table = payload, modifier = content)
+
                 is CardPayload.Checklist -> ChecklistView(
                     checklist = payload,
                     onToggle = onToggleItem,
@@ -88,10 +90,10 @@ fun CardScreen(
                     modifier = content,
                 )
 
-                // Tables, media, app shortcuts and folders are M2. They cannot be reached from the
-                // grid before then, because nothing can create one — but the branch is here rather
-                // than a wildcard, so adding a type is a compile error until it has a renderer.
-                is CardPayload.Table,
+                // Media, app shortcuts and folders are still to come. They cannot be reached from
+                // the grid before then, because nothing can create one — but the branch is here
+                // rather than a wildcard, so adding a type is a compile error until it has a
+                // renderer.
                 is CardPayload.Video,
                 is CardPayload.Audio,
                 is CardPayload.AppLink,

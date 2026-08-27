@@ -7,8 +7,10 @@ import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
+import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.model.isOpenableUrl
+import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.DeleteCard
@@ -53,6 +55,12 @@ data class EditUiState(
     val noteText: String = "",
     val items: List<CheckItem> = listOf(CheckItem("")),
     val resetDaily: Boolean = false,
+    /**
+     * A table starts with two columns and one row, because one column is a list and the editor
+     * should not have to be told that first.
+     */
+    val columns: List<String> = listOf("", ""),
+    val rows: List<List<String>> = listOf(listOf("", "")),
     val callName: String = "",
     val callNumber: String = "",
     val callRelation: String = "",
@@ -83,10 +91,21 @@ val EDITABLE_TYPES = listOf(
     CardType.GUIDE,
     CardType.CHECKLIST,
     CardType.NOTE,
+    CardType.TABLE,
     CardType.PHONE,
     CardType.WEB,
 )
 
+/**
+ * One handler per field, and six tile types worth of fields.
+ *
+ * Suppressed here rather than by raising the threshold in `detekt.yml`, which is what happened the
+ * last two times this class grew: a counter that moves whenever it fires stops guarding the other
+ * forty classes. Collapsing the handlers into one `onFieldChange(name, value)` would trade the
+ * compiler's checking for the counter, which is the worse trade — a misspelt field name would then
+ * be a silent no-op on a screen a parent only sees once.
+ */
+@Suppress("TooManyFunctions")
 class EditCardViewModel(
     private val cardId: String?,
     private val observeTile: ObserveTile,
@@ -212,6 +231,62 @@ class EditCardViewModel(
 
     fun onAddItem() = _state.update { it.copy(items = it.items + CheckItem("")) }
 
+    fun onColumnChange(index: Int, text: String) = _state.update { state ->
+        state.copy(
+            columns = state.columns.mapIndexed { i, column -> if (i == index) text else column },
+        )
+    }
+
+    /** A new column reaches every row, so the table stays square while it is being typed. */
+    fun onAddColumn() = _state.update { state ->
+        if (state.columns.size >= MAX_TABLE_COLUMNS) {
+            state
+        } else {
+            state.copy(
+                columns = state.columns + "",
+                rows = state.rows.map { it + "" },
+            )
+        }
+    }
+
+    /**
+     * Removing a column takes its cells with it.
+     *
+     * Leaving them would shift every value in the row one heading to the left the next time the
+     * table is opened, which on a tile a caregiver reads under time pressure is worse than losing
+     * the column.
+     */
+    fun onRemoveColumn(index: Int) = _state.update { state ->
+        val remaining = state.columns.filterIndexed { i, _ -> i != index }
+        if (remaining.isEmpty()) {
+            state
+        } else {
+            state.copy(
+                columns = remaining,
+                rows = state.rows.map { row -> row.filterIndexed { i, _ -> i != index } },
+            )
+        }
+    }
+
+    fun onCellChange(row: Int, column: Int, text: String) = _state.update { state ->
+        state.copy(
+            rows = state.rows.mapIndexed { r, cells ->
+                if (r != row) cells else cells.mapIndexed { c, cell -> if (c == column) text else cell }
+            },
+        )
+    }
+
+    fun onAddRow() = _state.update { state ->
+        // `listOf(...)` around the new row on purpose: adding a bare list to a list of lists
+        // resolves to the overload that appends its elements, which would flatten the table.
+        state.copy(rows = state.rows + listOf(List(state.columns.size) { "" }))
+    }
+
+    fun onRemoveRow(index: Int) = _state.update { state ->
+        val remaining = state.rows.filterIndexed { i, _ -> i != index }
+        state.copy(rows = remaining.ifEmpty { listOf(List(state.columns.size) { "" }) })
+    }
+
     fun onRemoveItem(index: Int) = _state.update { state ->
         val remaining = state.items.filterIndexed { i, _ -> i != index }
         state.copy(items = remaining.ifEmpty { listOf(CheckItem("")) })
@@ -324,6 +399,10 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
 
     CardType.NOTE -> CardPayload.Note(text = noteText.trim())
 
+    // Squared off in the domain rather than here, so a table that arrives from an import is held
+    // to the same shape as one somebody just typed.
+    CardType.TABLE -> tableOf(columns = columns, rows = rows)
+
     CardType.PHONE -> CardPayload.Phone(
         displayName = callName.trim().ifEmpty { title.trim() },
         number = callNumber.trim(),
@@ -338,7 +417,7 @@ private fun EditUiState.toPayload(): CardPayload = when (type) {
 
     // Not offered by the picker, so not reachable — but a `when` without a branch for them would
     // stop compiling the day one is added, which is exactly when this needs revisiting.
-    CardType.TABLE, CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER ->
+    CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER ->
         CardPayload.Note(text = noteText.trim())
 }
 
@@ -366,6 +445,15 @@ private fun Tile.toEditState(): EditUiState {
         )
 
         is CardPayload.Note -> base.copy(noteText = payload.text)
+
+        is CardPayload.Table -> base.copy(
+            // A stored table is square, but a payload written by hand or by a future version may
+            // not be, and the editor has one field per column either way.
+            columns = payload.columns.ifEmpty { listOf("", "") },
+            rows = payload.rows
+                .map { row -> List(payload.columns.size) { i -> row.getOrNull(i).orEmpty() } }
+                .ifEmpty { listOf(List(payload.columns.size.coerceAtLeast(2)) { "" }) },
+        )
 
         is CardPayload.Phone -> base.copy(
             callName = payload.displayName,

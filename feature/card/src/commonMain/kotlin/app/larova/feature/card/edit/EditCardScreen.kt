@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.CardType
+import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.ui.component.ColorTokenPicker
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.component.SymbolPicker
@@ -48,6 +49,8 @@ import app.larova.core.ui.resources.cd_remove_line
 import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_item
 import app.larova.core.ui.resources.edit_add_picture
+import app.larova.core.ui.resources.edit_add_column
+import app.larova.core.ui.resources.edit_add_row
 import app.larova.core.ui.resources.edit_add_step
 import app.larova.core.ui.resources.edit_change_picture
 import app.larova.core.ui.resources.edit_call_in_help
@@ -57,6 +60,8 @@ import app.larova.core.ui.resources.edit_call_relation
 import app.larova.core.ui.resources.edit_cancel
 import app.larova.core.ui.resources.edit_choose_type
 import app.larova.core.ui.resources.edit_colour
+import app.larova.core.ui.resources.edit_column_number
+import app.larova.core.ui.resources.edit_columns
 import app.larova.core.ui.resources.edit_delete
 import app.larova.core.ui.resources.edit_delete_question
 import app.larova.core.ui.resources.edit_edit_tile
@@ -68,6 +73,8 @@ import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_remove
 import app.larova.core.ui.resources.edit_remove_picture
 import app.larova.core.ui.resources.edit_reset_daily
+import app.larova.core.ui.resources.edit_row_number
+import app.larova.core.ui.resources.edit_rows
 import app.larova.core.ui.resources.edit_save
 import app.larova.core.ui.resources.edit_step_number
 import app.larova.core.ui.resources.edit_steps
@@ -83,6 +90,7 @@ import app.larova.core.ui.resources.tile_checklist
 import app.larova.core.ui.resources.tile_guide
 import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_note
+import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -255,6 +263,8 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
             )
         }
 
+        CardType.TABLE -> TableFields(state = state, callbacks = callbacks)
+
         CardType.NOTE -> OutlinedTextField(
             value = state.noteText,
             onValueChange = callbacks.onNoteChange,
@@ -317,7 +327,109 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
         }
 
         // Not offered while creating and not reachable while editing, since nothing can create one.
-        CardType.TABLE, CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER -> Unit
+        CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK, CardType.FOLDER -> Unit
+    }
+}
+
+/**
+ * Laying out a table on a phone.
+ *
+ * Headings first, then a block of fields per row, each field labelled with the heading it belongs
+ * to. A grid of small cells would be the obvious shape and the wrong one: at 200 % font scale four
+ * columns of text fields across a phone leaves nothing legible to type into, and a parent filling
+ * this in has the child asleep in the next room.
+ *
+ * A row is a block rather than a line for the same reason the guide steps are: the label says which
+ * heading is being filled in, so nobody has to count columns to find out.
+ */
+@Composable
+private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Section(title = stringResource(Res.string.edit_columns)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                state.columns.forEachIndexed { index, column ->
+                    val label = stringResource(Res.string.edit_column_number, index + 1)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        OutlinedTextField(
+                            value = column,
+                            onValueChange = { callbacks.onColumnChange(index, it) },
+                            label = { Text(label) },
+                            modifier = Modifier.weight(1f),
+                        )
+                        // The last column cannot go: a table with no columns has nowhere to put a
+                        // value, and the editor would have nothing left to type into.
+                        if (state.columns.size > 1) {
+                            IconButton(
+                                onClick = { callbacks.onRemoveColumn(index) },
+                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                            ) {
+                                Icon(
+                                    imageVector = BackArrow,
+                                    contentDescription =
+                                        stringResource(Res.string.cd_remove_line, label),
+                                )
+                            }
+                        }
+                    }
+                }
+                if (state.columns.size < MAX_TABLE_COLUMNS) {
+                    OutlinedButton(
+                        onClick = callbacks.onAddColumn,
+                        modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                    ) {
+                        Text(stringResource(Res.string.edit_add_column))
+                    }
+                }
+            }
+        }
+
+        Section(title = stringResource(Res.string.edit_rows)) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                state.rows.forEachIndexed { rowIndex, row ->
+                    val rowLabel = stringResource(Res.string.edit_row_number, rowIndex + 1)
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(text = rowLabel, style = MaterialTheme.typography.bodyMedium)
+                            IconButton(
+                                onClick = { callbacks.onRemoveRow(rowIndex) },
+                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                            ) {
+                                Icon(
+                                    imageVector = BackArrow,
+                                    contentDescription =
+                                        stringResource(Res.string.cd_remove_line, rowLabel),
+                                )
+                            }
+                        }
+                        state.columns.forEachIndexed { columnIndex, column ->
+                            val heading = column.ifBlank {
+                                stringResource(Res.string.edit_column_number, columnIndex + 1)
+                            }
+                            OutlinedTextField(
+                                value = row.getOrNull(columnIndex).orEmpty(),
+                                onValueChange = { callbacks.onCellChange(rowIndex, columnIndex, it) },
+                                label = { Text(heading) },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+                }
+                OutlinedButton(
+                    onClick = callbacks.onAddRow,
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.edit_add_row))
+                }
+            }
+        }
     }
 }
 
@@ -548,6 +660,7 @@ private val CardType.label: StringResource
         CardType.GUIDE -> Res.string.tile_guide
         CardType.CHECKLIST -> Res.string.tile_checklist
         CardType.NOTE -> Res.string.tile_note
+        CardType.TABLE -> Res.string.tile_table
         CardType.PHONE -> Res.string.tile_call
         else -> Res.string.tile_link
     }
@@ -576,6 +689,12 @@ data class EditCardCallbacks(
     val onItemChange: (Int, String) -> Unit,
     val onAddItem: () -> Unit,
     val onRemoveItem: (Int) -> Unit,
+    val onColumnChange: (Int, String) -> Unit,
+    val onAddColumn: () -> Unit,
+    val onRemoveColumn: (Int) -> Unit,
+    val onCellChange: (Int, Int, String) -> Unit,
+    val onAddRow: () -> Unit,
+    val onRemoveRow: (Int) -> Unit,
     val onResetDailyChange: (Boolean) -> Unit,
     val onNoteChange: (String) -> Unit,
     val onCallNameChange: (String) -> Unit,
@@ -612,6 +731,12 @@ fun EditCardViewModel.callbacks(openPicturePicker: () -> Unit = {}) = EditCardCa
     onItemChange = ::onItemChange,
     onAddItem = ::onAddItem,
     onRemoveItem = ::onRemoveItem,
+    onColumnChange = ::onColumnChange,
+    onAddColumn = ::onAddColumn,
+    onRemoveColumn = ::onRemoveColumn,
+    onCellChange = ::onCellChange,
+    onAddRow = ::onAddRow,
+    onRemoveRow = ::onRemoveRow,
     onResetDailyChange = ::onResetDailyChange,
     onNoteChange = ::onNoteChange,
     onCallNameChange = ::onCallNameChange,

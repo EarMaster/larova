@@ -36,4 +36,36 @@ fun sanitizePhoneNumber(raw: String): String {
     return if (trimmed.startsWith("+") && dialable.isNotEmpty()) "+$dialable" else dialable
 }
 
+/**
+ * A table, squared off.
+ *
+ * The renderer reads a cell by its column position, so a stored table has to be rectangular: a row
+ * with one cell missing would otherwise put the last value under the wrong heading, which on a
+ * tile that says "Zeit | Was" is not a cosmetic problem. Rows are padded and trimmed to the number
+ * of columns here rather than in the editor, so an import from anywhere is squared off too.
+ *
+ * Rows that are entirely empty are dropped. Someone who tapped "add row" and then changed their
+ * mind meant no row, and a blank line in a table read at arm's length looks like missing content.
+ * A cell left empty in a row that has anything else in it is kept: an empty cell can be the answer.
+ */
+fun tableOf(columns: List<String>, rows: List<List<String>>): CardPayload.Table {
+    val trimmedColumns = columns.map { it.trim() }.take(MAX_TABLE_COLUMNS)
+    if (trimmedColumns.isEmpty()) return CardPayload.Table()
+
+    val squared = rows
+        .map { row -> List(trimmedColumns.size) { index -> row.getOrNull(index).orEmpty().trim() } }
+        .filter { row -> row.any { it.isNotEmpty() } }
+
+    return CardPayload.Table(columns = trimmedColumns, rows = squared)
+}
+
+/**
+ * Four columns.
+ *
+ * Not a storage limit but a legibility one: this is read on a phone, at up to 200 % font scale, by
+ * someone who may be standing up. A fifth column does not make the table more useful, it makes
+ * every cell in it two words wide.
+ */
+const val MAX_TABLE_COLUMNS = 4
+
 private val WHITESPACE = Regex("\\s")

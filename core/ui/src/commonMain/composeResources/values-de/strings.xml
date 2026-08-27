@@ -158,6 +158,12 @@
     <string name="edit_add_item">Punkt hinzufügen</string>
     <string name="edit_item_number">Punkt %1$d</string>
     <string name="edit_reset_daily">Jeden Morgen neu beginnen</string>
+    <string name="edit_columns">Spaltentitel</string>
+    <string name="edit_add_column">Spalte hinzufügen</string>
+    <string name="edit_column_number">Spalte %1$d</string>
+    <string name="edit_rows">Zeilen</string>
+    <string name="edit_add_row">Zeile hinzufügen</string>
+    <string name="edit_row_number">Zeile %1$d</string>
     <string name="edit_note_text">Text</string>
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Rufnummer</string>
@@ -207,5 +213,6 @@
     <string name="cd_edit_tile">%1$s bearbeiten</string>
     <string name="cd_play">Abspielen</string>
     <string name="cd_step_picture">Bild zu Schritt %1$d</string>
+    <string name="cd_table_cell">%1$s, %2$s</string>
 
 </resources>
