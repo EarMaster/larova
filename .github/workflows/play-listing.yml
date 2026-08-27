@@ -90,9 +90,16 @@ jobs:
       # outside pull requests yet (AGENTS.md, licence) — when it does, this is one of the places
       # that has to keep working without a credential.
       - name: Validate listing against Play
+        id: validate
         if: >-
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
+        # Reports without blocking, and only until the app has shipped once. Play refuses a listing
+        # edit for a track with no release on it (see the Fastfile), so until the first AAB is up by
+        # hand this check cannot pass — and a red cross on every pull request that touches a
+        # description is how people learn to stop reading the crosses. Remove this line once there
+        # is a release on the internal track: from then on a failure here is a real one.
+        continue-on-error: true
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
@@ -112,7 +119,7 @@ jobs:
       # The one failure that is not a mistake in this repository, so it gets said in words rather
       # than left as a fastlane stack trace.
       - name: Explain a missing release
-        if: failure()
+        if: failure() || steps.validate.outcome == 'failure'
         run: |
           {
             echo "### Listing not uploaded"
