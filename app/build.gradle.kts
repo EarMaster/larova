@@ -75,6 +75,9 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.biometric)
+    // ShortcutManagerCompat: the launcher shortcuts are built here, where the launcher icon and the
+    // activity they point at both live.
+    implementation(libs.androidx.core)
     // Named in the composition root, which owns the single instance for the preferences file.
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.kotlinx.datetime)

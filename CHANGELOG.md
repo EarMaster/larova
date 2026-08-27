@@ -41,6 +41,12 @@ docs-only changes do not belong here.
   of their own — that is the part the parents come home to read. It is a list of what happened and
   nothing more: no totals, no trends, no interpretation. Lines older than 30 days are dropped, the
   log travels in a backup, and clearing it needs parent view.
+- A first run is not an empty screen. Six starting points — Bedtime, Evening routine, Important
+  contacts, Food and drink, A day with us, What helps when... — each put one real tile on the grid,
+  filled in with example text to write over. They are yours from that moment: rewriting one is
+  editing a tile, and switching the app language later does not touch what you have written.
+- The three tiles opened most often turn up as shortcuts on the phone home screen, so what a
+  caregiver reaches for every day is one tap away instead of two.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
 - A sound tile can be recorded on the spot — a parent reading the bedtime story onto the tile, so
   a caregiver who does not share the child's language can still play the right words. Larova asks

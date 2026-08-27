@@ -3,6 +3,8 @@ package app.larova.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.domain.usecase.ApplyTemplate
+import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.EnsureRootBoard
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.SearchTiles
@@ -33,6 +35,7 @@ class HomeViewModel(
     ensureRootBoard: EnsureRootBoard,
     observeHomeTiles: ObserveHomeTiles,
     searchTiles: SearchTiles,
+    private val applyTemplate: ApplyTemplate,
 ) : ViewModel() {
 
     private val query = MutableStateFlow("")
@@ -69,6 +72,17 @@ class HomeViewModel(
 
     fun onClearQuery() {
         query.value = ""
+    }
+
+    /**
+     * Writes a template onto the start screen.
+     *
+     * The draft arrives finished, because the words in it are string resources the screen has
+     * already resolved: a template is written in the language the app is in at that moment, and
+     * belongs to the parents from then on rather than following the setting.
+     */
+    fun onUseTemplate(draft: CardDraft) {
+        viewModelScope.launch { applyTemplate(listOf(draft)) }
     }
 
     private companion object {

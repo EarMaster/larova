@@ -1,11 +1,14 @@
 package app.larova
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.platform.ExternalActions
@@ -23,11 +26,27 @@ class MainActivity : FragmentActivity() {
 
     private val session: ViewModeSession by inject()
 
+    /**
+     * The tile a launcher shortcut asked for, if this activity was started by one.
+     *
+     * State rather than a field read once, because with `singleTop` a second shortcut arrives at
+     * `onNewIntent` in an activity that is already composing.
+     */
+    private var openCardId by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent { LarovaApp() }
+        openCardId = intent?.cardId()
+        setContent { LarovaApp(openCardId = openCardId) }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        openCardId = intent.cardId()
+    }
+
+    private fun Intent.cardId(): String? = getStringExtra(EXTRA_CARD_ID)?.takeIf { it.isNotEmpty() }
 
     /**
      * Every tap, scroll and key press extends parent view. Reported by the framework for real user
@@ -46,7 +65,7 @@ class MainActivity : FragmentActivity() {
  * the reason the mode exists.
  */
 @Composable
-private fun LarovaApp() {
+private fun LarovaApp(openCardId: String? = null) {
     val viewModel = koinViewModel<AppViewModel>()
     val actions = koinInject<ExternalActions>()
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
@@ -61,6 +80,7 @@ private fun LarovaApp() {
             onPrepareCall = actions::prepareCall,
             onOpenUrl = actions::openUrl,
             onOpenApp = actions::openApp,
+            openCardId = openCardId,
         )
     }
 }

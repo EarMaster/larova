@@ -72,10 +72,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Larova">
 
+        <!--
+          singleTop because of the launcher shortcuts: tapping one while Larova is already open
+          should bring the tile up in the app that is running, not start a second copy of it beside
+          the first. The new intent arrives in onNewIntent instead.
+        -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode|fontScale"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Larova">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

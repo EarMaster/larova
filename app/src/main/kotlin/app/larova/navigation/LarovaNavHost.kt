@@ -57,11 +57,18 @@ fun LarovaNavHost(
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
     onOpenApp: (String) -> Unit,
+    openCardId: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
     val openHelp: () -> Unit = { navController.navigate(HelpRoute) }
     val goBack: () -> Unit = { navController.popBackStack() }
+
+    // A launcher shortcut opens the tile on top of the start screen rather than instead of it, so
+    // "back" goes where somebody would expect it to: the grid, not out of the app.
+    LaunchedEffect(openCardId) {
+        if (!openCardId.isNullOrEmpty()) navController.navigate(CardRoute(openCardId))
+    }
 
     NavHost(
         navController = navController,
@@ -82,6 +89,7 @@ fun LarovaNavHost(
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
                 onOpenLog = { navController.navigate(LogRoute) },
+                onUseTemplate = viewModel::onUseTemplate,
                 onHelp = openHelp,
             )
         }

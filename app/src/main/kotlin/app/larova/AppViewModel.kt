@@ -9,6 +9,7 @@ import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.PruneLog
+import app.larova.core.domain.usecase.PublishShortcuts
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +31,7 @@ class AppViewModel(
     session: ViewModeSession,
     cleanUpMedia: CleanUpMedia,
     pruneLog: PruneLog,
+    publishShortcuts: PublishShortcuts,
 ) : ViewModel() {
 
     /**
@@ -57,8 +59,13 @@ class AppViewModel(
         // one way out of it that neither of those covers.
         viewModelScope.launch { cleanUpMedia() }
         // An offline app with no background work has one reliable moment to drop what is older than
-        // the retention window, and that is when somebody opens it.
-        viewModelScope.launch { pruneLog() }
+        // the retention window, and to tell the launcher what is worth a shortcut: when somebody
+        // opens it. The shortcuts come after the prune, so the count behind them is the log the app
+        // actually keeps.
+        viewModelScope.launch {
+            pruneLog()
+            publishShortcuts()
+        }
     }
 
     private companion object {

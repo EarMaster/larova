@@ -25,6 +25,9 @@ okio = "3.18.1"
 koin = "4.2.2"
 
 activityCompose = "1.13.0"
+# ShortcutManagerCompat, for the launcher shortcuts. Already on the classpath transitively; named
+# here because :app calls it directly and a transitive version is not a version you chose.
+androidxCore = "1.18.0"
 # 2.11 requires compileSdk 37; staying on 36 until there is a reason to move the whole project.
 androidxLifecycle = "2.10.0"
 # 1.1.0 is the current stable; the 1.2 and 1.4 lines are still alpha.
@@ -57,6 +60,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidxCore" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
