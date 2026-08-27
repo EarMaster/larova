@@ -26,6 +26,13 @@ kotlin {
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.compose.viewmodel)
         }
+        androidMain.dependencies {
+            // The player, and the view that draws it. Here rather than in :core:ui because a player
+            // is not a design-system primitive: this is the only module with a screen that plays
+            // anything, and iOS will bring AVPlayer beside it rather than through it.
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.ui)
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

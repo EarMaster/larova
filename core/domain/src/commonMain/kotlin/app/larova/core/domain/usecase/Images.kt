@@ -2,21 +2,29 @@ package app.larova.core.domain.usecase
 
 import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.media.ImageStore
+import app.larova.core.domain.media.MediaIntake
+import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.MediaRepository
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.first
 
 /**
- * Everything the editor does with pictures, in one dependency.
+ * Everything a screen does with media, in one dependency.
  *
  * Grouped for the same reason `PackageIo` is: the screen that can add a picture is the screen that
- * shows it and the screen that can take it away again, and a ViewModel constructor listing them one
- * by one is one nobody reads. Screens that only ever show a picture take [LoadImage] alone.
+ * shows it and the screen that can take it away again, and a ViewModel constructor listing five use
+ * cases one by one is one nobody reads.
+ *
+ * Pictures and files sit side by side here because they are the same job with two different rules:
+ * a picture is re-encoded to a size a phone screen can show, a video or a recording is copied
+ * exactly as it is.
  */
-class Pictures(
-    val add: AddImage,
-    val load: LoadImage,
+class Media(
+    val addImage: AddImage,
+    val addFile: AddMediaFile,
+    val loadImage: LoadImage,
+    val findFile: FindMediaFile,
     val cleanUp: CleanUpMedia,
 )
 
@@ -76,11 +84,73 @@ class LoadImage(
 }
 
 /**
- * Removes the pictures no tile refers to any more, files included.
+ * Brings a picked video or recording in and records it.
  *
- * Media outlives the step that introduced it: removing a picture from a guide, or deleting the
- * guide, leaves a file that nothing points at. Left alone it is invisible, unreachable, and counted
- * against the app's storage for as long as Larova is installed.
+ * The same order as a picture — file first, row second — and the same reason: a row pointing at a
+ * file that was never written is a tile that plays nothing, while a file whose row never arrived is
+ * a few megabytes nobody ever sees.
+ *
+ * The asset comes back rather than only its identifier, because the editor has something to say
+ * about the size before the tile is saved.
+ */
+@OptIn(ExperimentalUuidApi::class)
+class AddMediaFile(
+    private val intake: MediaIntake,
+    private val media: MediaRepository,
+) {
+
+    suspend operator fun invoke(source: String): MediaAsset? {
+        val asset = intake.copyIn(source) ?: return null
+        media.register(asset)
+        return asset
+    }
+}
+
+/**
+ * Where a stored video or recording actually is, for a player to open.
+ *
+ * Through the repository first, so a file whose row is gone is gone here too, and then through the
+ * file system, so a row whose file is gone reports nothing rather than handing a player a path to
+ * nowhere. Both happen: an import that arrived without its media leaves the first, and a phone that
+ * ran out of space during one leaves the second.
+ */
+@OptIn(ExperimentalUuidApi::class)
+class FindMediaFile(
+    private val media: MediaRepository,
+    private val files: MediaFiles,
+) {
+
+    suspend operator fun invoke(id: Uuid): StoredFile? {
+        val asset = media.find(id) ?: return null
+        if (!files.exists(asset.relativePath)) return null
+
+        return StoredFile(
+            absolutePath = files.absolutePath(asset.relativePath),
+            mimeType = asset.mimeType,
+            sizeBytes = asset.sizeBytes,
+        )
+    }
+}
+
+/**
+ * A file on this device, as a screen needs it.
+ *
+ * The path is opaque to everything above the platform: it goes to the player and nowhere else. What
+ * a path looks like is the platform's business, which is what keeps this shared with iOS.
+ */
+data class StoredFile(
+    val absolutePath: String,
+    val mimeType: String,
+    val sizeBytes: Long,
+)
+
+/**
+ * Removes the media no tile refers to any more, files included.
+ *
+ * Media outlives the tile that introduced it: removing a picture from a guide, deleting the guide,
+ * or changing which recording a tile plays leaves a file that nothing points at. Left alone it is
+ * invisible, unreachable, and counted against the app's storage for as long as Larova is
+ * installed.
  *
  * The rows are what the repository can decide about — it is the only layer that can decode every
  * payload and see what is still pointed at. The files are decided here, from the difference between

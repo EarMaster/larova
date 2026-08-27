@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.media.ImageSize
+import app.larova.core.domain.media.isLargeMedia
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
@@ -15,7 +16,8 @@ import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.Folders
-import app.larova.core.domain.usecase.Pictures
+import app.larova.core.domain.usecase.Media
+import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.TileEditing
@@ -78,10 +80,24 @@ data class EditUiState(
     val apps: List<AppChoice> = emptyList(),
     val appQuery: String = "",
     val appPickerOpen: Boolean = false,
+    /** The video or recording on this tile, and what the parents wrote above it. */
+    val mediaId: String? = null,
+    val mediaCaption: String = "",
+    /**
+     * How big the chosen file is, so the editor can say so before it goes into a backup. Not a
+     * limit — the parents decide — but a backup is one file and they are the ones sending it.
+     */
+    val mediaSizeBytes: Long = 0,
+    /** The microphone is running. The only state in this editor that is a device rather than a field. */
+    val isRecording: Boolean = false,
+    /** The microphone could not be opened, or gave back nothing usable. */
+    val recordingFailed: Boolean = false,
     val titleMissing: Boolean = false,
     val urlInvalid: Boolean = false,
     /** A shortcut tile was saved without an app chosen. */
     val appMissing: Boolean = false,
+    /** A video or audio tile was saved with nothing to play. */
+    val mediaMissing: Boolean = false,
     val isLoading: Boolean = false,
     val saved: Boolean = false,
     val deleted: Boolean = false,
@@ -107,7 +123,10 @@ data class EditUiState(
      * architecture allows, so a folder cannot be offered here (docs/concept.md §4.1).
      */
     val isNested: Boolean = false,
-)
+) {
+    /** Worth saying out loud before this goes into a backup somebody has to send somewhere. */
+    val mediaIsLarge: Boolean get() = isLargeMedia(mediaSizeBytes)
+}
 
 /**
  * The types that can be made today. Media and app shortcuts are still to come — offering a type
@@ -125,6 +144,8 @@ fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
     CardType.PHONE,
     CardType.WEB,
     CardType.APP_LINK,
+    CardType.VIDEO,
+    CardType.AUDIO,
     CardType.FOLDER.takeUnless { isNested },
 )
 
@@ -152,7 +173,8 @@ data class EditTarget(val cardId: String = "", val boardId: String = "")
 class EditCardViewModel(
     target: EditTarget,
     private val tile: TileEditing,
-    private val pictures: Pictures,
+    private val media: Media,
+    private val recording: Recording,
     private val folders: Folders,
     private val apps: Apps,
 ) : ViewModel() {
@@ -204,6 +226,69 @@ class EditCardViewModel(
     fun onWebUrlChange(value: String) = _state.update { it.copy(webUrl = value, urlInvalid = false) }
 
     fun onAppLabelChange(value: String) = _state.update { it.copy(appLabel = value) }
+
+    fun onMediaCaptionChange(value: String) = _state.update { it.copy(mediaCaption = value) }
+
+    /**
+     * Starts recording. Called only once the microphone has been granted, which the screen arranges
+     * — the permission belongs to the platform and the question is asked there.
+     */
+    fun onStartRecording() {
+        if (_state.value.isRecording) return
+        viewModelScope.launch {
+            val started = recording.start()
+            _state.update { it.copy(isRecording = started, recordingFailed = !started) }
+        }
+    }
+
+    /**
+     * Stops, and puts what was recorded on the tile.
+     *
+     * A recording that produced nothing leaves the tile as it was. Somebody who taps record and stop
+     * in the same second has not replaced the recording that was already there.
+     */
+    fun onStopRecording() {
+        if (!_state.value.isRecording) return
+        viewModelScope.launch {
+            val asset = recording.stop()
+            _state.update { state ->
+                if (asset == null) {
+                    state.copy(isRecording = false, recordingFailed = true)
+                } else {
+                    state.copy(
+                        isRecording = false,
+                        recordingFailed = false,
+                        mediaId = asset.id.toString(),
+                        mediaSizeBytes = asset.sizeBytes,
+                        mediaMissing = false,
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * A picked video or recording, copied in and put on the tile.
+     *
+     * Copied now rather than when the tile is saved, for the same reason a picture is: the read
+     * permission the picker granted lasts as long as this screen does.
+     */
+    fun onMediaChosen(source: String) {
+        viewModelScope.launch {
+            val asset = media.addFile(source)
+            if (asset == null) {
+                _state.update { it.copy(mediaMissing = true) }
+                return@launch
+            }
+            _state.update {
+                it.copy(
+                    mediaId = asset.id.toString(),
+                    mediaSizeBytes = asset.sizeBytes,
+                    mediaMissing = false,
+                )
+            }
+        }
+    }
 
     /**
      * Opens the picker and loads the list behind it.
@@ -295,7 +380,7 @@ class EditCardViewModel(
         val index = pictureForStep ?: return
         pictureForStep = null
         viewModelScope.launch {
-            val id = pictures.add(source)
+            val id = media.addImage(source)
             if (id == null) {
                 _state.update { it.copy(pictureFailed = true) }
                 return@launch
@@ -396,20 +481,9 @@ class EditCardViewModel(
 
     fun onSave() {
         val current = _state.value
-        if (current.title.isBlank()) {
-            _state.update { it.copy(titleMissing = true) }
-            return
-        }
-        // Checked here as well as when opening, so a tile cannot be saved in a state where tapping
-        // it would do nothing at all.
-        if (current.type == CardType.WEB && !isOpenableUrl(current.webUrl)) {
-            _state.update { it.copy(urlInvalid = true) }
-            return
-        }
-        // A shortcut with no app behind it is a tile that does nothing when tapped, which the parent
-        // who made it will not be there to see.
-        if (current.type == CardType.APP_LINK && current.appPackage.isBlank()) {
-            _state.update { it.copy(appMissing = true) }
+        val refusal = current.refusal()
+        if (refusal != null) {
+            _state.value = refusal
             return
         }
 
@@ -431,7 +505,7 @@ class EditCardViewModel(
             )
             // Whatever the save changed, a picture may now be on no step at all: taken off one, or
             // picked and then replaced before saving.
-            if (result is SaveCard.Result.Saved) pictures.cleanUp()
+            if (result is SaveCard.Result.Saved) media.cleanUp()
             _state.update { state ->
                 when (result) {
                     is SaveCard.Result.Saved -> state.copy(saved = true)
@@ -448,8 +522,8 @@ class EditCardViewModel(
         val id = parseUuidOrNull(cardId) ?: return
         viewModelScope.launch {
             tile.delete(id)
-            // The pictures of a deleted guide are what nothing points at now.
-            pictures.cleanUp()
+            // The pictures and recordings of a deleted tile are what nothing points at now.
+            media.cleanUp()
             _state.update { it.copy(deleted = true) }
         }
     }
@@ -468,6 +542,18 @@ class EditCardViewModel(
             loadPictures()
             loadFolderCount()
         }
+    }
+
+    /**
+     * A recording left running when the screen goes is thrown away.
+     *
+     * `viewModelScope` is cancelled by the time this runs, which is why cancelling is the one
+     * recorder call that does not suspend. A microphone left open is the one thing this editor can
+     * leak that a person would actually notice.
+     */
+    override fun onCleared() {
+        if (_state.value.isRecording) recording.cancel()
+        super.onCleared()
     }
 
     /**
@@ -508,7 +594,7 @@ class EditCardViewModel(
             val loaded = _state.value.pictures.filterKeys { it in wanted }.toMutableMap()
             for (id in wanted - loaded.keys) {
                 val picture = parseUuidOrNull(id)
-                    ?.let { pictures.load(it, ImageSize.THUMBNAIL) }
+                    ?.let { media.loadImage(it, ImageSize.THUMBNAIL) }
                     ?.toImageBitmapOrNull()
                 if (picture != null) loaded[id] = picture
             }
@@ -518,59 +604,104 @@ class EditCardViewModel(
 }
 
 /**
- * Blank lines are dropped on the way in. A parent who taps "add step" twice and fills one of them
- * meant one step, and an empty step in a guide is a screen that says nothing.
+ * What the fields add up to, one type at a time.
+ *
+ * Split into a function per type rather than one long `when` with the logic inside it: every branch
+ * has its own rule about what counts as empty, and reading them together is how a rule ends up
+ * applied to the wrong type.
+ */
+private fun EditUiState.toPayload(): CardPayload = when (type) {
+    CardType.GUIDE -> guidePayload()
+    CardType.CHECKLIST -> checklistPayload()
+    CardType.NOTE -> CardPayload.Note(text = noteText.trim())
+    // Squared off in the domain rather than here, so a table that arrives from an import is held to
+    // the same shape as one somebody just typed.
+    CardType.TABLE -> tableOf(columns = columns, rows = rows)
+    CardType.VIDEO -> videoPayload()
+    CardType.AUDIO -> audioPayload()
+    CardType.PHONE -> phonePayload()
+    CardType.WEB -> webPayload()
+    CardType.APP_LINK -> appLinkPayload()
+    CardType.FOLDER -> folderPayload()
+}
+
+/**
+ * Blank steps are dropped. A parent who taps "add step" twice and fills one of them meant one step,
+ * and an empty step in a guide is a screen that says nothing.
  *
  * A step with a picture and no words is not blank: some things are easier shown than described.
  */
-private fun EditUiState.toPayload(): CardPayload = when (type) {
-    CardType.GUIDE -> CardPayload.Guide(
-        steps = steps
-            .map { it.copy(text = it.text.trim()) }
-            .filter { it.text.isNotEmpty() || it.mediaId != null }
-            .map { Step(text = it.text, mediaId = parseUuidOrNull(it.mediaId)) },
-    )
+private fun EditUiState.guidePayload() = CardPayload.Guide(
+    steps = steps
+        .map { it.copy(text = it.text.trim()) }
+        .filter { it.text.isNotEmpty() || it.mediaId != null }
+        .map { Step(text = it.text, mediaId = parseUuidOrNull(it.mediaId)) },
+)
 
-    CardType.CHECKLIST -> CardPayload.Checklist(
-        items = items.map { it.copy(text = it.text.trim()) }.filter { it.text.isNotEmpty() },
-        resetDaily = resetDaily,
-    )
+private fun EditUiState.checklistPayload() = CardPayload.Checklist(
+    items = items.map { it.copy(text = it.text.trim()) }.filter { it.text.isNotEmpty() },
+    resetDaily = resetDaily,
+)
 
-    CardType.NOTE -> CardPayload.Note(text = noteText.trim())
+/**
+ * The identifier is written before this runs, so one that will not parse means a tile whose file was
+ * never stored. A note keeps the caption rather than writing a tile that plays nothing.
+ */
+private fun EditUiState.videoPayload(): CardPayload = parseUuidOrNull(mediaId)
+    ?.let { CardPayload.Video(mediaId = it, caption = mediaCaption.trim().ifEmpty { null }) }
+    ?: CardPayload.Note(text = mediaCaption.trim())
 
-    // Squared off in the domain rather than here, so a table that arrives from an import is held
-    // to the same shape as one somebody just typed.
-    CardType.TABLE -> tableOf(columns = columns, rows = rows)
+private fun EditUiState.audioPayload(): CardPayload = parseUuidOrNull(mediaId)
+    ?.let { CardPayload.Audio(mediaId = it, caption = mediaCaption.trim().ifEmpty { null }) }
+    ?: CardPayload.Note(text = mediaCaption.trim())
 
-    CardType.PHONE -> CardPayload.Phone(
-        displayName = callName.trim().ifEmpty { title.trim() },
-        number = callNumber.trim(),
-        relation = callRelation.trim().takeIf { it.isNotEmpty() },
-        inHelpSheet = callInHelpSheet,
-    )
+/** The tile's own title stands in for a name nobody typed: a number with no name is a riddle. */
+private fun EditUiState.phonePayload() = CardPayload.Phone(
+    displayName = callName.trim().ifEmpty { title.trim() },
+    number = callNumber.trim(),
+    relation = callRelation.trim().takeIf { it.isNotEmpty() },
+    inHelpSheet = callInHelpSheet,
+)
 
-    CardType.APP_LINK -> CardPayload.AppLink(
-        packageName = appPackage,
-        label = appLabel.trim().ifEmpty { title.trim() },
-    )
+private fun EditUiState.webPayload() = CardPayload.Web(
+    url = webUrl.trim(),
+    label = webLabel.trim().takeIf { it.isNotEmpty() },
+)
 
-    CardType.WEB -> CardPayload.Web(
-        url = webUrl.trim(),
-        label = webLabel.trim().takeIf { it.isNotEmpty() },
-    )
+private fun EditUiState.appLinkPayload() = CardPayload.AppLink(
+    packageName = appPackage,
+    label = appLabel.trim().ifEmpty { title.trim() },
+)
 
-    // The board is created before this runs, so an id with nothing behind it means a folder that
-    // was never saved. A note keeps the title and colour rather than writing a folder that opens
-    // nothing.
-    CardType.FOLDER -> parseUuidOrNull(folderBoardId)
-        ?.let { CardPayload.Folder(boardId = it) }
-        ?: CardPayload.Note(text = noteText.trim())
+/**
+ * The board is created before this runs, so an identifier with nothing behind it means a folder that
+ * was never saved. A note keeps the title and colour rather than writing a folder that opens
+ * nothing.
+ */
+private fun EditUiState.folderPayload(): CardPayload = parseUuidOrNull(folderBoardId)
+    ?.let { CardPayload.Folder(boardId = it) }
+    ?: CardPayload.Note(text = noteText.trim())
 
-    // Not offered by the picker, so not reachable — but a `when` without a branch for them would
-    // stop compiling the day one is added, which is exactly when this needs revisiting.
-    CardType.VIDEO, CardType.AUDIO ->
-        CardPayload.Note(text = noteText.trim())
+/**
+ * The first thing wrong with what was typed, as the state that says so, or null if it can be saved.
+ *
+ * Every reason a save is refused in one place: a tile that cannot be opened, tapped or played is a
+ * tile whose parent will not be there when a caregiver finds out. Checked here as well as when the
+ * field was filled in, because a screen can be left half-finished and come back.
+ */
+private fun EditUiState.refusal(): EditUiState? = when {
+    title.isBlank() -> copy(titleMissing = true)
+    type == CardType.WEB && !isOpenableUrl(webUrl) -> copy(urlInvalid = true)
+    type == CardType.APP_LINK && appPackage.isBlank() -> copy(appMissing = true)
+    type in MEDIA_TYPES && mediaId == null -> copy(mediaMissing = true)
+    else -> null
 }
+
+/**
+ * The two types whose content is a file. Named once so the save check and the fields agree about
+ * which they are.
+ */
+private val MEDIA_TYPES = setOf(CardType.VIDEO, CardType.AUDIO)
 
 /** Existing content into editor fields. Ticked items keep their state; editing text is not undoing. */
 private fun Tile.toEditState(): EditUiState {
@@ -615,6 +746,16 @@ private fun Tile.toEditState(): EditUiState {
             callInHelpSheet = payload.inHelpSheet,
         )
 
+        is CardPayload.Video -> base.copy(
+            mediaId = payload.mediaId.toString(),
+            mediaCaption = payload.caption.orEmpty(),
+        )
+
+        is CardPayload.Audio -> base.copy(
+            mediaId = payload.mediaId.toString(),
+            mediaCaption = payload.caption.orEmpty(),
+        )
+
         is CardPayload.AppLink -> base.copy(
             appPackage = payload.packageName,
             appLabel = payload.label,
@@ -624,7 +765,5 @@ private fun Tile.toEditState(): EditUiState {
             webUrl = payload.url,
             webLabel = payload.label.orEmpty(),
         )
-
-        else -> base
     }
 }

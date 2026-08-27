@@ -42,6 +42,13 @@ docs-only changes do not belong here.
   nothing more: no totals, no trends, no interpretation. Lines older than 30 days are dropped, the
   log travels in a backup, and clearing it needs parent view.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
+- A sound tile can be recorded on the spot — a parent reading the bedtime story onto the tile, so
+  a caregiver who does not share the child's language can still play the right words. Larova asks
+  for the microphone when the record button is tapped and not before.
+- A tile can hold a video or a sound file: pick one from the phone, write a line above it, and it
+  plays where it sits. Nothing starts by itself — a caregiver who opened a tile to read it should
+  not have a video start talking at them. A file is copied into Larova rather than pointed at, so
+  it travels in a backup, and a large one says so before it goes on a tile.
 - A tile can open another app on the phone — the music player, the camera, the bus timetable.
   Pick it from a list of what is installed, and give the tile words a caregiver will recognise
   rather than the app store name. If the app is uninstalled later the tile says so instead of doing

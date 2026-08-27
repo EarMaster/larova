@@ -7,7 +7,7 @@ import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.Apps
-import app.larova.core.domain.usecase.LoadImage
+import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.TileSource
@@ -43,13 +43,18 @@ data class CardUiState(
      * an app that has been uninstalled since is an ordinary thing to find.
      */
     val appInstalled: Boolean = false,
+    /**
+     * Where the video or recording on this tile actually is. Null when the row is there and the file
+     * is not, which the screen says in words rather than handing a player a path to nowhere.
+     */
+    val mediaPath: String? = null,
 )
 
 class CardViewModel(
     private val cardId: String,
     private val tiles: TileSource,
     private val toggleChecklistItem: ToggleChecklistItem,
-    private val loadImage: LoadImage,
+    private val media: Media,
     private val apps: Apps,
     private val recordEvent: RecordEvent,
 ) : ViewModel() {
@@ -106,7 +111,7 @@ class CardViewModel(
      */
     suspend fun pictureFor(mediaId: String): ImageBitmap? {
         val id = parseUuidOrNull(mediaId) ?: return null
-        return loadImage(id, ImageSize.ON_SCREEN)?.toImageBitmapOrNull()
+        return media.loadImage(id, ImageSize.ON_SCREEN)?.toImageBitmapOrNull()
     }
 
     private fun reload() {
@@ -125,7 +130,24 @@ class CardViewModel(
             }
             watchFolder(tile?.payload as? CardPayload.Folder)
             checkApp(tile?.payload as? CardPayload.AppLink)
+            findMedia(tile?.payload)
         }
+    }
+
+    /**
+     * The file behind a video or audio tile, looked up once when the tile opens.
+     *
+     * Both types keep their media the same way, so one branch does both rather than the screen
+     * asking twice for what is the same question.
+     */
+    private suspend fun findMedia(payload: CardPayload?) {
+        val id = when (payload) {
+            is CardPayload.Video -> payload.mediaId
+            is CardPayload.Audio -> payload.mediaId
+            else -> return
+        }
+        val file = media.findFile(id)
+        _state.update { it.copy(mediaPath = file?.absolutePath) }
     }
 
     private suspend fun checkApp(appLink: CardPayload.AppLink?) {

@@ -22,10 +22,14 @@ import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.export.Digest
 import app.larova.core.domain.media.ImageStore
+import app.larova.core.domain.media.AudioRecorder
+import app.larova.core.domain.media.MediaIntake
 import app.larova.core.domain.export.PackageIo
 import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.export.PackageStore
 import app.larova.core.domain.usecase.AddImage
+import app.larova.core.domain.usecase.AddMediaFile
+import app.larova.core.domain.usecase.FindMediaFile
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.app.InstalledApps
 import app.larova.core.domain.usecase.Apps
@@ -33,6 +37,7 @@ import app.larova.core.domain.usecase.CreateFolderBoard
 import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
+import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
@@ -40,6 +45,7 @@ import app.larova.core.domain.usecase.ObserveLog
 import app.larova.core.domain.usecase.PruneLog
 import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.ReadPackagePreview
+import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.HasPin
 import app.larova.core.domain.usecase.IsAppInstalled
 import app.larova.core.domain.usecase.PickableApps
@@ -49,7 +55,6 @@ import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
-import app.larova.core.domain.usecase.Pictures
 import app.larova.core.domain.usecase.ReorderTiles
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.SearchTiles
@@ -62,6 +67,8 @@ import app.larova.core.domain.usecase.UnlockWithPin
 import app.larova.core.platform.AndroidExternalActions
 import app.larova.core.platform.AndroidImageStore
 import app.larova.core.platform.AndroidInstalledApps
+import app.larova.core.platform.AndroidAudioRecorder
+import app.larova.core.platform.AndroidMediaIntake
 import app.larova.core.platform.AndroidPlatformPaths
 import app.larova.core.platform.AndroidDigest
 import app.larova.core.platform.AndroidMediaFiles
@@ -109,6 +116,10 @@ val appModule = module {
     single<MediaFiles> { AndroidMediaFiles(get()) }
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
+    single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
+    // A singleton because a microphone is: two recorders on one device is not an error the framework
+    // reports usefully, it simply produces silence.
+    single<AudioRecorder> { AndroidAudioRecorder(androidContext(), get()) }
     single { PackageIo(store = get(), digest = get(), mediaFiles = get()) }
 
     // One session for the whole process, with a scope that outlives every screen: the five-minute
@@ -159,9 +170,12 @@ val appModule = module {
     factory { IsAppInstalled(get()) }
     factory { Apps(get(), get()) }
     factory { AddImage(get(), get()) }
+    factory { AddMediaFile(get(), get()) }
     factory { LoadImage(get(), get()) }
+    factory { FindMediaFile(get(), get()) }
     factory { CleanUpMedia(get(), get()) }
-    factory { Pictures(get(), get(), get()) }
+    factory { Media(get(), get(), get(), get(), get()) }
+    factory { Recording(get(), get()) }
     factory { SearchTiles(get()) }
     factory { ReorderTiles(get(), get()) }
     factory { HasPin(get()) }
@@ -189,7 +203,7 @@ val appModule = module {
         CardViewModel(parameters.get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
-        EditCardViewModel(parameters.get(), get(), get(), get(), get())
+        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get())
     }
 }
 

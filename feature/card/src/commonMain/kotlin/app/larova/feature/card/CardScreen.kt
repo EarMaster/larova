@@ -196,12 +196,22 @@ private fun CardContent(
             modifier = modifier,
         )
 
-        // Video and audio are still to come. They cannot be reached from the grid before then,
-        // because nothing can create one — but the branch is here rather than a wildcard, so adding
-        // a type is a compile error until it has a renderer.
-        is CardPayload.Video,
-        is CardPayload.Audio,
-        -> EmptyPayloadNote(modifier = modifier)
+        is CardPayload.Video -> MediaView(
+            caption = payload.caption,
+            absolutePath = state.mediaPath,
+            showVideo = true,
+            modifier = modifier,
+        )
+
+        is CardPayload.Audio -> MediaView(
+            caption = payload.caption,
+            absolutePath = state.mediaPath,
+            showVideo = false,
+            modifier = modifier,
+        )
+
+        // Every type in concept.md §4.1 now has a renderer. The branches stay exhaustive rather
+        // than ending in a wildcard, so a type added later is a compile error until it has one.
     }
 }
 

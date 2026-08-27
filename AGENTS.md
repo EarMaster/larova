@@ -276,8 +276,16 @@ Break one of these and it cannot be repaired later, because users own the data.
 - **Media picking** uses `PickVisualMedia`, so no `READ_MEDIA_*` permission.
 - **The app-shortcut picker** needs the `<queries>` manifest entry for
   `MAIN`/`LAUNCHER`. `QUERY_ALL_PACKAGES` is deliberately not used.
-- Full permission list: `RECORD_AUDIO`, `CAMERA`, `POST_NOTIFICATIONS`
-  (only if reminders ship). Nothing else.
+- Full permission list: `RECORD_AUDIO` for recording a voice onto a tile, plus
+  `USE_BIOMETRIC`/`USE_FINGERPRINT` from `androidx.biometric` for the parent-view
+  unlock. `POST_NOTIFICATIONS` only if reminders ship, and `CAMERA` only if a
+  capture screen is ever built inside the app — the photo picker means one is not
+  needed. **Nothing else, and that includes what a library brings with it:**
+  `media3-exoplayer` contributes `ACCESS_NETWORK_STATE` and `WAKE_LOCK` through
+  manifest merge, and both are removed with `tools:node="remove"`. "View network
+  connections" on an app whose whole promise is having no internet permission reads
+  as a contradiction, whatever the permission actually grants. Check
+  `aapt2 dump badging` after adding any dependency.
 - The manifest is hardened: `allowBackup="false"` plus restrictive
   `dataExtractionRules`, since the explicit export replaces cloud backup.
 
