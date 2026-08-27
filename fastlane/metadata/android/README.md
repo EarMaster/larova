@@ -96,7 +96,14 @@ and pushes the title, both descriptions and any images to the Console. That clos
 section used to describe — the tree is the source and the Console is downstream of it, rather than
 somebody retyping fourteen languages.
 
-Three things about the listing upload are worth knowing before relying on it:
+**It cannot bootstrap a store entry.** `fastlane supply` handles listing text and release notes in
+one pass, and that pass starts by finding a track and a release to attach the notes to — before it
+has looked at whether changelogs were skipped. So the listing upload needs a release on the internal
+track to exist already, and it needs the versionCode of one (`play-listing.yml` reads it from
+`app/build.gradle.kts`). The first AAB still goes up by hand, per `docs/release-setup.md` §3.7; this
+publishes the listing of an app that has shipped somewhere, not the listing of one that has not.
+
+Three more things are worth knowing before relying on it:
 
 - **It uploads no binary and no release notes.** Notes are keyed by versionCode and belong beside
   the AAB that contains them; attaching whatever is in the tree to whatever is currently live is

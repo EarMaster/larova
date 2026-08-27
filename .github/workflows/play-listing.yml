@@ -16,11 +16,17 @@ on:
     branches: [main]
     paths:
       - fastlane/**
+      # Release notes are not listing text: they are keyed by versionCode and go up beside the AAB
+      # in google-play.yml. Excluded because /release writes one per locale in the same commit that
+      # bumps the version, and both workflows firing on that push is a race — this one would look
+      # for a release the other has not created yet.
+      - "!fastlane/metadata/android/*/changelogs/**"
       - Gemfile
       - .github/workflows/play-listing.yml
   pull_request:
     paths:
       - fastlane/**
+      - "!fastlane/metadata/android/*/changelogs/**"
       - Gemfile
       - .github/workflows/play-listing.yml
   workflow_dispatch:
@@ -52,6 +58,20 @@ jobs:
       - name: Validate store metadata
         run: tools/check_store_metadata.sh
 
+      # supply needs a release to attach the listing edit to, even when it is uploading nothing but
+      # text — see the comment in the Fastfile. On main this number is the released one, because
+      # release.yml built the release from this same file.
+      - name: Read versionCode
+        id: version
+        run: |
+          CODE=$(sed -n 's/.*versionCode[[:space:]]*=[[:space:]]*\([0-9][0-9]*\).*/\1/p' app/build.gradle.kts | head -1)
+          if [ -z "$CODE" ]; then
+            echo "::error::Could not read versionCode from app/build.gradle.kts"
+            exit 1
+          fi
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "Listing will be attached to versionCode $CODE on the internal track."
+
       - uses: ruby/setup-ruby@v1
         with:
           # The Gemfile pins fastlane; Ruby itself only has to be recent enough to run it. No
@@ -75,19 +95,38 @@ jobs:
           github.event.pull_request.head.repo.full_name == github.repository
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing_check
+        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
 
       - name: Upload listing to Play
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing
+        run: bundle exec fastlane android listing version_code:${{ steps.version.outputs.code }}
 
       - name: Validate listing on request
         if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing_check
+        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
+
+      # The one failure that is not a mistake in this repository, so it gets said in words rather
+      # than left as a fastlane stack trace.
+      - name: Explain a missing release
+        if: failure()
+        run: |
+          {
+            echo "### Listing not uploaded"
+            echo
+            echo "If this failed with **Could not find release for version code**, the internal"
+            echo "track has no release with versionCode \`${{ steps.version.outputs.code }}\` yet."
+            echo "\`fastlane supply\` attaches a listing edit to a release even when it uploads"
+            echo "only text, so it cannot publish the listing of an app that has never shipped."
+            echo
+            echo "Upload the first AAB by hand (docs/release-setup.md §3.7), then re-run this"
+            echo "workflow. If the release exists, check that the service account also holds"
+            echo "**Edit store listing, pricing and distribution** — Release manager alone is not"
+            echo "enough for the listing call."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # The edit is committed but not submitted: a new app whose first release has not been reviewed
       # cannot have changes sent for review through the API, and fourteen languages of text going

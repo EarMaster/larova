@@ -23,6 +23,20 @@ platform :android do
       json_key_data: service_account_json,
       metadata_path: "fastlane/metadata/android",
 
+      # The release the listing belongs to.
+      #
+      # Not optional in practice, though it looks it. `supply` handles listing text and release
+      # notes in one pass, and that pass begins by finding a track and a release to hang the notes
+      # on — before it has looked at whether changelogs were skipped. With no version code it
+      # searches for a release of version code `nil`, finds none, and stops with "Could not find
+      # release for version code ''".
+      #
+      # Two things follow. The number has to be passed (the workflow reads it from
+      # app/build.gradle.kts), and **the track has to have a release already**: this pushes the
+      # listing for an app that is published somewhere, it cannot bootstrap one. The first AAB still
+      # goes up by hand — docs/release-setup.md §3.7.
+      version_code: options[:version_code],
+
       # No binaries. This lane exists to change words and pictures, and an accidental release from
       # a listing edit is exactly the kind of surprise a store entry should never produce.
       skip_upload_apk: true,
@@ -63,8 +77,8 @@ platform :android do
   end
 
   desc "Validate the listing against Play without changing anything."
-  lane :listing_check do
-    listing(dry_run: true)
+  lane :listing_check do |options|
+    listing(options.merge(dry_run: true))
   end
 end
 
