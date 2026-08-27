@@ -238,6 +238,51 @@
     <string name="template_day">Ein Tag bei uns</string>
     <string name="template_what_helps">Was hilft, wenn …</string>
 
+
+    <!-- ===== What the six templates put on the grid. Example text, not instruction text: it should
+         read like something a family wrote. Still wants a native read-through. ===== -->
+    <string name="template_bedtime_step_1">Schlafanzug an, Zähne geputzt.</string>
+    <string name="template_bedtime_step_2">Eine Geschichte auf dem Sofa — sie darf ausgesucht werden.</string>
+    <string name="template_bedtime_step_3">Vorhänge zu, kleine Lampe an.</string>
+    <string name="template_bedtime_step_4">Der Kuschelhase gehört ins Bett, nicht ins Regal.</string>
+    <string name="template_bedtime_step_5">Tür einen Handbreit offen lassen.</string>
+
+    <string name="template_evening_item_1">Abendessen</string>
+    <string name="template_evening_item_2">Waschen und Zähne</string>
+    <string name="template_evening_item_3">Schlafanzug</string>
+    <string name="template_evening_item_4">Geschichte</string>
+    <string name="template_evening_item_5">Licht aus</string>
+
+    <string name="template_contacts_name">Mama</string>
+    <string name="template_contacts_relation">Mutter</string>
+    <string name="template_contacts_todo">Nummer eintragen</string>
+
+    <string name="template_food_column_1">Mag</string>
+    <string name="template_food_column_2">Lieber nicht</string>
+    <string name="template_food_row_1_1">Nudeln mit Butter</string>
+    <string name="template_food_row_1_2">Alles mit Pilzen</string>
+    <string name="template_food_row_2_1">Apfelschnitze</string>
+    <string name="template_food_row_2_2">Limonade</string>
+    <string name="template_food_row_3_1">Wasser, Milch</string>
+    <string name="template_food_row_3_2">Soße über dem Essen</string>
+
+    <string name="template_day_column_1">Wann</string>
+    <string name="template_day_column_2">Was passiert</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Wach, Frühstück am Tisch</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Mittagessen, danach Ruhe mit einem Buch</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Snack, dann auf den Spielplatz, wenn es trocken ist</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Abendessen, danach der Abendablauf</string>
+
+    <string name="template_what_helps_step_1">Aufregung: daneben setzen und erst einmal nicht reden.</string>
+    <string name="template_what_helps_step_2">Kein Appetit: stehen lassen und später noch einmal versuchen.</string>
+    <string name="template_what_helps_step_3">Kann nicht einschlafen: das Schlaflied, leise, zwei Mal.</string>
+
+    <string name="home_start_with">Oder mit einer Vorlage anfangen</string>
+
     <!-- ===== Content descriptions ===== -->
     <string name="cd_open_tile">%1$s öffnen</string>
     <string name="cd_add_tile">Kachel hinzufügen</string>

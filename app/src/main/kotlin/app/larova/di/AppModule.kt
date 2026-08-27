@@ -1,5 +1,6 @@
 package app.larova.di
 
+import app.larova.AndroidShortcuts
 import app.larova.AppViewModel
 import app.larova.BuildConfig
 import app.larova.core.data.db.LarovaDatabase
@@ -28,10 +29,12 @@ import app.larova.core.domain.export.PackageIo
 import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.export.PackageStore
 import app.larova.core.domain.usecase.AddImage
+import app.larova.core.domain.usecase.ApplyTemplate
 import app.larova.core.domain.usecase.AddMediaFile
 import app.larova.core.domain.usecase.FindMediaFile
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.app.InstalledApps
+import app.larova.core.domain.app.Shortcuts
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CreateFolderBoard
 import app.larova.core.domain.usecase.DeleteCard
@@ -41,7 +44,9 @@ import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
+import app.larova.core.domain.usecase.MostOpenedTiles
 import app.larova.core.domain.usecase.ObserveLog
+import app.larova.core.domain.usecase.PublishShortcuts
 import app.larova.core.domain.usecase.PruneLog
 import app.larova.core.domain.usecase.RecordEvent
 import app.larova.core.domain.usecase.ReadPackagePreview
@@ -116,6 +121,7 @@ val appModule = module {
     single<MediaFiles> { AndroidMediaFiles(get()) }
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
+    single<Shortcuts> { AndroidShortcuts(androidContext()) }
     single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
     // A singleton because a microphone is: two recorders on one device is not an error the framework
     // reports usefully, it simply produces silence.
@@ -160,6 +166,8 @@ val appModule = module {
     factory { ObserveLog(get(), get()) }
     factory { ClearLog(get()) }
     factory { PruneLog(get()) }
+    factory { MostOpenedTiles(get(), get()) }
+    factory { PublishShortcuts(get(), get()) }
     factory { SaveCard(get(), get()) }
     factory { DeleteCard(get(), get()) }
     factory { TileEditing(get(), get(), get()) }
@@ -177,6 +185,7 @@ val appModule = module {
     factory { Media(get(), get(), get(), get(), get()) }
     factory { Recording(get(), get()) }
     factory { SearchTiles(get()) }
+    factory { ApplyTemplate(get()) }
     factory { ReorderTiles(get(), get()) }
     factory { HasPin(get()) }
     factory { SetPin(get()) }
@@ -189,10 +198,10 @@ val appModule = module {
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
-    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get()) }
     // The board comes from the route: the start screen when it is empty, a folder otherwise.
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
     viewModel { HelpViewModel(get(), get()) }

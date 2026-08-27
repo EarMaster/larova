@@ -1,10 +1,13 @@
 package app.larova.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,6 +18,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.larova.core.domain.usecase.CardDraft
+import app.larova.core.domain.usecase.TemplateId
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.component.TileCard
 import app.larova.core.ui.icon.MoreVertical
@@ -41,6 +47,7 @@ import app.larova.core.ui.resources.home_empty_title
 import app.larova.core.ui.resources.home_greeting
 import app.larova.core.ui.resources.home_search
 import app.larova.core.ui.resources.home_search_empty
+import app.larova.core.ui.resources.home_start_with
 import app.larova.core.ui.resources.settings_log
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.tile_folder
@@ -70,6 +77,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenTransfer: () -> Unit,
     onOpenLog: () -> Unit,
+    onUseTemplate: (CardDraft) -> Unit,
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -123,7 +131,7 @@ fun HomeScreen(
 
                 state.isSearching -> Message(text = stringResource(Res.string.home_search_empty))
 
-                else -> HomeEmptyState()
+                else -> HomeEmptyState(onUseTemplate = onUseTemplate)
             }
         }
     }
@@ -278,7 +286,15 @@ private fun HomeMenu(
  * zero tiles is better than one that assumes it never has to.
  */
 @Composable
-private fun HomeEmptyState(modifier: Modifier = Modifier) {
+@OptIn(ExperimentalLayoutApi::class)
+private fun HomeEmptyState(
+    onUseTemplate: (CardDraft) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // Resolved here, in composition, because every word of a template is a string resource and a
+    // click handler is no place to read one. Six string lookups, and only while the grid is empty.
+    val drafts = TemplateId.entries.map { it to templateDraft(it) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -297,5 +313,29 @@ private fun HomeEmptyState(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
+
+        // The six starting points from concept.md §4.6, on the one screen where an empty grid would
+        // otherwise be asking "and now what?". They answer it twice over: something real appears,
+        // and the tile that appears shows what a guide, a list, a table or a number looks like
+        // filled in. Offered in both views, because a fresh installation has no PIN and nothing yet
+        // to protect.
+        Text(
+            text = stringResource(Res.string.home_start_with),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            for ((template, draft) in drafts) {
+                OutlinedButton(
+                    onClick = { onUseTemplate(draft) },
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(template.label())
+                }
+            }
+        }
     }
 }
