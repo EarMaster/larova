@@ -41,6 +41,8 @@ docs-only changes do not belong here.
   dim, for reading aloud in a darkened room. The setting is remembered.
 - The "Get help" bar is on every screen.
 - A home-screen icon: the lit niche, including the monochrome version themed launchers use.
+- Larova speaks German as well as English. On Android 13 and newer the phone can be told to show
+  Larova in either one, whatever language the rest of the phone is set to — so a grandmother can
+  read it in hers on a phone that stays in another.
 
-Larova speaks English so far. German is written before the first release; the other twelve
-languages follow it.
+The other twelve languages of the launch set are still to come.

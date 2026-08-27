@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · German strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate, or the two drift apart and nobody can tell which one is right. See
+  docs/localization.md.
+
+  Two decisions run through the whole file and are worth knowing before changing one line of it:
+
+  · The address form is avoided wherever German allows it — infinitives ("PIN eingeben") and
+    impersonal constructions rather than "du" or "Sie". That matches the English, which almost
+    never addresses the reader either, and it sidesteps a choice that would otherwise have to be
+    right for a grandmother, a babysitter and a parent at once. Where an address form is
+    unavoidable, it is "Sie": the person reading a caregiver screen is often not family.
+
+  · German runs about 30 % longer than English, so the wording is kept as short as the meaning
+    allows. Anything on a button, in a chip or on a tile is shorter here than a literal
+    translation would be.
+
+  Three groups still want a native read-through before release, per docs/localization.md §5: the
+  help bar and contact sheet, the two view names, and the templates.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Schön, dass Sie da sind</string>
+    <string name="home_search">Suchen</string>
+    <string name="home_add_tile">Kachel hinzufügen</string>
+    <string name="home_child_age">%1$s · %2$d Jahre</string>
+    <string name="home_empty_title">Noch nichts hier</string>
+    <string name="home_search_empty">Dazu passt nichts.</string>
+    <string name="arrange_title">Kacheln anordnen</string>
+    <string name="arrange_hint">Kacheln nach oben oder nach unten verschieben. Diese Reihenfolge ist die Reihenfolge auf dem Startbildschirm.</string>
+    <string name="home_empty_hint">Hinzugefügte Kacheln erscheinen hier. Auf einer Kachel kann eine Anleitung liegen, eine Liste, eine Notiz, eine Rufnummer oder eine Website.</string>
+
+    <!-- ===== Views. These two names carry the whole mental model. ===== -->
+    <string name="view_caregiver">Betreuungsansicht</string>
+    <string name="view_parent">Elternansicht</string>
+    <string name="view_parent_active">Die Elternansicht ist an. Bearbeiten und Sichern sind freigegeben. Nach fünf Minuten ohne Eingabe wechselt Larova zurück zur Betreuungsansicht.</string>
+    <string name="view_unlock_title">Elternansicht entsperren</string>
+    <string name="view_unlock_pin">PIN eingeben</string>
+    <string name="view_unlock_biometric">Stattdessen Fingerabdruck verwenden</string>
+
+    <string name="view_locked_note">Bearbeiten und Sichern liegen in der Elternansicht.</string>
+    <string name="view_leave">Elternansicht verlassen</string>
+    <string name="view_pin_create_title">PIN festlegen</string>
+    <string name="view_pin_create_hint">Vier bis zwölf Ziffern. Die PIN verhindert versehentliche Änderungen an den Kacheln; verbergen kann sie sie nicht.</string>
+    <string name="view_pin_repeat">Noch einmal eingeben</string>
+    <string name="view_pin_mismatch">Die beiden stimmen nicht überein.</string>
+    <string name="view_pin_too_short">Mindestens vier Ziffern.</string>
+    <string name="view_pin_digits_only">Nur Ziffern.</string>
+    <string name="view_pin_wrong">Das ist nicht die PIN.</string>
+    <string name="view_pin_change">PIN ändern</string>
+    <string name="view_unlock">Entsperren</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Anleitung</string>
+    <string name="tile_guide_hint">Schritte mit Text, Bildern und Ton</string>
+    <string name="tile_checklist">Checkliste</string>
+    <string name="tile_checklist_hint">Punkte zum Abhaken, auf Wunsch täglich zurückgesetzt</string>
+    <string name="tile_table">Tabelle</string>
+    <string name="tile_table_hint">Eigene Spalten und Zeilen</string>
+    <string name="tile_note">Notiz</string>
+    <string name="tile_note_hint">Freier Text mit Überschriften und Listen</string>
+    <string name="tile_video">Video oder Ton</string>
+    <string name="tile_video_hint">Aus der Galerie oder jetzt aufnehmen</string>
+    <string name="tile_call">Anruf</string>
+    <string name="tile_call_hint">Ein Name, eine Nummer und wer die Person ist</string>
+    <string name="tile_link">Website oder App</string>
+    <string name="tile_link_hint">Öffnet einen Link oder eine App auf diesem Telefon</string>
+    <string name="tile_folder">Ordner</string>
+    <string name="tile_folder_hint">Fasst mehrere Kacheln zusammen</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Anleitung · %1$d Schritt</item>
+        <item quantity="other">Anleitung · %1$d Schritte</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Checkliste · %1$d Punkt</item>
+        <item quantity="other">Checkliste · %1$d Punkte</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Schritt %1$d von %2$d</string>
+    <string name="guide_previous">Zurück</string>
+    <string name="guide_next">Weiter</string>
+    <string name="guide_finish">Fertig</string>
+    <string name="guide_read_aloud">Vorlesen</string>
+    <string name="guide_screen_stays_on">Hier bleibt der Bildschirm an.</string>
+
+    <string name="guide_step_current">Jetzt</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d von %2$d</string>
+    <string name="checklist_resets_daily">Wird jeden Morgen um %1$s zurückgesetzt. Abgehakte Punkte stehen mit Uhrzeit im Protokoll.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Hilfe holen</string>
+    <string name="help_sheet_title">Hilfe holen</string>
+    <string name="help_call_note">Ein Tippen öffnet die Telefon-App mit der eingetragenen Nummer. Larova wählt nie von selbst.</string>
+    <string name="help_emergency">Notruf</string>
+    <string name="help_no_contacts">Hier sind noch keine Nummern eingetragen.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Sichern &amp; übertragen</string>
+    <string name="transfer_backup">Sichern</string>
+    <string name="transfer_backup_hint">Erstellt eine einzige Datei mit allen Kacheln, Bildern und Aufnahmen. Der Speicherort ist frei wählbar.</string>
+    <string name="transfer_restore">Wiederherstellen</string>
+    <string name="transfer_restore_hint">Datei auswählen, Vorschau prüfen, dann ersetzen oder zum Vorhandenen hinzufügen.</string>
+    <string name="transfer_protect">Mit Passwort schützen</string>
+    <string name="transfer_protect_hint">Empfohlen, sobald die Datei an jemanden geht. Ohne das Passwort lässt sie sich nicht öffnen.</string>
+    <string name="transfer_last_backup">Zuletzt gesichert %1$s</string>
+    <string name="transfer_preview">%1$d Kacheln, %2$d Dateien, %3$s</string>
+    <string name="transfer_replace">Alles ersetzen</string>
+    <string name="transfer_merge">Zum Vorhandenen hinzufügen</string>
+    <string name="transfer_version_too_new">Diese Datei wurde mit einer neueren Version von Larova erstellt. Zum Öffnen die App aktualisieren.</string>
+    <string name="transfer_saved">Gesichert: %1$d Kacheln und %2$d Dateien.</string>
+    <string name="transfer_restored">Wiederhergestellt: %1$d Kacheln und %2$d Dateien.</string>
+    <string name="transfer_backup_failed">Die Sicherung konnte nicht geschrieben werden. Einen anderen Speicherort versuchen.</string>
+    <string name="transfer_damaged">Diese Datei ist unvollständig — sie wurde vielleicht nicht ganz übertragen. Es wurde nichts geändert.</string>
+    <string name="transfer_unreadable">Das ist keine Larova-Sicherung.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_appearance">Darstellung</string>
+    <string name="settings_appearance_system">Wie das Telefon</string>
+    <string name="settings_appearance_light">Hell</string>
+    <string name="settings_appearance_dark">Dunkel</string>
+    <string name="settings_appearance_night">Nacht</string>
+    <string name="settings_appearance_night_hint">Warm und sehr gedimmt, zum Vorlesen im dunklen Zimmer.</string>
+    <string name="settings_language">Sprache</string>
+    <string name="settings_language_hint">Larova kann eine andere Sprache verwenden als das übrige Telefon.</string>
+    <string name="settings_log">Protokoll</string>
+    <string name="settings_log_retention">%1$d Tage aufbewahren</string>
+    <string name="settings_log_clear">Protokoll löschen</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Neue Kachel</string>
+    <string name="edit_edit_tile">Kachel bearbeiten</string>
+    <string name="edit_choose_type">Was kommt auf diese Kachel?</string>
+    <string name="edit_title">Titel</string>
+    <string name="edit_subtitle">Zweite Zeile (optional)</string>
+    <string name="edit_colour">Farbe</string>
+    <string name="edit_symbol">Symbol</string>
+    <string name="edit_save">Speichern</string>
+    <string name="edit_cancel">Abbrechen</string>
+    <string name="edit_delete">Kachel löschen</string>
+    <string name="edit_delete_question">Diese Kachel löschen? Was darauf liegt, lässt sich nicht zurückholen.</string>
+    <string name="edit_title_required">Eine Kachel braucht einen Titel.</string>
+    <string name="edit_steps">Schritte</string>
+    <string name="edit_add_step">Schritt hinzufügen</string>
+    <string name="edit_step_number">Schritt %1$d</string>
+    <string name="edit_items">Punkte zum Abhaken</string>
+    <string name="edit_add_item">Punkt hinzufügen</string>
+    <string name="edit_item_number">Punkt %1$d</string>
+    <string name="edit_reset_daily">Jeden Morgen neu beginnen</string>
+    <string name="edit_note_text">Text</string>
+    <string name="edit_call_name">Name</string>
+    <string name="edit_call_number">Rufnummer</string>
+    <string name="edit_call_relation">Wer das ist (optional)</string>
+    <string name="edit_call_in_help">Auch unter „Hilfe holen“ zeigen</string>
+    <string name="edit_web_address">Webadresse</string>
+    <string name="edit_web_label">Bezeichnung (optional)</string>
+    <string name="edit_web_address_invalid">Eine Webadresse muss mit http:// oder https:// beginnen</string>
+    <string name="edit_remove">Entfernen</string>
+    <string name="edit_add_picture">Bild hinzufügen</string>
+    <string name="edit_change_picture">Bild ändern</string>
+    <string name="edit_remove_picture">Bild entfernen</string>
+    <string name="edit_picture_failed">Dieses Bild konnte nicht hinzugefügt werden.</string>
+
+    <!-- ===== Colour names shown in the tile picker. The eight keys are frozen; these labels
+         are not, and they are the only form a user ever sees. ===== -->
+    <string name="colour_sand">Sand</string>
+    <string name="colour_clay">Lehm</string>
+    <string name="colour_rose">Rosa</string>
+    <string name="colour_lilac">Flieder</string>
+    <string name="colour_sky">Himmel</string>
+    <string name="colour_sage">Salbei</string>
+    <string name="colour_moss">Moos</string>
+    <string name="colour_stone">Stein</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Schlafenszeit</string>
+    <string name="template_evening">Der Abend</string>
+    <string name="template_contacts">Wichtige Nummern</string>
+    <string name="template_food">Essen und Trinken</string>
+    <string name="template_day">Ein Tag bei uns</string>
+    <string name="template_what_helps">Was hilft, wenn …</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">%1$s öffnen</string>
+    <string name="cd_add_tile">Kachel hinzufügen</string>
+    <string name="cd_clear_search">Suche löschen</string>
+    <string name="cd_move_up">%1$s nach oben</string>
+    <string name="cd_move_down">%1$s nach unten</string>
+    <string name="cd_colour_selected">%1$s, ausgewählt</string>
+    <string name="cd_remove_line">%1$s entfernen</string>
+    <string name="cd_check_item">%1$s, erledigt</string>
+    <string name="cd_uncheck_item">%1$s, nicht erledigt</string>
+    <string name="cd_back">Zurück</string>
+    <string name="cd_close">Schließen</string>
+    <string name="cd_menu">Menü</string>
+    <string name="cd_edit_tile">%1$s bearbeiten</string>
+    <string name="cd_play">Abspielen</string>
+    <string name="cd_step_picture">Bild zu Schritt %1$d</string>
+
+</resources>
