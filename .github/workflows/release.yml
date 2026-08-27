@@ -56,14 +56,6 @@ jobs:
             echo "RELEASE_NOTES_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create and push tag
-        if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "${{ steps.version.outputs.tag }}"
-          git push origin "${{ steps.version.outputs.tag }}"
-
       - uses: actions/setup-java@v4
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
         with:
@@ -91,7 +83,9 @@ jobs:
       - name: Build signed APK and AAB
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
         env:
-          KEYSTORE_PATH: keystore.p12
+          # Absolute. The Gradle side resolves a relative path from the repository root now, but a
+          # signing key found by two different rules is a key that goes missing under the third.
+          KEYSTORE_PATH: ${{ github.workspace }}/keystore.p12
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -115,6 +109,18 @@ jobs:
           fi
           mv "$APK" "app/build/outputs/apk/release/${BASE}.apk"
           mv "$AAB" "app/build/outputs/bundle/release/${BASE}.aab"
+
+      # After the build, deliberately. Tagging first means a build that fails leaves a tag behind
+      # that says a version was released when none was, and — because this workflow skips everything
+      # when the tag already exists — the re-run after the fix does nothing at all. The first attempt
+      # at v0.1.0 failed exactly that way.
+      - name: Create and push tag
+        if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
 
       - name: Create GitHub Release
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'

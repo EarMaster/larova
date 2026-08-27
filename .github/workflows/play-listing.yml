@@ -104,11 +104,34 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
 
+      # One failure here is not a defect: until the first AAB has been uploaded by hand there is no
+      # release on the internal track for supply to attach a listing edit to, and a workflow whose
+      # job is "keep the listing in step with the released app" has nothing to do when nothing is
+      # released. That case is reported and skipped; everything else still fails.
       - name: Upload listing to Play
+        id: upload
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing version_code:${{ steps.version.outputs.code }}
+          CODE: ${{ steps.version.outputs.code }}
+        run: |
+          set +e
+          OUTPUT=$(bundle exec fastlane android listing version_code:"$CODE" 2>&1)
+          STATUS=$?
+          printf '%s\n' "$OUTPUT"
+
+          if [ "$STATUS" -eq 0 ]; then
+            echo "uploaded=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if printf '%s' "$OUTPUT" | grep -q "Could not find release for version code"; then
+            echo "::notice::No release with versionCode $CODE on the internal track yet, so the listing was not uploaded. Upload the first AAB by hand (docs/release-setup.md 3.7), then re-run this workflow."
+            echo "uploaded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          exit "$STATUS"
 
       - name: Validate listing on request
         if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
@@ -116,8 +139,8 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
 
-      # The one failure that is not a mistake in this repository, so it gets said in words rather
-      # than left as a fastlane stack trace.
+      # Said in words rather than left as a fastlane stack trace, on the pull-request path and on
+      # any genuine failure.
       - name: Explain a missing release
         if: failure() || steps.validate.outcome == 'failure'
         run: |
@@ -139,7 +162,7 @@ jobs:
       # cannot have changes sent for review through the API, and fourteen languages of text going
       # live unattended is not something to automate on the way to a first test release either.
       - name: Say what is left to do
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
+        if: steps.upload.outputs.uploaded == 'true'
         run: |
           {
             echo "### Listing uploaded"
@@ -147,4 +170,18 @@ jobs:
             echo "The text and any images in \`fastlane/metadata/android\` are now on the Play"
             echo "Console entry for \`app.larova\`, as a committed edit that has **not** been sent"
             echo "for review. Open the Console and press *Send for review* to publish it."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Say why nothing was uploaded
+        if: steps.upload.outputs.uploaded == 'false'
+        run: |
+          {
+            echo "### Listing not uploaded yet"
+            echo
+            echo "The internal track has no release with versionCode"
+            echo "\`${{ steps.version.outputs.code }}\` on it, and \`fastlane supply\` attaches a"
+            echo "listing edit to a release even when it uploads only text. Nothing was changed."
+            echo
+            echo "Upload the first AAB by hand — docs/release-setup.md §3.7 — and re-run this"
+            echo "workflow from the Actions tab. Everything after that first upload is automatic."
           } >> "$GITHUB_STEP_SUMMARY"
