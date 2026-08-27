@@ -36,6 +36,18 @@ data class CardDraft(
 )
 
 /**
+ * Reading a tile, writing it, and removing it — the three things an editor does to one.
+ *
+ * Grouped like [app.larova.core.domain.usecase.Pictures] and the rest: a constructor that lists
+ * every use case one by one is a constructor nobody reads, and these three are never useful apart.
+ */
+class TileEditing(
+    val observe: ObserveTile,
+    val save: SaveCard,
+    val delete: DeleteCard,
+)
+
+/**
  * Creates or updates a tile.
  *
  * The type is derived from the payload rather than passed alongside it, so the column and the JSON

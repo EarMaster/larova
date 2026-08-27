@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.parseUuidOrNull
+import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveTile
@@ -37,6 +38,11 @@ data class CardUiState(
      * inside the folder, and rearrange what is already in it.
      */
     val folderBoardId: String? = null,
+    /**
+     * Whether the app a shortcut tile points at is still on the phone. Asked when the tile is drawn:
+     * an app that has been uninstalled since is an ordinary thing to find.
+     */
+    val appInstalled: Boolean = false,
 )
 
 class CardViewModel(
@@ -45,6 +51,7 @@ class CardViewModel(
     private val toggleChecklistItem: ToggleChecklistItem,
     private val loadImage: LoadImage,
     private val observeBoardTiles: ObserveBoardTiles,
+    private val apps: Apps,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CardUiState())
@@ -101,7 +108,14 @@ class CardViewModel(
                 )
             }
             watchFolder(tile?.payload as? CardPayload.Folder)
+            checkApp(tile?.payload as? CardPayload.AppLink)
         }
+    }
+
+    private suspend fun checkApp(appLink: CardPayload.AppLink?) {
+        if (appLink == null) return
+        val installed = apps.isInstalled(appLink.packageName)
+        _state.update { it.copy(appInstalled = installed) }
     }
 
     /**

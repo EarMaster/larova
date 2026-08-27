@@ -37,6 +37,10 @@ docs-only changes do not belong here.
   made smaller on the way in — a backup full of camera-sized photographs is one nobody can send
   anywhere. A picture that is taken off a step is deleted once no step wants it.
 - Search sits at the top of the start screen and looks at tile names, not at what is inside them.
+- A tile can open another app on the phone — the music player, the camera, the bus timetable.
+  Pick it from a list of what is installed, and give the tile words a caregiver will recognise
+  rather than the app store name. If the app is uninstalled later the tile says so instead of doing
+  nothing when it is tapped.
 - A folder tile holds other tiles: open it and the grid inside looks and works like the start
   screen. One level deep, on purpose — nobody searching under pressure should have to navigate.
   Deleting a folder says how many tiles go with it before it happens.

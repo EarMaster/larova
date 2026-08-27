@@ -50,6 +50,7 @@ fun LarovaNavHost(
     onLockParentView: () -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onOpenApp: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -93,6 +94,7 @@ fun LarovaNavHost(
                 onToggleItem = viewModel::onToggleItem,
                 onPrepareCall = onPrepareCall,
                 onOpenUrl = onOpenUrl,
+                onOpenApp = onOpenApp,
                 onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
                 onBack = goBack,
                 onHelp = openHelp,

@@ -9,6 +9,22 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
+      What an app-shortcut tile needs to be able to see: apps with a launcher entry, and nothing
+      else. Without this element the app picker comes back empty on Android 11 and later rather
+      than failing, which looks like a broken picker instead of a missing declaration.
+
+      QUERY_ALL_PACKAGES is deliberately not used. It is a permission that has to be justified to
+      Play review and disclosed to whoever reads the data safety form, and "the parents pick one
+      app to put on a tile" is not a case for enumerating everything installed.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:name=".LarovaApplication"
         android:allowBackup="false"

@@ -57,12 +57,14 @@ class RoundTripTest {
 
         assertIs<ImportPackage.Result.Imported>(result)
         assertEquals(2, result.boards)
-        assertEquals(6, result.cards)
+        assertEquals(7, result.cards)
         assertEquals(1, result.media)
 
         val titles = world.cards.observeAllCards().first().map { it.title }
         assertEquals(
-            setOf("Bedtime", "Evening", "Grandma", "Holidays", "The week", "From the future"),
+            setOf(
+                "Bedtime", "Evening", "Grandma", "Holidays", "The week", "Music", "From the future",
+            ),
             titles.toSet(),
         )
 
@@ -121,6 +123,27 @@ class RoundTripTest {
         )
     }
 
+    /**
+     * A shortcut carries a package name, and a package name means nothing on the phone that
+     * restores it — the app may not be installed there at all. What has to survive is the tile:
+     * the label the parents wrote and the package it points at, so it works again on a phone that
+     * does have the app.
+     */
+    @Test
+    fun aShortcutKeepsTheAppItPointsAtAndTheWordsOnIt() = runTest {
+        val world = World()
+        world.fill()
+        world.export(destination)
+        world.wipe()
+        world.import(destination, ImportMode.REPLACE)
+
+        val tile = world.cards.observeAllCards().first().single { it.title == "Music" }
+        val payload = CardPayloadCodec.decodeOrNull(tile.payload)
+        assertIs<CardPayload.AppLink>(payload)
+        assertEquals("com.example.music", payload.packageName)
+        assertEquals("Music for the car", payload.label)
+    }
+
     @Test
     fun aTableComesBackWithItsHeadingsAndItsEmptyCell() = runTest {
         val world = World()
@@ -149,7 +172,7 @@ class RoundTripTest {
         val manifest = preview.manifest
         assertEquals(ExportManifest.CURRENT_SCHEMA_VERSION, manifest.schemaVersion)
         assertEquals("Larova for Jonas", manifest.label)
-        assertEquals(6, manifest.counts.cards)
+        assertEquals(7, manifest.counts.cards)
         assertEquals(2, manifest.counts.boards)
         assertEquals(1, manifest.counts.media)
     }
@@ -367,6 +390,7 @@ class RoundTripTest {
         private suspend fun addTiles(rootId: Uuid, folderId: Uuid) {
             addReadingTiles(rootId)
             addFolderAndTable(rootId = rootId, folderId = folderId)
+            addShortcut(rootId)
             addTileFromTheFuture(folderId)
         }
 
@@ -414,6 +438,23 @@ class RoundTripTest {
         }
 
         /** The folder tile points at the board `addFolder` made, which is what a restore must keep. */
+        private suspend fun addShortcut(rootId: Uuid) {
+            cards.upsert(
+                card(
+                    boardId = rootId,
+                    title = "Music",
+                    type = CardType.APP_LINK,
+                    payload = CardPayloadCodec.encode(
+                        CardPayload.AppLink(
+                            packageName = "com.example.music",
+                            label = "Music for the car",
+                        ),
+                    ),
+                    sortIndex = 5,
+                ),
+            )
+        }
+
         private suspend fun addFolderAndTable(rootId: Uuid, folderId: Uuid) {
             cards.upsert(
                 card(

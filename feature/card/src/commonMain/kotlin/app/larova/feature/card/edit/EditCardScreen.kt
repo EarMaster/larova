@@ -49,6 +49,11 @@ import app.larova.core.ui.resources.cd_remove_line
 import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_item
 import app.larova.core.ui.resources.edit_add_picture
+import app.larova.core.ui.resources.edit_app_chosen
+import app.larova.core.ui.resources.edit_app_label
+import app.larova.core.ui.resources.edit_app_none_chosen
+import app.larova.core.ui.resources.edit_app_required
+import app.larova.core.ui.resources.edit_choose_app
 import app.larova.core.ui.resources.edit_add_column
 import app.larova.core.ui.resources.edit_add_row
 import app.larova.core.ui.resources.edit_add_step
@@ -93,6 +98,7 @@ import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
 import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_note
+import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
@@ -332,6 +338,8 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
             )
         }
 
+        CardType.APP_LINK -> AppLinkFields(state = state, callbacks = callbacks)
+
         CardType.WEB -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(
                 value = state.webUrl,
@@ -357,7 +365,60 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
         }
 
         // Not offered while creating and not reachable while editing, since nothing can create one.
-        CardType.VIDEO, CardType.AUDIO, CardType.APP_LINK -> Unit
+        CardType.VIDEO, CardType.AUDIO -> Unit
+    }
+}
+
+/**
+ * Choosing an app, and saying what the tile calls it.
+ *
+ * Which app is chosen is shown as its own line rather than only inside the button: a parent coming
+ * back to this tile in a month needs to see what it points at without opening the picker again.
+ */
+@Composable
+private fun AppLinkFields(state: EditUiState, callbacks: EditCardCallbacks) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            text = if (state.appPackage.isEmpty()) {
+                stringResource(Res.string.edit_app_none_chosen)
+            } else {
+                stringResource(Res.string.edit_app_chosen, state.appPackage)
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        OutlinedButton(
+            onClick = callbacks.onChooseApp,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(stringResource(Res.string.edit_choose_app))
+        }
+
+        if (state.appMissing) {
+            Text(
+                text = stringResource(Res.string.edit_app_required),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        OutlinedTextField(
+            value = state.appLabel,
+            onValueChange = callbacks.onAppLabelChange,
+            label = { Text(stringResource(Res.string.edit_app_label)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+
+    if (state.appPickerOpen) {
+        AppPickerDialog(
+            apps = state.apps,
+            query = state.appQuery,
+            onQueryChange = callbacks.onAppQueryChange,
+            onPick = callbacks.onAppPicked,
+            onDismiss = callbacks.onDismissAppPicker,
+        )
     }
 }
 
@@ -696,6 +757,7 @@ private val CardType.label: StringResource
         CardType.NOTE -> Res.string.tile_note
         CardType.TABLE -> Res.string.tile_table
         CardType.FOLDER -> Res.string.tile_folder
+        CardType.APP_LINK -> Res.string.tile_link
         CardType.PHONE -> Res.string.tile_call
         else -> Res.string.tile_link
     }
@@ -738,6 +800,11 @@ data class EditCardCallbacks(
     val onCallInHelpSheetChange: (Boolean) -> Unit,
     val onWebUrlChange: (String) -> Unit,
     val onWebLabelChange: (String) -> Unit,
+    val onChooseApp: () -> Unit,
+    val onAppQueryChange: (String) -> Unit,
+    val onAppPicked: (AppChoice) -> Unit,
+    val onDismissAppPicker: () -> Unit,
+    val onAppLabelChange: (String) -> Unit,
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
 )
@@ -780,6 +847,11 @@ fun EditCardViewModel.callbacks(openPicturePicker: () -> Unit = {}) = EditCardCa
     onCallInHelpSheetChange = ::onCallInHelpSheetChange,
     onWebUrlChange = ::onWebUrlChange,
     onWebLabelChange = ::onWebLabelChange,
+    onChooseApp = ::onChooseApp,
+    onAppQueryChange = ::onAppQueryChange,
+    onAppPicked = ::onAppPicked,
+    onDismissAppPicker = ::onDismissAppPicker,
+    onAppLabelChange = ::onAppLabelChange,
     onSave = ::onSave,
     onDelete = ::onDelete,
 )
