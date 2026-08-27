@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Android manifest.
+
+  There is deliberately no <uses-permission android:name="android.permission.INTERNET" /> here,
+  and there never will be. It is on the store listing and in the data safety form; see
+  docs/technical-notes.md §7. Calling goes through ACTION_DIAL, media through the photo picker,
+  and backups through the system file dialog, so none of those need a permission either.
+-->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      What an app-shortcut tile needs to be able to see: apps with a launcher entry, and nothing
+      else. Without this element the app picker comes back empty on Android 11 and later rather
+      than failing, which looks like a broken picker instead of a missing declaration.
+
+      QUERY_ALL_PACKAGES is deliberately not used. It is a permission that has to be justified to
+      Play review and disclosed to whoever reads the data safety form, and "the parents pick one
+      app to put on a tile" is not a case for enumerating everything installed.
+    -->
+    <!--
+      The microphone, for recording a voice onto a tile. Requested at the moment somebody taps
+      record and never before: a permission asked for on first launch is a permission asked for
+      without a reason the person can see.
+
+      No CAMERA. Pictures and videos come from the photo picker, which runs outside the app, so
+      taking one inside Larova would buy a permission for something the phone already does better.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!--
+      Both of these arrive from androidx.media3:media3-exoplayer and both are removed here, because
+      AGENTS.md says the permission list is RECORD_AUDIO and nothing else, and a permission a person
+      can see in the phone's settings is part of the promise whether it grants anything or not.
+      "View network connections" on an app that advertises having no internet permission reads as a
+      contradiction, and being right on a technicality is not the same as being trusted.
+
+      ExoPlayer wants them for playback Larova does not do: ACCESS_NETWORK_STATE for measuring
+      bandwidth while streaming, WAKE_LOCK for `setWakeMode`, which nothing here calls. Every file
+      played is a local one under filesDir. Media3 catches the SecurityException from the
+      connectivity lookup when the permission is absent — verified in the bytecode of
+      NetworkTypeObserver, which has an exception table entry for exactly that — and reports an
+      unknown network type, which is true and unused.
+
+      If playback ever breaks in a way that traces back to either of these, put the one it needs
+      back with the reason written next to it rather than removing this block.
+    -->
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        tools:node="remove" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".LarovaApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/full_backup_content"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Larova">
+
+        <!--
+          singleTop because of the launcher shortcuts: tapping one while Larova is already open
+          should bring the tile up in the app that is running, not start a second copy of it beside
+          the first. The new intent arrives in onNewIntent instead.
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode|fontScale"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Larova">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

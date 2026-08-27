@@ -112,3 +112,10 @@ tmp/
 _site/
 .jekyll-cache/
 .sass-cache/
+
+# fastlane leaves these behind on every run. The listing itself lives in fastlane/metadata.
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+# Resolved by play-listing.yml on the runner, never here — see the Gemfile.
+Gemfile.lock

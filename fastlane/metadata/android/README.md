@@ -85,10 +85,36 @@ fine.
 
 ## What CI does with these files
 
-`google-play.yml` reads `changelogs/{versionCode}.txt` for every locale, validates it, and copies
-it into the flat `whatsnew-<locale>` naming `r0adkll/upload-google-play` expects.
+Two workflows, on two clocks, because a release and a listing are different things going wrong.
 
-That action does **not** upload listing text — title, short description and full description are
-still copied into the Play Console by hand. These files are the canonical source; the Console is
-the copy. Closing that gap means adding a `fastlane supply` step or moving to
-gradle-play-publisher, either of which would read this tree as-is.
+**`google-play.yml`**, per release: reads `changelogs/{versionCode}.txt` for every locale, validates
+it, and copies it into the flat `whatsnew-<locale>` naming `r0adkll/upload-google-play` expects,
+alongside the AAB and its mapping file.
+
+**`play-listing.yml`**, whenever these files change on `main`: runs `fastlane supply` over this tree
+and pushes the title, both descriptions and any images to the Console. That closes the gap this
+section used to describe — the tree is the source and the Console is downstream of it, rather than
+somebody retyping fourteen languages.
+
+**It cannot bootstrap a store entry.** `fastlane supply` handles listing text and release notes in
+one pass, and that pass starts by finding a track and a release to attach the notes to — before it
+has looked at whether changelogs were skipped. So the listing upload needs a release on the internal
+track to exist already, and it needs the versionCode of one (`play-listing.yml` reads it from
+`app/build.gradle.kts`). The first AAB still goes up by hand, per `docs/release-setup.md` §3.7; this
+publishes the listing of an app that has shipped somewhere, not the listing of one that has not.
+
+Three more things are worth knowing before relying on it:
+
+- **It uploads no binary and no release notes.** Notes are keyed by versionCode and belong beside
+  the AAB that contains them; attaching whatever is in the tree to whatever is currently live is
+  how a build ships with somebody else's notes.
+- **The edit is committed but not sent for review.** A new app whose first release has not been
+  reviewed cannot have changes submitted through the API at all — Play refuses the edit and names
+  the parameter that avoids it. So the text lands in the Console and waits for somebody to press
+  *Send for review*, which is the right shape for fourteen languages of copy either way.
+- **Images already on Play are left alone.** `sync_image_upload` is off, so a screenshot uploaded
+  through the Console survives a text fix here. When screenshots land in this tree (M3) that
+  decision is worth revisiting: with it on, the tree becomes authoritative for graphics too.
+
+A pull request that touches these files validates them through Play's own API without changing
+anything, which is the only check that catches a locale code Play does not accept.

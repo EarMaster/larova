@@ -50,9 +50,9 @@ Why these values:
 - **`-keysize 4096`** because this key is generated once and lives for the life of the app.
 - **`-storetype PKCS12`** is keytool's modern default. JKS still works but prints a migration
   warning on every use. Note this means the file is `.p12`, not `.jks` — the extension is
-  cosmetic to `release.yml`, which decodes the secret to a path of its own choosing, but the
-  Gradle `signingConfig` written in M0 may need `storeType = "PKCS12"` if the build JDK's default
-  ever differs.
+  cosmetic to `release.yml`, which decodes the secret to a path of its own choosing. The Gradle
+  `signingConfig` names `storeType = "PKCS12"` explicitly rather than inferring it, so the build
+  signs the same way whatever JDK it runs under.
 - **`-dname`** ends up in the certificate and is visible in the Play Console's signing tab.
   It is not user-facing; change it if you would rather it named you personally.
 
@@ -63,15 +63,42 @@ that also means nothing in git will ever remind you it existed.
 
 **The keystore does not live in the repo**, so a local release build needs `KEYSTORE_PATH`
 pointing at wherever it is kept. CI is unaffected: `release.yml` reconstructs the file from
-`KEYSTORE_BASE64` into the runner's workspace, and never reads a path from here. Whatever the M0
-Gradle `signingConfig` ends up looking like, it must treat a missing keystore as "build unsigned"
-rather than "fail" — otherwise a plain `assembleDebug` on a fresh clone stops working for anyone
-who does not hold the key, which is everyone but you.
+`KEYSTORE_BASE64` into the runner's workspace, and never reads a path from here. The
+`signingConfig` treats a missing keystore as "build unsigned" rather than "fail", so a clone
+without the key still builds — but it says so while it builds, because an unsigned artifact is
+otherwise only discovered by Play refusing it.
 
 To confirm the password and alias are right without waiting for a release to fail:
 
 ```bash
 "$KEYTOOL" -list -keystore /path/to/larova-upload.p12 -alias larova-upload
+```
+
+### Signing a release locally
+
+The `signingConfig` in `app/build.gradle.kts` reads four environment variables and nothing else —
+no path in `gradle.properties`, no file in the repository. With `KEYSTORE_PATH` unset it builds
+unsigned on purpose, so `assembleRelease` keeps working for anyone who does not hold the key.
+
+```bash
+export KEYSTORE_PATH=/path/to/larova-upload.p12
+read -rsp "Keystore password: " KEYSTORE_PASSWORD; echo
+export KEYSTORE_PASSWORD KEY_ALIAS=larova-upload KEY_PASSWORD="$KEYSTORE_PASSWORD"
+
+./gradlew reportSigning bundleRelease
+```
+
+`reportSigning` prints one line saying whether this build will be signed, which is the cheapest
+possible check that the key and the passwords are right — it is also the first thing `release.yml`
+runs, so the same line appears in CI before the twenty minutes that follow it.
+
+The proof it worked is the file name. AGP writes `app-release.apk` when signing and
+`app-release-unsigned.apk` when not, and Play refuses the second:
+
+```bash
+ls app/build/outputs/apk/release/
+"$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs \
+  app/build/outputs/apk/release/app-release.apk
 ```
 
 ## 2. The four GitHub secrets
@@ -119,8 +146,12 @@ None of this can be automated from here; it needs a browser and, for the first s
 5. **Target audience 18+**, category Tools or Lifestyle. Not Medical, not Health & Fitness. See
    `concept.md` §2.3 for why: declaring a child audience triggers the whole Families policy.
 6. **Service account for automated upload** — in Google Cloud, create a service account, grant it
-   access in the Play Console under Users and permissions (Release manager is enough), download
-   the JSON key, then:
+   access in the Play Console under Users and permissions, download the JSON key, then:
+
+   Release manager covers the AAB upload. The listing upload in `play-listing.yml` needs one more
+   box: **Edit store listing, pricing and distribution**. Without it `fastlane supply` fails with a
+   permissions error on the store-listing call while the release upload keeps working, which reads
+   as the workflow being broken rather than the account being short a tick.
 
    ```bash
    gh secret set SERVICE_ACCOUNT_JSON < ~/Downloads/play-service-account.json
@@ -131,7 +162,15 @@ None of this can be automated from here; it needs a browser and, for the first s
    works — it tags, builds and cuts the GitHub Release regardless, so you are not blocked from
    releasing, only from publishing to Play.
 7. **First upload must be manual.** Play will not accept an API upload for a track that has never
-   had a release; upload the first AAB by hand, then the workflow takes over.
+   had a release; upload the first AAB by hand, then the workflow takes over. The AAB to use is the
+   one attached to the GitHub Release `release.yml` cuts — download it from there rather than
+   building a second one locally, so the artifact that goes to Play is the artifact that was
+   tagged.
+
+   Play also blocks the *first* release of a new app until the Console questionnaires are answered,
+   whatever the track: data safety, content rating, target audience, ads declaration and app access.
+   None of them can be answered from here and all of them are quick; §3.4 and §3.5 are two of the
+   five.
 
 ## 4. Branch protection
 
@@ -175,7 +214,12 @@ gh api -X DELETE repos/EarMaster/larova/branches/main/protection
 | `.gitignore` covers keystores, `.p12`, base64 and service-account JSON | done |
 | Upload keystore generated and backed up | done, 2026-08-21 |
 | `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` | done, 2026-08-21 |
-| Play Console account, app, listing, service account | **yours, §3** — start the account first, it has a wait |
-| `SERVICE_ACCOUNT_JSON` | after the Play service account exists |
+| `SERVICE_ACCOUNT_JSON` | done, 2026-08-21 |
+| Gradle project, so any of the CI jobs actually run | done, M0 |
+| Gradle `signingConfig` reading the four variables | done, M2 — until then every release build was silently **unsigned**, and `release.yml` would have failed at the step that renames the APK |
+| Play Console account, app created as `app.larova` | **yours, §3** — start the account first, it has a wait |
+| Console questionnaires: data safety, content rating, target audience, ads, app access | **yours, §3** — Play blocks a new app's first release until all five are answered |
+| First AAB uploaded by hand | **yours, §3.7** — the API cannot open a track that has never had a release |
 | Privacy policy at `https://larova.app/privacy` | needs DNS and a page; blocks store review, not development |
-| Gradle project, so any of the CI jobs actually run | M0, `implementation-plan.md` |
+| Listing text pushed from the repo | done, M2 — `play-listing.yml`, `fastlane supply`. Needs the service account to also hold **Edit store listing, pricing and distribution**, and a release on the internal track to attach the edit to: it publishes the listing of an app that has shipped, it cannot bootstrap one |
+| Listing screenshots | M3. `play-listing.yml` will upload them once they exist at `en-US/images/phoneScreenshots/`; until then Console-uploaded images are left untouched |

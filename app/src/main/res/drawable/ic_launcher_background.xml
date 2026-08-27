@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · adaptive icon background, converted from brand/icon-background.svg.
+
+  A lit room seen from inside: cool violet falling off to near-black, with a warm pool of light
+  over the centre. Full bleed, because the launcher mask decides the shape.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="54"
+                android:centerY="47.52"
+                android:gradientRadius="77.76"
+                android:type="radial">
+                <item android:color="#FF332B60" android:offset="0" />
+                <item android:color="#FF221E3C" android:offset="0.6" />
+                <item android:color="#FF171429" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- The warm cast of the lamp on the wall behind it. -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="54"
+                android:centerY="56.16"
+                android:gradientRadius="45.36"
+                android:type="radial">
+                <item android:color="#4DE0913A" android:offset="0" />
+                <item android:color="#00E0913A" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

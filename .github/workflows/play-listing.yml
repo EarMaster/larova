@@ -1,0 +1,150 @@
+name: Play Store Listing
+
+# The store listing, published from the repository rather than retyped into the Console.
+#
+# Separate from `release.yml` on purpose. Listing text changes on a different clock from releases —
+# a typo fixed in the Turkish description is not a reason to publish a build — and the two failures
+# are different too: a bad release stops a version, a bad listing is live in fourteen languages
+# until somebody notices.
+#
+# Runs from `main`, because `main` is the released state of the app and the listing describes what
+# is released. A change to the text lands on `develop` with everything else and reaches the store
+# when the release does.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - fastlane/**
+      # Release notes are not listing text: they are keyed by versionCode and go up beside the AAB
+      # in google-play.yml. Excluded because /release writes one per locale in the same commit that
+      # bumps the version, and both workflows firing on that push is a race — this one would look
+      # for a release the other has not created yet.
+      - "!fastlane/metadata/android/*/changelogs/**"
+      - Gemfile
+      - .github/workflows/play-listing.yml
+  pull_request:
+    paths:
+      - fastlane/**
+      - "!fastlane/metadata/android/*/changelogs/**"
+      - Gemfile
+      - .github/workflows/play-listing.yml
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Validate against Play without changing anything
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  listing:
+    name: Upload listing
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      # An app whose entire promise is that it collects nothing has no business sending usage
+      # statistics from its own release pipeline.
+      FASTLANE_OPT_OUT_USAGE: "1"
+      FASTLANE_SKIP_UPDATE_CHECK: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Text first, in every locale, before any of it reaches the store. The check runs without a
+      # versionCode here: release notes belong to a release, and this workflow does not make one.
+      - name: Validate store metadata
+        run: tools/check_store_metadata.sh
+
+      # supply needs a release to attach the listing edit to, even when it is uploading nothing but
+      # text — see the comment in the Fastfile. On main this number is the released one, because
+      # release.yml built the release from this same file.
+      - name: Read versionCode
+        id: version
+        run: |
+          CODE=$(sed -n 's/.*versionCode[[:space:]]*=[[:space:]]*\([0-9][0-9]*\).*/\1/p' app/build.gradle.kts | head -1)
+          if [ -z "$CODE" ]; then
+            echo "::error::Could not read versionCode from app/build.gradle.kts"
+            exit 1
+          fi
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "Listing will be attached to versionCode $CODE on the internal track."
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          # The Gemfile pins fastlane; Ruby itself only has to be recent enough to run it. No
+          # bundler-cache, because that needs a Gemfile.lock and this project deliberately has none
+          # — see the Gemfile for why.
+          ruby-version: "3.3"
+
+      - name: Install fastlane
+        run: bundle install --jobs 4 --retry 3
+
+      # On a pull request there is nothing to publish yet: this validates the same payload through
+      # Play's own API, which is the only thing that catches a locale code Play does not accept or
+      # text it measures differently from the local check.
+      #
+      # Skipped for a pull request from a fork, which cannot see the secret. The repository takes no
+      # outside pull requests yet (AGENTS.md, licence) — when it does, this is one of the places
+      # that has to keep working without a credential.
+      - name: Validate listing against Play
+        id: validate
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        # Reports without blocking, and only until the app has shipped once. Play refuses a listing
+        # edit for a track with no release on it (see the Fastfile), so until the first AAB is up by
+        # hand this check cannot pass — and a red cross on every pull request that touches a
+        # description is how people learn to stop reading the crosses. Remove this line once there
+        # is a release on the internal track: from then on a failure here is a real one.
+        continue-on-error: true
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
+
+      - name: Upload listing to Play
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: bundle exec fastlane android listing version_code:${{ steps.version.outputs.code }}
+
+      - name: Validate listing on request
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
+
+      # The one failure that is not a mistake in this repository, so it gets said in words rather
+      # than left as a fastlane stack trace.
+      - name: Explain a missing release
+        if: failure() || steps.validate.outcome == 'failure'
+        run: |
+          {
+            echo "### Listing not uploaded"
+            echo
+            echo "If this failed with **Could not find release for version code**, the internal"
+            echo "track has no release with versionCode \`${{ steps.version.outputs.code }}\` yet."
+            echo "\`fastlane supply\` attaches a listing edit to a release even when it uploads"
+            echo "only text, so it cannot publish the listing of an app that has never shipped."
+            echo
+            echo "Upload the first AAB by hand (docs/release-setup.md §3.7), then re-run this"
+            echo "workflow. If the release exists, check that the service account also holds"
+            echo "**Edit store listing, pricing and distribution** — Release manager alone is not"
+            echo "enough for the listing call."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The edit is committed but not submitted: a new app whose first release has not been reviewed
+      # cannot have changes sent for review through the API, and fourteen languages of text going
+      # live unattended is not something to automate on the way to a first test release either.
+      - name: Say what is left to do
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
+        run: |
+          {
+            echo "### Listing uploaded"
+            echo
+            echo "The text and any images in \`fastlane/metadata/android\` are now on the Play"
+            echo "Console entry for \`app.larova\`, as a committed edit that has **not** been sent"
+            echo "for review. Open the Console and press *Send for review* to publish it."
+          } >> "$GITHUB_STEP_SUMMARY"

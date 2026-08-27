@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · English base strings. This is the single source of truth.
+
+  Never edit a translated file to fix wording. Fix the English and re-translate,
+  or the languages drift apart. See docs/localization.md.
+
+  Rules:
+    · No string concatenation in code.
+    · Placeholders are always positional (%1$s), because word order changes.
+    · Counts use <plurals>. Polish, Russian and Arabic have more than two forms.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Good to see you</string>
+    <string name="home_search">Search</string>
+    <string name="home_add_tile">Add tile</string>
+    <string name="home_child_age">%1$s · %2$d years</string>
+    <string name="home_empty_title">Nothing here yet</string>
+    <string name="home_search_empty">Nothing matches that.</string>
+    <string name="arrange_title">Arrange tiles</string>
+    <string name="arrange_hint">Move tiles up or down. The order is the order on the start screen.</string>
+    <string name="home_empty_hint">Tiles you add appear here. A tile can hold a guide, a list, a note, a number to call, or a website.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Caregiver view</string>
+    <string name="view_parent">Parent view</string>
+    <string name="view_parent_active">Parent view is on. Editing and backup are unlocked. Larova returns to caregiver view after five minutes without input.</string>
+    <string name="view_unlock_title">Unlock parent view</string>
+    <string name="view_unlock_pin">Enter your PIN</string>
+    <string name="view_unlock_biometric">Use fingerprint instead</string>
+
+    <string name="view_locked_note">Editing and backup are in parent view.</string>
+    <string name="view_leave">Leave parent view</string>
+    <string name="view_pin_create_title">Choose a PIN</string>
+    <string name="view_pin_create_hint">Four to twelve digits. It keeps the tiles from being changed by accident; it does not hide them.</string>
+    <string name="view_pin_repeat">Type it again</string>
+    <string name="view_pin_mismatch">Those two do not match.</string>
+    <string name="view_pin_too_short">At least four digits.</string>
+    <string name="view_pin_digits_only">Digits only.</string>
+    <string name="view_pin_wrong">That is not the PIN.</string>
+    <string name="view_pin_change">Change the PIN</string>
+    <string name="view_unlock">Unlock</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Guide</string>
+    <string name="tile_guide_hint">Steps with text, pictures and sound</string>
+    <string name="tile_checklist">Checklist</string>
+    <string name="tile_checklist_hint">Things to tick off, optionally reset each day</string>
+    <string name="tile_table">Table</string>
+    <string name="tile_table_hint">Your own columns and rows</string>
+    <string name="tile_note">Note</string>
+    <string name="tile_note_hint">Free text with headings and lists</string>
+    <string name="tile_video">Video or sound</string>
+    <string name="tile_video_hint">From your gallery, or record it now</string>
+    <string name="tile_call">Call</string>
+    <string name="tile_call_hint">A name, a number and a relation</string>
+    <string name="tile_link">Website or app</string>
+    <string name="tile_link_hint">Opens a link or an app on this phone</string>
+    <string name="tile_folder">Folder</string>
+    <string name="tile_folder_hint">Groups several tiles together</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Guide · %1$d step</item>
+        <item quantity="other">Guide · %1$d steps</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Checklist · %1$d item</item>
+        <item quantity="other">Checklist · %1$d items</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Step %1$d of %2$d</string>
+    <string name="guide_previous">Back</string>
+    <string name="guide_next">Next</string>
+    <string name="guide_finish">Done</string>
+    <string name="guide_read_aloud">Read aloud</string>
+    <string name="guide_screen_stays_on">The screen stays on here.</string>
+
+    <string name="guide_step_current">Now</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d of %2$d</string>
+    <string name="checklist_resets_daily">Resets every morning at %1$s. Ticked items are noted with a time in the log.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Get help</string>
+    <string name="help_sheet_title">Get help</string>
+    <string name="help_call_note">Tapping opens the phone app with the number ready. Larova never dials on its own.</string>
+    <string name="help_emergency">Emergency services</string>
+    <string name="help_no_contacts">No numbers have been added here yet.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">This file is not on the phone. It may not have come through with the backup.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Open the app</string>
+    <string name="app_missing">That app is not on this phone any more.</string>
+    <string name="app_choose">Which app?</string>
+    <string name="app_none_found">No app matches that.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Backup &amp; transfer</string>
+    <string name="transfer_backup">Back up</string>
+    <string name="transfer_backup_hint">Creates one file with all your tiles, pictures and recordings. You choose where it goes.</string>
+    <string name="transfer_restore">Restore</string>
+    <string name="transfer_restore_hint">Pick a file, check the preview, then replace or merge with what is already here.</string>
+    <string name="transfer_protect">Protect with a password</string>
+    <string name="transfer_protect_hint">Recommended whenever you send the file to someone. Without the password it cannot be opened.</string>
+    <string name="transfer_last_backup">Last backed up %1$s</string>
+    <string name="transfer_preview">%1$d tiles, %2$d files, %3$s</string>
+    <string name="transfer_replace">Replace everything</string>
+    <string name="transfer_merge">Add to what is here</string>
+    <string name="transfer_version_too_new">This file was made with a newer version of Larova. Update the app to open it.</string>
+    <string name="transfer_saved">Backed up: %1$d tiles and %2$d files.</string>
+    <string name="transfer_restored">Restored: %1$d tiles and %2$d files.</string>
+    <string name="transfer_backup_failed">The backup could not be written. Try a different place to save it.</string>
+    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed.</string>
+    <string name="transfer_unreadable">This is not a Larova backup.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_appearance_system">Follow the phone</string>
+    <string name="settings_appearance_light">Light</string>
+    <string name="settings_appearance_dark">Dark</string>
+    <string name="settings_appearance_night">Night</string>
+    <string name="settings_appearance_night_hint">Warm and very dim, for reading aloud in a dark room.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_hint">Larova can use a different language from the rest of the phone.</string>
+    <string name="settings_log">Activity log</string>
+    <string name="settings_log_retention">Keep for %1$d days</string>
+    <string name="settings_log_clear">Clear the log</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Nothing has happened yet.</string>
+    <string name="log_note_hint">Add a line</string>
+    <string name="log_add">Add to the log</string>
+    <string name="log_retention">Lines older than %1$d days are removed.</string>
+    <string name="log_clear_question">Clear the whole log? The lines cannot be brought back.</string>
+    <string name="log_card_opened">Opened %1$s</string>
+    <string name="log_check_toggled">Ticked something off in %1$s</string>
+    <string name="log_call_prepared">Prepared a call: %1$s</string>
+    <string name="log_tile_gone">a tile that has since been deleted</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">New tile</string>
+    <string name="edit_edit_tile">Edit tile</string>
+    <string name="edit_choose_type">What goes on this tile?</string>
+    <string name="edit_title">Title</string>
+    <string name="edit_subtitle">Second line (optional)</string>
+    <string name="edit_colour">Colour</string>
+    <string name="edit_symbol">Symbol</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_cancel">Cancel</string>
+    <string name="edit_delete">Delete tile</string>
+    <string name="edit_delete_question">Delete this tile? What is on it cannot be brought back.</string>
+    <string name="edit_title_required">A tile needs a title.</string>
+    <string name="edit_folder_note">A folder holds other tiles. Save it, open it, and add tiles inside.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Delete this folder? The %1$d tile inside it goes too, and cannot be brought back.</item>
+        <item quantity="other">Delete this folder? The %1$d tiles inside it go too, and cannot be brought back.</item>
+    </plurals>
+    <string name="edit_steps">Steps</string>
+    <string name="edit_add_step">Add step</string>
+    <string name="edit_step_number">Step %1$d</string>
+    <string name="edit_items">Things to tick off</string>
+    <string name="edit_add_item">Add item</string>
+    <string name="edit_item_number">Item %1$d</string>
+    <string name="edit_reset_daily">Start again every morning</string>
+    <string name="edit_columns">Headings</string>
+    <string name="edit_add_column">Add heading</string>
+    <string name="edit_column_number">Heading %1$d</string>
+    <string name="edit_rows">Rows</string>
+    <string name="edit_add_row">Add row</string>
+    <string name="edit_row_number">Row %1$d</string>
+    <string name="edit_note_text">Text</string>
+    <string name="edit_call_name">Name</string>
+    <string name="edit_call_number">Phone number</string>
+    <string name="edit_call_relation">Relation (optional)</string>
+    <string name="edit_call_in_help">Also show under Get help</string>
+    <string name="edit_record">Record with the microphone</string>
+    <string name="edit_recording">Recording…</string>
+    <string name="edit_record_stop">Stop and keep it</string>
+    <string name="edit_record_failed">The microphone could not be used, or nothing was recorded.</string>
+    <string name="edit_choose_video">Choose a video</string>
+    <string name="edit_choose_sound">Choose a sound file</string>
+    <string name="edit_media_none_chosen">Nothing chosen yet.</string>
+    <string name="edit_media_chosen">Chosen, %1$d MB</string>
+    <string name="edit_media_large">This is a large file. Backups that include it will be slow to send and may be too big for some ways of sending them.</string>
+    <string name="edit_media_required">Choose what this tile plays.</string>
+    <string name="edit_media_caption">What to say above it (optional)</string>
+    <string name="edit_choose_app">Choose app</string>
+    <string name="edit_app_none_chosen">No app chosen yet.</string>
+    <string name="edit_app_chosen">Opens %1$s</string>
+    <string name="edit_app_label">What the tile says</string>
+    <string name="edit_app_required">Choose the app this tile opens.</string>
+    <string name="edit_web_address">Web address</string>
+    <string name="edit_web_label">Label (optional)</string>
+    <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>
+    <string name="edit_remove">Remove</string>
+    <string name="edit_add_picture">Add a picture</string>
+    <string name="edit_change_picture">Change the picture</string>
+    <string name="edit_remove_picture">Remove the picture</string>
+    <string name="edit_picture_failed">That picture could not be added.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Sand</string>
+    <string name="colour_clay">Clay</string>
+    <string name="colour_rose">Rose</string>
+    <string name="colour_lilac">Lilac</string>
+    <string name="colour_sky">Sky</string>
+    <string name="colour_sage">Sage</string>
+    <string name="colour_moss">Moss</string>
+    <string name="colour_stone">Stone</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Bedtime</string>
+    <string name="template_evening">Evening routine</string>
+    <string name="template_contacts">Important contacts</string>
+    <string name="template_food">Food and drink</string>
+    <string name="template_day">A day with us</string>
+    <string name="template_what_helps">What helps when…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Pyjamas on, teeth brushed.</string>
+    <string name="template_bedtime_step_2">One story on the sofa — let them choose which.</string>
+    <string name="template_bedtime_step_3">Curtains closed, small lamp on.</string>
+    <string name="template_bedtime_step_4">Cuddly rabbit in the bed, not on the shelf.</string>
+    <string name="template_bedtime_step_5">Door left open, about a hand wide.</string>
+
+    <string name="template_evening_item_1">Dinner</string>
+    <string name="template_evening_item_2">Wash and teeth</string>
+    <string name="template_evening_item_3">Pyjamas</string>
+    <string name="template_evening_item_4">Story</string>
+    <string name="template_evening_item_5">Lights out</string>
+
+    <string name="template_contacts_name">Mum</string>
+    <string name="template_contacts_relation">Mother</string>
+    <string name="template_contacts_todo">Add the number</string>
+
+    <string name="template_food_column_1">Likes</string>
+    <string name="template_food_column_2">Rather not</string>
+    <string name="template_food_row_1_1">Pasta with butter</string>
+    <string name="template_food_row_1_2">Anything with mushrooms</string>
+    <string name="template_food_row_2_1">Apple slices</string>
+    <string name="template_food_row_2_2">Fizzy drinks</string>
+    <string name="template_food_row_3_1">Water, milk</string>
+    <string name="template_food_row_3_2">Sauce on the food</string>
+
+    <string name="template_day_column_1">When</string>
+    <string name="template_day_column_2">What happens</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Awake, breakfast at the table</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Lunch, then quiet time with a book</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Snack, then the park if it is dry</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Dinner, then the evening routine</string>
+
+    <string name="template_what_helps_step_1">Upset: sit close by and do not talk yet.</string>
+    <string name="template_what_helps_step_2">Not eating: leave it on the table and try again later.</string>
+    <string name="template_what_helps_step_3">Cannot sleep: the lullaby, quietly, twice.</string>
+
+    <string name="home_start_with">Or start with one of these</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Open %1$s</string>
+    <string name="cd_add_tile">Add a tile</string>
+    <string name="cd_clear_search">Clear the search</string>
+    <string name="cd_move_up">Move %1$s up</string>
+    <string name="cd_move_down">Move %1$s down</string>
+    <string name="cd_colour_selected">%1$s, selected</string>
+    <string name="cd_remove_line">Remove %1$s</string>
+    <string name="cd_check_item">%1$s, done</string>
+    <string name="cd_uncheck_item">%1$s, not done</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_close">Close</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_edit_tile">Edit %1$s</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_step_picture">Picture for step %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

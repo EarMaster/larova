@@ -1,0 +1,95 @@
+# Larova · dependency versions.
+#
+# One place for every version, because ten module files that each name their own drift apart.
+# AGP 9.3 requires JDK 17+ and Gradle 9.5+; CI runs Temurin 17, so the toolchain target below
+# must not move above that without changing .github/workflows/.
+
+[versions]
+agp = "9.3.1"
+kotlin = "2.4.10"
+ksp = "2.3.11"
+compose = "1.11.1"
+detekt = "1.23.8"
+
+coroutines = "1.11.0"
+serialization = "1.11.0"
+# For turning the manifest timestamp into a date the preview can show.
+datetime = "0.8.0"
+
+room = "2.8.4"
+sqlite = "2.7.0"
+datastore = "1.2.1"
+# DataStore is multiplatform through okio, so the file API has to be named explicitly.
+okio = "3.18.1"
+
+koin = "4.2.2"
+
+activityCompose = "1.13.0"
+# ShortcutManagerCompat, for the launcher shortcuts. Already on the classpath transitively; named
+# here because :app calls it directly and a transitive version is not a version you chose.
+androidxCore = "1.18.0"
+# 2.11 requires compileSdk 37; staying on 36 until there is a reason to move the whole project.
+androidxLifecycle = "2.10.0"
+# 1.1.0 is the current stable; the 1.2 and 1.4 lines are still alpha.
+biometric = "1.1.0"
+# Reading the rotation flag a phone camera writes into a photo. The framework class of the same
+# name only understands JPEG, and the picker hands back whatever format the phone chose.
+exifinterface = "1.3.7"
+# Video and audio playback, as docs/technical-notes.md 3 specifies. Apache 2.0, so it stays clear
+# of the dual-licensing question in technical-notes 10 — a GPL dependency would not.
+media3 = "1.11.0"
+# Argon2id, as docs/technical-notes.md 8 specifies. Native, MIT, and needed again in M3 for
+# password-protected exports.
+argon2 = "1.6.0"
+# The org.jetbrains.androidx.* artifacts are the multiplatform builds of the AndroidX libraries;
+# they carry their own version line, which is not the AndroidX one.
+navigation = "2.9.2"
+lifecycle = "2.9.6"
+
+[libraries]
+# Compose Multiplatform artifacts are not listed here. They come from the plugin's `compose.*`
+# accessors instead, which is the only way to get a matched set: material3 has its own version
+# line under org.jetbrains.compose.material3 and is stable at 1.9.0 while runtime, ui and
+# foundation are at 1.11.1, so pinning them all to one version in this file does not resolve.
+# The accessors are deprecated in 1.11; revisit when material3 catches up.
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidxCore" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
+argon2kt = { module = "com.lambdapioneer.argon2kt:argon2kt", version.ref = "argon2" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

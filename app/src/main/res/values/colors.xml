@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The window background only. Tile and surface colours are resolved from tokens in :core:ui. -->
+<resources>
+    <color name="window_background">#FBF7F1</color>
+</resources>
