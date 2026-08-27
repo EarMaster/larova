@@ -149,9 +149,14 @@ None of this can be automated from here; it needs a browser and, for the first s
    access in the Play Console under Users and permissions, download the JSON key, then:
 
    Release manager covers the AAB upload. The listing upload in `play-listing.yml` needs one more
-   box: **Edit store listing, pricing and distribution**. Without it `fastlane supply` fails with a
-   permissions error on the store-listing call while the release upload keeps working, which reads
-   as the workflow being broken rather than the account being short a tick.
+   box: **Manage store presence** in current Consoles, called **Edit store listing, pricing and
+   distribution** in older ones. Grant it for the Larova app, not only at account level.
+
+   Without it `fastlane supply` gets all the way through — authenticates, opens an edit, finds the
+   track and the release — and then fails with `Google Api Error: Invalid request - The caller does
+   not have permission` on the listing call, while the AAB upload keeps working. That reads as a
+   broken workflow rather than an account one tick short, which is why the workflow now says which
+   box it is.
 
    ```bash
    gh secret set SERVICE_ACCOUNT_JSON < ~/Downloads/play-service-account.json

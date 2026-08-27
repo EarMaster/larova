@@ -131,6 +131,11 @@ jobs:
             exit 0
           fi
 
+          # A real failure, but one with a one-click fix that no stack trace mentions.
+          if printf '%s' "$OUTPUT" | grep -q "caller does not have permission"; then
+            echo "::error::The service account can reach the app and the track but not the store listing. In the Play Console under Users and permissions, give it Manage store presence (older Consoles: Edit store listing, pricing and distribution) for Larova, then re-run."
+          fi
+
           exit "$STATUS"
 
       - name: Validate listing on request
@@ -153,9 +158,14 @@ jobs:
             echo "only text, so it cannot publish the listing of an app that has never shipped."
             echo
             echo "Upload the first AAB by hand (docs/release-setup.md §3.7), then re-run this"
-            echo "workflow. If the release exists, check that the service account also holds"
-            echo "**Edit store listing, pricing and distribution** — Release manager alone is not"
-            echo "enough for the listing call."
+            echo "workflow."
+            echo
+            echo "If it failed with **The caller does not have permission**, the release was found"
+            echo "and the listing call was refused: the service account holds release permissions"
+            echo "but not store-listing ones. In the Play Console, under *Users and permissions*,"
+            echo "give it **Manage store presence** for Larova — older Consoles call the same box"
+            echo "*Edit store listing, pricing and distribution* — and re-run. Nothing needs"
+            echo "rebuilding; the listing upload reads the repository, not the release."
           } >> "$GITHUB_STEP_SUMMARY"
 
       # The edit is committed but not submitted: a new app whose first release has not been reviewed
