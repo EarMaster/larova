@@ -1,5 +1,6 @@
 package app.larova.feature.card
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -17,18 +19,24 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.ui.component.KeepScreenOn
 import app.larova.core.ui.resources.Res
+import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.guide_finish
 import app.larova.core.ui.resources.guide_next
 import app.larova.core.ui.resources.guide_previous
@@ -49,11 +57,16 @@ import org.jetbrains.compose.resources.stringResource
  * list of five paragraphs reintroduces it.
  *
  * The step text is 22sp because it is read aloud, often by someone over 65.
+ *
+ * [loadPicture] is asked for one picture at a time, for the step on screen and no other. A guide
+ * with ten steps holds ten photographs, and decoding all of them to show one is how a screen that
+ * has to open under pressure ends up not opening at all.
  */
 @Composable
 fun GuideView(
     guide: CardPayload.Guide,
     modifier: Modifier = Modifier,
+    loadPicture: suspend (String) -> ImageBitmap? = { null },
     onFinish: () -> Unit = {},
 ) {
     if (guide.steps.isEmpty()) {
@@ -88,6 +101,17 @@ fun GuideView(
                 style = GuideStepStyle,
                 color = MaterialTheme.colorScheme.onBackground,
             )
+
+            // Under the words rather than above them. The text is what is read aloud and must be
+            // on screen without scrolling; a photograph at the top would push it off on a small
+            // phone at a large font size.
+            step.mediaId?.let { mediaId ->
+                StepPicture(
+                    mediaId = mediaId.toString(),
+                    stepNumber = index + 1,
+                    loadPicture = loadPicture,
+                )
+            }
         }
 
         Text(
@@ -102,6 +126,37 @@ fun GuideView(
             onPrevious = { if (index > 0) index-- },
             onNext = { if (index < guide.steps.lastIndex) index++ else onFinish() },
             modifier = Modifier.padding(bottom = 8.dp),
+        )
+    }
+}
+
+/**
+ * The picture belonging to one step.
+ *
+ * Loaded when the step arrives and dropped when it leaves — both the load and the slot it lands in
+ * are keyed on the identifier, so stepping forward does not show the previous step's photograph
+ * for a frame. A picture that cannot be loaded leaves no gap: the step is its text first.
+ */
+@Composable
+private fun StepPicture(
+    mediaId: String,
+    stepNumber: Int,
+    loadPicture: suspend (String) -> ImageBitmap?,
+) {
+    var picture by remember(mediaId) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(mediaId) { picture = loadPicture(mediaId) }
+
+    picture?.let {
+        Image(
+            bitmap = it,
+            // There is nothing truthful to say about what is in the picture — nobody wrote a
+            // description of it — so this says which step it belongs to and no more.
+            contentDescription = stringResource(Res.string.cd_step_picture, stepNumber),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth()
+                .sizeIn(maxHeight = 320.dp)
+                .clip(MaterialTheme.shapes.medium),
         )
     }
 }

@@ -1,9 +1,12 @@
 package app.larova.feature.card
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.parseUuidOrNull
+import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ObserveTile
 import app.larova.core.domain.usecase.ToggleChecklistItem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +32,7 @@ class CardViewModel(
     private val cardId: String,
     private val observeTile: ObserveTile,
     private val toggleChecklistItem: ToggleChecklistItem,
+    private val loadImage: LoadImage,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CardUiState())
@@ -47,6 +51,18 @@ class CardViewModel(
             toggleChecklistItem(id, index)
             reload()
         }
+    }
+
+    /**
+     * One step's picture, at the size a phone screen can actually show.
+     *
+     * Suspending rather than part of the state: the guide asks for the step it is on, when it gets
+     * there. A tile with ten pictures on it would otherwise decode all ten to open, on the screen
+     * that most needs to open quickly.
+     */
+    suspend fun pictureFor(mediaId: String): ImageBitmap? {
+        val id = parseUuidOrNull(mediaId) ?: return null
+        return loadImage(id, ImageSize.ON_SCREEN)?.toImageBitmapOrNull()
     }
 
     private fun reload() {

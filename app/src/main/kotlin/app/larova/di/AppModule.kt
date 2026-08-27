@@ -21,10 +21,14 @@ import app.larova.core.domain.repository.PinRepository
 import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.export.Digest
+import app.larova.core.domain.media.ImageStore
 import app.larova.core.domain.export.PackageIo
 import app.larova.core.domain.export.MediaFiles
 import app.larova.core.domain.export.PackageStore
+import app.larova.core.domain.usecase.AddImage
+import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.DeleteCard
+import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ImportPackage
 import app.larova.core.domain.usecase.ReadPackagePreview
@@ -34,6 +38,7 @@ import app.larova.core.domain.usecase.EnsureRootBoard
 import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.Pictures
 import app.larova.core.domain.usecase.ReorderTiles
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.SearchTiles
@@ -42,6 +47,7 @@ import app.larova.core.domain.usecase.ToggleChecklistItem
 import app.larova.core.domain.usecase.UnlockWithBiometrics
 import app.larova.core.domain.usecase.UnlockWithPin
 import app.larova.core.platform.AndroidExternalActions
+import app.larova.core.platform.AndroidImageStore
 import app.larova.core.platform.AndroidPlatformPaths
 import app.larova.core.platform.AndroidDigest
 import app.larova.core.platform.AndroidMediaFiles
@@ -85,6 +91,7 @@ val appModule = module {
     single<PackageStore> { AndroidPackageStore(androidContext()) }
     single<Digest> { AndroidDigest() }
     single<MediaFiles> { AndroidMediaFiles(get()) }
+    single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single { PackageIo(store = get(), digest = get(), mediaFiles = get()) }
 
     // One session for the whole process, with a scope that outlives every screen: the five-minute
@@ -122,6 +129,10 @@ val appModule = module {
     factory { ToggleChecklistItem(get()) }
     factory { SaveCard(get(), get()) }
     factory { DeleteCard(get()) }
+    factory { AddImage(get(), get()) }
+    factory { LoadImage(get(), get()) }
+    factory { CleanUpMedia(get(), get()) }
+    factory { Pictures(get(), get(), get()) }
     factory { SearchTiles(get()) }
     factory { ReorderTiles(get(), get()) }
     factory { HasPin(get()) }
@@ -135,7 +146,7 @@ val appModule = module {
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
@@ -143,8 +154,8 @@ val appModule = module {
     viewModel { HelpViewModel(get()) }
     viewModel { TransferViewModel(get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
-    viewModel { parameters -> CardViewModel(parameters.get(), get(), get()) }
-    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get()) }
+    viewModel { parameters -> CardViewModel(parameters.get(), get(), get(), get()) }
+    viewModel { parameters -> EditCardViewModel(parameters.get(), get(), get(), get(), get()) }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */

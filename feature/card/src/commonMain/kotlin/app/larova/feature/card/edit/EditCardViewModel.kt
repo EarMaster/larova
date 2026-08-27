@@ -1,7 +1,9 @@
 package app.larova.feature.card.edit
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
@@ -11,15 +13,26 @@ import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.DeleteCard
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.Pictures
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.theme.TileColor
+import app.larova.feature.card.toImageBitmapOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+/**
+ * One line of a guide as the editor holds it: the words, and the picture that goes with them.
+ *
+ * The picture is carried as its identifier rather than as the picture itself. It was written to
+ * app-private storage the moment it was picked, and a parent who moves a step around, or types over
+ * every word of it, has not asked for the photograph to be picked again.
+ */
+data class StepDraft(val text: String = "", val mediaId: String? = null)
 
 /**
  * What the editor holds while a parent is typing.
@@ -36,7 +49,7 @@ data class EditUiState(
     val subtitle: String = "",
     val colorToken: String = TileColor.DEFAULT.key,
     val symbolKey: String = TileSymbol.DEFAULT.key,
-    val steps: List<String> = listOf(""),
+    val steps: List<StepDraft> = listOf(StepDraft()),
     val noteText: String = "",
     val items: List<CheckItem> = listOf(CheckItem("")),
     val resetDaily: Boolean = false,
@@ -51,6 +64,15 @@ data class EditUiState(
     val isLoading: Boolean = false,
     val saved: Boolean = false,
     val deleted: Boolean = false,
+    /**
+     * Previews of the step pictures, by identifier, at thumbnail size.
+     *
+     * Kept beside the steps rather than inside them: one picture can be on two steps as easily as
+     * on one, and the editor should decode it once either way.
+     */
+    val pictures: Map<String, ImageBitmap> = emptyMap(),
+    /** The last picked picture could not be read. Said out loud rather than silently ignored. */
+    val pictureFailed: Boolean = false,
 )
 
 /**
@@ -70,10 +92,19 @@ class EditCardViewModel(
     private val observeTile: ObserveTile,
     private val saveCard: SaveCard,
     private val deleteCard: DeleteCard,
+    private val pictures: Pictures,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditUiState(isNew = cardId.isNullOrEmpty()))
     val state: StateFlow<EditUiState> = _state.asStateFlow()
+
+    /**
+     * Which step the picker was opened for.
+     *
+     * Held here rather than in the screen so that turning the phone while the gallery is open
+     * cannot land the picture on the wrong step, or on none.
+     */
+    private var pictureForStep: Int? = null
 
     init {
         if (!cardId.isNullOrEmpty()) load(cardId)
@@ -107,16 +138,70 @@ class EditCardViewModel(
     fun onTypeChange(type: CardType) = _state.update { it.copy(type = type) }
 
     fun onStepChange(index: Int, text: String) = _state.update { state ->
-        state.copy(steps = state.steps.mapIndexed { i, existing -> if (i == index) text else existing })
+        state.copy(
+            steps = state.steps.mapIndexed { i, step ->
+                if (i == index) step.copy(text = text) else step
+            },
+        )
     }
 
-    fun onAddStep() = _state.update { it.copy(steps = it.steps + "") }
+    fun onAddStep() = _state.update { it.copy(steps = it.steps + StepDraft()) }
 
     fun onRemoveStep(index: Int) = _state.update { state ->
         val remaining = state.steps.filterIndexed { i, _ -> i != index }
         // Never down to nothing: a guide screen with no steps has nothing to show, and an editor
         // with no rows gives no way to start typing again.
-        state.copy(steps = remaining.ifEmpty { listOf("") })
+        state.copy(steps = remaining.ifEmpty { listOf(StepDraft()) })
+    }
+
+    /**
+     * Remembers which step the picture is for. Opening the picker itself is the platform's job, so
+     * the screen does that immediately afterwards.
+     */
+    fun onPickPictureFor(index: Int) {
+        pictureForStep = index
+        _state.update { it.copy(pictureFailed = false) }
+    }
+
+    /**
+     * A picked picture, copied in and put on the step it was picked for.
+     *
+     * The copy happens now rather than when the tile is saved: the read permission the picker
+     * granted lasts as long as this screen does, and a picture left as a reference into the gallery
+     * would go blank the day the person tidied it up.
+     */
+    fun onPictureChosen(source: String) {
+        val index = pictureForStep ?: return
+        pictureForStep = null
+        viewModelScope.launch {
+            val id = pictures.add(source)
+            if (id == null) {
+                _state.update { it.copy(pictureFailed = true) }
+                return@launch
+            }
+            _state.update { state ->
+                state.copy(
+                    steps = state.steps.mapIndexed { i, step ->
+                        if (i == index) step.copy(mediaId = id.toString()) else step
+                    },
+                    pictureFailed = false,
+                )
+            }
+            loadPictures()
+        }
+    }
+
+    /**
+     * Takes the picture off the step. The file goes at the next sweep rather than now: the same
+     * picture may be on another step, and only the payloads together can answer that.
+     */
+    fun onRemovePicture(index: Int) = _state.update { state ->
+        state.copy(
+            steps = state.steps.mapIndexed { i, step ->
+                if (i == index) step.copy(mediaId = null) else step
+            },
+            pictureFailed = false,
+        )
     }
 
     fun onItemChange(index: Int, text: String) = _state.update { state ->
@@ -156,6 +241,9 @@ class EditCardViewModel(
                     payload = current.toPayload(),
                 ),
             )
+            // Whatever the save changed, a picture may now be on no step at all: taken off one, or
+            // picked and then replaced before saving.
+            if (result is SaveCard.Result.Saved) pictures.cleanUp()
             _state.update { state ->
                 when (result) {
                     is SaveCard.Result.Saved -> state.copy(saved = true)
@@ -172,6 +260,8 @@ class EditCardViewModel(
         val id = parseUuidOrNull(cardId) ?: return
         viewModelScope.launch {
             deleteCard(id)
+            // The pictures of a deleted guide are what nothing points at now.
+            pictures.cleanUp()
             _state.update { it.copy(deleted = true) }
         }
     }
@@ -187,6 +277,28 @@ class EditCardViewModel(
             } else {
                 tile.toEditState()
             }
+            loadPictures()
+        }
+    }
+
+    /**
+     * Thumbnails for whatever the steps refer to now.
+     *
+     * Thumbnail-sized on purpose: the stored picture is 2048px, and decoding ten of those to draw
+     * ten previews the size of a stamp is how an editor runs a phone out of memory. What is already
+     * decoded is kept, so adding an eleventh step does not redo the other ten.
+     */
+    private fun loadPictures() {
+        viewModelScope.launch {
+            val wanted = _state.value.steps.mapNotNull { it.mediaId }.toSet()
+            val loaded = _state.value.pictures.filterKeys { it in wanted }.toMutableMap()
+            for (id in wanted - loaded.keys) {
+                val picture = parseUuidOrNull(id)
+                    ?.let { pictures.load(it, ImageSize.THUMBNAIL) }
+                    ?.toImageBitmapOrNull()
+                if (picture != null) loaded[id] = picture
+            }
+            _state.update { state -> state.copy(pictures = loaded) }
         }
     }
 }
@@ -194,10 +306,15 @@ class EditCardViewModel(
 /**
  * Blank lines are dropped on the way in. A parent who taps "add step" twice and fills one of them
  * meant one step, and an empty step in a guide is a screen that says nothing.
+ *
+ * A step with a picture and no words is not blank: some things are easier shown than described.
  */
 private fun EditUiState.toPayload(): CardPayload = when (type) {
     CardType.GUIDE -> CardPayload.Guide(
-        steps = steps.map { it.trim() }.filter { it.isNotEmpty() }.map { Step(text = it) },
+        steps = steps
+            .map { it.copy(text = it.text.trim()) }
+            .filter { it.text.isNotEmpty() || it.mediaId != null }
+            .map { Step(text = it.text, mediaId = parseUuidOrNull(it.mediaId)) },
     )
 
     CardType.CHECKLIST -> CardPayload.Checklist(
@@ -238,7 +355,9 @@ private fun Tile.toEditState(): EditUiState {
     )
     return when (val payload = payload) {
         is CardPayload.Guide -> base.copy(
-            steps = payload.steps.map { it.text }.ifEmpty { listOf("") },
+            steps = payload.steps
+                .map { StepDraft(text = it.text, mediaId = it.mediaId?.toString()) }
+                .ifEmpty { listOf(StepDraft()) },
         )
 
         is CardPayload.Checklist -> base.copy(

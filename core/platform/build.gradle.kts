@@ -23,6 +23,8 @@ kotlin {
         androidMain.dependencies {
             // Argon2id for the parent-view PIN, and for password-protected exports in M3.
             implementation(libs.argon2kt)
+            // A picked photo carries its orientation in EXIF rather than in its pixels.
+            implementation(libs.androidx.exifinterface)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

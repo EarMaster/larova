@@ -19,6 +19,9 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core:ui"))
             implementation(project(":core:domain"))
+            // Decoding a step picture is work for a background thread, not for the frame that is
+            // trying to draw it.
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.jetbrains.lifecycle.viewmodel.compose)
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.compose.viewmodel)

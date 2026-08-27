@@ -5,6 +5,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.TileSymbol
@@ -34,6 +35,7 @@ fun CardScreen(
     onBack: () -> Unit,
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
+    loadPicture: suspend (String) -> ImageBitmap? = { null },
 ) {
     LarovaScaffold(
         title = state.title,
@@ -62,6 +64,7 @@ fun CardScreen(
                 is CardPayload.Guide -> GuideView(
                     guide = payload,
                     modifier = content,
+                    loadPicture = loadPicture,
                     onFinish = onBack,
                 )
 

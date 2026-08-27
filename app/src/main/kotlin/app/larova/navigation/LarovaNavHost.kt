@@ -33,6 +33,7 @@ import app.larova.feature.transfer.TransferScreen
 import app.larova.feature.transfer.TransferViewModel
 import app.larova.formatExportDate
 import app.larova.rememberBackupPicker
+import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -94,6 +95,7 @@ fun LarovaNavHost(
                 onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
                 onBack = goBack,
                 onHelp = openHelp,
+                loadPicture = viewModel::pictureFor,
             )
         }
 
@@ -115,9 +117,13 @@ fun LarovaNavHost(
                 }
             }
 
+            // The picker belongs to the platform, so it is opened from here; the ViewModel has
+            // already been told which step the picture is for.
+            val pickPicture = rememberPicturePicker(viewModel::onPictureChosen)
+
             EditCardScreen(
                 state = state,
-                callbacks = viewModel.callbacks(),
+                callbacks = viewModel.callbacks(openPicturePicker = pickPicture),
                 onBack = goBack,
                 onHelp = openHelp,
             )
