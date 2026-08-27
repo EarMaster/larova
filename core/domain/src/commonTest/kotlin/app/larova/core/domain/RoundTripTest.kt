@@ -62,19 +62,22 @@ class RoundTripTest {
 
         assertIs<ImportPackage.Result.Imported>(result)
         assertEquals(2, result.boards)
-        assertEquals(7, result.cards)
-        assertEquals(1, result.media)
+        assertEquals(8, result.cards)
+        assertEquals(2, result.media)
 
         val titles = world.cards.observeAllCards().first().map { it.title }
         assertEquals(
             setOf(
-                "Bedtime", "Evening", "Grandma", "Holidays", "The week", "Music", "From the future",
+                "Bedtime", "Evening", "Grandma", "Holidays", "The week", "Music", "The lullaby",
+                "From the future",
             ),
             titles.toSet(),
         )
 
-        // The guide's picture is on disk again, byte for byte.
+        // The guide's picture and the recording are on disk again, byte for byte. The recording
+        // matters most: a picture can be taken again, and the voice on it cannot.
         assertEquals("a picture", world.mediaFiles.contentOf("media/$MEDIA_ID.jpg"))
+        assertEquals("a lullaby", world.mediaFiles.contentOf("media/$RECORDING_ID.m4a"))
 
         // And the payload this version cannot read came through untouched, so a newer build can
         // still render it.
@@ -224,9 +227,9 @@ class RoundTripTest {
         val manifest = preview.manifest
         assertEquals(ExportManifest.CURRENT_SCHEMA_VERSION, manifest.schemaVersion)
         assertEquals("Larova for Jonas", manifest.label)
-        assertEquals(7, manifest.counts.cards)
+        assertEquals(8, manifest.counts.cards)
         assertEquals(2, manifest.counts.boards)
-        assertEquals(1, manifest.counts.media)
+        assertEquals(2, manifest.counts.media)
     }
 
     @Test
@@ -374,7 +377,7 @@ class RoundTripTest {
         val result = world.export(destination)
 
         assertIs<ExportPackage.Result.Written>(result)
-        assertEquals(1, result.mediaCount)
+        assertEquals(2, result.mediaCount)
         assertNull(world.store.packages.getValue(destination)["media/gone.jpg"])
     }
 
@@ -411,6 +414,7 @@ class RoundTripTest {
             val root = ensureRoot()
             val folder = addFolder(root.id)
             addPicture()
+            addRecording()
             addTiles(rootId = root.id, folderId = folder.id)
             addLog()
         }
@@ -459,6 +463,24 @@ class RoundTripTest {
             return folder
         }
 
+        /**
+         * A recording, which travels the way a picture does but is copied rather than re-encoded.
+         * The bytes here stand in for a file: what the round trip has to prove is that the same
+         * bytes come out of the package on the other side.
+         */
+        private suspend fun addRecording() {
+            mediaFiles.putRelative("media/$RECORDING_ID.m4a", "a lullaby")
+            media.register(
+                MediaAsset(
+                    id = Uuid.parse(RECORDING_ID),
+                    relativePath = "media/$RECORDING_ID.m4a",
+                    mimeType = "audio/mp4",
+                    sizeBytes = "a lullaby".length.toLong(),
+                    sha256 = "c".repeat(64),
+                ),
+            )
+        }
+
         private suspend fun addPicture() {
             mediaFiles.putRelative("media/$MEDIA_ID.jpg", "a picture")
             media.register(
@@ -477,6 +499,7 @@ class RoundTripTest {
             addReadingTiles(rootId)
             addFolderAndTable(rootId = rootId, folderId = folderId)
             addShortcut(rootId)
+            addSong(rootId)
             addTileFromTheFuture(folderId)
         }
 
@@ -524,6 +547,23 @@ class RoundTripTest {
         }
 
         /** The folder tile points at the board `addFolder` made, which is what a restore must keep. */
+        private suspend fun addSong(rootId: Uuid) {
+            cards.upsert(
+                card(
+                    boardId = rootId,
+                    title = "The lullaby",
+                    type = CardType.AUDIO,
+                    payload = CardPayloadCodec.encode(
+                        CardPayload.Audio(
+                            mediaId = Uuid.parse(RECORDING_ID),
+                            caption = "Mum singing it",
+                        ),
+                    ),
+                    sortIndex = 6,
+                ),
+            )
+        }
+
         private suspend fun addShortcut(rootId: Uuid) {
             cards.upsert(
                 card(
@@ -626,6 +666,7 @@ class RoundTripTest {
     private companion object {
         const val APP_VERSION = "0.1.0"
         const val MEDIA_ID = "3f2a1b4c-5d6e-4f70-8192-a3b4c5d6e7f8"
+        const val RECORDING_ID = "cccccccc-dddd-4eee-8fff-111111111111"
         val AT: Instant = Instant.parse("2026-08-23T18:12:00Z")
     }
 }

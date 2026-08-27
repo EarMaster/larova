@@ -54,6 +54,8 @@ import app.larova.core.ui.resources.edit_app_label
 import app.larova.core.ui.resources.edit_app_none_chosen
 import app.larova.core.ui.resources.edit_app_required
 import app.larova.core.ui.resources.edit_choose_app
+import app.larova.core.ui.resources.edit_choose_sound
+import app.larova.core.ui.resources.edit_choose_video
 import app.larova.core.ui.resources.edit_add_column
 import app.larova.core.ui.resources.edit_add_row
 import app.larova.core.ui.resources.edit_add_step
@@ -74,6 +76,11 @@ import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_edit_tile
 import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
+import app.larova.core.ui.resources.edit_media_caption
+import app.larova.core.ui.resources.edit_media_chosen
+import app.larova.core.ui.resources.edit_media_large
+import app.larova.core.ui.resources.edit_media_none_chosen
+import app.larova.core.ui.resources.edit_media_required
 import app.larova.core.ui.resources.edit_new_tile
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
@@ -100,6 +107,7 @@ import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_note
 import app.larova.core.ui.resources.tile_link
 import app.larova.core.ui.resources.tile_table
+import app.larova.core.ui.resources.tile_video
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.pluralStringResource
@@ -340,6 +348,8 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
 
         CardType.APP_LINK -> AppLinkFields(state = state, callbacks = callbacks)
 
+        CardType.VIDEO, CardType.AUDIO -> MediaFields(state = state, callbacks = callbacks)
+
         CardType.WEB -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(
                 value = state.webUrl,
@@ -364,8 +374,67 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
             )
         }
 
-        // Not offered while creating and not reachable while editing, since nothing can create one.
-        CardType.VIDEO, CardType.AUDIO -> Unit
+    }
+}
+
+/**
+ * Choosing a video or a recording, and what to write above it.
+ *
+ * The size is shown once something is chosen, and said out loud when it is large. Not a limit — a
+ * parent who wants a two-minute video of a bedtime song gets one — but a backup is a single file
+ * they will be sending through whatever their phone offers, and that is worth knowing before the
+ * tile is saved rather than at the moment the transfer fails.
+ */
+@Composable
+private fun MediaFields(state: EditUiState, callbacks: EditCardCallbacks) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            text = if (state.mediaId == null) {
+                stringResource(Res.string.edit_media_none_chosen)
+            } else {
+                stringResource(Res.string.edit_media_chosen, state.mediaSizeBytes / BYTES_IN_MB)
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        OutlinedButton(
+            onClick = callbacks.onChooseMedia,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(
+                stringResource(
+                    if (state.type == CardType.VIDEO) {
+                        Res.string.edit_choose_video
+                    } else {
+                        Res.string.edit_choose_sound
+                    },
+                ),
+            )
+        }
+
+        if (state.mediaIsLarge) {
+            Text(
+                text = stringResource(Res.string.edit_media_large),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        if (state.mediaMissing) {
+            Text(
+                text = stringResource(Res.string.edit_media_required),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        OutlinedTextField(
+            value = state.mediaCaption,
+            onValueChange = callbacks.onMediaCaptionChange,
+            label = { Text(stringResource(Res.string.edit_media_caption)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -758,11 +827,15 @@ private val CardType.label: StringResource
         CardType.TABLE -> Res.string.tile_table
         CardType.FOLDER -> Res.string.tile_folder
         CardType.APP_LINK -> Res.string.tile_link
+        CardType.VIDEO, CardType.AUDIO -> Res.string.tile_video
         CardType.PHONE -> Res.string.tile_call
-        else -> Res.string.tile_link
+        CardType.WEB -> Res.string.tile_link
     }
 
 private const val MIN_NOTE_LINES = 6
+
+/** The size is shown in whole megabytes; a file this matters for is never a few kilobytes. */
+private const val BYTES_IN_MB = 1024 * 1024
 
 /**
  * The editor's callbacks in one place.
@@ -805,6 +878,8 @@ data class EditCardCallbacks(
     val onAppPicked: (AppChoice) -> Unit,
     val onDismissAppPicker: () -> Unit,
     val onAppLabelChange: (String) -> Unit,
+    val onChooseMedia: () -> Unit,
+    val onMediaCaptionChange: (String) -> Unit,
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
 )
@@ -816,7 +891,11 @@ data class EditCardCallbacks(
  * the same code on a phone that has no such thing. The ViewModel is told which step first, so that
  * whatever comes back has somewhere to land.
  */
-fun EditCardViewModel.callbacks(openPicturePicker: () -> Unit = {}) = EditCardCallbacks(
+fun EditCardViewModel.callbacks(
+    openPicturePicker: () -> Unit = {},
+    openVideoPicker: () -> Unit = {},
+    openSoundPicker: () -> Unit = {},
+) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
     onTitleChange = ::onTitleChange,
     onSubtitleChange = ::onSubtitleChange,
@@ -852,6 +931,12 @@ fun EditCardViewModel.callbacks(openPicturePicker: () -> Unit = {}) = EditCardCa
     onAppPicked = ::onAppPicked,
     onDismissAppPicker = ::onDismissAppPicker,
     onAppLabelChange = ::onAppLabelChange,
+    // Which picker opens is a question about the tile being made, and the ViewModel is the one
+    // holding that. The screen would have to be told the same thing twice to decide it itself.
+    onChooseMedia = {
+        if (state.value.type == CardType.VIDEO) openVideoPicker() else openSoundPicker()
+    },
+    onMediaCaptionChange = ::onMediaCaptionChange,
     onSave = ::onSave,
     onDelete = ::onDelete,
 )

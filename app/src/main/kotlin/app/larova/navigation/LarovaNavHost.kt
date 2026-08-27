@@ -39,6 +39,8 @@ import app.larova.formatLogTime
 import app.larova.rememberBackupPicker
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
+import app.larova.rememberSoundPicker
+import app.larova.rememberVideoPicker
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -148,10 +150,16 @@ fun LarovaNavHost(
             // The picker belongs to the platform, so it is opened from here; the ViewModel has
             // already been told which step the picture is for.
             val pickPicture = rememberPicturePicker(viewModel::onPictureChosen)
+            val pickVideo = rememberVideoPicker(viewModel::onMediaChosen)
+            val pickSound = rememberSoundPicker(viewModel::onMediaChosen)
 
             EditCardScreen(
                 state = state,
-                callbacks = viewModel.callbacks(openPicturePicker = pickPicture),
+                callbacks = viewModel.callbacks(
+                    openPicturePicker = pickPicture,
+                    openVideoPicker = pickVideo,
+                    openSoundPicker = pickSound,
+                ),
                 onBack = goBack,
                 onHelp = openHelp,
             )

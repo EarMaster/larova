@@ -93,6 +93,9 @@
     <string name="help_emergency">Emergency services</string>
     <string name="help_no_contacts">No numbers have been added here yet.</string>
 
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">This file is not on the phone. It may not have come through with the backup.</string>
+
     <!-- ===== App shortcut ===== -->
     <string name="app_open">Open the app</string>
     <string name="app_missing">That app is not on this phone any more.</string>
@@ -180,6 +183,13 @@
     <string name="edit_call_number">Phone number</string>
     <string name="edit_call_relation">Relation (optional)</string>
     <string name="edit_call_in_help">Also show under Get help</string>
+    <string name="edit_choose_video">Choose a video</string>
+    <string name="edit_choose_sound">Choose a sound file</string>
+    <string name="edit_media_none_chosen">Nothing chosen yet.</string>
+    <string name="edit_media_chosen">Chosen, %1$d MB</string>
+    <string name="edit_media_large">This is a large file. Backups that include it will be slow to send and may be too big for some ways of sending them.</string>
+    <string name="edit_media_required">Choose what this tile plays.</string>
+    <string name="edit_media_caption">What to say above it (optional)</string>
     <string name="edit_choose_app">Choose app</string>
     <string name="edit_app_none_chosen">No app chosen yet.</string>
     <string name="edit_app_chosen">Opens %1$s</string>

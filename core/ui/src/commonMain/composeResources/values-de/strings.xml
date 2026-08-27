@@ -104,6 +104,9 @@
     <string name="help_emergency">Notruf</string>
     <string name="help_no_contacts">Hier sind noch keine Nummern eingetragen.</string>
 
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Diese Datei liegt nicht auf dem Telefon. Vielleicht ist sie mit der Sicherung nicht mitgekommen.</string>
+
     <!-- ===== App shortcut ===== -->
     <string name="app_open">App öffnen</string>
     <string name="app_missing">Diese App ist nicht mehr auf diesem Telefon.</string>
@@ -191,6 +194,13 @@
     <string name="edit_call_number">Rufnummer</string>
     <string name="edit_call_relation">Wer das ist (optional)</string>
     <string name="edit_call_in_help">Auch unter „Hilfe holen“ zeigen</string>
+    <string name="edit_choose_video">Video auswählen</string>
+    <string name="edit_choose_sound">Tondatei auswählen</string>
+    <string name="edit_media_none_chosen">Noch nichts ausgewählt.</string>
+    <string name="edit_media_chosen">Ausgewählt, %1$d MB</string>
+    <string name="edit_media_large">Das ist eine große Datei. Sicherungen mit dieser Datei brauchen lange und sind für manche Wege zu groß.</string>
+    <string name="edit_media_required">Bitte auswählen, was diese Kachel abspielt.</string>
+    <string name="edit_media_caption">Was darüber stehen soll (optional)</string>
     <string name="edit_choose_app">App auswählen</string>
     <string name="edit_app_none_chosen">Noch keine App ausgewählt.</string>
     <string name="edit_app_chosen">Öffnet %1$s</string>
