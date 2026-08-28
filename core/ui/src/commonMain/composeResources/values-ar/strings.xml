@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Arabic strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates. Arabic needs a second kind of check besides the wording: it is the only
+  right-to-left language in the set, so the Latin fragments left in it on purpose (Larova, PIN,
+  http://) have to be read *in the running layout*, not in an editor, where bidirectional
+  reordering can put a slash or a colon somewhere it does not belong.
+
+  Arabic has six plural forms (zero / one / two / few / many / other) and every <plurals> below
+  carries all six.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">سعداء برؤيتك</string>
+    <string name="home_search">بحث</string>
+    <string name="home_add_tile">إضافة بطاقة</string>
+    <string name="home_child_age">%1$s · %2$d سنوات</string>
+    <string name="home_empty_title">لا يوجد شيء هنا بعد</string>
+    <string name="home_search_empty">لا نتائج مطابقة.</string>
+    <string name="arrange_title">ترتيب البطاقات</string>
+    <string name="arrange_hint">حرّك البطاقات لأعلى أو لأسفل. هذا الترتيب هو ترتيب الشاشة الرئيسية.</string>
+    <string name="home_empty_hint">تظهر هنا البطاقات التي تضيفها. يمكن أن تحمل البطاقة دليلاً أو قائمة أو ملاحظة أو رقماً للاتصال أو موقعاً إلكترونياً.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">وضع المرافق</string>
+    <string name="view_parent">وضع الوالدين</string>
+    <string name="view_parent_active">وضع الوالدين مفعّل. التعديل والنسخ الاحتياطي متاحان. يعود Larova إلى وضع المرافق بعد خمس دقائق دون استخدام.</string>
+    <string name="view_unlock_title">فتح وضع الوالدين</string>
+    <string name="view_unlock_pin">أدخل رمز PIN</string>
+    <string name="view_unlock_biometric">استخدام البصمة</string>
+
+    <string name="view_locked_note">التعديل والنسخ الاحتياطي في وضع الوالدين.</string>
+    <string name="view_leave">الخروج من وضع الوالدين</string>
+    <string name="view_pin_create_title">اختر رمز PIN</string>
+    <string name="view_pin_create_hint">من أربعة إلى اثني عشر رقماً. يمنع تغيير البطاقات دون قصد؛ ولا يخفيها.</string>
+    <string name="view_pin_repeat">أدخله مرة أخرى</string>
+    <string name="view_pin_mismatch">الرمزان غير متطابقين.</string>
+    <string name="view_pin_too_short">أربعة أرقام على الأقل.</string>
+    <string name="view_pin_digits_only">أرقام فقط.</string>
+    <string name="view_pin_wrong">هذا ليس الرمز الصحيح.</string>
+    <string name="view_pin_change">تغيير رمز PIN</string>
+    <string name="view_unlock">فتح</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">دليل</string>
+    <string name="tile_guide_hint">خطوات بنص وصور وصوت</string>
+    <string name="tile_checklist">قائمة</string>
+    <string name="tile_checklist_hint">أشياء تُعلَّم، وتبدأ من جديد كل يوم إن أردت</string>
+    <string name="tile_table">جدول</string>
+    <string name="tile_table_hint">أعمدة وصفوف من عندك</string>
+    <string name="tile_note">ملاحظة</string>
+    <string name="tile_note_hint">نص حر بعناوين وقوائم</string>
+    <string name="tile_video">فيديو</string>
+    <string name="tile_video_hint">من مقاطع الفيديو على هذا الهاتف</string>
+    <string name="tile_audio">صوت</string>
+    <string name="tile_audio_hint">ملف صوتي، أو سجّل واحداً الآن</string>
+    <string name="tile_call">اتصال</string>
+    <string name="tile_call_hint">اسم ورقم وصلة القرابة</string>
+    <string name="tile_link">موقع أو تطبيق</string>
+    <string name="tile_link_hint">يفتح رابطاً أو تطبيقاً على هذا الهاتف</string>
+    <string name="tile_folder">مجلد</string>
+    <string name="tile_folder_hint">يجمع عدة بطاقات معاً</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="zero">دليل · بلا خطوات</item>
+        <item quantity="one">دليل · خطوة واحدة</item>
+        <item quantity="two">دليل · خطوتان</item>
+        <item quantity="few">دليل · %1$d خطوات</item>
+        <item quantity="many">دليل · %1$d خطوة</item>
+        <item quantity="other">دليل · %1$d خطوة</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="zero">قائمة · بلا عناصر</item>
+        <item quantity="one">قائمة · عنصر واحد</item>
+        <item quantity="two">قائمة · عنصران</item>
+        <item quantity="few">قائمة · %1$d عناصر</item>
+        <item quantity="many">قائمة · %1$d عنصراً</item>
+        <item quantity="other">قائمة · %1$d عنصر</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">الخطوة %1$d من %2$d</string>
+    <string name="guide_previous">رجوع</string>
+    <string name="guide_next">التالي</string>
+    <string name="guide_finish">تم</string>
+    <string name="guide_read_aloud">قراءة بصوت عالٍ</string>
+    <string name="guide_screen_stays_on">تبقى الشاشة مضاءة هنا.</string>
+
+    <string name="guide_step_current">الآن</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d من %2$d</string>
+    <string name="checklist_resets_daily">تبدأ من جديد كل صباح في %1$s. ما يُعلَّم يُسجَّل في السجل مع الوقت.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">اطلب المساعدة</string>
+    <string name="help_sheet_title">اطلب المساعدة</string>
+    <string name="help_call_note">اللمس يفتح تطبيق الهاتف والرقم جاهز. لا يتصل Larova من تلقاء نفسه أبداً.</string>
+    <string name="help_emergency">خدمات الطوارئ</string>
+    <string name="help_no_contacts">لم يُضَف أي رقم هنا بعد.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">هذا الملف غير موجود على الهاتف. ربما لم يصل مع النسخة الاحتياطية.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">فتح التطبيق</string>
+    <string name="app_missing">لم يعد هذا التطبيق على الهاتف.</string>
+    <string name="app_choose">أي تطبيق؟</string>
+    <string name="app_none_found">لا يوجد تطبيق مطابق.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">النسخ الاحتياطي والنقل</string>
+    <string name="transfer_backup">إنشاء نسخة</string>
+    <string name="transfer_backup_hint">ينشئ ملفاً واحداً يضم كل بطاقاتك وصورك وتسجيلاتك. أنت تختار أين يذهب.</string>
+    <string name="transfer_restore">استعادة</string>
+    <string name="transfer_restore_hint">اختر ملفاً، وراجع المعاينة، ثم استبدل كل شيء أو أضف إلى الموجود.</string>
+    <string name="transfer_protect">الحماية بكلمة مرور</string>
+    <string name="transfer_protect_hint">يُنصح به كلما أرسلت الملف إلى شخص آخر. لا يمكن فتحه بدون كلمة المرور.</string>
+    <string name="transfer_last_backup">آخر نسخة احتياطية</string>
+    <string name="transfer_preview">%1$d بطاقة، %2$d ملف، %3$s</string>
+    <string name="transfer_replace">استبدال كل شيء</string>
+    <string name="transfer_merge">الإضافة إلى الموجود</string>
+    <string name="transfer_version_too_new">أُنشئ هذا الملف بإصدار أحدث من Larova. حدّث التطبيق لفتحه.</string>
+    <string name="transfer_saved">تم النسخ: %1$d بطاقة و%2$d ملف.</string>
+    <string name="transfer_restored">تمت الاستعادة: %1$d بطاقة و%2$d ملف.</string>
+    <string name="transfer_backup_failed">تعذّرت كتابة النسخة الاحتياطية. جرّب مكاناً آخر للحفظ.</string>
+    <string name="transfer_damaged">هذا الملف ناقص — ربما لم يُرسل كاملاً. لم يتغيّر شيء.</string>
+    <string name="transfer_unreadable">هذه ليست نسخة احتياطية من Larova.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_appearance">المظهر</string>
+    <string name="settings_appearance_system">حسب الهاتف</string>
+    <string name="settings_appearance_light">فاتح</string>
+    <string name="settings_appearance_dark">داكن</string>
+    <string name="settings_appearance_night">ليلي</string>
+    <string name="settings_appearance_night_hint">دافئ وخافت جداً، للقراءة بصوت عالٍ في غرفة مظلمة.</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_language_hint">يمكن أن يعمل Larova بلغة غير لغة بقية الهاتف.</string>
+    <string name="settings_transfer_hint">احفظ كل شيء في ملف واحد، أو استعد نسخة احتياطية.</string>
+    <string name="settings_log">سجل النشاط</string>
+    <string name="settings_log_retention">الاحتفاظ %1$d يوماً</string>
+    <string name="settings_log_clear">مسح السجل</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">لم يحدث شيء بعد.</string>
+    <string name="log_note_hint">إضافة سطر</string>
+    <string name="log_add">الإضافة إلى السجل</string>
+    <string name="log_retention">تُحذف الأسطر الأقدم من %1$d يوماً.</string>
+    <string name="log_clear_question">مسح السجل كله؟ لا يمكن استرجاع الأسطر.</string>
+    <string name="log_card_opened">فُتحت: %1$s</string>
+    <string name="log_check_toggled">عُلّم شيء في «%1$s»</string>
+    <string name="log_call_prepared">جُهّز اتصال: %1$s</string>
+    <string name="log_tile_gone">بطاقة حُذفت منذ ذلك الحين</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">بطاقة جديدة</string>
+    <string name="edit_edit_tile">تعديل البطاقة</string>
+    <string name="edit_choose_type">ماذا يوضع على هذه البطاقة؟</string>
+    <string name="edit_title">العنوان</string>
+    <string name="edit_subtitle">السطر الثاني (اختياري)</string>
+    <string name="edit_colour">اللون</string>
+    <string name="edit_symbol">الرمز</string>
+    <string name="edit_save">حفظ</string>
+    <string name="edit_cancel">إلغاء</string>
+    <string name="edit_delete">حذف البطاقة</string>
+    <string name="edit_delete_question">حذف هذه البطاقة؟ لا يمكن استرجاع ما عليها.</string>
+    <string name="edit_title_required">البطاقة تحتاج إلى عنوان.</string>
+    <string name="edit_folder_note">المجلد يضم بطاقات أخرى. احفظه ثم افتحه وأضف بطاقات بداخله.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="zero">حذف هذا المجلد؟ لا توجد بطاقات بداخله.</item>
+        <item quantity="one">حذف هذا المجلد؟ البطاقة التي بداخله تذهب معه ولا يمكن استرجاعها.</item>
+        <item quantity="two">حذف هذا المجلد؟ البطاقتان اللتان بداخله تذهبان معه ولا يمكن استرجاعهما.</item>
+        <item quantity="few">حذف هذا المجلد؟ البطاقات %1$d التي بداخله تذهب معه ولا يمكن استرجاعها.</item>
+        <item quantity="many">حذف هذا المجلد؟ البطاقات %1$d التي بداخله تذهب معه ولا يمكن استرجاعها.</item>
+        <item quantity="other">حذف هذا المجلد؟ البطاقات %1$d التي بداخله تذهب معه ولا يمكن استرجاعها.</item>
+    </plurals>
+    <string name="edit_steps">الخطوات</string>
+    <string name="edit_add_step">إضافة خطوة</string>
+    <string name="edit_step_number">الخطوة %1$d</string>
+    <string name="edit_items">أشياء تُعلَّم</string>
+    <string name="edit_add_item">إضافة عنصر</string>
+    <string name="edit_item_number">العنصر %1$d</string>
+    <string name="edit_reset_daily">البدء من جديد كل صباح</string>
+    <string name="edit_columns">العناوين</string>
+    <string name="edit_add_column">إضافة عنوان</string>
+    <string name="edit_column_number">العنوان %1$d</string>
+    <string name="edit_rows">الصفوف</string>
+    <string name="edit_add_row">إضافة صف</string>
+    <string name="edit_row_number">الصف %1$d</string>
+    <string name="edit_note_text">النص</string>
+    <string name="edit_call_name">الاسم</string>
+    <string name="edit_call_number">رقم الهاتف</string>
+    <string name="edit_call_relation">صلة القرابة (اختياري)</string>
+    <string name="edit_call_in_help">اعرضه أيضاً ضمن «اطلب المساعدة»</string>
+    <string name="edit_record">التسجيل بالميكروفون</string>
+    <string name="edit_recording">جارٍ التسجيل…</string>
+    <string name="edit_record_stop">إيقاف وحفظ</string>
+    <string name="edit_record_failed">تعذّر استخدام الميكروفون، أو لم يُسجَّل شيء.</string>
+    <string name="edit_choose_video">اختر فيديو</string>
+    <string name="edit_choose_sound">اختر ملفاً صوتياً</string>
+    <string name="edit_media_none_chosen">لم يُختَر شيء بعد.</string>
+    <string name="edit_media_chosen">مختار، %1$d ميغابايت</string>
+    <string name="edit_media_large">هذا ملف كبير. النسخ الاحتياطية التي تضمّه سيكون إرسالها بطيئاً، وقد تكون أكبر مما تسمح به بعض طرق الإرسال.</string>
+    <string name="edit_media_required">اختر ما تشغّله هذه البطاقة.</string>
+    <string name="edit_media_caption">ما يُكتب فوقه (اختياري)</string>
+    <string name="edit_choose_app">اختر تطبيقاً</string>
+    <string name="edit_app_none_chosen">لم يُختَر تطبيق بعد.</string>
+    <string name="edit_app_chosen">يفتح %1$s</string>
+    <string name="edit_app_label">ما تقوله البطاقة</string>
+    <string name="edit_app_required">اختر التطبيق الذي تفتحه هذه البطاقة.</string>
+    <string name="edit_web_address">عنوان الموقع</string>
+    <string name="edit_web_label">التسمية (اختياري)</string>
+    <string name="edit_web_address_invalid">يجب أن يبدأ عنوان الموقع بـ ‎http://‎ أو ‎https://‎</string>
+    <string name="edit_remove">إزالة</string>
+    <string name="edit_add_picture">إضافة صورة</string>
+    <string name="edit_change_picture">تغيير الصورة</string>
+    <string name="edit_remove_picture">إزالة الصورة</string>
+    <string name="edit_picture_failed">تعذّرت إضافة هذه الصورة.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">رملي</string>
+    <string name="colour_clay">طيني</string>
+    <string name="colour_rose">وردي</string>
+    <string name="colour_lilac">ليلكي</string>
+    <string name="colour_sky">سماوي</string>
+    <string name="colour_sage">مريمي</string>
+    <string name="colour_moss">طحلبي</string>
+    <string name="colour_stone">حجري</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">وقت النوم</string>
+    <string name="template_evening">روتين المساء</string>
+    <string name="template_contacts">أرقام مهمة</string>
+    <string name="template_food">الأكل والشرب</string>
+    <string name="template_day">يوم عندنا</string>
+    <string name="template_what_helps">ما الذي يساعد عندما…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">ارتدى البيجاما ونظّف أسنانه.</string>
+    <string name="template_bedtime_step_2">قصة واحدة على الأريكة — يختارها هو.</string>
+    <string name="template_bedtime_step_3">الستائر مغلقة والمصباح الصغير مضاء.</string>
+    <string name="template_bedtime_step_4">الأرنب القطني في السرير، لا على الرف.</string>
+    <string name="template_bedtime_step_5">الباب مفتوح قليلاً، بمقدار كفّ اليد.</string>
+
+    <string name="template_evening_item_1">العشاء</string>
+    <string name="template_evening_item_2">الغسل والأسنان</string>
+    <string name="template_evening_item_3">البيجاما</string>
+    <string name="template_evening_item_4">القصة</string>
+    <string name="template_evening_item_5">إطفاء الضوء</string>
+
+    <string name="template_contacts_name">ماما</string>
+    <string name="template_contacts_relation">الأم</string>
+    <string name="template_contacts_todo">أضف الرقم</string>
+
+    <string name="template_food_column_1">يحب</string>
+    <string name="template_food_column_2">يفضّل تجنّبه</string>
+    <string name="template_food_row_1_1">معكرونة بالزبدة</string>
+    <string name="template_food_row_1_2">أي شيء فيه فطر</string>
+    <string name="template_food_row_2_1">شرائح تفاح</string>
+    <string name="template_food_row_2_2">المشروبات الغازية</string>
+    <string name="template_food_row_3_1">ماء، حليب</string>
+    <string name="template_food_row_3_2">الصلصة فوق الطعام</string>
+
+    <string name="template_day_column_1">متى</string>
+    <string name="template_day_column_2">ماذا يحدث</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">يستيقظ، الفطور على الطاولة</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">الغداء، ثم وقت هادئ مع كتاب</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">وجبة خفيفة، ثم الحديقة إن كان الجو جافاً</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">العشاء، ثم روتين المساء</string>
+
+    <string name="template_what_helps_step_1">حزين: اجلس بقربه ولا تتكلم بعد.</string>
+    <string name="template_what_helps_step_2">لا يأكل: اترك الطعام على الطاولة وحاول لاحقاً.</string>
+    <string name="template_what_helps_step_3">لا ينام: التهويدة، بهدوء، مرتين.</string>
+
+    <string name="home_start_with">أو ابدأ بواحدة من هذه</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">فتح %1$s</string>
+    <string name="cd_add_tile">إضافة بطاقة</string>
+    <string name="cd_clear_search">مسح البحث</string>
+    <string name="cd_move_up">تحريك %1$s لأعلى</string>
+    <string name="cd_move_down">تحريك %1$s لأسفل</string>
+    <string name="cd_colour_selected">%1$s، محدد</string>
+    <string name="cd_remove_line">إزالة %1$s</string>
+    <string name="cd_check_item">%1$s، تم</string>
+    <string name="cd_uncheck_item">%1$s، لم يتم</string>
+    <string name="cd_back">رجوع</string>
+    <string name="cd_close">إغلاق</string>
+    <string name="cd_menu">القائمة</string>
+    <string name="cd_edit_tile">تعديل %1$s</string>
+    <string name="cd_play">تشغيل</string>
+    <string name="cd_step_picture">صورة الخطوة %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s، %2$s</string>
+
+</resources>

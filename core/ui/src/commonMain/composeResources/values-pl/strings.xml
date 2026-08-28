@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Polish strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Polish has four plural forms (one / few / many / other) and every <plurals> below carries all
+  four. `few` covers 2–4 but not 12–14, which is exactly the case a two-form translation gets
+  wrong and nobody catches.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Dobrze cię widzieć</string>
+    <string name="home_search">Szukaj</string>
+    <string name="home_add_tile">Dodaj kafelek</string>
+    <string name="home_child_age">%1$s · %2$d lat</string>
+    <string name="home_empty_title">Jeszcze tu pusto</string>
+    <string name="home_search_empty">Nic nie pasuje.</string>
+    <string name="arrange_title">Uporządkuj kafelki</string>
+    <string name="arrange_hint">Przesuwaj kafelki w górę lub w dół. Ta kolejność to kolejność na ekranie startowym.</string>
+    <string name="home_empty_hint">Dodane kafelki pojawią się tutaj. Na kafelku może być instrukcja, lista, notatka, numer do zadzwonienia albo strona.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Widok opiekuna</string>
+    <string name="view_parent">Widok rodzica</string>
+    <string name="view_parent_active">Widok rodzica jest włączony. Edytowanie i kopie zapasowe są odblokowane. Larova wraca do widoku opiekuna po pięciu minutach bez działania.</string>
+    <string name="view_unlock_title">Odblokuj widok rodzica</string>
+    <string name="view_unlock_pin">Wpisz PIN</string>
+    <string name="view_unlock_biometric">Użyj odcisku palca</string>
+
+    <string name="view_locked_note">Edytowanie i kopie zapasowe są w widoku rodzica.</string>
+    <string name="view_leave">Wyjdź z widoku rodzica</string>
+    <string name="view_pin_create_title">Wybierz PIN</string>
+    <string name="view_pin_create_hint">Od czterech do dwunastu cyfr. Chroni kafelki przed przypadkową zmianą; nie ukrywa ich.</string>
+    <string name="view_pin_repeat">Wpisz jeszcze raz</string>
+    <string name="view_pin_mismatch">Te dwa się nie zgadzają.</string>
+    <string name="view_pin_too_short">Co najmniej cztery cyfry.</string>
+    <string name="view_pin_digits_only">Tylko cyfry.</string>
+    <string name="view_pin_wrong">To nie jest ten PIN.</string>
+    <string name="view_pin_change">Zmień PIN</string>
+    <string name="view_unlock">Odblokuj</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Instrukcja</string>
+    <string name="tile_guide_hint">Kroki z tekstem, zdjęciami i dźwiękiem</string>
+    <string name="tile_checklist">Lista</string>
+    <string name="tile_checklist_hint">Rzeczy do odhaczenia, w razie potrzeby zerowane codziennie</string>
+    <string name="tile_table">Tabela</string>
+    <string name="tile_table_hint">Własne kolumny i wiersze</string>
+    <string name="tile_note">Notatka</string>
+    <string name="tile_note_hint">Swobodny tekst z nagłówkami i listami</string>
+    <string name="tile_video">Wideo</string>
+    <string name="tile_video_hint">Z filmów na tym telefonie</string>
+    <string name="tile_audio">Dźwięk</string>
+    <string name="tile_audio_hint">Plik dźwiękowy albo nagranie zrobione teraz</string>
+    <string name="tile_call">Zadzwoń</string>
+    <string name="tile_call_hint">Imię, numer i kto to jest</string>
+    <string name="tile_link">Strona lub aplikacja</string>
+    <string name="tile_link_hint">Otwiera link albo aplikację na tym telefonie</string>
+    <string name="tile_folder">Folder</string>
+    <string name="tile_folder_hint">Grupuje kilka kafelków</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Instrukcja · %1$d krok</item>
+        <item quantity="few">Instrukcja · %1$d kroki</item>
+        <item quantity="many">Instrukcja · %1$d kroków</item>
+        <item quantity="other">Instrukcja · %1$d kroku</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Lista · %1$d pozycja</item>
+        <item quantity="few">Lista · %1$d pozycje</item>
+        <item quantity="many">Lista · %1$d pozycji</item>
+        <item quantity="other">Lista · %1$d pozycji</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Krok %1$d z %2$d</string>
+    <string name="guide_previous">Wstecz</string>
+    <string name="guide_next">Dalej</string>
+    <string name="guide_finish">Gotowe</string>
+    <string name="guide_read_aloud">Przeczytaj na głos</string>
+    <string name="guide_screen_stays_on">Tutaj ekran się nie wygasza.</string>
+
+    <string name="guide_step_current">Teraz</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d z %2$d</string>
+    <string name="checklist_resets_daily">Zeruje się co rano o %1$s. Odhaczone pozycje trafiają do dziennika z godziną.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Poproś o pomoc</string>
+    <string name="help_sheet_title">Poproś o pomoc</string>
+    <string name="help_call_note">Dotknięcie otwiera telefon z wpisanym numerem. Larova nigdy nie dzwoni sama.</string>
+    <string name="help_emergency">Numery alarmowe</string>
+    <string name="help_no_contacts">Nie dodano tu jeszcze żadnego numeru.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Tego pliku nie ma w telefonie. Mógł nie dojść razem z kopią zapasową.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Otwórz aplikację</string>
+    <string name="app_missing">Tej aplikacji już nie ma na tym telefonie.</string>
+    <string name="app_choose">Która aplikacja?</string>
+    <string name="app_none_found">Żadna aplikacja nie pasuje.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Kopia i przenoszenie</string>
+    <string name="transfer_backup">Zrób kopię</string>
+    <string name="transfer_backup_hint">Tworzy jeden plik ze wszystkimi kafelkami, zdjęciami i nagraniami. Sam wybierasz, gdzie trafi.</string>
+    <string name="transfer_restore">Przywróć</string>
+    <string name="transfer_restore_hint">Wybierz plik, sprawdź podgląd, a potem zastąp wszystko albo dołóż do tego, co już jest.</string>
+    <string name="transfer_protect">Zabezpiecz hasłem</string>
+    <string name="transfer_protect_hint">Zalecane zawsze, gdy wysyłasz plik komuś innemu. Bez hasła nie da się go otworzyć.</string>
+    <string name="transfer_last_backup">Ostatnia kopia</string>
+    <string name="transfer_preview">%1$d kafelków, %2$d plików, %3$s</string>
+    <string name="transfer_replace">Zastąp wszystko</string>
+    <string name="transfer_merge">Dołóż do tego, co jest</string>
+    <string name="transfer_version_too_new">Ten plik powstał w nowszej wersji Larovy. Zaktualizuj aplikację, żeby go otworzyć.</string>
+    <string name="transfer_saved">Kopia zrobiona: %1$d kafelków i %2$d plików.</string>
+    <string name="transfer_restored">Przywrócono: %1$d kafelków i %2$d plików.</string>
+    <string name="transfer_backup_failed">Nie udało się zapisać kopii. Spróbuj w innym miejscu.</string>
+    <string name="transfer_damaged">Ten plik jest niekompletny — mógł nie dojść w całości. Nic nie zostało zmienione.</string>
+    <string name="transfer_unreadable">To nie jest kopia Larovy.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Ustawienia</string>
+    <string name="settings_appearance">Wygląd</string>
+    <string name="settings_appearance_system">Jak w telefonie</string>
+    <string name="settings_appearance_light">Jasny</string>
+    <string name="settings_appearance_dark">Ciemny</string>
+    <string name="settings_appearance_night">Nocny</string>
+    <string name="settings_appearance_night_hint">Ciepły i bardzo przygaszony, do czytania na głos w ciemnym pokoju.</string>
+    <string name="settings_language">Język</string>
+    <string name="settings_language_hint">Larova może działać w innym języku niż reszta telefonu.</string>
+    <string name="settings_transfer_hint">Zapisz wszystko do jednego pliku albo przywróć kopię.</string>
+    <string name="settings_log">Dziennik</string>
+    <string name="settings_log_retention">Przechowuj %1$d dni</string>
+    <string name="settings_log_clear">Wyczyść dziennik</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Jeszcze nic się nie wydarzyło.</string>
+    <string name="log_note_hint">Dodaj wpis</string>
+    <string name="log_add">Dodaj do dziennika</string>
+    <string name="log_retention">Wpisy starsze niż %1$d dni są usuwane.</string>
+    <string name="log_clear_question">Wyczyścić cały dziennik? Wpisów nie da się przywrócić.</string>
+    <string name="log_card_opened">Otwarto: %1$s</string>
+    <string name="log_check_toggled">Coś odhaczono w „%1$s”</string>
+    <string name="log_call_prepared">Przygotowano połączenie: %1$s</string>
+    <string name="log_tile_gone">kafelek, który został już usunięty</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Nowy kafelek</string>
+    <string name="edit_edit_tile">Edytuj kafelek</string>
+    <string name="edit_choose_type">Co ma być na tym kafelku?</string>
+    <string name="edit_title">Tytuł</string>
+    <string name="edit_subtitle">Druga linia (opcjonalnie)</string>
+    <string name="edit_colour">Kolor</string>
+    <string name="edit_symbol">Symbol</string>
+    <string name="edit_save">Zapisz</string>
+    <string name="edit_cancel">Anuluj</string>
+    <string name="edit_delete">Usuń kafelek</string>
+    <string name="edit_delete_question">Usunąć ten kafelek? Tego, co na nim jest, nie da się przywrócić.</string>
+    <string name="edit_title_required">Kafelek potrzebuje tytułu.</string>
+    <string name="edit_folder_note">W folderze są inne kafelki. Zapisz go, otwórz i dodaj kafelki w środku.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Usunąć ten folder? %1$d kafelek w środku zniknie razem z nim i nie da się go przywrócić.</item>
+        <item quantity="few">Usunąć ten folder? %1$d kafelki w środku znikną razem z nim i nie da się ich przywrócić.</item>
+        <item quantity="many">Usunąć ten folder? %1$d kafelków w środku zniknie razem z nim i nie da się ich przywrócić.</item>
+        <item quantity="other">Usunąć ten folder? %1$d kafelka w środku zniknie razem z nim i nie da się ich przywrócić.</item>
+    </plurals>
+    <string name="edit_steps">Kroki</string>
+    <string name="edit_add_step">Dodaj krok</string>
+    <string name="edit_step_number">Krok %1$d</string>
+    <string name="edit_items">Rzeczy do odhaczenia</string>
+    <string name="edit_add_item">Dodaj pozycję</string>
+    <string name="edit_item_number">Pozycja %1$d</string>
+    <string name="edit_reset_daily">Zaczynaj od nowa co rano</string>
+    <string name="edit_columns">Nagłówki</string>
+    <string name="edit_add_column">Dodaj nagłówek</string>
+    <string name="edit_column_number">Nagłówek %1$d</string>
+    <string name="edit_rows">Wiersze</string>
+    <string name="edit_add_row">Dodaj wiersz</string>
+    <string name="edit_row_number">Wiersz %1$d</string>
+    <string name="edit_note_text">Tekst</string>
+    <string name="edit_call_name">Imię</string>
+    <string name="edit_call_number">Numer telefonu</string>
+    <string name="edit_call_relation">Kto to jest (opcjonalnie)</string>
+    <string name="edit_call_in_help">Pokazuj także pod „Poproś o pomoc”</string>
+    <string name="edit_record">Nagraj mikrofonem</string>
+    <string name="edit_recording">Nagrywanie…</string>
+    <string name="edit_record_stop">Zatrzymaj i zachowaj</string>
+    <string name="edit_record_failed">Nie udało się użyć mikrofonu albo nic nie zostało nagrane.</string>
+    <string name="edit_choose_video">Wybierz wideo</string>
+    <string name="edit_choose_sound">Wybierz plik dźwiękowy</string>
+    <string name="edit_media_none_chosen">Nic jeszcze nie wybrano.</string>
+    <string name="edit_media_chosen">Wybrano, %1$d MB</string>
+    <string name="edit_media_large">To duży plik. Kopie, które go zawierają, będą się długo wysyłać, a przy niektórych sposobach wysyłki mogą być za duże.</string>
+    <string name="edit_media_required">Wybierz, co ten kafelek odtwarza.</string>
+    <string name="edit_media_caption">Co napisać nad tym (opcjonalnie)</string>
+    <string name="edit_choose_app">Wybierz aplikację</string>
+    <string name="edit_app_none_chosen">Nie wybrano jeszcze aplikacji.</string>
+    <string name="edit_app_chosen">Otwiera %1$s</string>
+    <string name="edit_app_label">Co jest napisane na kafelku</string>
+    <string name="edit_app_required">Wybierz aplikację, którą otwiera ten kafelek.</string>
+    <string name="edit_web_address">Adres strony</string>
+    <string name="edit_web_label">Etykieta (opcjonalnie)</string>
+    <string name="edit_web_address_invalid">Adres strony musi zaczynać się od http:// albo https://</string>
+    <string name="edit_remove">Usuń</string>
+    <string name="edit_add_picture">Dodaj zdjęcie</string>
+    <string name="edit_change_picture">Zmień zdjęcie</string>
+    <string name="edit_remove_picture">Usuń zdjęcie</string>
+    <string name="edit_picture_failed">Nie udało się dodać tego zdjęcia.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Piasek</string>
+    <string name="colour_clay">Glina</string>
+    <string name="colour_rose">Róż</string>
+    <string name="colour_lilac">Liliowy</string>
+    <string name="colour_sky">Niebo</string>
+    <string name="colour_sage">Szałwia</string>
+    <string name="colour_moss">Mech</string>
+    <string name="colour_stone">Kamień</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Pora spać</string>
+    <string name="template_evening">Wieczorny rytuał</string>
+    <string name="template_contacts">Ważne numery</string>
+    <string name="template_food">Jedzenie i picie</string>
+    <string name="template_day">Dzień u nas</string>
+    <string name="template_what_helps">Co pomaga, kiedy…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Piżama założona, zęby umyte.</string>
+    <string name="template_bedtime_step_2">Jedna bajka na kanapie — niech sam wybierze którą.</string>
+    <string name="template_bedtime_step_3">Zasłony zaciągnięte, mała lampka włączona.</string>
+    <string name="template_bedtime_step_4">Pluszowy króliczek w łóżku, nie na półce.</string>
+    <string name="template_bedtime_step_5">Drzwi uchylone, mniej więcej na dłoń.</string>
+
+    <string name="template_evening_item_1">Kolacja</string>
+    <string name="template_evening_item_2">Mycie i zęby</string>
+    <string name="template_evening_item_3">Piżama</string>
+    <string name="template_evening_item_4">Bajka</string>
+    <string name="template_evening_item_5">Gaszenie światła</string>
+
+    <string name="template_contacts_name">Mama</string>
+    <string name="template_contacts_relation">Matka</string>
+    <string name="template_contacts_todo">Dodaj numer</string>
+
+    <string name="template_food_column_1">Lubi</string>
+    <string name="template_food_column_2">Raczej nie</string>
+    <string name="template_food_row_1_1">Makaron z masłem</string>
+    <string name="template_food_row_1_2">Wszystko z grzybami</string>
+    <string name="template_food_row_2_1">Cząstki jabłka</string>
+    <string name="template_food_row_2_2">Napoje gazowane</string>
+    <string name="template_food_row_3_1">Woda, mleko</string>
+    <string name="template_food_row_3_2">Sos na jedzeniu</string>
+
+    <string name="template_day_column_1">Kiedy</string>
+    <string name="template_day_column_2">Co się dzieje</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Pobudka, śniadanie przy stole</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Obiad, potem cicha chwila z książką</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Podwieczorek, potem park, jeśli nie pada</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Kolacja, potem wieczorny rytuał</string>
+
+    <string name="template_what_helps_step_1">Zdenerwowany: usiąść blisko i na razie nic nie mówić.</string>
+    <string name="template_what_helps_step_2">Nie je: zostawić na stole i spróbować później.</string>
+    <string name="template_what_helps_step_3">Nie może zasnąć: kołysanka, cicho, dwa razy.</string>
+
+    <string name="home_start_with">Albo zacznij od jednego z tych</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Otwórz %1$s</string>
+    <string name="cd_add_tile">Dodaj kafelek</string>
+    <string name="cd_clear_search">Wyczyść wyszukiwanie</string>
+    <string name="cd_move_up">Przesuń %1$s w górę</string>
+    <string name="cd_move_down">Przesuń %1$s w dół</string>
+    <string name="cd_colour_selected">%1$s, wybrany</string>
+    <string name="cd_remove_line">Usuń %1$s</string>
+    <string name="cd_check_item">%1$s, zrobione</string>
+    <string name="cd_uncheck_item">%1$s, niezrobione</string>
+    <string name="cd_back">Wstecz</string>
+    <string name="cd_close">Zamknij</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_edit_tile">Edytuj %1$s</string>
+    <string name="cd_play">Odtwórz</string>
+    <string name="cd_step_picture">Zdjęcie do kroku %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

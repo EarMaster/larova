@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Chinese (Simplified) strings.
+
+  The directory is `values-zh`, not `values-b+zh+Hans`. Compose Multiplatform resources match on
+  language and region, not on script, and Simplified is the only Chinese in the launch set
+  (`zh-Hans` in locales_config.xml), so the bare language qualifier is what a phone set to
+  zh-Hans-CN actually resolves to. A Traditional set later needs `values-zh-rTW` or `-rHK`.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Chinese has one plural form, so every <plurals> below carries `other` alone.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">很高兴见到你</string>
+    <string name="home_search">搜索</string>
+    <string name="home_add_tile">添加卡片</string>
+    <string name="home_child_age">%1$s · %2$d 岁</string>
+    <string name="home_empty_title">这里还没有内容</string>
+    <string name="home_search_empty">没有找到相关内容。</string>
+    <string name="arrange_title">整理卡片</string>
+    <string name="arrange_hint">把卡片上移或下移。这个顺序就是主屏幕上的顺序。</string>
+    <string name="home_empty_hint">你添加的卡片会出现在这里。一张卡片可以放指南、清单、便签、电话号码或网址。</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">照护模式</string>
+    <string name="view_parent">家长模式</string>
+    <string name="view_parent_active">家长模式已开启，可以编辑和备份。五分钟没有操作后，Larova 会回到照护模式。</string>
+    <string name="view_unlock_title">解锁家长模式</string>
+    <string name="view_unlock_pin">输入 PIN 码</string>
+    <string name="view_unlock_biometric">使用指纹</string>
+
+    <string name="view_locked_note">编辑和备份在家长模式里。</string>
+    <string name="view_leave">退出家长模式</string>
+    <string name="view_pin_create_title">设置一个 PIN 码</string>
+    <string name="view_pin_create_hint">四到十二位数字。它可以防止卡片被误改，但不会把卡片藏起来。</string>
+    <string name="view_pin_repeat">再输入一次</string>
+    <string name="view_pin_mismatch">两次输入不一致。</string>
+    <string name="view_pin_too_short">至少四位数字。</string>
+    <string name="view_pin_digits_only">只能输入数字。</string>
+    <string name="view_pin_wrong">PIN 码不对。</string>
+    <string name="view_pin_change">修改 PIN 码</string>
+    <string name="view_unlock">解锁</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">指南</string>
+    <string name="tile_guide_hint">带文字、图片和声音的步骤</string>
+    <string name="tile_checklist">清单</string>
+    <string name="tile_checklist_hint">可以勾选的事项，需要的话每天重新开始</string>
+    <string name="tile_table">表格</string>
+    <string name="tile_table_hint">你自己的列和行</string>
+    <string name="tile_note">便签</string>
+    <string name="tile_note_hint">带标题和列表的自由文字</string>
+    <string name="tile_video">视频</string>
+    <string name="tile_video_hint">来自这部手机上的视频</string>
+    <string name="tile_audio">声音</string>
+    <string name="tile_audio_hint">一个音频文件，或者现在录一段</string>
+    <string name="tile_call">打电话</string>
+    <string name="tile_call_hint">姓名、号码和称呼</string>
+    <string name="tile_link">网站或应用</string>
+    <string name="tile_link_hint">打开这部手机上的链接或应用</string>
+    <string name="tile_folder">文件夹</string>
+    <string name="tile_folder_hint">把几张卡片放在一起</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="other">指南 · %1$d 步</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="other">清单 · %1$d 项</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">第 %1$d 步，共 %2$d 步</string>
+    <string name="guide_previous">上一步</string>
+    <string name="guide_next">下一步</string>
+    <string name="guide_finish">完成</string>
+    <string name="guide_read_aloud">朗读</string>
+    <string name="guide_screen_stays_on">在这里屏幕会保持常亮。</string>
+
+    <string name="guide_step_current">现在</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d / %2$d</string>
+    <string name="checklist_resets_daily">每天早上 %1$s 重新开始。勾选过的事项会连同时间记入日志。</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">寻求帮助</string>
+    <string name="help_sheet_title">寻求帮助</string>
+    <string name="help_call_note">点一下会打开电话应用并填好号码。Larova 从不自动拨号。</string>
+    <string name="help_emergency">紧急服务</string>
+    <string name="help_no_contacts">这里还没有添加号码。</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">手机上没有这个文件。可能它没有随备份一起过来。</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">打开应用</string>
+    <string name="app_missing">这部手机上已经没有那个应用了。</string>
+    <string name="app_choose">哪个应用？</string>
+    <string name="app_none_found">没有匹配的应用。</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">备份与转移</string>
+    <string name="transfer_backup">备份</string>
+    <string name="transfer_backup_hint">把你所有的卡片、图片和录音做成一个文件。放在哪里由你决定。</string>
+    <string name="transfer_restore">恢复</string>
+    <string name="transfer_restore_hint">选一个文件，先看预览，然后全部替换，或者加到现有内容里。</string>
+    <string name="transfer_protect">用密码保护</string>
+    <string name="transfer_protect_hint">把文件发给别人时都建议这样做。没有密码就打不开。</string>
+    <string name="transfer_last_backup">上次备份</string>
+    <string name="transfer_preview">%1$d 张卡片，%2$d 个文件，%3$s</string>
+    <string name="transfer_replace">全部替换</string>
+    <string name="transfer_merge">加到现有内容里</string>
+    <string name="transfer_version_too_new">这个文件是用更新版本的 Larova 做的。请先更新应用再打开。</string>
+    <string name="transfer_saved">已备份：%1$d 张卡片和 %2$d 个文件。</string>
+    <string name="transfer_restored">已恢复：%1$d 张卡片和 %2$d 个文件。</string>
+    <string name="transfer_backup_failed">备份没能写入。换个地方保存试试。</string>
+    <string name="transfer_damaged">这个文件不完整 —— 可能没有发送完整。什么都没有改动。</string>
+    <string name="transfer_unreadable">这不是 Larova 的备份。</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">设置</string>
+    <string name="settings_appearance">外观</string>
+    <string name="settings_appearance_system">跟随手机</string>
+    <string name="settings_appearance_light">浅色</string>
+    <string name="settings_appearance_dark">深色</string>
+    <string name="settings_appearance_night">夜间</string>
+    <string name="settings_appearance_night_hint">暖色而且很暗，适合在黑暗的房间里朗读。</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_hint">Larova 可以使用和手机其他部分不同的语言。</string>
+    <string name="settings_transfer_hint">把所有内容存成一个文件，或者恢复一份备份。</string>
+    <string name="settings_log">活动日志</string>
+    <string name="settings_log_retention">保留 %1$d 天</string>
+    <string name="settings_log_clear">清空日志</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">还没有发生什么。</string>
+    <string name="log_note_hint">添加一条</string>
+    <string name="log_add">记入日志</string>
+    <string name="log_retention">超过 %1$d 天的记录会被删除。</string>
+    <string name="log_clear_question">清空整个日志？记录无法恢复。</string>
+    <string name="log_card_opened">打开了 %1$s</string>
+    <string name="log_check_toggled">在 %1$s 里勾选了内容</string>
+    <string name="log_call_prepared">准备了通话：%1$s</string>
+    <string name="log_tile_gone">一张后来被删除的卡片</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">新卡片</string>
+    <string name="edit_edit_tile">编辑卡片</string>
+    <string name="edit_choose_type">这张卡片放什么？</string>
+    <string name="edit_title">标题</string>
+    <string name="edit_subtitle">第二行（可选）</string>
+    <string name="edit_colour">颜色</string>
+    <string name="edit_symbol">图标</string>
+    <string name="edit_save">保存</string>
+    <string name="edit_cancel">取消</string>
+    <string name="edit_delete">删除卡片</string>
+    <string name="edit_delete_question">删除这张卡片？上面的内容无法恢复。</string>
+    <string name="edit_title_required">卡片需要一个标题。</string>
+    <string name="edit_folder_note">文件夹里放的是其他卡片。先保存，再打开，然后在里面添加卡片。</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="other">删除这个文件夹？里面的 %1$d 张卡片也会一起消失，并且无法恢复。</item>
+    </plurals>
+    <string name="edit_steps">步骤</string>
+    <string name="edit_add_step">添加步骤</string>
+    <string name="edit_step_number">第 %1$d 步</string>
+    <string name="edit_items">要勾选的事项</string>
+    <string name="edit_add_item">添加事项</string>
+    <string name="edit_item_number">第 %1$d 项</string>
+    <string name="edit_reset_daily">每天早上重新开始</string>
+    <string name="edit_columns">列标题</string>
+    <string name="edit_add_column">添加列标题</string>
+    <string name="edit_column_number">第 %1$d 列</string>
+    <string name="edit_rows">行</string>
+    <string name="edit_add_row">添加行</string>
+    <string name="edit_row_number">第 %1$d 行</string>
+    <string name="edit_note_text">文字</string>
+    <string name="edit_call_name">姓名</string>
+    <string name="edit_call_number">电话号码</string>
+    <string name="edit_call_relation">称呼（可选）</string>
+    <string name="edit_call_in_help">同时显示在“寻求帮助”里</string>
+    <string name="edit_record">用麦克风录音</string>
+    <string name="edit_recording">正在录音…</string>
+    <string name="edit_record_stop">停止并保留</string>
+    <string name="edit_record_failed">麦克风无法使用，或者什么都没录到。</string>
+    <string name="edit_choose_video">选择视频</string>
+    <string name="edit_choose_sound">选择音频文件</string>
+    <string name="edit_media_none_chosen">还没有选择。</string>
+    <string name="edit_media_chosen">已选择，%1$d MB</string>
+    <string name="edit_media_large">这是个大文件。包含它的备份发送起来会很慢，有些发送方式可能装不下。</string>
+    <string name="edit_media_required">选择这张卡片播放什么。</string>
+    <string name="edit_media_caption">上面写什么（可选）</string>
+    <string name="edit_choose_app">选择应用</string>
+    <string name="edit_app_none_chosen">还没有选择应用。</string>
+    <string name="edit_app_chosen">打开 %1$s</string>
+    <string name="edit_app_label">卡片上写什么</string>
+    <string name="edit_app_required">选择这张卡片要打开的应用。</string>
+    <string name="edit_web_address">网址</string>
+    <string name="edit_web_label">标签（可选）</string>
+    <string name="edit_web_address_invalid">网址必须以 http:// 或 https:// 开头</string>
+    <string name="edit_remove">移除</string>
+    <string name="edit_add_picture">添加图片</string>
+    <string name="edit_change_picture">更换图片</string>
+    <string name="edit_remove_picture">移除图片</string>
+    <string name="edit_picture_failed">这张图片没能添加。</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">沙色</string>
+    <string name="colour_clay">陶土色</string>
+    <string name="colour_rose">玫瑰色</string>
+    <string name="colour_lilac">丁香色</string>
+    <string name="colour_sky">天蓝色</string>
+    <string name="colour_sage">鼠尾草色</string>
+    <string name="colour_moss">苔藓色</string>
+    <string name="colour_stone">石灰色</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">睡觉时间</string>
+    <string name="template_evening">晚上的流程</string>
+    <string name="template_contacts">重要号码</string>
+    <string name="template_food">吃的和喝的</string>
+    <string name="template_day">我们家的一天</string>
+    <string name="template_what_helps">这种时候什么管用…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">换上睡衣，刷好牙。</string>
+    <string name="template_bedtime_step_2">在沙发上讲一个故事 —— 让他自己挑。</string>
+    <string name="template_bedtime_step_3">拉上窗帘，开小灯。</string>
+    <string name="template_bedtime_step_4">毛绒兔子放床上，别放架子上。</string>
+    <string name="template_bedtime_step_5">门留一条缝，大概一只手宽。</string>
+
+    <string name="template_evening_item_1">晚饭</string>
+    <string name="template_evening_item_2">洗漱和刷牙</string>
+    <string name="template_evening_item_3">睡衣</string>
+    <string name="template_evening_item_4">故事</string>
+    <string name="template_evening_item_5">关灯</string>
+
+    <string name="template_contacts_name">妈妈</string>
+    <string name="template_contacts_relation">母亲</string>
+    <string name="template_contacts_todo">添加号码</string>
+
+    <string name="template_food_column_1">喜欢</string>
+    <string name="template_food_column_2">最好别给</string>
+    <string name="template_food_row_1_1">黄油意面</string>
+    <string name="template_food_row_1_2">任何带蘑菇的</string>
+    <string name="template_food_row_2_1">苹果块</string>
+    <string name="template_food_row_2_2">碳酸饮料</string>
+    <string name="template_food_row_3_1">水、牛奶</string>
+    <string name="template_food_row_3_2">菜上淋酱汁</string>
+
+    <string name="template_day_column_1">时间</string>
+    <string name="template_day_column_2">做什么</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">起床，在餐桌上吃早饭</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">午饭，然后看会儿书安静一下</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">加餐，不下雨就去公园</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">晚饭，然后是晚上的流程</string>
+
+    <string name="template_what_helps_step_1">闹情绪：坐得近一点，先别说话。</string>
+    <string name="template_what_helps_step_2">不吃饭：留在桌上，过一会儿再试。</string>
+    <string name="template_what_helps_step_3">睡不着：轻声唱那首摇篮曲，两遍。</string>
+
+    <string name="home_start_with">或者从这些里选一个开始</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">打开 %1$s</string>
+    <string name="cd_add_tile">添加卡片</string>
+    <string name="cd_clear_search">清除搜索</string>
+    <string name="cd_move_up">把 %1$s 上移</string>
+    <string name="cd_move_down">把 %1$s 下移</string>
+    <string name="cd_colour_selected">%1$s，已选中</string>
+    <string name="cd_remove_line">移除 %1$s</string>
+    <string name="cd_check_item">%1$s，已完成</string>
+    <string name="cd_uncheck_item">%1$s，未完成</string>
+    <string name="cd_back">返回</string>
+    <string name="cd_close">关闭</string>
+    <string name="cd_menu">菜单</string>
+    <string name="cd_edit_tile">编辑 %1$s</string>
+    <string name="cd_play">播放</string>
+    <string name="cd_step_picture">第 %1$d 步的图片</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s，%2$s</string>
+
+</resources>

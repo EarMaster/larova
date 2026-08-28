@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Italian strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate, or the two drift apart. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates — so those are where a review pass starts.
+
+  Address form: "lei" only where an address form is unavoidable; infinitives elsewhere, matching
+  the English, which almost never addresses the reader. Typographic apostrophes (’) throughout.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Che bello vederti</string>
+    <string name="home_search">Cerca</string>
+    <string name="home_add_tile">Aggiungi riquadro</string>
+    <string name="home_child_age">%1$s · %2$d anni</string>
+    <string name="home_empty_title">Ancora niente qui</string>
+    <string name="home_search_empty">Nessun risultato.</string>
+    <string name="arrange_title">Riordina i riquadri</string>
+    <string name="arrange_hint">Sposta i riquadri in alto o in basso. Questo è l’ordine della schermata iniziale.</string>
+    <string name="home_empty_hint">I riquadri che aggiungi compaiono qui. Un riquadro può contenere una guida, un elenco, una nota, un numero da chiamare o un sito web.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Vista assistente</string>
+    <string name="view_parent">Vista genitore</string>
+    <string name="view_parent_active">La vista genitore è attiva. Modifica e backup sono sbloccati. Larova torna alla vista assistente dopo cinque minuti di inattività.</string>
+    <string name="view_unlock_title">Sblocca la vista genitore</string>
+    <string name="view_unlock_pin">Inserisci il PIN</string>
+    <string name="view_unlock_biometric">Usa l’impronta</string>
+
+    <string name="view_locked_note">Modifica e backup sono nella vista genitore.</string>
+    <string name="view_leave">Esci dalla vista genitore</string>
+    <string name="view_pin_create_title">Scegli un PIN</string>
+    <string name="view_pin_create_hint">Da quattro a dodici cifre. Impedisce di cambiare i riquadri per sbaglio; non li nasconde.</string>
+    <string name="view_pin_repeat">Inseriscilo di nuovo</string>
+    <string name="view_pin_mismatch">I due PIN non coincidono.</string>
+    <string name="view_pin_too_short">Almeno quattro cifre.</string>
+    <string name="view_pin_digits_only">Solo cifre.</string>
+    <string name="view_pin_wrong">Il PIN non è questo.</string>
+    <string name="view_pin_change">Cambia il PIN</string>
+    <string name="view_unlock">Sblocca</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Guida</string>
+    <string name="tile_guide_hint">Passaggi con testo, immagini e suono</string>
+    <string name="tile_checklist">Lista</string>
+    <string name="tile_checklist_hint">Cose da spuntare, se vuoi azzerate ogni giorno</string>
+    <string name="tile_table">Tabella</string>
+    <string name="tile_table_hint">Colonne e righe tue</string>
+    <string name="tile_note">Nota</string>
+    <string name="tile_note_hint">Testo libero con titoli ed elenchi</string>
+    <string name="tile_video">Video</string>
+    <string name="tile_video_hint">Dai video su questo telefono</string>
+    <string name="tile_audio">Audio</string>
+    <string name="tile_audio_hint">Un file audio, oppure registrane uno adesso</string>
+    <string name="tile_call">Chiama</string>
+    <string name="tile_call_hint">Un nome, un numero e una parentela</string>
+    <string name="tile_link">Sito web o app</string>
+    <string name="tile_link_hint">Apre un link o un’app di questo telefono</string>
+    <string name="tile_folder">Cartella</string>
+    <string name="tile_folder_hint">Raggruppa più riquadri</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Guida · %1$d passaggio</item>
+        <item quantity="other">Guida · %1$d passaggi</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Lista · %1$d voce</item>
+        <item quantity="other">Lista · %1$d voci</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Passaggio %1$d di %2$d</string>
+    <string name="guide_previous">Indietro</string>
+    <string name="guide_next">Avanti</string>
+    <string name="guide_finish">Fatto</string>
+    <string name="guide_read_aloud">Leggi ad alta voce</string>
+    <string name="guide_screen_stays_on">Qui lo schermo resta acceso.</string>
+
+    <string name="guide_step_current">Adesso</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d di %2$d</string>
+    <string name="checklist_resets_daily">Si azzera ogni mattina alle %1$s. Le voci spuntate finiscono nel registro con l’ora.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Chiedi aiuto</string>
+    <string name="help_sheet_title">Chiedi aiuto</string>
+    <string name="help_call_note">Toccando si apre il telefono con il numero già pronto. Larova non chiama mai da sola.</string>
+    <string name="help_emergency">Numeri di emergenza</string>
+    <string name="help_no_contacts">Qui non è ancora stato aggiunto nessun numero.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Questo file non è sul telefono. Forse non è arrivato con il backup.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Apri l’app</string>
+    <string name="app_missing">Quell’app non è più su questo telefono.</string>
+    <string name="app_choose">Quale app?</string>
+    <string name="app_none_found">Nessuna app corrisponde.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Backup e trasferimento</string>
+    <string name="transfer_backup">Fai il backup</string>
+    <string name="transfer_backup_hint">Crea un unico file con tutti i tuoi riquadri, immagini e registrazioni. Scegli tu dove va.</string>
+    <string name="transfer_restore">Ripristina</string>
+    <string name="transfer_restore_hint">Scegli un file, controlla l’anteprima, poi sostituisci o aggiungi a quello che c’è già.</string>
+    <string name="transfer_protect">Proteggi con una password</string>
+    <string name="transfer_protect_hint">Consigliato ogni volta che invii il file a qualcuno. Senza la password non si può aprire.</string>
+    <string name="transfer_last_backup">Ultimo backup</string>
+    <string name="transfer_preview">%1$d riquadri, %2$d file, %3$s</string>
+    <string name="transfer_replace">Sostituisci tutto</string>
+    <string name="transfer_merge">Aggiungi a quello che c’è</string>
+    <string name="transfer_version_too_new">Questo file è stato creato con una versione più recente di Larova. Aggiorna l’app per aprirlo.</string>
+    <string name="transfer_saved">Backup eseguito: %1$d riquadri e %2$d file.</string>
+    <string name="transfer_restored">Ripristinati: %1$d riquadri e %2$d file.</string>
+    <string name="transfer_backup_failed">Il backup non è stato scritto. Prova a salvarlo altrove.</string>
+    <string name="transfer_damaged">Questo file è incompleto — forse non è stato inviato per intero. Non è stato cambiato niente.</string>
+    <string name="transfer_unreadable">Questo non è un backup di Larova.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_appearance">Aspetto</string>
+    <string name="settings_appearance_system">Segui il telefono</string>
+    <string name="settings_appearance_light">Chiaro</string>
+    <string name="settings_appearance_dark">Scuro</string>
+    <string name="settings_appearance_night">Notte</string>
+    <string name="settings_appearance_night_hint">Caldo e molto attenuato, per leggere ad alta voce in una stanza buia.</string>
+    <string name="settings_language">Lingua</string>
+    <string name="settings_language_hint">Larova può usare una lingua diversa dal resto del telefono.</string>
+    <string name="settings_transfer_hint">Salva tutto in un file, oppure recupera un backup.</string>
+    <string name="settings_log">Registro attività</string>
+    <string name="settings_log_retention">Conserva per %1$d giorni</string>
+    <string name="settings_log_clear">Svuota il registro</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Non è ancora successo niente.</string>
+    <string name="log_note_hint">Aggiungi una riga</string>
+    <string name="log_add">Aggiungi al registro</string>
+    <string name="log_retention">Le righe più vecchie di %1$d giorni vengono rimosse.</string>
+    <string name="log_clear_question">Svuotare tutto il registro? Le righe non si possono recuperare.</string>
+    <string name="log_card_opened">Aperto: %1$s</string>
+    <string name="log_check_toggled">Spuntato qualcosa in %1$s</string>
+    <string name="log_call_prepared">Chiamata preparata: %1$s</string>
+    <string name="log_tile_gone">un riquadro che è stato eliminato</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Nuovo riquadro</string>
+    <string name="edit_edit_tile">Modifica riquadro</string>
+    <string name="edit_choose_type">Cosa va su questo riquadro?</string>
+    <string name="edit_title">Titolo</string>
+    <string name="edit_subtitle">Seconda riga (facoltativa)</string>
+    <string name="edit_colour">Colore</string>
+    <string name="edit_symbol">Simbolo</string>
+    <string name="edit_save">Salva</string>
+    <string name="edit_cancel">Annulla</string>
+    <string name="edit_delete">Elimina riquadro</string>
+    <string name="edit_delete_question">Eliminare questo riquadro? Quello che contiene non si può recuperare.</string>
+    <string name="edit_title_required">Un riquadro ha bisogno di un titolo.</string>
+    <string name="edit_folder_note">Una cartella contiene altri riquadri. Salvala, aprila e aggiungi riquadri dentro.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Eliminare questa cartella? Anche il %1$d riquadro al suo interno sparisce e non si può recuperare.</item>
+        <item quantity="other">Eliminare questa cartella? Anche i %1$d riquadri al suo interno spariscono e non si possono recuperare.</item>
+    </plurals>
+    <string name="edit_steps">Passaggi</string>
+    <string name="edit_add_step">Aggiungi passaggio</string>
+    <string name="edit_step_number">Passaggio %1$d</string>
+    <string name="edit_items">Cose da spuntare</string>
+    <string name="edit_add_item">Aggiungi voce</string>
+    <string name="edit_item_number">Voce %1$d</string>
+    <string name="edit_reset_daily">Ricomincia ogni mattina</string>
+    <string name="edit_columns">Intestazioni</string>
+    <string name="edit_add_column">Aggiungi intestazione</string>
+    <string name="edit_column_number">Intestazione %1$d</string>
+    <string name="edit_rows">Righe</string>
+    <string name="edit_add_row">Aggiungi riga</string>
+    <string name="edit_row_number">Riga %1$d</string>
+    <string name="edit_note_text">Testo</string>
+    <string name="edit_call_name">Nome</string>
+    <string name="edit_call_number">Numero di telefono</string>
+    <string name="edit_call_relation">Parentela (facoltativa)</string>
+    <string name="edit_call_in_help">Mostra anche sotto Chiedi aiuto</string>
+    <string name="edit_record">Registra con il microfono</string>
+    <string name="edit_recording">Registrazione…</string>
+    <string name="edit_record_stop">Ferma e tieni</string>
+    <string name="edit_record_failed">Il microfono non è stato utilizzabile, oppure non è stato registrato niente.</string>
+    <string name="edit_choose_video">Scegli un video</string>
+    <string name="edit_choose_sound">Scegli un file audio</string>
+    <string name="edit_media_none_chosen">Ancora niente di scelto.</string>
+    <string name="edit_media_chosen">Scelto, %1$d MB</string>
+    <string name="edit_media_large">Questo file è grande. I backup che lo contengono saranno lenti da inviare e per certi modi di inviarli potrebbero essere troppo pesanti.</string>
+    <string name="edit_media_required">Scegli cosa riproduce questo riquadro.</string>
+    <string name="edit_media_caption">Cosa dire sopra (facoltativo)</string>
+    <string name="edit_choose_app">Scegli app</string>
+    <string name="edit_app_none_chosen">Ancora nessuna app scelta.</string>
+    <string name="edit_app_chosen">Apre %1$s</string>
+    <string name="edit_app_label">Cosa dice il riquadro</string>
+    <string name="edit_app_required">Scegli l’app che questo riquadro apre.</string>
+    <string name="edit_web_address">Indirizzo web</string>
+    <string name="edit_web_label">Etichetta (facoltativa)</string>
+    <string name="edit_web_address_invalid">Un indirizzo web deve iniziare con http:// o https://</string>
+    <string name="edit_remove">Togli</string>
+    <string name="edit_add_picture">Aggiungi un’immagine</string>
+    <string name="edit_change_picture">Cambia l’immagine</string>
+    <string name="edit_remove_picture">Togli l’immagine</string>
+    <string name="edit_picture_failed">Quell’immagine non è stata aggiunta.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Sabbia</string>
+    <string name="colour_clay">Argilla</string>
+    <string name="colour_rose">Rosa</string>
+    <string name="colour_lilac">Lilla</string>
+    <string name="colour_sky">Cielo</string>
+    <string name="colour_sage">Salvia</string>
+    <string name="colour_moss">Muschio</string>
+    <string name="colour_stone">Pietra</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">La nanna</string>
+    <string name="template_evening">Routine della sera</string>
+    <string name="template_contacts">Numeri importanti</string>
+    <string name="template_food">Da mangiare e da bere</string>
+    <string name="template_day">Una giornata da noi</string>
+    <string name="template_what_helps">Cosa aiuta quando…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Pigiama addosso, denti lavati.</string>
+    <string name="template_bedtime_step_2">Una storia sul divano — la sceglie lui.</string>
+    <string name="template_bedtime_step_3">Tende chiuse, lucina accesa.</string>
+    <string name="template_bedtime_step_4">Il coniglietto nel letto, non sulla mensola.</string>
+    <string name="template_bedtime_step_5">Porta socchiusa, quanto una mano.</string>
+
+    <string name="template_evening_item_1">Cena</string>
+    <string name="template_evening_item_2">Lavarsi e denti</string>
+    <string name="template_evening_item_3">Pigiama</string>
+    <string name="template_evening_item_4">Storia</string>
+    <string name="template_evening_item_5">Luce spenta</string>
+
+    <string name="template_contacts_name">Mamma</string>
+    <string name="template_contacts_relation">Madre</string>
+    <string name="template_contacts_todo">Aggiungi il numero</string>
+
+    <string name="template_food_column_1">Gli piace</string>
+    <string name="template_food_column_2">Meglio di no</string>
+    <string name="template_food_row_1_1">Pasta al burro</string>
+    <string name="template_food_row_1_2">Tutto con i funghi</string>
+    <string name="template_food_row_2_1">Spicchi di mela</string>
+    <string name="template_food_row_2_2">Bibite gassate</string>
+    <string name="template_food_row_3_1">Acqua, latte</string>
+    <string name="template_food_row_3_2">Il sugo sul piatto</string>
+
+    <string name="template_day_column_1">Quando</string>
+    <string name="template_day_column_2">Cosa succede</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Sveglio, colazione a tavola</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Pranzo, poi un po’ di calma con un libro</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Merenda, poi il parco se non piove</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Cena, poi la routine della sera</string>
+
+    <string name="template_what_helps_step_1">Arrabbiato: sedersi vicino e non parlare subito.</string>
+    <string name="template_what_helps_step_2">Non mangia: lasciare in tavola e riprovare più tardi.</string>
+    <string name="template_what_helps_step_3">Non riesce a dormire: la ninna nanna, piano, due volte.</string>
+
+    <string name="home_start_with">Oppure inizia con uno di questi</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Apri %1$s</string>
+    <string name="cd_add_tile">Aggiungi un riquadro</string>
+    <string name="cd_clear_search">Cancella la ricerca</string>
+    <string name="cd_move_up">Sposta %1$s in alto</string>
+    <string name="cd_move_down">Sposta %1$s in basso</string>
+    <string name="cd_colour_selected">%1$s, selezionato</string>
+    <string name="cd_remove_line">Togli %1$s</string>
+    <string name="cd_check_item">%1$s, fatto</string>
+    <string name="cd_uncheck_item">%1$s, non fatto</string>
+    <string name="cd_back">Indietro</string>
+    <string name="cd_close">Chiudi</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_edit_tile">Modifica %1$s</string>
+    <string name="cd_play">Riproduci</string>
+    <string name="cd_step_picture">Immagine del passaggio %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

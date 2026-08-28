@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Japanese strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Japanese has one plural form, so every <plurals> below carries `other` alone. It also has no
+  spaces to break lines at, which is the layout risk here rather than string length: check the
+  long sentences on the narrowest screen the app supports, not only on a tablet.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">ようこそ</string>
+    <string name="home_search">検索</string>
+    <string name="home_add_tile">カードを追加</string>
+    <string name="home_child_age">%1$s · %2$d歳</string>
+    <string name="home_empty_title">まだ何もありません</string>
+    <string name="home_search_empty">該当するものはありません。</string>
+    <string name="arrange_title">カードを並べ替える</string>
+    <string name="arrange_hint">カードを上下に動かします。この順番がホーム画面の順番になります。</string>
+    <string name="home_empty_hint">追加したカードはここに並びます。カードには手順、リスト、メモ、電話番号、ウェブサイトを入れられます。</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">見守りモード</string>
+    <string name="view_parent">保護者モード</string>
+    <string name="view_parent_active">保護者モードがオンです。編集とバックアップが使えます。5分間操作がないと見守りモードに戻ります。</string>
+    <string name="view_unlock_title">保護者モードのロックを解除</string>
+    <string name="view_unlock_pin">PINを入力してください</string>
+    <string name="view_unlock_biometric">指紋を使う</string>
+
+    <string name="view_locked_note">編集とバックアップは保護者モードにあります。</string>
+    <string name="view_leave">保護者モードを終わる</string>
+    <string name="view_pin_create_title">PINを決める</string>
+    <string name="view_pin_create_hint">4桁から12桁まで。うっかりカードが変わってしまうのを防ぎます。カードを隠すものではありません。</string>
+    <string name="view_pin_repeat">もう一度入力</string>
+    <string name="view_pin_mismatch">2つが一致しません。</string>
+    <string name="view_pin_too_short">4桁以上にしてください。</string>
+    <string name="view_pin_digits_only">数字だけです。</string>
+    <string name="view_pin_wrong">PINが違います。</string>
+    <string name="view_pin_change">PINを変える</string>
+    <string name="view_unlock">解除</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">手順</string>
+    <string name="tile_guide_hint">文章・写真・音のついたステップ</string>
+    <string name="tile_checklist">リスト</string>
+    <string name="tile_checklist_hint">チェックする項目。必要なら毎日リセット</string>
+    <string name="tile_table">表</string>
+    <string name="tile_table_hint">自分で決める列と行</string>
+    <string name="tile_note">メモ</string>
+    <string name="tile_note_hint">見出しやリストのある自由な文章</string>
+    <string name="tile_video">動画</string>
+    <string name="tile_video_hint">このスマホの動画から</string>
+    <string name="tile_audio">音声</string>
+    <string name="tile_audio_hint">音声ファイル、または今から録音</string>
+    <string name="tile_call">電話</string>
+    <string name="tile_call_hint">名前・番号・続柄</string>
+    <string name="tile_link">ウェブサイトまたはアプリ</string>
+    <string name="tile_link_hint">このスマホのリンクやアプリを開きます</string>
+    <string name="tile_folder">フォルダ</string>
+    <string name="tile_folder_hint">いくつかのカードをまとめます</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="other">手順 · %1$dステップ</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="other">リスト · %1$d項目</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">ステップ %1$d / %2$d</string>
+    <string name="guide_previous">戻る</string>
+    <string name="guide_next">次へ</string>
+    <string name="guide_finish">完了</string>
+    <string name="guide_read_aloud">読み上げる</string>
+    <string name="guide_screen_stays_on">ここでは画面が消えません。</string>
+
+    <string name="guide_step_current">いま</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%2$d 件中 %1$d 件</string>
+    <string name="checklist_resets_daily">毎朝 %1$s にリセットされます。チェックした項目は時刻とともに記録に残ります。</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">助けを呼ぶ</string>
+    <string name="help_sheet_title">助けを呼ぶ</string>
+    <string name="help_call_note">タップすると番号が入った状態で電話アプリが開きます。Larovaが自分で発信することはありません。</string>
+    <string name="help_emergency">緊急通報</string>
+    <string name="help_no_contacts">ここにはまだ番号が登録されていません。</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">このファイルはスマホにありません。バックアップと一緒に届かなかった可能性があります。</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">アプリを開く</string>
+    <string name="app_missing">そのアプリはこのスマホにもうありません。</string>
+    <string name="app_choose">どのアプリですか？</string>
+    <string name="app_none_found">該当するアプリはありません。</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">バックアップと引き継ぎ</string>
+    <string name="transfer_backup">バックアップする</string>
+    <string name="transfer_backup_hint">カード・写真・録音をすべて1つのファイルにまとめます。保存先は自分で選べます。</string>
+    <string name="transfer_restore">復元する</string>
+    <string name="transfer_restore_hint">ファイルを選び、中身を確認してから、すべて置き換えるか、いまあるものに追加します。</string>
+    <string name="transfer_protect">パスワードで保護する</string>
+    <string name="transfer_protect_hint">ファイルを誰かに送るときは必ずおすすめします。パスワードがないと開けません。</string>
+    <string name="transfer_last_backup">最後のバックアップ</string>
+    <string name="transfer_preview">カード %1$d 件、ファイル %2$d 件、%3$s</string>
+    <string name="transfer_replace">すべて置き換える</string>
+    <string name="transfer_merge">いまあるものに追加する</string>
+    <string name="transfer_version_too_new">このファイルは新しいバージョンのLarovaで作られています。開くにはアプリを更新してください。</string>
+    <string name="transfer_saved">バックアップしました：カード %1$d 件、ファイル %2$d 件。</string>
+    <string name="transfer_restored">復元しました：カード %1$d 件、ファイル %2$d 件。</string>
+    <string name="transfer_backup_failed">バックアップを書き込めませんでした。別の場所に保存してみてください。</string>
+    <string name="transfer_damaged">このファイルは不完全です。途中までしか送られていないかもしれません。何も変更されていません。</string>
+    <string name="transfer_unreadable">これはLarovaのバックアップではありません。</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">設定</string>
+    <string name="settings_appearance">外観</string>
+    <string name="settings_appearance_system">スマホに合わせる</string>
+    <string name="settings_appearance_light">ライト</string>
+    <string name="settings_appearance_dark">ダーク</string>
+    <string name="settings_appearance_night">ナイト</string>
+    <string name="settings_appearance_night_hint">暖かくとても暗い表示。暗い部屋で読み聞かせるときに。</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_language_hint">Larovaはスマホ本体とは別の言語にできます。</string>
+    <string name="settings_transfer_hint">すべてを1つのファイルに保存したり、バックアップを戻したりします。</string>
+    <string name="settings_log">記録</string>
+    <string name="settings_log_retention">%1$d日間保存</string>
+    <string name="settings_log_clear">記録を消す</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">まだ何も起きていません。</string>
+    <string name="log_note_hint">ひとこと書く</string>
+    <string name="log_add">記録に追加</string>
+    <string name="log_retention">%1$d日より古い行は削除されます。</string>
+    <string name="log_clear_question">記録をすべて消しますか？消した行は戻せません。</string>
+    <string name="log_card_opened">%1$s を開きました</string>
+    <string name="log_check_toggled">%1$s で項目にチェックしました</string>
+    <string name="log_call_prepared">電話の準備をしました：%1$s</string>
+    <string name="log_tile_gone">その後削除されたカード</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">新しいカード</string>
+    <string name="edit_edit_tile">カードを編集</string>
+    <string name="edit_choose_type">このカードには何を入れますか？</string>
+    <string name="edit_title">タイトル</string>
+    <string name="edit_subtitle">2行目（任意）</string>
+    <string name="edit_colour">色</string>
+    <string name="edit_symbol">アイコン</string>
+    <string name="edit_save">保存</string>
+    <string name="edit_cancel">キャンセル</string>
+    <string name="edit_delete">カードを削除</string>
+    <string name="edit_delete_question">このカードを削除しますか？中身は戻せません。</string>
+    <string name="edit_title_required">カードにはタイトルが必要です。</string>
+    <string name="edit_folder_note">フォルダには別のカードを入れられます。保存して開き、中にカードを追加してください。</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="other">このフォルダを削除しますか？中の %1$d 件のカードも一緒になくなり、戻せません。</item>
+    </plurals>
+    <string name="edit_steps">ステップ</string>
+    <string name="edit_add_step">ステップを追加</string>
+    <string name="edit_step_number">ステップ %1$d</string>
+    <string name="edit_items">チェックする項目</string>
+    <string name="edit_add_item">項目を追加</string>
+    <string name="edit_item_number">項目 %1$d</string>
+    <string name="edit_reset_daily">毎朝やり直す</string>
+    <string name="edit_columns">見出し</string>
+    <string name="edit_add_column">見出しを追加</string>
+    <string name="edit_column_number">見出し %1$d</string>
+    <string name="edit_rows">行</string>
+    <string name="edit_add_row">行を追加</string>
+    <string name="edit_row_number">行 %1$d</string>
+    <string name="edit_note_text">本文</string>
+    <string name="edit_call_name">名前</string>
+    <string name="edit_call_number">電話番号</string>
+    <string name="edit_call_relation">続柄（任意）</string>
+    <string name="edit_call_in_help">「助けを呼ぶ」にも表示する</string>
+    <string name="edit_record">マイクで録音する</string>
+    <string name="edit_recording">録音中…</string>
+    <string name="edit_record_stop">止めて保存</string>
+    <string name="edit_record_failed">マイクが使えなかったか、何も録音されませんでした。</string>
+    <string name="edit_choose_video">動画を選ぶ</string>
+    <string name="edit_choose_sound">音声ファイルを選ぶ</string>
+    <string name="edit_media_none_chosen">まだ何も選ばれていません。</string>
+    <string name="edit_media_chosen">選択済み、%1$d MB</string>
+    <string name="edit_media_large">大きなファイルです。これを含むバックアップは送るのに時間がかかり、送り方によっては大きすぎることがあります。</string>
+    <string name="edit_media_required">このカードで再生するものを選んでください。</string>
+    <string name="edit_media_caption">上に書く言葉（任意）</string>
+    <string name="edit_choose_app">アプリを選ぶ</string>
+    <string name="edit_app_none_chosen">まだアプリが選ばれていません。</string>
+    <string name="edit_app_chosen">%1$s を開きます</string>
+    <string name="edit_app_label">カードに書く言葉</string>
+    <string name="edit_app_required">このカードで開くアプリを選んでください。</string>
+    <string name="edit_web_address">ウェブアドレス</string>
+    <string name="edit_web_label">ラベル（任意）</string>
+    <string name="edit_web_address_invalid">ウェブアドレスは http:// または https:// で始まる必要があります</string>
+    <string name="edit_remove">外す</string>
+    <string name="edit_add_picture">写真を追加</string>
+    <string name="edit_change_picture">写真を変える</string>
+    <string name="edit_remove_picture">写真を外す</string>
+    <string name="edit_picture_failed">その写真は追加できませんでした。</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">サンド</string>
+    <string name="colour_clay">クレイ</string>
+    <string name="colour_rose">ローズ</string>
+    <string name="colour_lilac">ライラック</string>
+    <string name="colour_sky">スカイ</string>
+    <string name="colour_sage">セージ</string>
+    <string name="colour_moss">モス</string>
+    <string name="colour_stone">ストーン</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">寝るまえ</string>
+    <string name="template_evening">夜のながれ</string>
+    <string name="template_contacts">大事な連絡先</string>
+    <string name="template_food">食べもの・飲みもの</string>
+    <string name="template_day">うちの一日</string>
+    <string name="template_what_helps">こんなときは…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">パジャマに着替えて、歯みがき。</string>
+    <string name="template_bedtime_step_2">ソファで絵本を1冊 — どれにするかは本人に選ばせて。</string>
+    <string name="template_bedtime_step_3">カーテンを閉めて、小さな明かりをつける。</string>
+    <string name="template_bedtime_step_4">うさぎのぬいぐるみは棚ではなくベッドの中に。</string>
+    <string name="template_bedtime_step_5">ドアは手のひらぶんだけ開けておく。</string>
+
+    <string name="template_evening_item_1">夕ごはん</string>
+    <string name="template_evening_item_2">お風呂と歯みがき</string>
+    <string name="template_evening_item_3">パジャマ</string>
+    <string name="template_evening_item_4">絵本</string>
+    <string name="template_evening_item_5">消灯</string>
+
+    <string name="template_contacts_name">ママ</string>
+    <string name="template_contacts_relation">母</string>
+    <string name="template_contacts_todo">番号を追加</string>
+
+    <string name="template_food_column_1">好き</string>
+    <string name="template_food_column_2">できれば避けたい</string>
+    <string name="template_food_row_1_1">バターのパスタ</string>
+    <string name="template_food_row_1_2">きのこの入ったもの全般</string>
+    <string name="template_food_row_2_1">りんごのくし切り</string>
+    <string name="template_food_row_2_2">炭酸飲料</string>
+    <string name="template_food_row_3_1">水、牛乳</string>
+    <string name="template_food_row_3_2">おかずにかかったソース</string>
+
+    <string name="template_day_column_1">時間</string>
+    <string name="template_day_column_2">すること</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">起きて、テーブルで朝ごはん</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">お昼ごはん、そのあと本を見ながら静かに過ごす</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">おやつ、雨でなければ公園へ</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">夕ごはん、そのあと夜のながれ</string>
+
+    <string name="template_what_helps_step_1">ぐずったとき：そばに座って、しばらく話しかけない。</string>
+    <string name="template_what_helps_step_2">食べないとき：テーブルに置いたままにして、あとでもう一度。</string>
+    <string name="template_what_helps_step_3">眠れないとき：いつもの子守唄を、静かに2回。</string>
+
+    <string name="home_start_with">または、この中から始めてみてください</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">%1$s を開く</string>
+    <string name="cd_add_tile">カードを追加</string>
+    <string name="cd_clear_search">検索を消す</string>
+    <string name="cd_move_up">%1$s を上に移動</string>
+    <string name="cd_move_down">%1$s を下に移動</string>
+    <string name="cd_colour_selected">%1$s、選択中</string>
+    <string name="cd_remove_line">%1$s を外す</string>
+    <string name="cd_check_item">%1$s、完了</string>
+    <string name="cd_uncheck_item">%1$s、未完了</string>
+    <string name="cd_back">戻る</string>
+    <string name="cd_close">閉じる</string>
+    <string name="cd_menu">メニュー</string>
+    <string name="cd_edit_tile">%1$s を編集</string>
+    <string name="cd_play">再生</string>
+    <string name="cd_step_picture">ステップ %1$d の写真</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s、%2$s</string>
+
+</resources>

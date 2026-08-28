@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Ukrainian strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Ukrainian has four plural forms (one / few / many / other) and every <plurals> below carries all
+  four. A missing `few` is the failure nobody notices: it only shows up on 2, 3 and 4.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Раді вас бачити</string>
+    <string name="home_search">Пошук</string>
+    <string name="home_add_tile">Додати картку</string>
+    <string name="home_child_age">%1$s · %2$d років</string>
+    <string name="home_empty_title">Тут поки що порожньо</string>
+    <string name="home_search_empty">Нічого не знайдено.</string>
+    <string name="arrange_title">Упорядкувати картки</string>
+    <string name="arrange_hint">Пересувайте картки вгору або вниз. Цей порядок — це порядок на початковому екрані.</string>
+    <string name="home_empty_hint">Картки, які ви додасте, зʼявляться тут. На картці може бути інструкція, список, нотатка, номер для дзвінка або сайт.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Режим догляду</string>
+    <string name="view_parent">Батьківський режим</string>
+    <string name="view_parent_active">Батьківський режим увімкнено. Редагування й резервні копії розблоковано. Larova повертається в режим догляду через пʼять хвилин без дій.</string>
+    <string name="view_unlock_title">Розблокувати батьківський режим</string>
+    <string name="view_unlock_pin">Введіть PIN-код</string>
+    <string name="view_unlock_biometric">Скористатися відбитком</string>
+
+    <string name="view_locked_note">Редагування й резервні копії — у батьківському режимі.</string>
+    <string name="view_leave">Вийти з батьківського режиму</string>
+    <string name="view_pin_create_title">Виберіть PIN-код</string>
+    <string name="view_pin_create_hint">Від чотирьох до дванадцяти цифр. Він не дає змінити картки випадково; він їх не ховає.</string>
+    <string name="view_pin_repeat">Введіть ще раз</string>
+    <string name="view_pin_mismatch">Ці два не збігаються.</string>
+    <string name="view_pin_too_short">Щонайменше чотири цифри.</string>
+    <string name="view_pin_digits_only">Лише цифри.</string>
+    <string name="view_pin_wrong">Це не той PIN-код.</string>
+    <string name="view_pin_change">Змінити PIN-код</string>
+    <string name="view_unlock">Розблокувати</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Інструкція</string>
+    <string name="tile_guide_hint">Кроки з текстом, зображеннями та звуком</string>
+    <string name="tile_checklist">Список</string>
+    <string name="tile_checklist_hint">Пункти, які можна відмічати, за бажанням щодня наново</string>
+    <string name="tile_table">Таблиця</string>
+    <string name="tile_table_hint">Ваші власні стовпці та рядки</string>
+    <string name="tile_note">Нотатка</string>
+    <string name="tile_note_hint">Вільний текст із заголовками та списками</string>
+    <string name="tile_video">Відео</string>
+    <string name="tile_video_hint">З відео на цьому телефоні</string>
+    <string name="tile_audio">Звук</string>
+    <string name="tile_audio_hint">Звуковий файл або запис просто зараз</string>
+    <string name="tile_call">Подзвонити</string>
+    <string name="tile_call_hint">Імʼя, номер і хто це</string>
+    <string name="tile_link">Сайт або застосунок</string>
+    <string name="tile_link_hint">Відкриває посилання або застосунок на цьому телефоні</string>
+    <string name="tile_folder">Тека</string>
+    <string name="tile_folder_hint">Обʼєднує кілька карток</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Інструкція · %1$d крок</item>
+        <item quantity="few">Інструкція · %1$d кроки</item>
+        <item quantity="many">Інструкція · %1$d кроків</item>
+        <item quantity="other">Інструкція · %1$d кроку</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Список · %1$d пункт</item>
+        <item quantity="few">Список · %1$d пункти</item>
+        <item quantity="many">Список · %1$d пунктів</item>
+        <item quantity="other">Список · %1$d пункту</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Крок %1$d з %2$d</string>
+    <string name="guide_previous">Назад</string>
+    <string name="guide_next">Далі</string>
+    <string name="guide_finish">Готово</string>
+    <string name="guide_read_aloud">Прочитати вголос</string>
+    <string name="guide_screen_stays_on">Тут екран не гасне.</string>
+
+    <string name="guide_step_current">Зараз</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d з %2$d</string>
+    <string name="checklist_resets_daily">Скидається щоранку о %1$s. Відмічені пункти потрапляють у журнал із часом.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Потрібна допомога</string>
+    <string name="help_sheet_title">Потрібна допомога</string>
+    <string name="help_call_note">Дотик відкриває телефон із набраним номером. Larova ніколи не дзвонить сама.</string>
+    <string name="help_emergency">Екстрені служби</string>
+    <string name="help_no_contacts">Сюди ще не додали жодного номера.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Цього файлу немає на телефоні. Можливо, він не дійшов разом із резервною копією.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Відкрити застосунок</string>
+    <string name="app_missing">Цього застосунку більше немає на телефоні.</string>
+    <string name="app_choose">Який застосунок?</string>
+    <string name="app_none_found">Немає відповідних застосунків.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Копія та перенесення</string>
+    <string name="transfer_backup">Зробити копію</string>
+    <string name="transfer_backup_hint">Створює один файл з усіма вашими картками, зображеннями й записами. Ви вибираєте, куди він піде.</string>
+    <string name="transfer_restore">Відновити</string>
+    <string name="transfer_restore_hint">Виберіть файл, перегляньте, що в ньому, а тоді замініть усе або додайте до наявного.</string>
+    <string name="transfer_protect">Захистити паролем</string>
+    <string name="transfer_protect_hint">Радимо завжди, коли надсилаєте файл комусь. Без пароля його не відкрити.</string>
+    <string name="transfer_last_backup">Остання копія</string>
+    <string name="transfer_preview">%1$d карток, %2$d файлів, %3$s</string>
+    <string name="transfer_replace">Замінити все</string>
+    <string name="transfer_merge">Додати до наявного</string>
+    <string name="transfer_version_too_new">Цей файл створено новішою версією Larova. Оновіть застосунок, щоб його відкрити.</string>
+    <string name="transfer_saved">Копію зроблено: %1$d карток і %2$d файлів.</string>
+    <string name="transfer_restored">Відновлено: %1$d карток і %2$d файлів.</string>
+    <string name="transfer_backup_failed">Копію не вдалося записати. Спробуйте зберегти в іншому місці.</string>
+    <string name="transfer_damaged">Цей файл неповний — можливо, його надіслали не до кінця. Нічого не змінено.</string>
+    <string name="transfer_unreadable">Це не резервна копія Larova.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Налаштування</string>
+    <string name="settings_appearance">Вигляд</string>
+    <string name="settings_appearance_system">Як на телефоні</string>
+    <string name="settings_appearance_light">Світлий</string>
+    <string name="settings_appearance_dark">Темний</string>
+    <string name="settings_appearance_night">Нічний</string>
+    <string name="settings_appearance_night_hint">Теплий і дуже приглушений, щоб читати вголос у темній кімнаті.</string>
+    <string name="settings_language">Мова</string>
+    <string name="settings_language_hint">Larova може працювати іншою мовою, ніж решта телефона.</string>
+    <string name="settings_transfer_hint">Зберегти все в один файл або повернути копію.</string>
+    <string name="settings_log">Журнал подій</string>
+    <string name="settings_log_retention">Зберігати %1$d днів</string>
+    <string name="settings_log_clear">Очистити журнал</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Поки що нічого не сталося.</string>
+    <string name="log_note_hint">Додати рядок</string>
+    <string name="log_add">Додати в журнал</string>
+    <string name="log_retention">Рядки, старші за %1$d днів, видаляються.</string>
+    <string name="log_clear_question">Очистити весь журнал? Рядки не повернути.</string>
+    <string name="log_card_opened">Відкрито: %1$s</string>
+    <string name="log_check_toggled">Щось відмічено в «%1$s»</string>
+    <string name="log_call_prepared">Підготовлено дзвінок: %1$s</string>
+    <string name="log_tile_gone">картка, яку відтоді видалили</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Нова картка</string>
+    <string name="edit_edit_tile">Редагувати картку</string>
+    <string name="edit_choose_type">Що буде на цій картці?</string>
+    <string name="edit_title">Назва</string>
+    <string name="edit_subtitle">Другий рядок (необовʼязково)</string>
+    <string name="edit_colour">Колір</string>
+    <string name="edit_symbol">Символ</string>
+    <string name="edit_save">Зберегти</string>
+    <string name="edit_cancel">Скасувати</string>
+    <string name="edit_delete">Видалити картку</string>
+    <string name="edit_delete_question">Видалити цю картку? Те, що на ній, не повернути.</string>
+    <string name="edit_title_required">Картці потрібна назва.</string>
+    <string name="edit_folder_note">У теці лежать інші картки. Збережіть її, відкрийте й додайте картки всередину.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Видалити цю теку? %1$d картка в ній зникне разом із нею, і її не повернути.</item>
+        <item quantity="few">Видалити цю теку? %1$d картки в ній зникнуть разом із нею, і їх не повернути.</item>
+        <item quantity="many">Видалити цю теку? %1$d карток у ній зникнуть разом із нею, і їх не повернути.</item>
+        <item quantity="other">Видалити цю теку? %1$d картки в ній зникнуть разом із нею, і їх не повернути.</item>
+    </plurals>
+    <string name="edit_steps">Кроки</string>
+    <string name="edit_add_step">Додати крок</string>
+    <string name="edit_step_number">Крок %1$d</string>
+    <string name="edit_items">Що відмічати</string>
+    <string name="edit_add_item">Додати пункт</string>
+    <string name="edit_item_number">Пункт %1$d</string>
+    <string name="edit_reset_daily">Починати заново щоранку</string>
+    <string name="edit_columns">Заголовки</string>
+    <string name="edit_add_column">Додати заголовок</string>
+    <string name="edit_column_number">Заголовок %1$d</string>
+    <string name="edit_rows">Рядки</string>
+    <string name="edit_add_row">Додати рядок</string>
+    <string name="edit_row_number">Рядок %1$d</string>
+    <string name="edit_note_text">Текст</string>
+    <string name="edit_call_name">Імʼя</string>
+    <string name="edit_call_number">Номер телефона</string>
+    <string name="edit_call_relation">Хто це (необовʼязково)</string>
+    <string name="edit_call_in_help">Показувати також у «Потрібна допомога»</string>
+    <string name="edit_record">Записати з мікрофона</string>
+    <string name="edit_recording">Запис…</string>
+    <string name="edit_record_stop">Зупинити й зберегти</string>
+    <string name="edit_record_failed">Мікрофон не вдалося використати, або нічого не записалося.</string>
+    <string name="edit_choose_video">Вибрати відео</string>
+    <string name="edit_choose_sound">Вибрати звуковий файл</string>
+    <string name="edit_media_none_chosen">Поки що нічого не вибрано.</string>
+    <string name="edit_media_chosen">Вибрано, %1$d МБ</string>
+    <string name="edit_media_large">Це великий файл. Копії з ним надсилатимуться довго, а для деяких способів надсилання можуть виявитися завеликими.</string>
+    <string name="edit_media_required">Виберіть, що відтворює ця картка.</string>
+    <string name="edit_media_caption">Що написати зверху (необовʼязково)</string>
+    <string name="edit_choose_app">Вибрати застосунок</string>
+    <string name="edit_app_none_chosen">Застосунок ще не вибрано.</string>
+    <string name="edit_app_chosen">Відкриває %1$s</string>
+    <string name="edit_app_label">Що написано на картці</string>
+    <string name="edit_app_required">Виберіть застосунок, який відкриває ця картка.</string>
+    <string name="edit_web_address">Вебадреса</string>
+    <string name="edit_web_label">Підпис (необовʼязково)</string>
+    <string name="edit_web_address_invalid">Вебадреса має починатися з http:// або https://</string>
+    <string name="edit_remove">Прибрати</string>
+    <string name="edit_add_picture">Додати зображення</string>
+    <string name="edit_change_picture">Змінити зображення</string>
+    <string name="edit_remove_picture">Прибрати зображення</string>
+    <string name="edit_picture_failed">Це зображення не вдалося додати.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Пісок</string>
+    <string name="colour_clay">Глина</string>
+    <string name="colour_rose">Троянда</string>
+    <string name="colour_lilac">Бузок</string>
+    <string name="colour_sky">Небо</string>
+    <string name="colour_sage">Шавлія</string>
+    <string name="colour_moss">Мох</string>
+    <string name="colour_stone">Камінь</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Час спати</string>
+    <string name="template_evening">Вечірній розпорядок</string>
+    <string name="template_contacts">Важливі номери</string>
+    <string name="template_food">Їжа та напої</string>
+    <string name="template_day">День у нас удома</string>
+    <string name="template_what_helps">Що допомагає, коли…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Піжама вдягнена, зуби почищені.</string>
+    <string name="template_bedtime_step_2">Одна казка на дивані — нехай сам вибере яка.</string>
+    <string name="template_bedtime_step_3">Штори засунуті, нічник увімкнений.</string>
+    <string name="template_bedtime_step_4">Плюшевий зайчик у ліжку, а не на полиці.</string>
+    <string name="template_bedtime_step_5">Двері прочинені десь на долоню.</string>
+
+    <string name="template_evening_item_1">Вечеря</string>
+    <string name="template_evening_item_2">Умитися й почистити зуби</string>
+    <string name="template_evening_item_3">Піжама</string>
+    <string name="template_evening_item_4">Казка</string>
+    <string name="template_evening_item_5">Вимкнути світло</string>
+
+    <string name="template_contacts_name">Мама</string>
+    <string name="template_contacts_relation">Мати</string>
+    <string name="template_contacts_todo">Додати номер</string>
+
+    <string name="template_food_column_1">Любить</string>
+    <string name="template_food_column_2">Краще не треба</string>
+    <string name="template_food_row_1_1">Макарони з маслом</string>
+    <string name="template_food_row_1_2">Усе з грибами</string>
+    <string name="template_food_row_2_1">Скибочки яблука</string>
+    <string name="template_food_row_2_2">Газовані напої</string>
+    <string name="template_food_row_3_1">Вода, молоко</string>
+    <string name="template_food_row_3_2">Соус на їжі</string>
+
+    <string name="template_day_column_1">Коли</string>
+    <string name="template_day_column_2">Що відбувається</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Прокинувся, сніданок за столом</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Обід, потім тихий час із книжкою</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Перекус, потім парк, якщо сухо</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Вечеря, потім вечірній розпорядок</string>
+
+    <string name="template_what_helps_step_1">Засмутився: сісти поруч і поки що не говорити.</string>
+    <string name="template_what_helps_step_2">Не їсть: залишити на столі й спробувати пізніше.</string>
+    <string name="template_what_helps_step_3">Не засинає: колискова, тихенько, двічі.</string>
+
+    <string name="home_start_with">Або почніть з однієї з цих</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Відкрити %1$s</string>
+    <string name="cd_add_tile">Додати картку</string>
+    <string name="cd_clear_search">Очистити пошук</string>
+    <string name="cd_move_up">Перемістити %1$s вгору</string>
+    <string name="cd_move_down">Перемістити %1$s вниз</string>
+    <string name="cd_colour_selected">%1$s, вибрано</string>
+    <string name="cd_remove_line">Прибрати %1$s</string>
+    <string name="cd_check_item">%1$s, зроблено</string>
+    <string name="cd_uncheck_item">%1$s, не зроблено</string>
+    <string name="cd_back">Назад</string>
+    <string name="cd_close">Закрити</string>
+    <string name="cd_menu">Меню</string>
+    <string name="cd_edit_tile">Редагувати %1$s</string>
+    <string name="cd_play">Відтворити</string>
+    <string name="cd_step_picture">Зображення до кроку %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>
