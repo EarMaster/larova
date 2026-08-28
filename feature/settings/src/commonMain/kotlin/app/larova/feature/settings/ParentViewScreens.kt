@@ -14,6 +14,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,8 +50,12 @@ import org.jetbrains.compose.resources.stringResource
  * this person already knows how to use, it comes with their own text size and their own haptics,
  * and a hand-drawn keypad would be one more thing to get wrong for someone with poor eyesight.
  *
- * The biometric route is offered first when the device has it, because it is faster and because it
- * means the PIN is typed rarely enough to stay unguessable by whoever is watching.
+ * The biometric route is taken first when the device has it, without waiting to be asked. It is
+ * faster, it means the PIN is typed rarely enough to stay unguessable by whoever is watching, and a
+ * parent unlocking this while holding a child has one hand free at most.
+ *
+ * Once per visit, not once per recomposition: somebody who dismissed the prompt to type their PIN
+ * instead must not have it thrown back at them. The button stays for the second attempt.
  */
 @Composable
 fun UnlockScreen(
@@ -59,6 +68,16 @@ fun UnlockScreen(
     onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Survives a rotation, so turning the phone while the prompt is up does not open a second one.
+    var asked by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(onUseBiometrics) {
+        if (onUseBiometrics != null && !asked) {
+            asked = true
+            onUseBiometrics()
+        }
+    }
+
     LarovaScaffold(
         title = stringResource(Res.string.view_unlock_title),
         onHelp = onHelp,

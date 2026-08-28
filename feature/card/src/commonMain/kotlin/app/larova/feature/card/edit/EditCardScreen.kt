@@ -104,6 +104,7 @@ import app.larova.core.ui.resources.edit_web_address
 import app.larova.core.ui.resources.edit_web_address_invalid
 import app.larova.core.ui.resources.edit_web_label
 import app.larova.core.ui.resources.tile_call
+import app.larova.core.ui.resources.tile_audio
 import app.larova.core.ui.resources.tile_checklist
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
@@ -881,7 +882,8 @@ private val CardType.label: StringResource
         CardType.TABLE -> Res.string.tile_table
         CardType.FOLDER -> Res.string.tile_folder
         CardType.APP_LINK -> Res.string.tile_link
-        CardType.VIDEO, CardType.AUDIO -> Res.string.tile_video
+        CardType.VIDEO -> Res.string.tile_video
+        CardType.AUDIO -> Res.string.tile_audio
         CardType.PHONE -> Res.string.tile_call
         CardType.WEB -> Res.string.tile_link
     }

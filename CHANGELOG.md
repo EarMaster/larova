@@ -24,8 +24,9 @@ docs-only changes do not belong here.
 - Tiles can be made, changed and deleted: pick what goes on it, give it a title, choose one of the
   eight colours and a symbol. Deleting asks first, because there is no undo and no bin.
 - Two views. Caregiver view is what the app opens in: read, tick, call, open. Editing, rearranging
-  and backup live in parent view, which unlocks with a PIN or a fingerprint and falls back to
-  caregiver view after five minutes without a touch. The PIN keeps the tiles from being changed; it
+  and backup live in parent view, which unlocks with a fingerprint — offered straight away where
+  the phone has one — or with a PIN, and falls back to caregiver view after five minutes without a
+  touch. The PIN keeps the tiles from being changed; it
   does not hide them, and the app says so before you choose one.
 - Backup and restore. "Back up" writes everything — tiles, pictures, recordings — into one file,
   wherever the phone can save: device storage, Drive, Nextcloud, a USB stick. "Restore" shows what
@@ -52,7 +53,7 @@ docs-only changes do not belong here.
   a caregiver who does not share the child's language can still play the right words. Larova asks
   for the microphone when the record button is tapped and not before.
 - A tile can hold a video or a sound file: pick one from the phone, write a line above it, and it
-  plays where it sits. Nothing starts by itself — a caregiver who opened a tile to read it should
+  plays where it sits. A video can be made full screen and comes back where it left off. Nothing starts by itself — a caregiver who opened a tile to read it should
   not have a video start talking at them. A file is copied into Larova rather than pointed at, so
   it travels in a backup, and a large one says so before it goes on a tile.
 - A tile can open another app on the phone — the music player, the camera, the bus timetable.
