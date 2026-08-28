@@ -14,6 +14,17 @@ Nothing leaves the device. There is no account, no cloud, and no internet permis
 
 ---
 
+## What it looks like
+
+| Start screen | A guide | A checklist | Get help | Night |
+| --- | --- | --- | --- | --- |
+| ![The start screen: a grid of coloured tiles with a search field above and a red Get help bar below](fastlane/metadata/android/en-US/images/phoneScreenshots/01_start.png) | ![A guide open at step 1 of 5, one instruction in large text](fastlane/metadata/android/en-US/images/phoneScreenshots/02_guide.png) | ![A checklist with six items, two ticked off](fastlane/metadata/android/en-US/images/phoneScreenshots/03_checklist.png) | ![The help sheet: three large rows, each a name, a relation and a number](fastlane/metadata/android/en-US/images/phoneScreenshots/04_help.png) | ![The start screen in night mode: warm text on near-black](fastlane/metadata/android/en-US/images/phoneScreenshots/05_night.png) |
+
+Rendered from the app's own code rather than taken by hand, so they cannot drift away from what
+it does — see [`AGENTS.md`](AGENTS.md), "Screenshot tests".
+
+---
+
 ## What you can put in it
 
 Your start screen is a grid of tiles that you arrange yourself. Each tile holds one kind of thing:

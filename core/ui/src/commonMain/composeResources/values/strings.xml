@@ -112,7 +112,7 @@
     <string name="transfer_restore_hint">Pick a file, check the preview, then replace or merge with what is already here.</string>
     <string name="transfer_protect">Protect with a password</string>
     <string name="transfer_protect_hint">Recommended whenever you send the file to someone. Without the password it cannot be opened.</string>
-    <string name="transfer_last_backup">Last backed up %1$s</string>
+    <string name="transfer_last_backup">Last backed up</string>
     <string name="transfer_preview">%1$d tiles, %2$d files, %3$s</string>
     <string name="transfer_replace">Replace everything</string>
     <string name="transfer_merge">Add to what is here</string>
@@ -133,6 +133,7 @@
     <string name="settings_appearance_night_hint">Warm and very dim, for reading aloud in a dark room.</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_hint">Larova can use a different language from the rest of the phone.</string>
+    <string name="settings_transfer_hint">Save everything to one file, or bring a backup back.</string>
     <string name="settings_log">Activity log</string>
     <string name="settings_log_retention">Keep for %1$d days</string>
     <string name="settings_log_clear">Clear the log</string>

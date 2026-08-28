@@ -6,9 +6,13 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferencesSerializer
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import app.larova.core.domain.model.AppearanceSetting
+import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.repository.PreferencesRepository
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okio.FileSystem
@@ -33,9 +37,35 @@ class DataStorePreferencesRepository(
         dataStore.edit { it[APPEARANCE] = setting.key }
     }
 
+    /**
+     * Three keys rather than one encoded string. The timestamp is the part that has to survive an
+     * app that gains a fourth field later, and a half-written record with no time in it is simply
+     * "never backed up" — which is the safe thing for this to say when it is unsure.
+     */
+    override fun observeLastBackup(): Flow<LastBackup?> = dataStore.data.map { prefs ->
+        prefs[LAST_BACKUP_AT]?.let { millis ->
+            LastBackup(
+                at = Instant.fromEpochMilliseconds(millis),
+                cards = prefs[LAST_BACKUP_CARDS] ?: 0,
+                media = prefs[LAST_BACKUP_MEDIA] ?: 0,
+            )
+        }
+    }
+
+    override suspend fun setLastBackup(backup: LastBackup) {
+        dataStore.edit {
+            it[LAST_BACKUP_AT] = backup.at.toEpochMilliseconds()
+            it[LAST_BACKUP_CARDS] = backup.cards
+            it[LAST_BACKUP_MEDIA] = backup.media
+        }
+    }
+
     private companion object {
         /** The stored key, not the enum name. Renaming the enum must not reset anyone's setting. */
         val APPEARANCE = stringPreferencesKey("appearance")
+        val LAST_BACKUP_AT = longPreferencesKey("lastBackupAt")
+        val LAST_BACKUP_CARDS = intPreferencesKey("lastBackupCards")
+        val LAST_BACKUP_MEDIA = intPreferencesKey("lastBackupMedia")
     }
 }
 

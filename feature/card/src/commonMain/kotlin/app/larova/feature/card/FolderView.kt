@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.larova.core.ui.component.TileCard
 import app.larova.core.ui.theme.Dimens
+import app.larova.core.ui.theme.tileColumns
 
 /**
- * What is inside a folder: the same two-column grid as the start screen.
+ * What is inside a folder: the same grid as the start screen, column count included.
  *
  * The same grid on purpose. A caregiver who has learned to read the start screen has learned to
  * read this, and a folder that looked like a list would be a second thing to learn for no gain.
@@ -32,7 +33,7 @@ fun FolderView(
     }
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(tileColumns()),
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = Dimens.ScreenMargin,

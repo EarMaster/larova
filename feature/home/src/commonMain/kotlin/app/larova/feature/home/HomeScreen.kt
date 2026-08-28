@@ -9,36 +9,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.TemplateId
+import app.larova.core.ui.component.ContentWidth
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.component.TileCard
+import app.larova.core.ui.icon.History
 import app.larova.core.ui.icon.MoreVertical
+import app.larova.core.ui.icon.Reorder
+import app.larova.core.ui.icon.Sliders
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
-import app.larova.core.ui.resources.cd_menu
 import app.larova.core.ui.resources.home_add_tile
 import app.larova.core.ui.resources.arrange_title
 import app.larova.core.ui.resources.cd_clear_search
@@ -53,8 +52,8 @@ import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_item_count
 import app.larova.core.ui.resources.tile_step_count
-import app.larova.core.ui.resources.transfer_title
 import app.larova.core.ui.theme.Dimens
+import app.larova.core.ui.theme.tileColumns
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -64,6 +63,12 @@ import org.jetbrains.compose.resources.stringResource
  * Two columns with a 12dp gutter and a 20dp margin, per docs/design/design-system.md §5. This is
  * what the caregiver sees first and often all they see, so nothing is on it that does not have to
  * be there.
+ *
+ * Three columns on a small tablet and four on a large one — the tiles keep their size and the
+ * screen gets more of them, rather than two tiles growing to the width of a table. The search
+ * field and the empty state stop at reading width in the middle of it, because a text field
+ * stretched across a tablet is a target nobody aims at and a centred paragraph 1120dp wide is not
+ * a paragraph.
  */
 @Composable
 fun HomeScreen(
@@ -75,7 +80,6 @@ fun HomeScreen(
     onAddTile: () -> Unit,
     onArrange: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenTransfer: () -> Unit,
     onOpenLog: () -> Unit,
     onUseTemplate: (CardDraft) -> Unit,
     onHelp: () -> Unit,
@@ -85,34 +89,40 @@ fun HomeScreen(
         title = stringResource(Res.string.home_greeting),
         onHelp = onHelp,
         modifier = modifier,
+        // The one screen that is a grid rather than a column of reading, and the only one that
+        // earns the wider cap.
+        contentWidth = ContentWidth.Grid,
         actions = {
-            // Everything a caregiver does not need is behind this one control: settings, backup,
-            // and later the switch to parent view. The grid stays the whole screen.
-            HomeMenu(
-                isParentView = isParentView,
-                onArrange = onArrange,
-                onOpenSettings = onOpenSettings,
-                onOpenTransfer = onOpenTransfer,
-                onOpenLog = onOpenLog,
-            )
+            // Two buttons rather than an overflow menu. Both are things somebody comes to this
+            // screen intending to do, and a menu asks them to guess that they are behind it —
+            // which is exactly how backup ended up somewhere nobody found it. The log is in both
+            // views: whoever is with the child is the person who knows that lunch did not happen.
+            IconButton(onClick = onOpenLog) {
+                Icon(
+                    imageVector = History,
+                    contentDescription = stringResource(Res.string.settings_log),
+                )
+            }
+            IconButton(onClick = onOpenSettings) {
+                Icon(
+                    imageVector = Sliders,
+                    contentDescription = stringResource(Res.string.settings_title),
+                )
+            }
         },
         floatingActionButton = {
             // Absent in caregiver view rather than disabled. A greyed-out button is a question
             // ("why not?") asked of someone who is here to read a bedtime routine, and the answer
             // does not concern them.
-            //
-            // Extended rather than an icon alone: "+" on a grid of tiles is not self-explanatory to
-            // someone who did not choose this phone.
             if (isParentView) {
-                ExtendedFloatingActionButton(
-                    onClick = onAddTile,
-                    icon = { Icon(imageVector = TileSymbol.STAR.image, contentDescription = null) },
-                    text = { Text(stringResource(Res.string.home_add_tile)) },
-                )
+                ParentActions(onArrange = onArrange, onAddTile = onAddTile)
             }
         },
     ) { insets ->
-        Column(modifier = Modifier.fillMaxSize().padding(insets)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(insets),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             // Always visible, per docs/concept.md 4.1. Someone looking for one thing under time
             // pressure should not have to find the search first.
             SearchField(
@@ -127,13 +137,55 @@ fun HomeScreen(
                 // content is one frame away is a lie the app can avoid telling.
                 state.isLoading -> Unit
 
-                state.tiles.isNotEmpty() -> TileGrid(tiles = state.tiles, onOpenTile = onOpenTile)
+                state.tiles.isNotEmpty() -> TileGrid(
+                    tiles = state.tiles,
+                    onOpenTile = onOpenTile,
+                    isParentView = isParentView,
+                )
 
                 state.isSearching -> Message(text = stringResource(Res.string.home_search_empty))
 
                 else -> HomeEmptyState(onUseTemplate = onUseTemplate)
             }
         }
+    }
+}
+
+/**
+ * What parent view puts on the grid: rearranging above adding.
+ *
+ * Two sizes, and the difference is the whole point. Adding a tile is what somebody unlocked parent
+ * view to do, so it is extended and says so in words — "+" on a grid of tiles is not
+ * self-explanatory to someone who did not choose this phone. Rearranging is the same kind of act
+ * on the same content, so it belongs beside it rather than in a menu, but it is the rarer one and
+ * takes the smaller button.
+ */
+@Composable
+private fun ParentActions(
+    onArrange: () -> Unit,
+    onAddTile: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        SmallFloatingActionButton(
+            onClick = onArrange,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ) {
+            Icon(
+                imageVector = Reorder,
+                contentDescription = stringResource(Res.string.arrange_title),
+            )
+        }
+        ExtendedFloatingActionButton(
+            onClick = onAddTile,
+            icon = { Icon(imageVector = TileSymbol.STAR.image, contentDescription = null) },
+            text = { Text(stringResource(Res.string.home_add_tile)) },
+        )
     }
 }
 
@@ -162,6 +214,7 @@ private fun SearchField(
             null
         },
         modifier = modifier
+            .widthIn(max = Dimens.ReadingWidth)
             .fillMaxWidth()
             .padding(horizontal = Dimens.ScreenMargin, vertical = 4.dp),
     )
@@ -171,6 +224,7 @@ private fun SearchField(
 private fun Message(text: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
+            .widthIn(max = Dimens.ReadingWidth)
             .fillMaxSize()
             .padding(horizontal = Dimens.ScreenMargin),
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
@@ -189,10 +243,11 @@ private fun Message(text: String, modifier: Modifier = Modifier) {
 private fun TileGrid(
     tiles: List<HomeTile>,
     onOpenTile: (String) -> Unit,
+    isParentView: Boolean,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(tileColumns()),
         modifier = modifier.fillMaxSize(),
         // Deliberately no key on the grid itself: the search results and the ordered board are two
         // different lists, and animating between them as though tiles had moved would suggest the
@@ -201,7 +256,10 @@ private fun TileGrid(
             start = Dimens.ScreenMargin,
             end = Dimens.ScreenMargin,
             top = Dimens.GridGutter,
-            bottom = Dimens.ScreenMargin,
+            // Room to scroll the last tile out from under the two buttons. A floating button that
+            // covers a tile is a tile somebody cannot open, and the bottom right is exactly where
+            // the newest one lands.
+            bottom = if (isParentView) FAB_CLEARANCE else Dimens.ScreenMargin,
         ),
         horizontalArrangement = Arrangement.spacedBy(Dimens.GridGutter),
         verticalArrangement = Arrangement.spacedBy(Dimens.GridGutter),
@@ -228,56 +286,6 @@ private fun TileSubtitle.text(): String? = when (this) {
     TileSubtitle.Folder -> stringResource(Res.string.tile_folder)
 }
 
-@Composable
-private fun HomeMenu(
-    isParentView: Boolean,
-    onArrange: () -> Unit,
-    onOpenSettings: () -> Unit,
-    onOpenTransfer: () -> Unit,
-    onOpenLog: () -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    IconButton(onClick = { expanded = true }) {
-        Icon(imageVector = MoreVertical, contentDescription = stringResource(Res.string.cd_menu))
-    }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        // Rearranging and backup are parent-view work. Settings stays, because it is the way in.
-        if (isParentView) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.arrange_title)) },
-                onClick = {
-                    expanded = false
-                    onArrange()
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.transfer_title)) },
-                onClick = {
-                    expanded = false
-                    onOpenTransfer()
-                },
-            )
-        }
-        // The log is in both views. Whoever is with the child is the person who knows that lunch
-        // did not happen, and asking them for a PIN first means it never gets written down.
-        DropdownMenuItem(
-            text = { Text(stringResource(Res.string.settings_log)) },
-            onClick = {
-                expanded = false
-                onOpenLog()
-            },
-        )
-        DropdownMenuItem(
-            text = { Text(stringResource(Res.string.settings_title)) },
-            onClick = {
-                expanded = false
-                onOpenSettings()
-            },
-        )
-    }
-}
-
 /**
  * What a fresh installation shows.
  *
@@ -297,6 +305,7 @@ private fun HomeEmptyState(
 
     Column(
         modifier = modifier
+            .widthIn(max = Dimens.ReadingWidth)
             .fillMaxSize()
             .padding(horizontal = Dimens.ScreenMargin),
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
@@ -339,3 +348,6 @@ private fun HomeEmptyState(
         }
     }
 }
+
+/** The two floating buttons plus the gap under them, in the one place the number is used. */
+private val FAB_CLEARANCE = 148.dp

@@ -3,8 +3,10 @@ package app.larova.feature.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.AppearanceSetting
+import app.larova.core.ui.component.ActionCard
 import app.larova.core.ui.component.LarovaScaffold
+import app.larova.core.ui.icon.Transfer
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.settings_appearance
 import app.larova.core.ui.resources.settings_appearance_dark
@@ -30,6 +34,8 @@ import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
 import app.larova.core.ui.resources.settings_title
+import app.larova.core.ui.resources.settings_transfer_hint
+import app.larova.core.ui.resources.transfer_title
 import app.larova.core.ui.resources.view_leave
 import app.larova.core.ui.resources.view_locked_note
 import app.larova.core.ui.resources.view_parent_active
@@ -42,10 +48,14 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Settings.
  *
- * Only appearance for now; language, the PIN and the log arrive with the parent view. Appearance
- * comes first because night mode is not a preference in the usual sense — it exists for the
- * leading use case, reading a guide aloud in a darkened bedroom, and it is the one setting a
- * caregiver might reasonably reach for themselves.
+ * Appearance, the way in and out of parent view, and — once you are in it — the parent-view work
+ * that is not editing a tile. Appearance comes first among the preferences because night mode is
+ * not a preference in the usual sense: it exists for the leading use case, reading a guide aloud
+ * in a darkened bedroom, and it is the one setting a caregiver might reasonably reach for
+ * themselves.
+ *
+ * No help bar here. This is a screen somebody opened on purpose to change something, not one they
+ * are on while a child is upset, and the red bar means "now" everywhere else in the product.
  */
 @Composable
 fun SettingsScreen(
@@ -55,13 +65,13 @@ fun SettingsScreen(
     onUnlock: () -> Unit,
     onLock: () -> Unit,
     onChangePin: () -> Unit,
+    onOpenTransfer: () -> Unit,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LarovaScaffold(
         title = stringResource(Res.string.settings_title),
-        onHelp = onHelp,
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->
@@ -82,6 +92,20 @@ fun SettingsScreen(
                 onChangePin = onChangePin,
             )
 
+            // Backup used to live behind the start screen's overflow menu, which is the last place
+            // somebody looks for it — a menu is where things go when nobody has decided where they
+            // belong. It belongs here: it is parent-view work, and this is the screen parent view
+            // is turned on from.
+            if (isParentView) {
+                ActionCard(
+                    icon = Transfer,
+                    title = stringResource(Res.string.transfer_title),
+                    description = stringResource(Res.string.settings_transfer_hint),
+                    onClick = onOpenTransfer,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+            }
+
             Text(
                 text = stringResource(Res.string.settings_appearance),
                 style = MaterialTheme.typography.titleMedium,
@@ -91,17 +115,16 @@ fun SettingsScreen(
             for (option in AppearanceSetting.entries) {
                 AppearanceOption(
                     label = stringResource(option.label),
+                    // Under the option it belongs to, not under the list. As a fifth line at the
+                    // bottom it read as a note about all four, and left the obvious question of
+                    // why only one of them had been explained.
+                    hint = option.hint?.let { stringResource(it) },
                     selected = option == appearance,
                     onSelect = { onAppearanceChange(option) },
                 )
             }
 
-            Text(
-                text = stringResource(Res.string.settings_appearance_night_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -114,6 +137,7 @@ fun SettingsScreen(
 @Composable
 private fun AppearanceOption(
     label: String,
+    hint: String?,
     selected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,14 +146,25 @@ private fun AppearanceOption(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = Dimens.MinTouchTarget)
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect),
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // null: the row above carries the semantics, so a screen reader announces one control
-        // rather than two.
+        // rather than two — and the hint is then read as part of that control's own label, which
+        // is what makes it an explanation of this option rather than a stray sentence.
         RadioButton(selected = selected, onClick = null)
-        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(text = label, style = MaterialTheme.typography.bodyLarge)
+            if (hint != null) {
+                Text(
+                    text = hint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }
 
@@ -139,6 +174,16 @@ private val AppearanceSetting.label: StringResource
         AppearanceSetting.LIGHT -> Res.string.settings_appearance_light
         AppearanceSetting.DARK -> Res.string.settings_appearance_dark
         AppearanceSetting.NIGHT -> Res.string.settings_appearance_night
+    }
+
+/**
+ * Only night has one, and that is the point: it is the only appearance whose name does not say
+ * what it is for. "Light", "Dark" and "Follow the phone" explain themselves.
+ */
+private val AppearanceSetting.hint: StringResource?
+    get() = when (this) {
+        AppearanceSetting.NIGHT -> Res.string.settings_appearance_night_hint
+        else -> null
     }
 
 /**

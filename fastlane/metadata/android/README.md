@@ -36,7 +36,8 @@ a release-note file for the current versionCode, and the locale being listed in 
 ## Translation status
 
 `en-US` is the source. `de-DE` is maintained by the author. **The other twelve are drafts written
-by a language model and have not been read by a native speaker.** Per `docs/localization.md` §5
+by a language model and have not been read by a native speaker** — as are the in-app strings for
+the same twelve languages, which now exist in full. Per `docs/localization.md` §5
 that is not the standard this project holds itself to for anything a user reads, and store text
 deserves more care than in-app strings rather than less: a missing in-app string falls back to
 English, while store text is the first and sometimes only thing a caregiver reads.
@@ -74,14 +75,42 @@ is unusually strong and entirely true: no account, no cloud, no internet permiss
 
 ## Screenshots
 
-Not written yet. They belong at `en-US/images/phoneScreenshots/` and are due in M3 alongside the
-rest of the store assets. `check_store_metadata.sh` already validates them — format, alpha channel,
-dimensions, aspect ratio and count — so a screenshot Play would refuse fails here first. The most
-common refusal is the aspect ratio: a screenshot from a modern 20:9 phone is 2.2:1, and Play caps
-the long side at twice the short one.
+Ten per locale — five at `<locale>/images/phoneScreenshots/` and five at
+`<locale>/images/tenInchScreenshots/` — and **generated rather than taken**:
+`StoreAssetTest` renders them from the app's own code on the JVM and the `finishStoreAssets` Gradle
+task strips the alpha channel Play refuses. See `AGENTS.md`, "Store assets", for the whole chain;
+the one command is:
 
-Play falls back to the default language's images for a locale that has none, so English-only is
-fine.
+```bash
+./gradlew :app:recordRoborazziDebug --tests '*StoreAssetTest'
+```
+
+Two consequences of generating them are worth having in mind. The listing cannot show a version of
+the app that no longer exists, because the pictures come from the same source tree as the release —
+but it also means **nobody should edit these files by hand**: the next re-record overwrites them.
+
+`check_store_metadata.sh` validates them — format, alpha channel, dimensions, aspect ratio and
+count — so a screenshot Play would refuse fails here first. The most common refusal is the aspect
+ratio: a screenshot from a modern 20:9 phone is 2.2:1, and Play caps the long side at twice the
+short one. The phone frame is 1233×2460, which is 1.995:1 on purpose; the tablet frame is
+2560×1600, a 10" tablet on its side at 1.6:1, which the rule does not come near.
+
+**The tablet set is a different layout, not a bigger phone.** Above 840dp the grid has four tile
+columns and everything that is read is held to a column in the middle of the screen, so the two
+sets are pictures of two real layouts. Play would happily show the phone set to somebody shopping
+on a tablet, and that picture would be of an app Larova is not.
+
+**`en-US` and `de-DE` today**, and the reason has changed. It used to be the app — it shipped
+English and German strings and nothing else, so a French screenshot would have been French tile
+names inside an English UI. The app now speaks all fourteen, so what is missing is the other half:
+the twelve `StoreContent` fixtures that supply the *family content* in the pictures. Play falls
+back to the default language's images for a locale that has none, so those twelve show the English
+pictures until somebody writes them.
+
+**Every locale the app gains should gain a set.** It is three lines and a fixture — a
+`StoreContent` in `StoreFixtures.kt` written by somebody who speaks the language, and a
+`StoreAssetTest` subclass with the Play locale directory and an Android locale qualifier. The
+Gradle task and the validator both already walk whatever locales exist.
 
 ## What CI does with these files
 
@@ -113,8 +142,11 @@ Three more things are worth knowing before relying on it:
   the parameter that avoids it. So the text lands in the Console and waits for somebody to press
   *Send for review*, which is the right shape for fourteen languages of copy either way.
 - **Images already on Play are left alone.** `sync_image_upload` is off, so a screenshot uploaded
-  through the Console survives a text fix here. When screenshots land in this tree (M3) that
-  decision is worth revisiting: with it on, the tree becomes authoritative for graphics too.
+  through the Console survives a text fix here. Now that generated screenshots *are* in this tree,
+  that setting is the open decision: with it on, the tree becomes authoritative for graphics and
+  anything uploaded through the Console is deleted on the next run. Turning it on is a deliberate
+  handover of the listing's graphics to this repository, not a tidy-up — leave it off until
+  somebody means it.
 
 A pull request that touches these files validates them through Play's own API without changing
 anything, which is the only check that catches a locale code Play does not accept.
