@@ -39,7 +39,9 @@ That is why the per-app language setting matters more than the number of transla
 
 **Per-app language.** Android 13+ exposes this through `LocaleManager` and `res/xml/locales_config.xml`. The caregiver sets the app to Turkish while the child's phone stays in German. Mirror it through `AppCompatDelegate.setApplicationLocales` for older versions. Put the picker prominently in settings, not in a submenu — it is a headline feature, not a preference.
 
-**Resources.** All strings in `composeResources/values/strings.xml`, accessed via `stringResource`. No string concatenation in code. Placeholders always positional (`%1$s`), because word order changes. Plurals through `plurals` — Polish, Russian and Arabic have more than two forms.
+**Resources.** All strings in `composeResources/values/strings.xml`, accessed via `stringResource`. No string concatenation in code. Placeholders always positional (`%1$s`), because word order changes. Plurals through `plurals` — Polish, Russian, Ukrainian and Arabic have more than two forms.
+
+**The folder name is not the language tag.** Compose Multiplatform resources match on language and optional region, not on script, so the fourteen above live in `values`, `values-de`, `values-fr`, `values-it`, `values-es`, `values-pt-rPT`, `values-uk`, `values-pl`, `values-ru`, `values-tr`, `values-ar`, `values-hi`, `values-zh` and `values-ja`. Two are worth spelling out: `pt-PT` is `values-pt-rPT`, so a phone set to Brazilian Portuguese falls back to English rather than reading European wording; and `zh-Hans` is plain `values-zh`, which a `zh-Hans-CN` phone resolves to — a Traditional set later would be `values-zh-rTW`. These are again different from the Play locale codes in `fastlane/metadata/android/`.
 
 **Templates belong in resources, not the database.** The shipped templates ("Bedtime", "Evening routine") are translatable strings copied into the database as user content when a template is used. From that moment they belong to the parents and no longer follow the app language.
 
@@ -60,7 +62,17 @@ Start early. Retrofitting RTL is expensive.
 
 ## 5. Translation workflow
 
-Machine translation is an acceptable starting point for a hobby project, but not for these three:
+**Where the fourteen stand today.** `en` is the source and `de` is author-maintained. The other
+twelve exist in full — every string, every plural form — as **model drafts that no native speaker
+has read**. That was a deliberate call: a drafted language falls back to nothing, it *is* the app
+in that language, so shipping one unread is a decision rather than an oversight, and it is recorded
+here so nobody has to guess which files have been through a human.
+
+Reviewing one is reading `core/ui/src/commonMain/composeResources/values-<lang>/strings.xml`
+against `values/strings.xml` beside it.
+
+Machine translation is an acceptable starting point for a hobby project, but not for these three,
+which is where a review should start:
 
 - **The help bar and contact sheet.** Read under stress. Must be unambiguous.
 - **The two view names.** "Caregiver view" and "Parent view" carry the entire mental model.
@@ -68,4 +80,32 @@ Machine translation is an acceptable starting point for a hobby project, but not
 
 For those, find a native speaker. For the rest, machine translation followed by a native read-through is fine.
 
+Two mechanical things a review should check that a fluent read does not automatically catch:
+
+- **The plural forms are all there.** Polish, Russian and Ukrainian carry `one/few/many/other` and
+  Arabic carries all six. A missing `few` only shows on 2, 3 and 4 and looks fine in every
+  screenshot.
+- **The placeholders survived.** `%1$d` and `%1$s` are positional so their *order* may change, but
+  a lost one is a crash at the point somebody reads a step count.
+
 Keep `en` as the single source. Never edit a translated file to fix wording — fix the English and re-translate, or the languages drift apart.
+
+## 6. What a new language costs beyond `strings.xml`
+
+Translating the app is the larger half of adding a language, but it is not all of it. Two other
+things are keyed to the same list and go stale silently:
+
+- **The store listing text**, one folder per Play locale under `fastlane/metadata/android/`. Store
+  text has no English fallback: a locale with no file publishes blank in that language.
+- **The store screenshots.** These are generated from the app rather than taken by hand, so they
+  need the language twice over — the app's chrome follows the locale, and the tile titles in the
+  pictures are *family content* and need their own fixture. `en-US` and `de-DE` have both today.
+  The app now speaks all fourteen, so the blocker on the other twelve has moved: it is no longer
+  the app, it is the twelve `StoreContent` fixtures nobody has written. Play falls back to the
+  default locale's images for a locale that has none, so those twelve show the English pictures
+  until then. See `AGENTS.md`, "Store assets", for the three lines and one fixture a new locale
+  needs.
+
+The order matters: `strings.xml` first, then the listing text, then the screenshots. A screenshot
+taken before the app speaks the language captures the English fallback and looks convincing enough
+that nobody notices.

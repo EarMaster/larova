@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.ui.component.ContentWidth
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.MoreVertical
 import app.larova.core.ui.icon.TileSymbol
@@ -63,6 +64,9 @@ fun CardScreen(
         onHelp = onHelp,
         onBack = onBack,
         modifier = modifier,
+        // A folder is a grid and everything else is something to read, which is the whole of what
+        // the frame needs to know to lay this out on a tablet.
+        contentWidth = if (isFolder) ContentWidth.Grid else ContentWidth.Reading,
         actions = {
             CardActions(
                 state = state,

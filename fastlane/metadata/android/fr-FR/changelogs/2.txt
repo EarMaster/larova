@@ -1,0 +1,1 @@
+Larova s’adapte maintenant aux tablettes : plus de tuiles côte à côte, et tout ce qui se lit reste dans une colonne confortable. L’application parle désormais les quatorze langues. Le journal et les réglages sont des boutons sur l’écran d’accueil au lieu d’un menu, et la sauvegarde est passée dans les réglages, où elle indique la dernière date.

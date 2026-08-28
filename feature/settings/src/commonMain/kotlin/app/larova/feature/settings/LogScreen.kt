@@ -69,14 +69,15 @@ fun LogScreen(
     onAddNote: () -> Unit,
     onClear: () -> Unit,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var confirmingClear by remember { mutableStateOf(false) }
 
     LarovaScaffold(
         title = stringResource(Res.string.settings_log),
-        onHelp = onHelp,
+        // No help bar, for the same reason settings has none: this is a record somebody reads or
+        // adds a line to, not a screen anyone is on because something is wrong.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->
@@ -176,12 +177,27 @@ private fun NoteField(note: String, onNoteChange: (String) -> Unit, onAddNote: (
     }
 }
 
+/**
+ * One line, in one of two weights.
+ *
+ * Opening a tile is the only thing in here nobody did on purpose *for the log* — it is a side
+ * effect of using the app, and there can be forty of them in an afternoon. Given the same size as
+ * a note somebody sat down and typed, they bury it, make the list far longer than the day was, and
+ * turn a page a parent keeps into something that reads like surveillance of the person holding the
+ * phone. So they are still recorded, still there to scroll back through, and half the height.
+ *
+ * The timestamp keeps its size in both, which is not a detail: two type sizes in that column would
+ * put the sentences on ragged left edges and make the list harder to scan than the thing this is
+ * trying to fix.
+ */
 @Composable
 private fun LogRow(line: LogLine, formatTime: (kotlin.time.Instant) -> String) {
+    val quiet = line.kind == LogKind.CARD_OPENED
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.ScreenMargin, vertical = 10.dp),
+            .padding(horizontal = Dimens.ScreenMargin, vertical = if (quiet) 4.dp else 10.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.Top,
     ) {
@@ -192,8 +208,16 @@ private fun LogRow(line: LogLine, formatTime: (kotlin.time.Instant) -> String) {
         )
         Text(
             text = line.describe(),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = if (quiet) {
+                MaterialTheme.typography.bodySmall
+            } else {
+                MaterialTheme.typography.bodyLarge
+            },
+            color = if (quiet) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onBackground
+            },
             modifier = Modifier.weight(1f),
         )
     }

@@ -1,0 +1,1 @@
+A Larova já se adapta a um tablet: mais cartões lado a lado, e tudo o que se lê fica numa coluna confortável. A aplicação fala agora as catorze línguas. O registo e as definições são botões no ecrã inicial em vez de um menu, e a cópia de segurança passou para as definições, onde indica quando foi a última.

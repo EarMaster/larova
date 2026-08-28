@@ -12,6 +12,38 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-28
+
+### Added
+- Larova fits a tablet. More tiles fit across the screen — three on a small one, four on a large
+  one — and they stay the size they were rather than stretching. Anything you read instead of scan
+  is held to a comfortable column in the middle of the screen rather than running to both edges,
+  which is what a guide step read aloud across a room needs. Tiles are all one height now, so a
+  screen of them reads as a grid.
+- Larova speaks all fourteen launch languages: English, German, French, Italian, Spanish,
+  Portuguese, Ukrainian, Polish, Russian, Turkish, Arabic, Hindi, Chinese (Simplified) and
+  Japanese. English and German were written by hand; **the other twelve are machine translations
+  that no native speaker has read yet**, which is worth knowing before relying on one — an
+  unreviewed language is not a fallback, it is the whole app for whoever picks it.
+- Backup & transfer says when a backup last ran and how much was in it, so "have I ever actually
+  done this?" has an answer that does not involve going to look in a folder.
+
+### Changed
+- The activity log and settings are buttons on the start screen instead of items in a menu, and
+  rearranging tiles is a button beside "Add tile" in parent view. Backup, which was the third
+  thing behind that menu, has moved into settings where the rest of the parent-view work is.
+- Backup & transfer is laid out as two things you can read and press in one go, rather than a
+  heading, a paragraph and a button underneath each.
+- The appearance setting explains "Night" underneath the word Night, instead of as a line under
+  all four options where it looked like a note about the lot of them.
+- Settings and the activity log no longer carry the "Get help" bar. They are opened on purpose by
+  a parent, and the red bar is for the moment something is wrong. Every screen a caregiver reads
+  still has it.
+- The log writes "opened a tile" lines small and quiet. They happen as a side effect of using the
+  app, and at full size they buried the lines somebody sat down and typed.
+
+## [0.1.0] - 2026-08-27
+
 ### Added
 - Larova installs and opens on a start screen of your own tiles.
 - Tiles can hold a guide, a note, a checklist, a table, a number to call, or a website. Guides

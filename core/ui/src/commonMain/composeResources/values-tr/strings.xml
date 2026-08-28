@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Turkish strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Turkish has the dotted/dotless i, so nothing here may be put through a locale-default
+  `toUpperCase()` — "i" becomes "İ" in Turkish and "I" everywhere else, and the difference is a
+  different letter rather than a different shape. Nothing in the UI upper-cases a string today;
+  keep it that way.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Sizi görmek güzel</string>
+    <string name="home_search">Ara</string>
+    <string name="home_add_tile">Kart ekle</string>
+    <string name="home_child_age">%1$s · %2$d yaşında</string>
+    <string name="home_empty_title">Burada henüz bir şey yok</string>
+    <string name="home_search_empty">Eşleşen bir şey yok.</string>
+    <string name="arrange_title">Kartları düzenle</string>
+    <string name="arrange_hint">Kartları yukarı veya aşağı taşıyın. Bu sıra, başlangıç ekranındaki sıradır.</string>
+    <string name="home_empty_hint">Eklediğiniz kartlar burada görünür. Bir kartta yönerge, liste, not, aranacak bir numara veya bir web sitesi olabilir.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Bakım görünümü</string>
+    <string name="view_parent">Ebeveyn görünümü</string>
+    <string name="view_parent_active">Ebeveyn görünümü açık. Düzenleme ve yedekleme kilidi açıldı. Larova beş dakika işlem yapılmazsa bakım görünümüne döner.</string>
+    <string name="view_unlock_title">Ebeveyn görünümünün kilidini aç</string>
+    <string name="view_unlock_pin">PIN kodunu girin</string>
+    <string name="view_unlock_biometric">Parmak izini kullan</string>
+
+    <string name="view_locked_note">Düzenleme ve yedekleme ebeveyn görünümündedir.</string>
+    <string name="view_leave">Ebeveyn görünümünden çık</string>
+    <string name="view_pin_create_title">Bir PIN seçin</string>
+    <string name="view_pin_create_hint">Dört ile on iki hane arası. Kartların yanlışlıkla değişmesini önler; onları gizlemez.</string>
+    <string name="view_pin_repeat">Tekrar yazın</string>
+    <string name="view_pin_mismatch">İkisi aynı değil.</string>
+    <string name="view_pin_too_short">En az dört hane.</string>
+    <string name="view_pin_digits_only">Yalnızca rakam.</string>
+    <string name="view_pin_wrong">PIN bu değil.</string>
+    <string name="view_pin_change">PIN kodunu değiştir</string>
+    <string name="view_unlock">Kilidi aç</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Yönerge</string>
+    <string name="tile_guide_hint">Metin, resim ve sesle adımlar</string>
+    <string name="tile_checklist">Liste</string>
+    <string name="tile_checklist_hint">İşaretlenecek şeyler, istenirse her gün sıfırlanır</string>
+    <string name="tile_table">Tablo</string>
+    <string name="tile_table_hint">Kendi sütun ve satırlarınız</string>
+    <string name="tile_note">Not</string>
+    <string name="tile_note_hint">Başlıklar ve listelerle serbest metin</string>
+    <string name="tile_video">Video</string>
+    <string name="tile_video_hint">Bu telefondaki videolardan</string>
+    <string name="tile_audio">Ses</string>
+    <string name="tile_audio_hint">Bir ses dosyası ya da şimdi bir kayıt</string>
+    <string name="tile_call">Ara</string>
+    <string name="tile_call_hint">Bir ad, bir numara ve yakınlık</string>
+    <string name="tile_link">Web sitesi veya uygulama</string>
+    <string name="tile_link_hint">Bu telefondaki bir bağlantıyı veya uygulamayı açar</string>
+    <string name="tile_folder">Klasör</string>
+    <string name="tile_folder_hint">Birkaç kartı bir arada tutar</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Yönerge · %1$d adım</item>
+        <item quantity="other">Yönerge · %1$d adım</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Liste · %1$d madde</item>
+        <item quantity="other">Liste · %1$d madde</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Adım %1$d / %2$d</string>
+    <string name="guide_previous">Geri</string>
+    <string name="guide_next">İleri</string>
+    <string name="guide_finish">Bitti</string>
+    <string name="guide_read_aloud">Sesli oku</string>
+    <string name="guide_screen_stays_on">Burada ekran açık kalır.</string>
+
+    <string name="guide_step_current">Şimdi</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d / %2$d</string>
+    <string name="checklist_resets_daily">Her sabah %1$s saatinde sıfırlanır. İşaretlenenler saatiyle birlikte kayda geçer.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Yardım al</string>
+    <string name="help_sheet_title">Yardım al</string>
+    <string name="help_call_note">Dokununca telefon, numara hazır şekilde açılır. Larova kendi başına asla aramaz.</string>
+    <string name="help_emergency">Acil servisler</string>
+    <string name="help_no_contacts">Buraya henüz numara eklenmedi.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Bu dosya telefonda yok. Yedekle birlikte gelmemiş olabilir.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Uygulamayı aç</string>
+    <string name="app_missing">O uygulama artık bu telefonda yok.</string>
+    <string name="app_choose">Hangi uygulama?</string>
+    <string name="app_none_found">Eşleşen uygulama yok.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Yedek ve aktarım</string>
+    <string name="transfer_backup">Yedekle</string>
+    <string name="transfer_backup_hint">Bütün kartlarınızı, resimlerinizi ve kayıtlarınızı tek bir dosyada toplar. Nereye gideceğini siz seçersiniz.</string>
+    <string name="transfer_restore">Geri yükle</string>
+    <string name="transfer_restore_hint">Bir dosya seçin, önizlemeye bakın, sonra ya her şeyi değiştirin ya da var olanın üstüne ekleyin.</string>
+    <string name="transfer_protect">Parolayla koru</string>
+    <string name="transfer_protect_hint">Dosyayı birine gönderdiğinizde her seferinde önerilir. Parola olmadan açılamaz.</string>
+    <string name="transfer_last_backup">Son yedek</string>
+    <string name="transfer_preview">%1$d kart, %2$d dosya, %3$s</string>
+    <string name="transfer_replace">Hepsini değiştir</string>
+    <string name="transfer_merge">Var olanın üstüne ekle</string>
+    <string name="transfer_version_too_new">Bu dosya Larova’nın daha yeni bir sürümüyle oluşturulmuş. Açmak için uygulamayı güncelleyin.</string>
+    <string name="transfer_saved">Yedeklendi: %1$d kart ve %2$d dosya.</string>
+    <string name="transfer_restored">Geri yüklendi: %1$d kart ve %2$d dosya.</string>
+    <string name="transfer_backup_failed">Yedek yazılamadı. Başka bir yere kaydetmeyi deneyin.</string>
+    <string name="transfer_damaged">Bu dosya eksik — tamamı gönderilmemiş olabilir. Hiçbir şey değiştirilmedi.</string>
+    <string name="transfer_unreadable">Bu bir Larova yedeği değil.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="settings_appearance_system">Telefonu izle</string>
+    <string name="settings_appearance_light">Açık</string>
+    <string name="settings_appearance_dark">Koyu</string>
+    <string name="settings_appearance_night">Gece</string>
+    <string name="settings_appearance_night_hint">Sıcak ve çok soluk; karanlık bir odada sesli okumak için.</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_language_hint">Larova, telefonun geri kalanından farklı bir dil kullanabilir.</string>
+    <string name="settings_transfer_hint">Her şeyi tek bir dosyaya kaydedin ya da bir yedeği geri getirin.</string>
+    <string name="settings_log">Etkinlik kaydı</string>
+    <string name="settings_log_retention">%1$d gün sakla</string>
+    <string name="settings_log_clear">Kaydı temizle</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Henüz bir şey olmadı.</string>
+    <string name="log_note_hint">Bir satır ekle</string>
+    <string name="log_add">Kayda ekle</string>
+    <string name="log_retention">%1$d günden eski satırlar silinir.</string>
+    <string name="log_clear_question">Bütün kayıt temizlensin mi? Satırlar geri getirilemez.</string>
+    <string name="log_card_opened">Açıldı: %1$s</string>
+    <string name="log_check_toggled">“%1$s” içinde bir şey işaretlendi</string>
+    <string name="log_call_prepared">Arama hazırlandı: %1$s</string>
+    <string name="log_tile_gone">o zamandan beri silinmiş bir kart</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Yeni kart</string>
+    <string name="edit_edit_tile">Kartı düzenle</string>
+    <string name="edit_choose_type">Bu kartta ne olacak?</string>
+    <string name="edit_title">Başlık</string>
+    <string name="edit_subtitle">İkinci satır (isteğe bağlı)</string>
+    <string name="edit_colour">Renk</string>
+    <string name="edit_symbol">Simge</string>
+    <string name="edit_save">Kaydet</string>
+    <string name="edit_cancel">Vazgeç</string>
+    <string name="edit_delete">Kartı sil</string>
+    <string name="edit_delete_question">Bu kart silinsin mi? İçindekiler geri getirilemez.</string>
+    <string name="edit_title_required">Bir kartın başlığı olmalı.</string>
+    <string name="edit_folder_note">Klasörün içinde başka kartlar olur. Kaydedin, açın ve içine kart ekleyin.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Bu klasör silinsin mi? İçindeki %1$d kart da gider ve geri getirilemez.</item>
+        <item quantity="other">Bu klasör silinsin mi? İçindeki %1$d kart da gider ve geri getirilemez.</item>
+    </plurals>
+    <string name="edit_steps">Adımlar</string>
+    <string name="edit_add_step">Adım ekle</string>
+    <string name="edit_step_number">Adım %1$d</string>
+    <string name="edit_items">İşaretlenecek şeyler</string>
+    <string name="edit_add_item">Madde ekle</string>
+    <string name="edit_item_number">Madde %1$d</string>
+    <string name="edit_reset_daily">Her sabah baştan başla</string>
+    <string name="edit_columns">Sütun başlıkları</string>
+    <string name="edit_add_column">Başlık ekle</string>
+    <string name="edit_column_number">Başlık %1$d</string>
+    <string name="edit_rows">Satırlar</string>
+    <string name="edit_add_row">Satır ekle</string>
+    <string name="edit_row_number">Satır %1$d</string>
+    <string name="edit_note_text">Metin</string>
+    <string name="edit_call_name">Ad</string>
+    <string name="edit_call_number">Telefon numarası</string>
+    <string name="edit_call_relation">Yakınlık (isteğe bağlı)</string>
+    <string name="edit_call_in_help">Yardım al bölümünde de göster</string>
+    <string name="edit_record">Mikrofonla kaydet</string>
+    <string name="edit_recording">Kaydediliyor…</string>
+    <string name="edit_record_stop">Durdur ve sakla</string>
+    <string name="edit_record_failed">Mikrofon kullanılamadı ya da hiçbir şey kaydedilmedi.</string>
+    <string name="edit_choose_video">Bir video seçin</string>
+    <string name="edit_choose_sound">Bir ses dosyası seçin</string>
+    <string name="edit_media_none_chosen">Henüz bir şey seçilmedi.</string>
+    <string name="edit_media_chosen">Seçildi, %1$d MB</string>
+    <string name="edit_media_large">Bu büyük bir dosya. Onu içeren yedeklerin gönderilmesi yavaş olur ve bazı gönderme yolları için fazla büyük gelebilir.</string>
+    <string name="edit_media_required">Bu kartın neyi çalacağını seçin.</string>
+    <string name="edit_media_caption">Üstünde ne yazsın (isteğe bağlı)</string>
+    <string name="edit_choose_app">Uygulama seç</string>
+    <string name="edit_app_none_chosen">Henüz uygulama seçilmedi.</string>
+    <string name="edit_app_chosen">%1$s uygulamasını açar</string>
+    <string name="edit_app_label">Kartta ne yazacak</string>
+    <string name="edit_app_required">Bu kartın açacağı uygulamayı seçin.</string>
+    <string name="edit_web_address">Web adresi</string>
+    <string name="edit_web_label">Etiket (isteğe bağlı)</string>
+    <string name="edit_web_address_invalid">Bir web adresi http:// veya https:// ile başlamalı</string>
+    <string name="edit_remove">Kaldır</string>
+    <string name="edit_add_picture">Resim ekle</string>
+    <string name="edit_change_picture">Resmi değiştir</string>
+    <string name="edit_remove_picture">Resmi kaldır</string>
+    <string name="edit_picture_failed">O resim eklenemedi.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Kum</string>
+    <string name="colour_clay">Kil</string>
+    <string name="colour_rose">Gül</string>
+    <string name="colour_lilac">Leylak</string>
+    <string name="colour_sky">Gökyüzü</string>
+    <string name="colour_sage">Adaçayı</string>
+    <string name="colour_moss">Yosun</string>
+    <string name="colour_stone">Taş</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">Uyku vakti</string>
+    <string name="template_evening">Akşam düzeni</string>
+    <string name="template_contacts">Önemli numaralar</string>
+    <string name="template_food">Yemek ve içmek</string>
+    <string name="template_day">Bizde bir gün</string>
+    <string name="template_what_helps">Şu durumda ne iyi gelir…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Pijama giyildi, dişler fırçalandı.</string>
+    <string name="template_bedtime_step_2">Kanepede bir masal — hangisi olacağını o seçsin.</string>
+    <string name="template_bedtime_step_3">Perdeler kapalı, küçük lamba açık.</string>
+    <string name="template_bedtime_step_4">Peluş tavşan yatakta, rafta değil.</string>
+    <string name="template_bedtime_step_5">Kapı bir el genişliği kadar aralık kalsın.</string>
+
+    <string name="template_evening_item_1">Akşam yemeği</string>
+    <string name="template_evening_item_2">Yıkanmak ve dişler</string>
+    <string name="template_evening_item_3">Pijama</string>
+    <string name="template_evening_item_4">Masal</string>
+    <string name="template_evening_item_5">Işıklar kapalı</string>
+
+    <string name="template_contacts_name">Anne</string>
+    <string name="template_contacts_relation">Annesi</string>
+    <string name="template_contacts_todo">Numarayı ekle</string>
+
+    <string name="template_food_column_1">Sever</string>
+    <string name="template_food_column_2">Pek sevmez</string>
+    <string name="template_food_row_1_1">Tereyağlı makarna</string>
+    <string name="template_food_row_1_2">İçinde mantar olan her şey</string>
+    <string name="template_food_row_2_1">Elma dilimleri</string>
+    <string name="template_food_row_2_2">Gazlı içecekler</string>
+    <string name="template_food_row_3_1">Su, süt</string>
+    <string name="template_food_row_3_2">Yemeğin üstünde sos</string>
+
+    <string name="template_day_column_1">Ne zaman</string>
+    <string name="template_day_column_2">Ne oluyor</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Uyanış, masada kahvaltı</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Öğle yemeği, sonra kitapla sakin bir vakit</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Atıştırmalık, hava kuruysa sonra park</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Akşam yemeği, sonra akşam düzeni</string>
+
+    <string name="template_what_helps_step_1">Üzgünse: yanına oturun ve hemen konuşmayın.</string>
+    <string name="template_what_helps_step_2">Yemek yemiyorsa: masada bırakın, sonra tekrar deneyin.</string>
+    <string name="template_what_helps_step_3">Uyuyamıyorsa: ninni, yavaşça, iki kez.</string>
+
+    <string name="home_start_with">Ya da bunlardan biriyle başlayın</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">%1$s kartını aç</string>
+    <string name="cd_add_tile">Kart ekle</string>
+    <string name="cd_clear_search">Aramayı temizle</string>
+    <string name="cd_move_up">%1$s kartını yukarı taşı</string>
+    <string name="cd_move_down">%1$s kartını aşağı taşı</string>
+    <string name="cd_colour_selected">%1$s, seçili</string>
+    <string name="cd_remove_line">%1$s kaldır</string>
+    <string name="cd_check_item">%1$s, yapıldı</string>
+    <string name="cd_uncheck_item">%1$s, yapılmadı</string>
+    <string name="cd_back">Geri</string>
+    <string name="cd_close">Kapat</string>
+    <string name="cd_menu">Menü</string>
+    <string name="cd_edit_tile">%1$s kartını düzenle</string>
+    <string name="cd_play">Oynat</string>
+    <string name="cd_step_picture">%1$d. adımın resmi</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

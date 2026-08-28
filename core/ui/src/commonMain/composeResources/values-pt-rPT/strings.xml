@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Portuguese (Portugal) strings.
+
+  The directory qualifier is `values-pt-rPT`, matching `pt-PT` in locales_config.xml: European
+  Portuguese, not Brazilian. A phone set to pt-BR falls back to English rather than reading this,
+  which is the honest outcome until somebody writes a pt-BR set.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">Que bom vê-lo</string>
+    <string name="home_search">Procurar</string>
+    <string name="home_add_tile">Adicionar cartão</string>
+    <string name="home_child_age">%1$s · %2$d anos</string>
+    <string name="home_empty_title">Ainda não há nada aqui</string>
+    <string name="home_search_empty">Não há resultados.</string>
+    <string name="arrange_title">Organizar os cartões</string>
+    <string name="arrange_hint">Mova os cartões para cima ou para baixo. Esta é a ordem do ecrã inicial.</string>
+    <string name="home_empty_hint">Os cartões que adicionar aparecem aqui. Um cartão pode ter um guia, uma lista, uma nota, um número para ligar ou um site.</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">Vista de quem cuida</string>
+    <string name="view_parent">Vista dos pais</string>
+    <string name="view_parent_active">A vista dos pais está ligada. Editar e fazer cópias está desbloqueado. A Larova volta à vista de quem cuida ao fim de cinco minutos sem atividade.</string>
+    <string name="view_unlock_title">Desbloquear a vista dos pais</string>
+    <string name="view_unlock_pin">Introduza o PIN</string>
+    <string name="view_unlock_biometric">Usar a impressão digital</string>
+
+    <string name="view_locked_note">Editar e fazer cópias está na vista dos pais.</string>
+    <string name="view_leave">Sair da vista dos pais</string>
+    <string name="view_pin_create_title">Escolha um PIN</string>
+    <string name="view_pin_create_hint">Entre quatro e doze dígitos. Impede que os cartões sejam alterados sem querer; não os esconde.</string>
+    <string name="view_pin_repeat">Escreva outra vez</string>
+    <string name="view_pin_mismatch">Os dois não coincidem.</string>
+    <string name="view_pin_too_short">Pelo menos quatro dígitos.</string>
+    <string name="view_pin_digits_only">Apenas dígitos.</string>
+    <string name="view_pin_wrong">O PIN não é esse.</string>
+    <string name="view_pin_change">Mudar o PIN</string>
+    <string name="view_unlock">Desbloquear</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">Guia</string>
+    <string name="tile_guide_hint">Passos com texto, imagens e som</string>
+    <string name="tile_checklist">Lista</string>
+    <string name="tile_checklist_hint">Coisas para marcar, reiniciadas todos os dias se quiser</string>
+    <string name="tile_table">Tabela</string>
+    <string name="tile_table_hint">As suas colunas e linhas</string>
+    <string name="tile_note">Nota</string>
+    <string name="tile_note_hint">Texto livre com títulos e listas</string>
+    <string name="tile_video">Vídeo</string>
+    <string name="tile_video_hint">Dos vídeos deste telemóvel</string>
+    <string name="tile_audio">Som</string>
+    <string name="tile_audio_hint">Um ficheiro de som, ou grave um agora</string>
+    <string name="tile_call">Ligar</string>
+    <string name="tile_call_hint">Um nome, um número e o parentesco</string>
+    <string name="tile_link">Site ou aplicação</string>
+    <string name="tile_link_hint">Abre uma ligação ou uma aplicação deste telemóvel</string>
+    <string name="tile_folder">Pasta</string>
+    <string name="tile_folder_hint">Junta vários cartões</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">Guia · %1$d passo</item>
+        <item quantity="other">Guia · %1$d passos</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">Lista · %1$d item</item>
+        <item quantity="other">Lista · %1$d itens</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">Passo %1$d de %2$d</string>
+    <string name="guide_previous">Voltar</string>
+    <string name="guide_next">Seguinte</string>
+    <string name="guide_finish">Concluído</string>
+    <string name="guide_read_aloud">Ler em voz alta</string>
+    <string name="guide_screen_stays_on">Aqui o ecrã fica ligado.</string>
+
+    <string name="guide_step_current">Agora</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%1$d de %2$d</string>
+    <string name="checklist_resets_daily">Reinicia todas as manhãs às %1$s. O que for marcado fica no registo com a hora.</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">Pedir ajuda</string>
+    <string name="help_sheet_title">Pedir ajuda</string>
+    <string name="help_call_note">Ao tocar abre o telefone com o número pronto. A Larova nunca liga sozinha.</string>
+    <string name="help_emergency">Emergência</string>
+    <string name="help_no_contacts">Ainda não foi adicionado nenhum número aqui.</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">Este ficheiro não está no telemóvel. Pode não ter vindo com a cópia de segurança.</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">Abrir a aplicação</string>
+    <string name="app_missing">Essa aplicação já não está neste telemóvel.</string>
+    <string name="app_choose">Que aplicação?</string>
+    <string name="app_none_found">Nenhuma aplicação corresponde.</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">Cópia e transferência</string>
+    <string name="transfer_backup">Fazer cópia</string>
+    <string name="transfer_backup_hint">Cria um único ficheiro com todos os seus cartões, imagens e gravações. Escolhe onde fica.</string>
+    <string name="transfer_restore">Restaurar</string>
+    <string name="transfer_restore_hint">Escolha um ficheiro, veja a pré-visualização e depois substitua ou junte ao que já está aqui.</string>
+    <string name="transfer_protect">Proteger com uma palavra-passe</string>
+    <string name="transfer_protect_hint">Recomendado sempre que enviar o ficheiro a alguém. Sem a palavra-passe não pode ser aberto.</string>
+    <string name="transfer_last_backup">Última cópia</string>
+    <string name="transfer_preview">%1$d cartões, %2$d ficheiros, %3$s</string>
+    <string name="transfer_replace">Substituir tudo</string>
+    <string name="transfer_merge">Juntar ao que está aqui</string>
+    <string name="transfer_version_too_new">Este ficheiro foi criado com uma versão mais recente da Larova. Atualize a aplicação para o abrir.</string>
+    <string name="transfer_saved">Cópia feita: %1$d cartões e %2$d ficheiros.</string>
+    <string name="transfer_restored">Restaurado: %1$d cartões e %2$d ficheiros.</string>
+    <string name="transfer_backup_failed">A cópia não pôde ser escrita. Experimente guardá-la noutro sítio.</string>
+    <string name="transfer_damaged">Este ficheiro está incompleto — pode não ter sido enviado por inteiro. Não foi alterado nada.</string>
+    <string name="transfer_unreadable">Isto não é uma cópia da Larova.</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">Definições</string>
+    <string name="settings_appearance">Aspeto</string>
+    <string name="settings_appearance_system">Seguir o telemóvel</string>
+    <string name="settings_appearance_light">Claro</string>
+    <string name="settings_appearance_dark">Escuro</string>
+    <string name="settings_appearance_night">Noite</string>
+    <string name="settings_appearance_night_hint">Quente e muito ténue, para ler em voz alta num quarto às escuras.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_hint">A Larova pode usar um idioma diferente do resto do telemóvel.</string>
+    <string name="settings_transfer_hint">Guarde tudo num ficheiro, ou traga uma cópia de volta.</string>
+    <string name="settings_log">Registo de atividade</string>
+    <string name="settings_log_retention">Guardar %1$d dias</string>
+    <string name="settings_log_clear">Limpar o registo</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">Ainda não aconteceu nada.</string>
+    <string name="log_note_hint">Adicionar uma linha</string>
+    <string name="log_add">Adicionar ao registo</string>
+    <string name="log_retention">As linhas com mais de %1$d dias são removidas.</string>
+    <string name="log_clear_question">Limpar todo o registo? As linhas não podem ser recuperadas.</string>
+    <string name="log_card_opened">Aberto: %1$s</string>
+    <string name="log_check_toggled">Marcou algo em %1$s</string>
+    <string name="log_call_prepared">Chamada preparada: %1$s</string>
+    <string name="log_tile_gone">um cartão que entretanto foi apagado</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">Novo cartão</string>
+    <string name="edit_edit_tile">Editar cartão</string>
+    <string name="edit_choose_type">O que vai neste cartão?</string>
+    <string name="edit_title">Título</string>
+    <string name="edit_subtitle">Segunda linha (opcional)</string>
+    <string name="edit_colour">Cor</string>
+    <string name="edit_symbol">Símbolo</string>
+    <string name="edit_save">Guardar</string>
+    <string name="edit_cancel">Cancelar</string>
+    <string name="edit_delete">Apagar cartão</string>
+    <string name="edit_delete_question">Apagar este cartão? O que está nele não pode ser recuperado.</string>
+    <string name="edit_title_required">Um cartão precisa de um título.</string>
+    <string name="edit_folder_note">Uma pasta contém outros cartões. Guarde-a, abra-a e adicione cartões lá dentro.</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">Apagar esta pasta? O %1$d cartão lá dentro vai também e não pode ser recuperado.</item>
+        <item quantity="other">Apagar esta pasta? Os %1$d cartões lá dentro vão também e não podem ser recuperados.</item>
+    </plurals>
+    <string name="edit_steps">Passos</string>
+    <string name="edit_add_step">Adicionar passo</string>
+    <string name="edit_step_number">Passo %1$d</string>
+    <string name="edit_items">Coisas para marcar</string>
+    <string name="edit_add_item">Adicionar item</string>
+    <string name="edit_item_number">Item %1$d</string>
+    <string name="edit_reset_daily">Recomeçar todas as manhãs</string>
+    <string name="edit_columns">Cabeçalhos</string>
+    <string name="edit_add_column">Adicionar cabeçalho</string>
+    <string name="edit_column_number">Cabeçalho %1$d</string>
+    <string name="edit_rows">Linhas</string>
+    <string name="edit_add_row">Adicionar linha</string>
+    <string name="edit_row_number">Linha %1$d</string>
+    <string name="edit_note_text">Texto</string>
+    <string name="edit_call_name">Nome</string>
+    <string name="edit_call_number">Número de telefone</string>
+    <string name="edit_call_relation">Parentesco (opcional)</string>
+    <string name="edit_call_in_help">Mostrar também em Pedir ajuda</string>
+    <string name="edit_record">Gravar com o microfone</string>
+    <string name="edit_recording">A gravar…</string>
+    <string name="edit_record_stop">Parar e guardar</string>
+    <string name="edit_record_failed">Não foi possível usar o microfone, ou não foi gravado nada.</string>
+    <string name="edit_choose_video">Escolher um vídeo</string>
+    <string name="edit_choose_sound">Escolher um ficheiro de som</string>
+    <string name="edit_media_none_chosen">Ainda não foi escolhido nada.</string>
+    <string name="edit_media_chosen">Escolhido, %1$d MB</string>
+    <string name="edit_media_large">Este ficheiro é grande. As cópias que o incluam demoram a enviar e podem ser grandes demais para algumas formas de envio.</string>
+    <string name="edit_media_required">Escolha o que este cartão reproduz.</string>
+    <string name="edit_media_caption">O que dizer por cima (opcional)</string>
+    <string name="edit_choose_app">Escolher aplicação</string>
+    <string name="edit_app_none_chosen">Ainda não foi escolhida nenhuma aplicação.</string>
+    <string name="edit_app_chosen">Abre %1$s</string>
+    <string name="edit_app_label">O que o cartão diz</string>
+    <string name="edit_app_required">Escolha a aplicação que este cartão abre.</string>
+    <string name="edit_web_address">Endereço web</string>
+    <string name="edit_web_label">Etiqueta (opcional)</string>
+    <string name="edit_web_address_invalid">Um endereço web tem de começar por http:// ou https://</string>
+    <string name="edit_remove">Remover</string>
+    <string name="edit_add_picture">Adicionar uma imagem</string>
+    <string name="edit_change_picture">Mudar a imagem</string>
+    <string name="edit_remove_picture">Remover a imagem</string>
+    <string name="edit_picture_failed">Não foi possível adicionar essa imagem.</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">Areia</string>
+    <string name="colour_clay">Barro</string>
+    <string name="colour_rose">Rosa</string>
+    <string name="colour_lilac">Lilás</string>
+    <string name="colour_sky">Céu</string>
+    <string name="colour_sage">Salva</string>
+    <string name="colour_moss">Musgo</string>
+    <string name="colour_stone">Pedra</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">A hora de dormir</string>
+    <string name="template_evening">Rotina da noite</string>
+    <string name="template_contacts">Números importantes</string>
+    <string name="template_food">Comer e beber</string>
+    <string name="template_day">Um dia connosco</string>
+    <string name="template_what_helps">O que ajuda quando…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">Pijama vestido, dentes lavados.</string>
+    <string name="template_bedtime_step_2">Uma história no sofá — é ele que escolhe qual.</string>
+    <string name="template_bedtime_step_3">Cortinas fechadas, candeeiro pequeno aceso.</string>
+    <string name="template_bedtime_step_4">O coelho de peluche na cama, não na prateleira.</string>
+    <string name="template_bedtime_step_5">Porta encostada, mais ou menos uma mão.</string>
+
+    <string name="template_evening_item_1">Jantar</string>
+    <string name="template_evening_item_2">Lavar e dentes</string>
+    <string name="template_evening_item_3">Pijama</string>
+    <string name="template_evening_item_4">História</string>
+    <string name="template_evening_item_5">Luz apagada</string>
+
+    <string name="template_contacts_name">Mãe</string>
+    <string name="template_contacts_relation">Mãe</string>
+    <string name="template_contacts_todo">Adicionar o número</string>
+
+    <string name="template_food_column_1">Gosta</string>
+    <string name="template_food_column_2">Prefere não</string>
+    <string name="template_food_row_1_1">Massa com manteiga</string>
+    <string name="template_food_row_1_2">Tudo o que leve cogumelos</string>
+    <string name="template_food_row_2_1">Gomos de maçã</string>
+    <string name="template_food_row_2_2">Bebidas com gás</string>
+    <string name="template_food_row_3_1">Água, leite</string>
+    <string name="template_food_row_3_2">Molho por cima da comida</string>
+
+    <string name="template_day_column_1">Quando</string>
+    <string name="template_day_column_2">O que acontece</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">Acordado, pequeno-almoço à mesa</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">Almoço e depois um bocado calmo com um livro</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">Lanche e depois o parque se não chover</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">Jantar e depois a rotina da noite</string>
+
+    <string name="template_what_helps_step_1">Chateado: sentar-se ao pé e não falar já.</string>
+    <string name="template_what_helps_step_2">Não come: deixar na mesa e tentar outra vez mais tarde.</string>
+    <string name="template_what_helps_step_3">Não consegue dormir: a canção de embalar, baixinho, duas vezes.</string>
+
+    <string name="home_start_with">Ou comece por um destes</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">Abrir %1$s</string>
+    <string name="cd_add_tile">Adicionar um cartão</string>
+    <string name="cd_clear_search">Limpar a pesquisa</string>
+    <string name="cd_move_up">Mover %1$s para cima</string>
+    <string name="cd_move_down">Mover %1$s para baixo</string>
+    <string name="cd_colour_selected">%1$s, selecionado</string>
+    <string name="cd_remove_line">Remover %1$s</string>
+    <string name="cd_check_item">%1$s, feito</string>
+    <string name="cd_uncheck_item">%1$s, por fazer</string>
+    <string name="cd_back">Voltar</string>
+    <string name="cd_close">Fechar</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_edit_tile">Editar %1$s</string>
+    <string name="cd_play">Reproduzir</string>
+    <string name="cd_step_picture">Imagem do passo %1$d</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

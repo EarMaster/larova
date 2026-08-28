@@ -94,7 +94,28 @@ Use the system font. A bundled display face would need glyph coverage for Latin,
 - Touch targets at least 56dp; tiles considerably larger
 - Tile corner radius 24dp, chip radius 14dp
 - Grid: two columns, 12dp gutter, 20dp screen margin
-- Help bar pinned 16dp from the bottom on every screen, above all content
+- Every tile is the same height — 72dp of chrome plus 84dp of text, the text half multiplied by
+  the font scale. Content-sized tiles turn a grid into a skyline; the symbol sits at the top of
+  the tile and the words at the bottom, so a one-line title still looks composed
+- Help bar pinned 16dp from the bottom, above all content, on every screen a caregiver reads.
+  **Not** on settings or the activity log: those are opened on purpose by a parent, and an
+  emergency bar under a list of preferences spends the one colour that means "now"
+
+### Width
+
+One axis, three sizes, and no notion of "tablet" anywhere in the code — a phone in landscape, a
+small tablet and a split-screen window are all just widths.
+
+| Width | Tile columns | Everything else |
+|---|---|---|
+| under 600dp | 2 | full width, as drawn above |
+| 600–839dp | 3 | capped at 640dp and centred |
+| 840dp and over | 4 | capped at 640dp and centred |
+
+The grid gets a wider cap than that — 1120dp — because a grid is scanned rather than read. The
+640dp cap is a measure, not a margin: a guide step at 22sp run across 1280dp is a line the eye
+loses on the way back, which is the failure the one-step-per-screen guide exists to prevent. The
+help bar is capped and centred with the content so the two stay one column.
 
 ## 6. Prototypes
 

@@ -1,9 +1,16 @@
+import java.awt.Color
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     // Navigation routes are @Serializable data objects, which is what makes them type-safe.
     alias(libs.plugins.kotlin.serialization)
+    // Screenshot goldens and the store images. Contributes `recordRoborazziDebug` and
+    // `verifyRoborazziDebug`; the tests themselves are ordinary JVM unit tests either way.
+    alias(libs.plugins.roborazzi)
 }
 
 // The only Android-specific module, and the only one that is not multiplatform: there is no KMP
@@ -19,8 +26,8 @@ android {
         applicationId = "app.larova"
         minSdk = providers.gradleProperty("larova.minSdk").get().toInt()
         targetSdk = providers.gradleProperty("larova.targetSdk").get().toInt()
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
         // The two lines above are read by release.yml and google-play.yml with grep and sed, which
         // take the *first* match in this file. Keep them as plain assignments, and do not mention
         // either identifier in a comment above them.
@@ -88,6 +95,20 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    testOptions {
+        unitTests {
+            // Robolectric renders the real screens, so the unit tests need the real resources.
+            // For Larova that means the *assets*: Compose Multiplatform compiles `strings.xml`
+            // into `assets/composeResources/`, not into `res/`, so a screenshot taken without
+            // this is a picture of the layout with no words in it.
+            isIncludeAndroidResources = true
+            all {
+                // A full screen at 420dpi does not render in the 512 MB default heap.
+                it.maxHeapSize = "2g"
+            }
+        }
+    }
 }
 
 kotlin {
@@ -135,6 +156,90 @@ fun keystoreConfigured(): Boolean =
  */
 fun keystoreFile(path: String): java.io.File? = rootDir.resolve(path).takeIf { it.isFile }
 
+
+// ------------------------------------------------------------------ store and website images
+//
+// `StoreAssetTest` writes the listing screenshots straight into the fastlane layout, but it cannot
+// finish the job: Roborazzi writes RGBA, Play refuses any image with an alpha channel, and neither
+// `javax.imageio` nor `java.awt` is on an Android unit test's classpath. Both remaining steps
+// therefore happen here, where the full JDK is.
+//
+// Paths are resolved inside the configuration block and captured as plain `File`s. They cannot be
+// script-level `val`s: reading one from `doLast` captures the build script object itself, which the
+// configuration cache refuses to serialise.
+val finishStoreAssets = tasks.register("finishStoreAssets") {
+    group = "publishing"
+    description = "Converts the Play Store screenshots to 24-bit PNG and copies them to the " +
+        "Pages site."
+
+    // Every locale, not just the source one. `StoreAssetTest` writes one directory per locale it
+    // has content for, and a locale added later must not need this file edited as well.
+    val storeMetadata = rootProject.layout.projectDirectory
+        .dir("fastlane/metadata/android").asFile
+    val pagesScreenshots = rootProject.layout.projectDirectory
+        .dir("docs/pages/assets/screenshots").asFile
+
+    doLast {
+        val localeImageDirs = storeMetadata.listFiles()
+            ?.filter { it.isDirectory }
+            ?.map { it.resolve("images") }
+            ?.filter { it.isDirectory }
+            .orEmpty()
+
+        if (localeImageDirs.isEmpty()) {
+            logger.lifecycle("No store images under $storeMetadata — nothing to finish.")
+            return@doLast
+        }
+
+        var converted = 0
+        localeImageDirs.asSequence()
+            .flatMap { it.walkTopDown() }
+            .filter { it.isFile && it.extension == "png" }
+            .forEach { file ->
+                val source = ImageIO.read(file) ?: return@forEach
+                // Composited onto the picture's own top-left pixel rather than a fixed colour.
+                // Every screen here is drawn on an opaque Surface so nothing is actually
+                // transparent and the fill never shows — but the night-mode screenshot has a
+                // near-black background and the others a warm off-white, so a single hardcoded
+                // colour would be the wrong one half the time the day that stops being true.
+                val opaque = BufferedImage(source.width, source.height, BufferedImage.TYPE_INT_RGB)
+                opaque.createGraphics().apply {
+                    // Imported at the top of the file on purpose: in a Kotlin DSL script a bare
+                    // `java.awt.Color` parses as a property on the Java plugin extension, which is
+                    // what `java` means here, and fails with "unresolved reference: awt".
+                    color = Color(source.getRGB(0, 0), true)
+                    fillRect(0, 0, source.width, source.height)
+                    drawImage(source, 0, 0, null)
+                    dispose()
+                }
+                ImageIO.write(opaque, "png", file)
+                converted++
+            }
+
+        // The website is served from docs/pages only and cannot link into the fastlane tree, so it
+        // needs its own copy. Same run, same renderer: the listing and the landing page can never
+        // show a different version of the app from each other, or from the goldens.
+        //
+        // The English set alone. The site is written in English, so a German screenshot in the
+        // middle of an English page would read as a mistake rather than as a translation.
+        var copied = 0
+        val phoneSet = storeMetadata.resolve("en-US/images/phoneScreenshots")
+        if (phoneSet.isDirectory) {
+            pagesScreenshots.mkdirs()
+            phoneSet.listFiles { file -> file.extension == "png" }?.forEach { file ->
+                file.copyTo(pagesScreenshots.resolve(file.name), overwrite = true)
+                copied++
+            }
+        }
+
+        logger.lifecycle("Converted $converted store screenshot(s); copied $copied to the site.")
+    }
+}
+
+// Recording is the only thing that writes those files, so it is the only thing that has to finish
+// the job. A record run that captured no store assets simply finds nothing to do.
+tasks.matching { it.name == "recordRoborazziDebug" }.configureEach { finalizedBy(finishStoreAssets) }
+
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
@@ -171,4 +276,19 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
 
     testImplementation(libs.kotlin.test)
+
+    // Screenshot tests. They are plain unit tests: `captureRoboImage` is inert unless Roborazzi's
+    // own tasks set its system property, so `./gradlew test` only checks that every screen still
+    // composes — worth having on its own — and neither records nor compares a golden.
+    //
+    // `testDebug` rather than `test`, and `debugImplementation` for the manifest: the activity
+    // `createAndroidComposeRule` launches is contributed to the *debug* merged manifest by
+    // ui-test-manifest. Scoped this way, `testReleaseUnitTest` is empty rather than broken.
+    debugImplementation(libs.compose.ui.test.manifest)
+    testDebugImplementation(libs.junit)
+    testDebugImplementation(libs.robolectric)
+    testDebugImplementation(libs.roborazzi)
+    testDebugImplementation(libs.roborazzi.compose)
+    testDebugImplementation(libs.compose.ui.test.junit4)
+    testDebugImplementation(libs.kotlinx.coroutines.test)
 }

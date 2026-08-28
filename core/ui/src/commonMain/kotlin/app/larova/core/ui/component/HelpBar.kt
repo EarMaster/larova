@@ -2,9 +2,14 @@ package app.larova.core.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +43,13 @@ fun HelpBar(onClick: () -> Unit, modifier: Modifier = Modifier) {
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
+            // The app draws edge to edge, so without this the bar sits under the gesture pill and
+            // the bottom of it is somewhere between hard and impossible to hit — on the one control
+            // that has to be reachable at a moment nobody is being careful. Horizontal as well as
+            // bottom, for the cutout a phone held sideways puts through the middle of it.
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+            )
             .padding(horizontal = Dimens.HelpBarInset, vertical = Dimens.HelpBarInset)
             .heightIn(min = Dimens.MinTouchTarget),
         shape = RoundedCornerShape(Dimens.TileRadius),

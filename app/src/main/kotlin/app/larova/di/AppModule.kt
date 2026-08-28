@@ -42,6 +42,8 @@ import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
+import app.larova.core.domain.usecase.ObserveLastBackup
+import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
 import app.larova.core.domain.usecase.MostOpenedTiles
@@ -195,6 +197,8 @@ val appModule = module {
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
     factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ObserveLastBackup(get()) }
+    factory { RecordLastBackup(get()) }
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
@@ -206,7 +210,7 @@ val appModule = module {
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
     viewModel { HelpViewModel(get(), get()) }
     viewModel { LogViewModel(get(), get(), get()) }
-    viewModel { TransferViewModel(get(), get(), get()) }
+    viewModel { TransferViewModel(get(), get(), get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters ->
         CardViewModel(parameters.get(), get(), get(), get(), get(), get())
