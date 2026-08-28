@@ -140,8 +140,11 @@
     <string name="settings_title">الإعدادات</string>
     <string name="settings_appearance">المظهر</string>
     <string name="settings_appearance_system">حسب الهاتف</string>
+    <string name="settings_appearance_system_hint">فاتح أو داكن، حسب ما يستخدمه الهاتف.</string>
     <string name="settings_appearance_light">فاتح</string>
+    <string name="settings_appearance_light_hint">نص داكن على خلفية فاتحة دافئة.</string>
     <string name="settings_appearance_dark">داكن</string>
+    <string name="settings_appearance_dark_hint">نص فاتح على خلفية داكنة.</string>
     <string name="settings_appearance_night">ليلي</string>
     <string name="settings_appearance_night_hint">دافئ وخافت جداً، للقراءة بصوت عالٍ في غرفة مظلمة.</string>
     <string name="settings_language">اللغة</string>

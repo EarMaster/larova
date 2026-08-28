@@ -129,8 +129,11 @@
     <string name="settings_title">Impostazioni</string>
     <string name="settings_appearance">Aspetto</string>
     <string name="settings_appearance_system">Segui il telefono</string>
+    <string name="settings_appearance_system_hint">Chiaro o scuro, come il telefono in quel momento.</string>
     <string name="settings_appearance_light">Chiaro</string>
+    <string name="settings_appearance_light_hint">Testo scuro su uno sfondo chiaro e caldo.</string>
     <string name="settings_appearance_dark">Scuro</string>
+    <string name="settings_appearance_dark_hint">Testo chiaro su uno sfondo scuro.</string>
     <string name="settings_appearance_night">Notte</string>
     <string name="settings_appearance_night_hint">Caldo e molto attenuato, per leggere ad alta voce in una stanza buia.</string>
     <string name="settings_language">Lingua</string>

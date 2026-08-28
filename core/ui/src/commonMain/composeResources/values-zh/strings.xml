@@ -131,8 +131,11 @@
     <string name="settings_title">设置</string>
     <string name="settings_appearance">外观</string>
     <string name="settings_appearance_system">跟随手机</string>
+    <string name="settings_appearance_system_hint">跟着手机走，浅色或深色。</string>
     <string name="settings_appearance_light">浅色</string>
+    <string name="settings_appearance_light_hint">暖色浅背景上的深色文字。</string>
     <string name="settings_appearance_dark">深色</string>
+    <string name="settings_appearance_dark_hint">深色背景上的浅色文字。</string>
     <string name="settings_appearance_night">夜间</string>
     <string name="settings_appearance_night_hint">暖色而且很暗，适合在黑暗的房间里朗读。</string>
     <string name="settings_language">语言</string>

@@ -29,9 +29,13 @@ class AndroidShortcuts(private val context: Context) : Shortcuts {
     override suspend fun publish(targets: List<ShortcutTarget>) = withContext(Dispatchers.IO) {
         val shortcuts = targets.map { target ->
             ShortcutInfoCompat.Builder(context, target.cardId.toString())
-                // Both labels, because a launcher picks whichever fits and falls back to the short
-                // one. A title cut off mid-word is a tile nobody recognises.
-                .setShortLabel(target.label.take(SHORT_LABEL_CHARS))
+                // The whole title in both, and no truncation of our own. A launcher picks
+                // whichever label fits the space it has and elides what does not with an ellipsis,
+                // at the width it actually knows; cutting the string here produced "Wichtige Num"
+                // with no ellipsis and no way to tell a shortened title from a badly named tile.
+                // Android recommends a short label of about ten characters, which is a hint about
+                // what will fit rather than a limit that is enforced.
+                .setShortLabel(target.label)
                 .setLongLabel(target.label)
                 .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
                 .setIntent(
@@ -53,11 +57,6 @@ class AndroidShortcuts(private val context: Context) : Shortcuts {
             false
         }
         Unit
-    }
-
-    private companion object {
-        /** What launchers show without eliding. Longer titles keep their full form as the long label. */
-        const val SHORT_LABEL_CHARS = 12
     }
 }
 

@@ -128,8 +128,11 @@
     <string name="settings_title">設定</string>
     <string name="settings_appearance">外観</string>
     <string name="settings_appearance_system">スマホに合わせる</string>
+    <string name="settings_appearance_system_hint">スマホに合わせてライトかダークになります。</string>
     <string name="settings_appearance_light">ライト</string>
+    <string name="settings_appearance_light_hint">暖かみのある明るい背景に濃い文字。</string>
     <string name="settings_appearance_dark">ダーク</string>
+    <string name="settings_appearance_dark_hint">暗い背景に明るい文字。</string>
     <string name="settings_appearance_night">ナイト</string>
     <string name="settings_appearance_night_hint">暖かくとても暗い表示。暗い部屋で読み聞かせるときに。</string>
     <string name="settings_language">言語</string>

@@ -134,8 +134,11 @@
     <string name="settings_title">Ustawienia</string>
     <string name="settings_appearance">Wygląd</string>
     <string name="settings_appearance_system">Jak w telefonie</string>
+    <string name="settings_appearance_system_hint">Jasny albo ciemny, zależnie od tego, co ma telefon.</string>
     <string name="settings_appearance_light">Jasny</string>
+    <string name="settings_appearance_light_hint">Ciemny tekst na ciepłym, jasnym tle.</string>
     <string name="settings_appearance_dark">Ciemny</string>
+    <string name="settings_appearance_dark_hint">Jasny tekst na ciemnym tle.</string>
     <string name="settings_appearance_night">Nocny</string>
     <string name="settings_appearance_night_hint">Ciepły i bardzo przygaszony, do czytania na głos w ciemnym pokoju.</string>
     <string name="settings_language">Język</string>

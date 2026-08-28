@@ -131,8 +131,11 @@
     <string name="settings_title">Ayarlar</string>
     <string name="settings_appearance">Görünüm</string>
     <string name="settings_appearance_system">Telefonu izle</string>
+    <string name="settings_appearance_system_hint">Telefon hangisini kullanıyorsa: açık ya da koyu.</string>
     <string name="settings_appearance_light">Açık</string>
+    <string name="settings_appearance_light_hint">Sıcak ve açık bir zemin üzerinde koyu yazı.</string>
     <string name="settings_appearance_dark">Koyu</string>
+    <string name="settings_appearance_dark_hint">Koyu zemin üzerinde açık yazı.</string>
     <string name="settings_appearance_night">Gece</string>
     <string name="settings_appearance_night_hint">Sıcak ve çok soluk; karanlık bir odada sesli okumak için.</string>
     <string name="settings_language">Dil</string>

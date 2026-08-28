@@ -34,13 +34,20 @@ docs-only changes do not belong here.
   thing behind that menu, has moved into settings where the rest of the parent-view work is.
 - Backup & transfer is laid out as two things you can read and press in one go, rather than a
   heading, a paragraph and a button underneath each.
-- The appearance setting explains "Night" underneath the word Night, instead of as a line under
-  all four options where it looked like a note about the lot of them.
+- The four appearance choices — follow the phone, light, dark, night — sit together in one panel
+  now rather than as four loose rows, and each of them says what it looks like. The explanation of
+  Night used to be a single line under all four, which read as a note about the lot of them and
+  left the fair question of what was wrong with the other three.
 - Settings and the activity log no longer carry the "Get help" bar. They are opened on purpose by
   a parent, and the red bar is for the moment something is wrong. Every screen a caregiver reads
   still has it.
 - The log writes "opened a tile" lines small and quiet. They happen as a side effect of using the
   app, and at full size they buried the lines somebody sat down and typed.
+
+### Fixed
+- Tile names on the home-screen shortcuts are no longer cut off mid-word. Larova was shortening
+  them itself at a fixed length; the phone's launcher shortens them properly, and only when it
+  actually runs out of room.
 
 ## [0.1.0] - 2026-08-27
 
