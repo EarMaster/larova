@@ -1,0 +1,1 @@
+Larova passt jetzt auf ein Tablet: mehr Kacheln nebeneinander, und alles zum Lesen bleibt in einer angenehmen Spalte. Die App spricht jetzt alle vierzehn Sprachen. Protokoll und Einstellungen sind Schaltflächen auf dem Startbildschirm statt eines Menüs, und die Sicherung liegt jetzt in den Einstellungen — mit dem Datum der letzten Sicherung.

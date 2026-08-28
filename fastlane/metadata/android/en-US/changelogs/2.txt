@@ -1,0 +1,1 @@
+Larova now fits a tablet: more tiles across, and anything you read stays in a comfortable column. It now speaks all fourteen languages. The log and settings are buttons on the start screen instead of a menu, and backup has moved into settings, where it says when you last backed up.

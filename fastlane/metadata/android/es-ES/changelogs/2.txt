@@ -1,0 +1,1 @@
+Larova ya se adapta a una tableta: más tarjetas a lo ancho, y todo lo que se lee se queda en una columna cómoda. La app habla ya los catorce idiomas. El registro y los ajustes son botones en la pantalla de inicio en vez de un menú, y la copia de seguridad está ahora en los ajustes, donde indica cuándo fue la última.
