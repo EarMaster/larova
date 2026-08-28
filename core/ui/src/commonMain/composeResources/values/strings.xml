@@ -31,7 +31,7 @@
     <string name="view_parent_active">Parent view is on. Editing and backup are unlocked. Larova returns to caregiver view after five minutes without input.</string>
     <string name="view_unlock_title">Unlock parent view</string>
     <string name="view_unlock_pin">Enter your PIN</string>
-    <string name="view_unlock_biometric">Use fingerprint instead</string>
+    <string name="view_unlock_biometric">Use fingerprint</string>
 
     <string name="view_locked_note">Editing and backup are in parent view.</string>
     <string name="view_leave">Leave parent view</string>
@@ -54,8 +54,10 @@
     <string name="tile_table_hint">Your own columns and rows</string>
     <string name="tile_note">Note</string>
     <string name="tile_note_hint">Free text with headings and lists</string>
-    <string name="tile_video">Video or sound</string>
-    <string name="tile_video_hint">From your gallery, or record it now</string>
+    <string name="tile_video">Video</string>
+    <string name="tile_video_hint">From the videos on this phone</string>
+    <string name="tile_audio">Sound</string>
+    <string name="tile_audio_hint">A sound file, or record one now</string>
     <string name="tile_call">Call</string>
     <string name="tile_call_hint">A name, a number and a relation</string>
     <string name="tile_link">Website or app</string>

@@ -42,7 +42,7 @@
     <string name="view_parent_active">Die Elternansicht ist an. Bearbeiten und Sichern sind freigegeben. Nach fünf Minuten ohne Eingabe wechselt Larova zurück zur Betreuungsansicht.</string>
     <string name="view_unlock_title">Elternansicht entsperren</string>
     <string name="view_unlock_pin">PIN eingeben</string>
-    <string name="view_unlock_biometric">Stattdessen Fingerabdruck verwenden</string>
+    <string name="view_unlock_biometric">Fingerabdruck verwenden</string>
 
     <string name="view_locked_note">Bearbeiten und Sichern liegen in der Elternansicht.</string>
     <string name="view_leave">Elternansicht verlassen</string>
@@ -65,8 +65,10 @@
     <string name="tile_table_hint">Eigene Spalten und Zeilen</string>
     <string name="tile_note">Notiz</string>
     <string name="tile_note_hint">Freier Text mit Überschriften und Listen</string>
-    <string name="tile_video">Video oder Ton</string>
-    <string name="tile_video_hint">Aus der Galerie oder jetzt aufnehmen</string>
+    <string name="tile_video">Video</string>
+    <string name="tile_video_hint">Aus den Videos auf diesem Telefon</string>
+    <string name="tile_audio">Ton</string>
+    <string name="tile_audio_hint">Eine Tondatei, oder jetzt aufnehmen</string>
     <string name="tile_call">Anruf</string>
     <string name="tile_call_hint">Ein Name, eine Nummer und wer die Person ist</string>
     <string name="tile_link">Website oder App</string>
