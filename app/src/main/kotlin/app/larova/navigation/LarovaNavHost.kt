@@ -87,7 +87,6 @@ fun LarovaNavHost(
                 onAddTile = { navController.navigate(CardEditRoute()) },
                 onArrange = { navController.navigate(ArrangeRoute()) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
-                onOpenTransfer = { navController.navigate(TransferRoute) },
                 onOpenLog = { navController.navigate(LogRoute) },
                 onUseTemplate = viewModel::onUseTemplate,
                 onHelp = openHelp,
@@ -291,7 +290,6 @@ fun LarovaNavHost(
                 onAddNote = viewModel::onAddNote,
                 onClear = viewModel::onClear,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -303,8 +301,8 @@ fun LarovaNavHost(
                 onUnlock = { navController.navigate(UnlockRoute) },
                 onLock = onLockParentView,
                 onChangePin = { navController.navigate(PinSetupRoute) },
+                onOpenTransfer = { navController.navigate(TransferRoute) },
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
     }

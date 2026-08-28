@@ -1,6 +1,7 @@
 package app.larova.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -25,16 +26,25 @@ fun LarovaTheme(
     content: @Composable () -> Unit,
 ) {
     val surfaces = surfacesFor(mode)
-    CompositionLocalProvider(
-        LocalAppMode provides mode,
-        LocalSurfaces provides surfaces,
-    ) {
-        MaterialTheme(
-            colorScheme = colorSchemeFor(mode, surfaces),
-            typography = LarovaTypography,
-            shapes = LarovaShapes,
-            content = content,
-        )
+    // Measured rather than asked for. `BoxWithConstraints` reports the width this composition was
+    // actually handed, which follows a window being resized, a foldable being opened and split
+    // screen — none of which a configuration read at startup, or a "is this a tablet" question,
+    // would notice. An unbounded parent has no width to report and gets the phone layout, which is
+    // the safe answer rather than a crash on `Dp.Infinity`.
+    BoxWithConstraints {
+        val width = if (constraints.hasBoundedWidth) WindowWidth.of(maxWidth) else WindowWidth.COMPACT
+        CompositionLocalProvider(
+            LocalAppMode provides mode,
+            LocalSurfaces provides surfaces,
+            LocalWindowWidth provides width,
+        ) {
+            MaterialTheme(
+                colorScheme = colorSchemeFor(mode, surfaces),
+                typography = LarovaTypography,
+                shapes = LarovaShapes,
+                content = content,
+            )
+        }
     }
 }
 

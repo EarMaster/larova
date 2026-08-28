@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Larova · Hindi strings.
+
+  A translation, not a source: never fix wording here. Fix the English in values/strings.xml and
+  re-translate. See docs/localization.md.
+
+  **A model draft, not yet read by a native speaker.** docs/localization.md §5 names the three
+  parts that must not ship on a machine draft — the help bar and contact sheet, the two view names,
+  and the six templates.
+
+  Devanagari glyph coverage comes from the system font fallback, not from anything bundled here.
+  Check it on a clean device rather than on a phone that has extra fonts installed.
+-->
+<resources>
+
+    <string name="app_name">Larova</string>
+
+    <!-- ===== Start screen ===== -->
+    <string name="home_greeting">आपको देखकर अच्छा लगा</string>
+    <string name="home_search">खोजें</string>
+    <string name="home_add_tile">टाइल जोड़ें</string>
+    <string name="home_child_age">%1$s · %2$d साल</string>
+    <string name="home_empty_title">यहाँ अभी कुछ नहीं है</string>
+    <string name="home_search_empty">कुछ नहीं मिला।</string>
+    <string name="arrange_title">टाइलें क्रम में लगाएँ</string>
+    <string name="arrange_hint">टाइलों को ऊपर या नीचे ले जाएँ। यही क्रम शुरुआती स्क्रीन पर दिखता है।</string>
+    <string name="home_empty_hint">आपकी जोड़ी हुई टाइलें यहाँ दिखेंगी। एक टाइल में गाइड, सूची, नोट, कॉल करने का नंबर या कोई वेबसाइट हो सकती है।</string>
+
+    <!-- ===== Views ===== -->
+    <string name="view_caregiver">देखभाल दृश्य</string>
+    <string name="view_parent">अभिभावक दृश्य</string>
+    <string name="view_parent_active">अभिभावक दृश्य चालू है। बदलाव और बैकअप खुले हैं। पाँच मिनट तक कुछ न करने पर Larova देखभाल दृश्य पर लौट आता है।</string>
+    <string name="view_unlock_title">अभिभावक दृश्य खोलें</string>
+    <string name="view_unlock_pin">अपना PIN डालें</string>
+    <string name="view_unlock_biometric">फ़िंगरप्रिंट इस्तेमाल करें</string>
+
+    <string name="view_locked_note">बदलाव और बैकअप अभिभावक दृश्य में हैं।</string>
+    <string name="view_leave">अभिभावक दृश्य से बाहर निकलें</string>
+    <string name="view_pin_create_title">एक PIN चुनें</string>
+    <string name="view_pin_create_hint">चार से बारह अंक। यह टाइलों को गलती से बदलने से रोकता है; उन्हें छिपाता नहीं।</string>
+    <string name="view_pin_repeat">दोबारा डालें</string>
+    <string name="view_pin_mismatch">दोनों मेल नहीं खाते।</string>
+    <string name="view_pin_too_short">कम से कम चार अंक।</string>
+    <string name="view_pin_digits_only">सिर्फ़ अंक।</string>
+    <string name="view_pin_wrong">यह PIN सही नहीं है।</string>
+    <string name="view_pin_change">PIN बदलें</string>
+    <string name="view_unlock">खोलें</string>
+
+    <!-- ===== Tile types ===== -->
+    <string name="tile_guide">गाइड</string>
+    <string name="tile_guide_hint">लिखे हुए, तस्वीरों और आवाज़ के साथ चरण</string>
+    <string name="tile_checklist">सूची</string>
+    <string name="tile_checklist_hint">निशान लगाने की चीज़ें, चाहें तो हर दिन नए सिरे से</string>
+    <string name="tile_table">तालिका</string>
+    <string name="tile_table_hint">आपके अपने कॉलम और पंक्तियाँ</string>
+    <string name="tile_note">नोट</string>
+    <string name="tile_note_hint">शीर्षकों और सूचियों के साथ खुला लेख</string>
+    <string name="tile_video">वीडियो</string>
+    <string name="tile_video_hint">इस फ़ोन के वीडियो में से</string>
+    <string name="tile_audio">आवाज़</string>
+    <string name="tile_audio_hint">कोई ऑडियो फ़ाइल, या अभी रिकॉर्ड करें</string>
+    <string name="tile_call">कॉल</string>
+    <string name="tile_call_hint">नाम, नंबर और रिश्ता</string>
+    <string name="tile_link">वेबसाइट या ऐप</string>
+    <string name="tile_link_hint">इस फ़ोन पर कोई लिंक या ऐप खोलता है</string>
+    <string name="tile_folder">फ़ोल्डर</string>
+    <string name="tile_folder_hint">कई टाइलों को एक साथ रखता है</string>
+
+    <plurals name="tile_step_count">
+        <item quantity="one">गाइड · %1$d चरण</item>
+        <item quantity="other">गाइड · %1$d चरण</item>
+    </plurals>
+    <plurals name="tile_item_count">
+        <item quantity="one">सूची · %1$d चीज़</item>
+        <item quantity="other">सूची · %1$d चीज़ें</item>
+    </plurals>
+
+    <!-- ===== Guide ===== -->
+    <string name="guide_step_of">चरण %1$d / %2$d</string>
+    <string name="guide_previous">पीछे</string>
+    <string name="guide_next">आगे</string>
+    <string name="guide_finish">हो गया</string>
+    <string name="guide_read_aloud">ज़ोर से पढ़ें</string>
+    <string name="guide_screen_stays_on">यहाँ स्क्रीन चालू रहती है।</string>
+
+    <string name="guide_step_current">अभी</string>
+
+    <!-- ===== Checklist ===== -->
+    <string name="checklist_progress">%2$d में से %1$d</string>
+    <string name="checklist_resets_daily">हर सुबह %1$s बजे नए सिरे से शुरू। निशान लगाई गई चीज़ें समय के साथ लॉग में दर्ज होती हैं।</string>
+
+    <!-- ===== Get help. Read under stress; keep unambiguous in every language. ===== -->
+    <string name="help_bar">मदद चाहिए</string>
+    <string name="help_sheet_title">मदद चाहिए</string>
+    <string name="help_call_note">छूने पर फ़ोन ऐप नंबर के साथ खुल जाता है। Larova खुद कभी कॉल नहीं करता।</string>
+    <string name="help_emergency">आपातकालीन सेवाएँ</string>
+    <string name="help_no_contacts">यहाँ अभी कोई नंबर नहीं जोड़ा गया है।</string>
+
+    <!-- ===== Video and sound ===== -->
+    <string name="media_missing">यह फ़ाइल फ़ोन में नहीं है। शायद बैकअप के साथ नहीं आई।</string>
+
+    <!-- ===== App shortcut ===== -->
+    <string name="app_open">ऐप खोलें</string>
+    <string name="app_missing">वह ऐप अब इस फ़ोन में नहीं है।</string>
+    <string name="app_choose">कौन-सा ऐप?</string>
+    <string name="app_none_found">कोई ऐप मेल नहीं खाता।</string>
+
+    <!-- ===== Backup and transfer ===== -->
+    <string name="transfer_title">बैकअप और स्थानांतरण</string>
+    <string name="transfer_backup">बैकअप लें</string>
+    <string name="transfer_backup_hint">आपकी सारी टाइलें, तस्वीरें और रिकॉर्डिंग एक ही फ़ाइल में बनाता है। कहाँ रखनी है, यह आप चुनते हैं।</string>
+    <string name="transfer_restore">वापस लाएँ</string>
+    <string name="transfer_restore_hint">एक फ़ाइल चुनें, झलक देखें, फिर सब कुछ बदल दें या जो पहले से है उसमें जोड़ दें।</string>
+    <string name="transfer_protect">पासवर्ड से सुरक्षित करें</string>
+    <string name="transfer_protect_hint">जब भी फ़ाइल किसी को भेजें, यह सुझाया जाता है। पासवर्ड के बिना यह खुलेगी नहीं।</string>
+    <string name="transfer_last_backup">पिछला बैकअप</string>
+    <string name="transfer_preview">%1$d टाइलें, %2$d फ़ाइलें, %3$s</string>
+    <string name="transfer_replace">सब कुछ बदल दें</string>
+    <string name="transfer_merge">जो है उसमें जोड़ें</string>
+    <string name="transfer_version_too_new">यह फ़ाइल Larova के नए संस्करण से बनी है। खोलने के लिए ऐप अपडेट करें।</string>
+    <string name="transfer_saved">बैकअप हो गया: %1$d टाइलें और %2$d फ़ाइलें।</string>
+    <string name="transfer_restored">वापस आ गया: %1$d टाइलें और %2$d फ़ाइलें।</string>
+    <string name="transfer_backup_failed">बैकअप लिखा नहीं जा सका। किसी और जगह सहेजकर देखें।</string>
+    <string name="transfer_damaged">यह फ़ाइल अधूरी है — शायद पूरी नहीं भेजी गई। कुछ भी नहीं बदला गया।</string>
+    <string name="transfer_unreadable">यह Larova का बैकअप नहीं है।</string>
+
+    <!-- ===== Settings ===== -->
+    <string name="settings_title">सेटिंग</string>
+    <string name="settings_appearance">दिखावट</string>
+    <string name="settings_appearance_system">फ़ोन के अनुसार</string>
+    <string name="settings_appearance_light">हल्का</string>
+    <string name="settings_appearance_dark">गहरा</string>
+    <string name="settings_appearance_night">रात</string>
+    <string name="settings_appearance_night_hint">गर्म और बहुत मद्धम, अँधेरे कमरे में ज़ोर से पढ़ने के लिए।</string>
+    <string name="settings_language">भाषा</string>
+    <string name="settings_language_hint">Larova बाकी फ़ोन से अलग भाषा में चल सकता है।</string>
+    <string name="settings_transfer_hint">सब कुछ एक फ़ाइल में सहेजें, या कोई बैकअप वापस लाएँ।</string>
+    <string name="settings_log">गतिविधि लॉग</string>
+    <string name="settings_log_retention">%1$d दिन तक रखें</string>
+    <string name="settings_log_clear">लॉग साफ़ करें</string>
+
+    <!-- ===== The log. A list of what happened, never an interpretation of it. ===== -->
+    <string name="log_empty">अभी तक कुछ नहीं हुआ।</string>
+    <string name="log_note_hint">एक पंक्ति जोड़ें</string>
+    <string name="log_add">लॉग में जोड़ें</string>
+    <string name="log_retention">%1$d दिन से पुरानी पंक्तियाँ हटा दी जाती हैं।</string>
+    <string name="log_clear_question">पूरा लॉग साफ़ करें? पंक्तियाँ वापस नहीं आएँगी।</string>
+    <string name="log_card_opened">खोला: %1$s</string>
+    <string name="log_check_toggled">%1$s में कुछ पर निशान लगाया</string>
+    <string name="log_call_prepared">कॉल तैयार की: %1$s</string>
+    <string name="log_tile_gone">एक टाइल जो बाद में हटा दी गई</string>
+
+    <!-- ===== Editing a tile. Parents read these, not caregivers, so they can be a little
+         more specific — but they are still read once, quickly, on a phone. ===== -->
+    <string name="edit_new_tile">नई टाइल</string>
+    <string name="edit_edit_tile">टाइल बदलें</string>
+    <string name="edit_choose_type">इस टाइल पर क्या रखना है?</string>
+    <string name="edit_title">शीर्षक</string>
+    <string name="edit_subtitle">दूसरी पंक्ति (वैकल्पिक)</string>
+    <string name="edit_colour">रंग</string>
+    <string name="edit_symbol">चिह्न</string>
+    <string name="edit_save">सहेजें</string>
+    <string name="edit_cancel">रद्द करें</string>
+    <string name="edit_delete">टाइल हटाएँ</string>
+    <string name="edit_delete_question">यह टाइल हटाएँ? इस पर जो है वह वापस नहीं आएगा।</string>
+    <string name="edit_title_required">टाइल का शीर्षक ज़रूरी है।</string>
+    <string name="edit_folder_note">फ़ोल्डर में दूसरी टाइलें रहती हैं। इसे सहेजें, खोलें और अंदर टाइलें जोड़ें।</string>
+    <plurals name="edit_delete_folder_question">
+        <item quantity="one">यह फ़ोल्डर हटाएँ? अंदर की %1$d टाइल भी चली जाएगी और वापस नहीं आएगी।</item>
+        <item quantity="other">यह फ़ोल्डर हटाएँ? अंदर की %1$d टाइलें भी चली जाएँगी और वापस नहीं आएँगी।</item>
+    </plurals>
+    <string name="edit_steps">चरण</string>
+    <string name="edit_add_step">चरण जोड़ें</string>
+    <string name="edit_step_number">चरण %1$d</string>
+    <string name="edit_items">निशान लगाने की चीज़ें</string>
+    <string name="edit_add_item">चीज़ जोड़ें</string>
+    <string name="edit_item_number">चीज़ %1$d</string>
+    <string name="edit_reset_daily">हर सुबह फिर से शुरू करें</string>
+    <string name="edit_columns">शीर्षक</string>
+    <string name="edit_add_column">शीर्षक जोड़ें</string>
+    <string name="edit_column_number">शीर्षक %1$d</string>
+    <string name="edit_rows">पंक्तियाँ</string>
+    <string name="edit_add_row">पंक्ति जोड़ें</string>
+    <string name="edit_row_number">पंक्ति %1$d</string>
+    <string name="edit_note_text">लेख</string>
+    <string name="edit_call_name">नाम</string>
+    <string name="edit_call_number">फ़ोन नंबर</string>
+    <string name="edit_call_relation">रिश्ता (वैकल्पिक)</string>
+    <string name="edit_call_in_help">“मदद चाहिए” में भी दिखाएँ</string>
+    <string name="edit_record">माइक से रिकॉर्ड करें</string>
+    <string name="edit_recording">रिकॉर्ड हो रहा है…</string>
+    <string name="edit_record_stop">रोककर रख लें</string>
+    <string name="edit_record_failed">माइक इस्तेमाल नहीं हो सका, या कुछ रिकॉर्ड नहीं हुआ।</string>
+    <string name="edit_choose_video">वीडियो चुनें</string>
+    <string name="edit_choose_sound">ऑडियो फ़ाइल चुनें</string>
+    <string name="edit_media_none_chosen">अभी कुछ नहीं चुना गया।</string>
+    <string name="edit_media_chosen">चुना गया, %1$d MB</string>
+    <string name="edit_media_large">यह बड़ी फ़ाइल है। इसे शामिल करने वाले बैकअप भेजने में धीमे रहेंगे और कुछ तरीकों के लिए बहुत बड़े हो सकते हैं।</string>
+    <string name="edit_media_required">चुनें कि यह टाइल क्या चलाएगी।</string>
+    <string name="edit_media_caption">ऊपर क्या लिखा हो (वैकल्पिक)</string>
+    <string name="edit_choose_app">ऐप चुनें</string>
+    <string name="edit_app_none_chosen">अभी कोई ऐप नहीं चुना गया।</string>
+    <string name="edit_app_chosen">%1$s खोलता है</string>
+    <string name="edit_app_label">टाइल पर क्या लिखा हो</string>
+    <string name="edit_app_required">चुनें कि यह टाइल कौन-सा ऐप खोलेगी।</string>
+    <string name="edit_web_address">वेब पता</string>
+    <string name="edit_web_label">लेबल (वैकल्पिक)</string>
+    <string name="edit_web_address_invalid">वेब पता http:// या https:// से शुरू होना चाहिए</string>
+    <string name="edit_remove">हटाएँ</string>
+    <string name="edit_add_picture">तस्वीर जोड़ें</string>
+    <string name="edit_change_picture">तस्वीर बदलें</string>
+    <string name="edit_remove_picture">तस्वीर हटाएँ</string>
+    <string name="edit_picture_failed">वह तस्वीर जोड़ी नहीं जा सकी।</string>
+
+    <!-- ===== Colour names shown in the tile picker ===== -->
+    <string name="colour_sand">रेत</string>
+    <string name="colour_clay">मिट्टी</string>
+    <string name="colour_rose">गुलाबी</string>
+    <string name="colour_lilac">बैंगनी</string>
+    <string name="colour_sky">आसमानी</string>
+    <string name="colour_sage">सेज हरा</string>
+    <string name="colour_moss">काई</string>
+    <string name="colour_stone">पत्थर</string>
+
+    <!-- ===== Templates. These carry the whole first run; have a native speaker write them. ===== -->
+    <string name="template_bedtime">सोने का समय</string>
+    <string name="template_evening">शाम की दिनचर्या</string>
+    <string name="template_contacts">ज़रूरी नंबर</string>
+    <string name="template_food">खाना और पीना</string>
+    <string name="template_day">हमारे यहाँ एक दिन</string>
+    <string name="template_what_helps">क्या मदद करता है जब…</string>
+
+
+    <!-- ===== What the six templates put on the grid. Every word here is overwritten by the
+         parents, so it is example text, not instruction text: it should read like something a
+         family wrote, because that is the point of it. Have a native speaker write these. ===== -->
+    <string name="template_bedtime_step_1">पजामा पहन लिया, दाँत साफ़ कर लिए।</string>
+    <string name="template_bedtime_step_2">सोफ़े पर एक कहानी — कौन-सी, यह वही चुने।</string>
+    <string name="template_bedtime_step_3">परदे बंद, छोटी बत्ती चालू।</string>
+    <string name="template_bedtime_step_4">खरगोश वाला खिलौना बिस्तर में, शेल्फ़ पर नहीं।</string>
+    <string name="template_bedtime_step_5">दरवाज़ा एक हथेली भर खुला छोड़ें।</string>
+
+    <string name="template_evening_item_1">रात का खाना</string>
+    <string name="template_evening_item_2">नहाना और दाँत</string>
+    <string name="template_evening_item_3">पजामा</string>
+    <string name="template_evening_item_4">कहानी</string>
+    <string name="template_evening_item_5">बत्ती बंद</string>
+
+    <string name="template_contacts_name">मम्मी</string>
+    <string name="template_contacts_relation">माँ</string>
+    <string name="template_contacts_todo">नंबर जोड़ें</string>
+
+    <string name="template_food_column_1">पसंद है</string>
+    <string name="template_food_column_2">बेहतर है न दें</string>
+    <string name="template_food_row_1_1">मक्खन वाली पास्ता</string>
+    <string name="template_food_row_1_2">मशरूम वाली कोई भी चीज़</string>
+    <string name="template_food_row_2_1">सेब की फाँकें</string>
+    <string name="template_food_row_2_2">कोल्ड ड्रिंक</string>
+    <string name="template_food_row_3_1">पानी, दूध</string>
+    <string name="template_food_row_3_2">खाने के ऊपर चटनी</string>
+
+    <string name="template_day_column_1">कब</string>
+    <string name="template_day_column_2">क्या होता है</string>
+    <string name="template_day_row_1_1">7:00</string>
+    <string name="template_day_row_1_2">उठना, मेज़ पर नाश्ता</string>
+    <string name="template_day_row_2_1">12:30</string>
+    <string name="template_day_row_2_2">दोपहर का खाना, फिर किताब के साथ शांत समय</string>
+    <string name="template_day_row_3_1">15:00</string>
+    <string name="template_day_row_3_2">कुछ हल्का खाना, फिर सूखा हो तो पार्क</string>
+    <string name="template_day_row_4_1">18:00</string>
+    <string name="template_day_row_4_2">रात का खाना, फिर शाम की दिनचर्या</string>
+
+    <string name="template_what_helps_step_1">परेशान हो: पास बैठ जाएँ और अभी कुछ न कहें।</string>
+    <string name="template_what_helps_step_2">खा नहीं रहा: मेज़ पर रहने दें और बाद में फिर पूछें।</string>
+    <string name="template_what_helps_step_3">नींद नहीं आ रही: लोरी, धीरे से, दो बार।</string>
+
+    <string name="home_start_with">या इनमें से किसी एक से शुरू करें</string>
+
+    <!-- ===== Content descriptions ===== -->
+    <string name="cd_open_tile">%1$s खोलें</string>
+    <string name="cd_add_tile">टाइल जोड़ें</string>
+    <string name="cd_clear_search">खोज मिटाएँ</string>
+    <string name="cd_move_up">%1$s को ऊपर ले जाएँ</string>
+    <string name="cd_move_down">%1$s को नीचे ले जाएँ</string>
+    <string name="cd_colour_selected">%1$s, चुना गया</string>
+    <string name="cd_remove_line">%1$s हटाएँ</string>
+    <string name="cd_check_item">%1$s, हो गया</string>
+    <string name="cd_uncheck_item">%1$s, नहीं हुआ</string>
+    <string name="cd_back">पीछे</string>
+    <string name="cd_close">बंद करें</string>
+    <string name="cd_menu">मेनू</string>
+    <string name="cd_edit_tile">%1$s बदलें</string>
+    <string name="cd_play">चलाएँ</string>
+    <string name="cd_step_picture">चरण %1$d की तस्वीर</string>
+    <!-- One cell of a table, read aloud with the heading it sits under. Both halves are
+         placeholders so the order stays the translator's to decide. -->
+    <string name="cd_table_cell">%1$s, %2$s</string>
+
+</resources>

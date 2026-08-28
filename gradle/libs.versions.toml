@@ -24,6 +24,20 @@ okio = "3.18.1"
 
 koin = "4.2.2"
 
+# Screenshot testing. Robolectric renders the real Compose UI on the JVM with native graphics and
+# Roborazzi writes and compares the PNGs, so there is no emulator anywhere in this — see
+# AGENTS.md, "Screenshot tests".
+#
+# `composeAndroidx` is the AndroidX build that org.jetbrains.compose 1.11.1 resolves to on Android.
+# It has to be named because the test artifacts have no multiplatform alias: `compose.uiTest` is
+# the multiplatform API, and `createAndroidComposeRule` lives in androidx's ui-test-junit4 only.
+# Keep it in step with what actually resolves — `./gradlew :app:dependencies --configuration
+# debugRuntimeClasspath | grep compose.ui` — or the test classpath quietly carries two Composes.
+composeAndroidx = "1.11.2"
+robolectric = "4.16.1"
+roborazzi = "1.73.0"
+junit = "4.13.2"
+
 activityCompose = "1.13.0"
 # ShortcutManagerCompat, for the launcher shortcuts. Already on the classpath transitively; named
 # here because :app calls it directly and a transitive version is not a version you chose.
@@ -83,6 +97,16 @@ koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeAndroidx" }
+# Contributes the `<activity android:name="androidx.activity.ComponentActivity">` entry that
+# `createAndroidComposeRule` needs in the merged manifest. Declared `debugImplementation`, so the
+# extra activity exists only in the debug build and never in anything that reaches Play.
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeAndroidx" }
+junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
@@ -93,3 +117,4 @@ compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

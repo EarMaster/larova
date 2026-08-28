@@ -123,7 +123,7 @@
     <string name="transfer_restore_hint">Datei auswählen, Vorschau prüfen, dann ersetzen oder zum Vorhandenen hinzufügen.</string>
     <string name="transfer_protect">Mit Passwort schützen</string>
     <string name="transfer_protect_hint">Empfohlen, sobald die Datei an jemanden geht. Ohne das Passwort lässt sie sich nicht öffnen.</string>
-    <string name="transfer_last_backup">Zuletzt gesichert %1$s</string>
+    <string name="transfer_last_backup">Zuletzt gesichert</string>
     <string name="transfer_preview">%1$d Kacheln, %2$d Dateien, %3$s</string>
     <string name="transfer_replace">Alles ersetzen</string>
     <string name="transfer_merge">Zum Vorhandenen hinzufügen</string>
@@ -144,6 +144,7 @@
     <string name="settings_appearance_night_hint">Warm und sehr gedimmt, zum Vorlesen im dunklen Zimmer.</string>
     <string name="settings_language">Sprache</string>
     <string name="settings_language_hint">Larova kann eine andere Sprache verwenden als das übrige Telefon.</string>
+    <string name="settings_transfer_hint">Alles in eine Datei sichern oder eine Sicherung zurückholen.</string>
     <string name="settings_log">Protokoll</string>
     <string name="settings_log_retention">%1$d Tage aufbewahren</string>
     <string name="settings_log_clear">Protokoll löschen</string>

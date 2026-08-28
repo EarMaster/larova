@@ -3,12 +3,15 @@ package app.larova.core.domain.usecase
 import app.larova.core.domain.export.ExportCodec
 import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportManifest
+import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
+import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.export.PackageIo
 import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.first
 
 /**
@@ -32,7 +35,8 @@ class ExportPackage(
 ) {
 
     sealed interface Result {
-        data class Written(val counts: Int, val mediaCount: Int) : Result
+        /** [at] is the manifest's own timestamp, so what the screen shows is what the file says. */
+        data class Written(val at: Instant, val counts: Int, val mediaCount: Int) : Result
 
         /** The destination could not be written: permission gone, document deleted, disk full. */
         data object Failed : Result
@@ -71,7 +75,11 @@ class ExportPackage(
         }
 
         return if (written) {
-            Result.Written(counts = allCards.size, mediaCount = presentMedia.size)
+            Result.Written(
+                at = manifest.exportedAt,
+                counts = allCards.size,
+                mediaCount = presentMedia.size,
+            )
         } else {
             Result.Failed
         }
@@ -84,6 +92,23 @@ class ExportPackage(
  * grows is the kind of thing that works until it does not.
  */
 private const val LOG_EXPORT_LIMIT = 5_000
+
+/** The date and counts the backup screen shows, or null on an installation that has never run one. */
+class ObserveLastBackup(private val preferences: PreferencesRepository) {
+    operator fun invoke() = preferences.observeLastBackup()
+}
+
+/**
+ * Notes that a backup succeeded.
+ *
+ * Separate from [ExportPackage] on purpose, and not because of a parameter count: writing the file
+ * is the family's data leaving the app, while this is a preference about this installation. The
+ * caller runs it only after a `Written`, so a backup that failed leaves the old date standing —
+ * "last backed up today" over a failure is the sentence that stops somebody trying again.
+ */
+class RecordLastBackup(private val preferences: PreferencesRepository) {
+    suspend operator fun invoke(backup: LastBackup) = preferences.setLastBackup(backup)
+}
 
 /**
  * What a package says about itself, read without applying any of it.

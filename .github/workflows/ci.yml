@@ -203,6 +203,12 @@ jobs:
           test -f ./_site/index.html || { echo "::error::index.html missing"; exit 1; }
           test -f ./_site/privacy/index.html || { echo "::error::privacy page missing"; exit 1; }
           grep -q 'tiles' ./_site/index.html || { echo "::error::the tile grid did not render"; exit 1; }
+          # The landing page's screenshots are generated (`StoreAssetTest` → `finishStoreAssets`)
+          # and committed, so a missing one means somebody deleted the files rather than that the
+          # page is wrong. Either way the page ships with broken images, which is worth failing on.
+          for shot in $(grep -oE 'assets/screenshots/[A-Za-z0-9_]+\.png' ./_site/index.html | sort -u); do
+            test -f "./_site/$shot" || { echo "::error::index.html references $shot, which is not in the built site"; exit 1; }
+          done
           # Both pages must end up with a title. The layout has no literal <title> tag — it
           # comes from `{% seo %}` — so a static reading of the template cannot tell whether
           # one exists, and an accessibility linter reading the raw layout reports it missing

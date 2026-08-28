@@ -3,6 +3,7 @@ package app.larova.core.domain.repository
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import kotlin.uuid.ExperimentalUuidApi
@@ -90,6 +91,11 @@ interface PreferencesRepository {
     fun observeAppearance(): Flow<AppearanceSetting>
 
     suspend fun setAppearance(setting: AppearanceSetting)
+
+    /** Null until a backup has succeeded once on this installation. */
+    fun observeLastBackup(): Flow<LastBackup?>
+
+    suspend fun setLastBackup(backup: LastBackup)
 }
 
 /**

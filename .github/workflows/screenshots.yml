@@ -1,0 +1,85 @@
+name: Record screenshots
+
+# Re-recording is how a visual change is *accepted*, which is a decision rather than something that
+# should happen on every push. There are therefore two deliberate ways to ask for it (a local
+# `recordRoborazziDebug` is equally valid — the files come out the same):
+#
+#   1. `workflow_dispatch` — pick the branch in the Actions tab. GitHub only offers this once the
+#      workflow exists on the default branch, which for this repo means after `screenshots.yml` has
+#      reached `main` at a release.
+#   2. A push to `develop` whose commit message contains `[record-screenshots]`. That works today,
+#      needs no default-branch registration, and keeps the opt-in explicit — put the marker in the
+#      commit that changes the UI.
+#
+# Either way the run commits the regenerated files back to the branch it ran on. It cannot be used
+# on `main`: that branch takes pull requests only, so the push would be rejected.
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    name: Record and commit
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[record-screenshots]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Temurin 17, the same JDK every other workflow here pins. It is also why
+      # `robolectric.properties` names sdk=35 rather than 36: the SDK 36 image wants a newer JDK
+      # and would throw here, on the one machine whose output gets committed.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      # Recording here rather than locally is about who is doing it, not about rendering: Robolectric
+      # brings its own fonts and its own Skia, so a golden recorded on a developer's machine and one
+      # recorded here are the same file. This is the route for a change somebody wants accepted
+      # without a local Android toolchain, and it keeps the baseline and the check in one place.
+      - name: Record goldens
+        run: ./gradlew :app:recordRoborazziDebug --tests '*ScreenshotTest'
+
+      # Same run, same renderer, so the store listing and the website can never show an older UI
+      # than the goldens do. `recordRoborazziDebug` is finalised by `finishStoreAssets`, which
+      # strips the alpha channel Play rejects and copies the set into the Pages tree.
+      - name: Record store and website images
+        run: ./gradlew :app:recordRoborazziDebug --tests '*StoreAssetTest'
+
+      # The images are listing metadata, so they answer to the same validator as the listing text:
+      # format, alpha channel, dimensions, aspect ratio and count.
+      - name: Validate store images
+        run: bash tools/check_store_metadata.sh
+
+      - name: Commit updated screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/src/testDebug/screenshots fastlane/metadata/android docs/pages/assets
+          if git diff --cached --quiet; then
+            echo "Screenshots unchanged — nothing to commit."
+            exit 0
+          fi
+          # No marker in this message, so the push cannot trigger the workflow again.
+          git commit -m "test(screenshots): re-record screenshots on the CI runner"
+          git push
+
+      # Uploaded whether or not anything changed, so the run itself is reviewable: the images are
+      # the result here, and a commit hash does not show you what the app looks like.
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            app/src/testDebug/screenshots/
+            fastlane/metadata/android/*/images/
+          retention-days: 14

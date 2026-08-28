@@ -73,9 +73,7 @@ fun formatLogTime(instant: Instant): String {
  * 23.8.2026 or 8/23/2026, and getting that wrong on the one screen that asks "is this the right
  * backup" would make the answer harder to see.
  */
-fun formatExportDate(manifest: ExportManifest): String = formatExportDate(manifest.exportedAt)
-
-private fun formatExportDate(instant: Instant): String {
+fun formatExportDate(instant: Instant): String {
     val local = java.time.Instant.ofEpochMilli(instant.toEpochMilliseconds())
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
