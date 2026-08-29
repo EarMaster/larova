@@ -191,6 +191,110 @@ footer {
 	background: #fff;
 }
 
+// Pressing a screenshot opens it in the viewer below. A link rather than a button, because
+// without scripting it still has to do something, and what it does then is open the file.
+.screenshots a.shot {
+	display: block;
+	border-radius: 18px;
+	// Nothing else on the page is a pressable image, so the affordance is the cursor and the
+	// lift; the caption underneath already says what each one is.
+	cursor: zoom-in;
+
+	&:hover img,
+	&:focus-visible img {
+		border-color: #C9BEA9;
+	}
+
+	&:focus-visible {
+		outline: 3px solid $ink;
+		outline-offset: 3px;
+	}
+}
+
+// The viewer itself. `<dialog>` brings Escape, the focus trap and the backdrop with it, which is
+// most of what a lightbox library would be here.
+.lightbox {
+	max-width: min(92vw, 520px);
+	max-height: 92vh;
+	padding: 0;
+	border: 0;
+	border-radius: 20px;
+	background: #fff;
+	overflow: hidden;
+
+	&::backdrop {
+		background: rgba(26, 22, 37, 0.82);
+	}
+
+	figure {
+		margin: 0;
+	}
+
+	img {
+		display: block;
+		width: 100%;
+		height: auto;
+		// Leaves room for the caption and the arrows on a short window, which is where a
+		// portrait screenshot otherwise pushes them off the bottom.
+		max-height: 70vh;
+		object-fit: contain;
+	}
+
+	figcaption {
+		padding: 14px 18px 0;
+		color: $ink-muted;
+		font-size: 0.95em;
+		text-align: center;
+	}
+}
+
+.lightbox-close {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 40px;
+	height: 40px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.9);
+	color: $ink;
+	font-size: 1.4em;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.lightbox-nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	padding: 10px 18px 16px;
+
+	button {
+		width: 44px;
+		height: 44px;
+		border: 1px solid #ECE6DC;
+		border-radius: 50%;
+		background: #fff;
+		color: $ink;
+		font-size: 1.5em;
+		line-height: 1;
+		cursor: pointer;
+
+		&:hover {
+			border-color: #C9BEA9;
+		}
+	}
+
+	.lightbox-count {
+		margin: 0;
+		min-width: 5em;
+		color: $ink-muted;
+		font-size: 0.9em;
+		text-align: center;
+	}
+}
+
 .screenshots {
 	display: flex;
 	gap: 20px;

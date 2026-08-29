@@ -1,6 +1,8 @@
 package app.larova.screenshot
 
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.domain.model.PhoneEntry
+import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.LogKind
 import app.larova.core.domain.model.Step
@@ -168,15 +170,21 @@ internal object Fixtures {
         ),
     )
 
+    /**
+     * Three people on one tile, which is what a call tile holds now — and what the prototype's
+     * grid always said it held, with "Call · 4 numbers". Built through `phoneOf` rather than by
+     * hand, so the golden shows a tile stored the way the editor stores one.
+     */
     val call = CardUiState(
-        title = "Grandma Käthe",
+        title = "Important numbers",
         colorToken = "rose",
         isLoading = false,
-        payload = CardPayload.Phone(
-            displayName = "Käthe Bergmann",
-            number = "+49 30 1234567",
-            relation = "Mum's mother",
-            inHelpSheet = true,
+        payload = phoneOf(
+            listOf(
+                PhoneEntry("Käthe Bergmann", "+49 30 1234567", "Mum's mother", inHelpSheet = true),
+                PhoneEntry("Dr Keller", "+49 30 7654321", "Paediatrician, Mon-Fri 8-17"),
+                PhoneEntry("Frau Adler", "+49 170 2223344", "Next door"),
+            ),
         ),
     )
 

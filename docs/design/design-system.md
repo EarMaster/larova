@@ -80,6 +80,23 @@ The outermost point of the drawing sits 32dp from centre against a 33dp safe rad
 
 **Deliberately not used:** a child, a hand or a heart. Those three motifs occupy nearly every family app and are indistinguishable in a home screen grid. The arch is a rare shape in the store and therefore findable.
 
+### Tile symbols
+
+Sixty-eight, from [Lucide](https://lucide.dev) (ISC) with two drawn here, all on the same 24×24
+grid at a 2px stroke with round caps — the geometry the hand-drawn originals already used, which
+is why the vendored and the drawn sit together without a seam.
+
+- The **key** is frozen and the **drawing is not**. `Card.icon` stores `"bed"`; what `"bed"` looks
+  like can be redrawn any number of times. The ten symbols that shipped in 0.1.0 were hand-drawn
+  and are now Lucide drawings under the same keys.
+- Grouped into eight shelves — everyday, food and drink, care, home, out and about, play, people,
+  notes — because sixty-eight in one grid is a wall rather than a choice. The picker searches by
+  name.
+- **The names are English and are not translated.** A deliberate exception: they sit next to the
+  picture they describe, and sixty-eight nouns in fourteen languages buys very little for a parent
+  who can see a car.
+- Sources live in `core/ui/icons/`; `./gradlew :core:ui:generateTileSymbols` converts them.
+
 ## 4. Typography
 
 Material 3 type scale with two adjustments:

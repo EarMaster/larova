@@ -80,6 +80,10 @@
         <item quantity="one">Anleitung · %1$d Schritt</item>
         <item quantity="other">Anleitung · %1$d Schritte</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Anruf · %1$d Nummer</item>
+        <item quantity="other">Anruf · %1$d Nummern</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Checkliste · %1$d Punkt</item>
         <item quantity="other">Checkliste · %1$d Punkte</item>
@@ -172,6 +176,7 @@
     <string name="edit_subtitle">Zweite Zeile (optional)</string>
     <string name="edit_colour">Farbe</string>
     <string name="edit_symbol">Symbol</string>
+    <string name="edit_symbol_search">Symbole suchen</string>
     <string name="edit_save">Speichern</string>
     <string name="edit_cancel">Abbrechen</string>
     <string name="edit_delete">Kachel löschen</string>
@@ -199,6 +204,8 @@
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Rufnummer</string>
     <string name="edit_call_relation">Wer das ist (optional)</string>
+    <string name="edit_add_contact">Weitere Nummer hinzufügen</string>
+    <string name="edit_contact_number">Person %1$d</string>
     <string name="edit_call_in_help">Auch unter „Hilfe holen“ zeigen</string>
     <string name="edit_record">Mit dem Mikrofon aufnehmen</string>
     <string name="edit_recording">Aufnahme läuft…</string>

@@ -73,6 +73,12 @@
         <item quantity="many">Инструкция · %1$d шагов</item>
         <item quantity="other">Инструкция · %1$d шага</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Звонок · %1$d номер</item>
+        <item quantity="few">Звонок · %1$d номера</item>
+        <item quantity="many">Звонок · %1$d номеров</item>
+        <item quantity="other">Звонок · %1$d номера</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Список · %1$d пункт</item>
         <item quantity="few">Список · %1$d пункта</item>
@@ -167,6 +173,7 @@
     <string name="edit_subtitle">Вторая строка (необязательно)</string>
     <string name="edit_colour">Цвет</string>
     <string name="edit_symbol">Символ</string>
+    <string name="edit_symbol_search">Поиск символов</string>
     <string name="edit_save">Сохранить</string>
     <string name="edit_cancel">Отмена</string>
     <string name="edit_delete">Удалить карточку</string>
@@ -196,6 +203,8 @@
     <string name="edit_call_name">Имя</string>
     <string name="edit_call_number">Номер телефона</string>
     <string name="edit_call_relation">Кем приходится (необязательно)</string>
+    <string name="edit_add_contact">Добавить ещё номер</string>
+    <string name="edit_contact_number">Человек %1$d</string>
     <string name="edit_call_in_help">Показывать и в «Нужна помощь»</string>
     <string name="edit_record">Записать с микрофона</string>
     <string name="edit_recording">Идёт запись…</string>

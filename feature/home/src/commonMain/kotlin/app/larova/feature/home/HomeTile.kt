@@ -34,6 +34,9 @@ sealed interface TileSubtitle {
 
     data class Items(val count: Int) : TileSubtitle
 
+    /** How many people a call tile can reach. One number is still worth saying out loud. */
+    data class Numbers(val count: Int) : TileSubtitle
+
     /**
      * A folder says so.
      *

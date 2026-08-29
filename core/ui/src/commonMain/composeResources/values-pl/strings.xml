@@ -74,6 +74,12 @@
         <item quantity="many">Instrukcja · %1$d kroków</item>
         <item quantity="other">Instrukcja · %1$d kroku</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Telefon · %1$d numer</item>
+        <item quantity="few">Telefon · %1$d numery</item>
+        <item quantity="many">Telefon · %1$d numerów</item>
+        <item quantity="other">Telefon · %1$d numeru</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Lista · %1$d pozycja</item>
         <item quantity="few">Lista · %1$d pozycje</item>
@@ -168,6 +174,7 @@
     <string name="edit_subtitle">Druga linia (opcjonalnie)</string>
     <string name="edit_colour">Kolor</string>
     <string name="edit_symbol">Symbol</string>
+    <string name="edit_symbol_search">Szukaj symboli</string>
     <string name="edit_save">Zapisz</string>
     <string name="edit_cancel">Anuluj</string>
     <string name="edit_delete">Usuń kafelek</string>
@@ -197,6 +204,8 @@
     <string name="edit_call_name">Imię</string>
     <string name="edit_call_number">Numer telefonu</string>
     <string name="edit_call_relation">Kto to jest (opcjonalnie)</string>
+    <string name="edit_add_contact">Dodaj kolejny numer</string>
+    <string name="edit_contact_number">Osoba %1$d</string>
     <string name="edit_call_in_help">Pokazuj także pod „Poproś o pomoc”</string>
     <string name="edit_record">Nagraj mikrofonem</string>
     <string name="edit_recording">Nagrywanie…</string>

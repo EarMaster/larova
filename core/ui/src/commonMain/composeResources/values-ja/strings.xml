@@ -71,6 +71,9 @@
     <plurals name="tile_step_count">
         <item quantity="other">手順 · %1$dステップ</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="other">電話 · %1$d件</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="other">リスト · %1$d項目</item>
     </plurals>
@@ -162,6 +165,7 @@
     <string name="edit_subtitle">2行目（任意）</string>
     <string name="edit_colour">色</string>
     <string name="edit_symbol">アイコン</string>
+    <string name="edit_symbol_search">記号を検索</string>
     <string name="edit_save">保存</string>
     <string name="edit_cancel">キャンセル</string>
     <string name="edit_delete">カードを削除</string>
@@ -188,6 +192,8 @@
     <string name="edit_call_name">名前</string>
     <string name="edit_call_number">電話番号</string>
     <string name="edit_call_relation">続柄（任意）</string>
+    <string name="edit_add_contact">番号をもう一つ追加</string>
+    <string name="edit_contact_number">%1$d 人目</string>
     <string name="edit_call_in_help">「助けを呼ぶ」にも表示する</string>
     <string name="edit_record">マイクで録音する</string>
     <string name="edit_recording">録音中…</string>

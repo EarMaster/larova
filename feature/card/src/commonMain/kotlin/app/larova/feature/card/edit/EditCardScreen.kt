@@ -64,6 +64,8 @@ import app.larova.core.ui.resources.edit_call_in_help
 import app.larova.core.ui.resources.edit_call_name
 import app.larova.core.ui.resources.edit_call_number
 import app.larova.core.ui.resources.edit_call_relation
+import app.larova.core.ui.resources.edit_add_contact
+import app.larova.core.ui.resources.edit_contact_number
 import app.larova.core.ui.resources.edit_cancel
 import app.larova.core.ui.resources.edit_choose_type
 import app.larova.core.ui.resources.edit_colour
@@ -322,34 +324,7 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
             modifier = Modifier.fillMaxWidth(),
         )
 
-        CardType.PHONE -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedTextField(
-                value = state.callName,
-                onValueChange = callbacks.onCallNameChange,
-                label = { Text(stringResource(Res.string.edit_call_name)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            OutlinedTextField(
-                value = state.callNumber,
-                onValueChange = callbacks.onCallNumberChange,
-                label = { Text(stringResource(Res.string.edit_call_number)) },
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = KeyboardType.Phone,
-                ),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            OutlinedTextField(
-                value = state.callRelation,
-                onValueChange = callbacks.onCallRelationChange,
-                label = { Text(stringResource(Res.string.edit_call_relation)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            SwitchRow(
-                label = stringResource(Res.string.edit_call_in_help),
-                checked = state.callInHelpSheet,
-                onCheckedChange = callbacks.onCallInHelpSheetChange,
-            )
-        }
+        CardType.PHONE -> CallFields(state = state, callbacks = callbacks)
 
         CardType.APP_LINK -> AppLinkFields(state = state, callbacks = callbacks)
 
@@ -499,6 +474,96 @@ private fun RecordingControls(state: EditUiState, callbacks: EditCardCallbacks) 
  * Which app is chosen is shown as its own line rather than only inside the button: a parent coming
  * back to this tile in a month needs to see what it points at without opening the picker again.
  */
+/**
+ * The people a call tile can reach.
+ *
+ * Rows that repeat, like the steps of a guide and the lines of a checklist, because that is what a
+ * tile called "Important numbers" is — and as many of them as the family needs, for the same
+ * reason a guide is not capped at eight steps. Each person carries their own "show under Get help"
+ * switch: a tile can hold the doctor, the neighbour and the grandmother while only two of them
+ * belong behind the red bar.
+ */
+@Composable
+private fun CallFields(
+    state: EditUiState,
+    callbacks: EditCardCallbacks,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        state.contacts.forEachIndexed { index, contact ->
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                // The heading and the way to remove a row only appear once there is more than
+                // one person to tell apart. On a tile with a single number they would be two
+                // controls asking about a problem nobody has.
+                if (state.contacts.size > 1) {
+                    val label = stringResource(Res.string.edit_contact_number, index + 1)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(
+                            onClick = { callbacks.onRemoveContact(index) },
+                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Icon(
+                                imageVector = BackArrow,
+                                contentDescription = stringResource(Res.string.cd_remove_line, label),
+                            )
+                        }
+                    }
+                }
+                OutlinedTextField(
+                    value = contact.name,
+                    onValueChange = { callbacks.onContactChange(index, contact.copy(name = it)) },
+                    label = { Text(stringResource(Res.string.edit_call_name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = contact.number,
+                    onValueChange = { callbacks.onContactChange(index, contact.copy(number = it)) },
+                    label = { Text(stringResource(Res.string.edit_call_number)) },
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = contact.relation,
+                    onValueChange = { callbacks.onContactChange(index, contact.copy(relation = it)) },
+                    label = { Text(stringResource(Res.string.edit_call_relation)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                SwitchRow(
+                    label = stringResource(Res.string.edit_call_in_help),
+                    checked = contact.inHelpSheet,
+                    onCheckedChange = {
+                        callbacks.onContactChange(index, contact.copy(inHelpSheet = it))
+                    },
+                )
+            }
+        }
+
+        OutlinedButton(
+            onClick = callbacks.onAddContact,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(stringResource(Res.string.edit_add_contact))
+        }
+    }
+}
+
 @Composable
 private fun AppLinkFields(state: EditUiState, callbacks: EditCardCallbacks) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -923,10 +988,9 @@ data class EditCardCallbacks(
     val onRemoveRow: (Int) -> Unit,
     val onResetDailyChange: (Boolean) -> Unit,
     val onNoteChange: (String) -> Unit,
-    val onCallNameChange: (String) -> Unit,
-    val onCallNumberChange: (String) -> Unit,
-    val onCallRelationChange: (String) -> Unit,
-    val onCallInHelpSheetChange: (Boolean) -> Unit,
+    val onContactChange: (Int, ContactDraft) -> Unit,
+    val onAddContact: () -> Unit,
+    val onRemoveContact: (Int) -> Unit,
     val onWebUrlChange: (String) -> Unit,
     val onWebLabelChange: (String) -> Unit,
     val onChooseApp: () -> Unit,
@@ -980,10 +1044,9 @@ fun EditCardViewModel.callbacks(
     onRemoveRow = ::onRemoveRow,
     onResetDailyChange = ::onResetDailyChange,
     onNoteChange = ::onNoteChange,
-    onCallNameChange = ::onCallNameChange,
-    onCallNumberChange = ::onCallNumberChange,
-    onCallRelationChange = ::onCallRelationChange,
-    onCallInHelpSheetChange = ::onCallInHelpSheetChange,
+    onContactChange = ::onContactChange,
+    onAddContact = ::onAddContact,
+    onRemoveContact = ::onRemoveContact,
     onWebUrlChange = ::onWebUrlChange,
     onWebLabelChange = ::onWebLabelChange,
     onChooseApp = ::onChooseApp,

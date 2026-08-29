@@ -71,6 +71,10 @@
         <item quantity="one">गाइड · %1$d चरण</item>
         <item quantity="other">गाइड · %1$d चरण</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">कॉल · %1$d नंबर</item>
+        <item quantity="other">कॉल · %1$d नंबर</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">सूची · %1$d चीज़</item>
         <item quantity="other">सूची · %1$d चीज़ें</item>
@@ -163,6 +167,7 @@
     <string name="edit_subtitle">दूसरी पंक्ति (वैकल्पिक)</string>
     <string name="edit_colour">रंग</string>
     <string name="edit_symbol">चिह्न</string>
+    <string name="edit_symbol_search">चिह्न खोजें</string>
     <string name="edit_save">सहेजें</string>
     <string name="edit_cancel">रद्द करें</string>
     <string name="edit_delete">टाइल हटाएँ</string>
@@ -190,6 +195,8 @@
     <string name="edit_call_name">नाम</string>
     <string name="edit_call_number">फ़ोन नंबर</string>
     <string name="edit_call_relation">रिश्ता (वैकल्पिक)</string>
+    <string name="edit_add_contact">एक और नंबर जोड़ें</string>
+    <string name="edit_contact_number">व्यक्ति %1$d</string>
     <string name="edit_call_in_help">“मदद चाहिए” में भी दिखाएँ</string>
     <string name="edit_record">माइक से रिकॉर्ड करें</string>
     <string name="edit_recording">रिकॉर्ड हो रहा है…</string>

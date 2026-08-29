@@ -4,7 +4,9 @@ import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
+import app.larova.core.domain.model.PhoneEntry
 import app.larova.core.domain.model.Step
+import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.cardType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,6 +33,12 @@ class CardPayloadCodecTest {
         CardPayload.Video(media, caption = "Bedtime song"),
         CardPayload.Audio(media),
         CardPayload.Phone("Grandma", "+49 170 1234567", relation = "Mother of the mother"),
+        phoneOf(
+            listOf(
+                PhoneEntry("Grandma", "+49 170 1234567", "Mother of the mother", inHelpSheet = true),
+                PhoneEntry("Dr Keller", "+49 30 7654321", "Paediatrician"),
+            ),
+        ),
         CardPayload.Web("https://example.org", label = "The nursery"),
         CardPayload.AppLink("com.example.messenger", "Messenger"),
         CardPayload.Folder(media),
@@ -103,5 +111,70 @@ class CardPayloadCodecTest {
         val step = (decoded as CardPayload.Guide).steps.single()
         assertNull(step.mediaId)
         assertNull(step.audioId)
+    }
+
+    // ---- A call tile gained room for more than one person in 0.3.0. Both directions of that
+    // change are a promise to a file somebody may be holding as their only copy.
+
+    /**
+     * A tile written by 0.2.1 or earlier: four flat fields and no list at all. It has to open here
+     * as the one person it holds, not as an empty tile.
+     */
+    @Test
+    fun aSingleContactTileFromAnOlderVersionStillReads() {
+        val old = """{"type":"phone","displayName":"Grandma","number":"+49 170 1",""" +
+            """"relation":"Mother of the mother","inHelpSheet":true}"""
+
+        val decoded = CardPayloadCodec.decodeOrNull(old)
+
+        assertNotNull(decoded)
+        val person = (decoded as CardPayload.Phone).people.single()
+        assertEquals("Grandma", person.displayName)
+        assertEquals("+49 170 1", person.number)
+        assertEquals("Mother of the mother", person.relation)
+        assertTrue(person.inHelpSheet)
+    }
+
+    /**
+     * The other direction, which is the one that cannot be fixed later: a tile written here has to
+     * open in a version that has never heard of `contacts`. Such a version reads the flat fields
+     * and ignores what it does not know, so the first person must be in both places. It sees one
+     * number instead of three — losing two is a bad afternoon, where a tile that will not open is
+     * a caregiver who cannot reach anybody.
+     */
+    @Test
+    fun aMultiContactTileStillOpensInAVersionThatOnlyKnowsOne() {
+        val payload = phoneOf(
+            listOf(
+                PhoneEntry("Grandma", "+49 170 1", "Mother of the mother", inHelpSheet = true),
+                PhoneEntry("Dr Keller", "+49 30 2", "Paediatrician"),
+                PhoneEntry("Frau Adler", "+49 170 3", "Next door"),
+            ),
+        )
+
+        val json = CardPayloadCodec.encode(payload)
+
+        assertTrue(json.contains(""""displayName":"Grandma""""), "the flat name is not written")
+        assertTrue(json.contains(""""number":"+49 170 1""""), "the flat number is not written")
+        assertTrue(json.contains(""""inHelpSheet":true"""), "the flat help flag is not written")
+        // And everyone is still there for a version that does know about the list.
+        val decoded = CardPayloadCodec.decodeOrNull(json) as? CardPayload.Phone
+        assertNotNull(decoded)
+        assertEquals(3, decoded.people.size)
+        assertEquals(listOf("Grandma", "Dr Keller", "Frau Adler"), decoded.people.map { it.displayName })
+    }
+
+    /** Somebody added a row and typed a name into it, then saved. A row with nothing to dial. */
+    @Test
+    fun contactsWithNoNumberAreDropped() {
+        val payload = phoneOf(
+            listOf(
+                PhoneEntry("Grandma", "+49 170 1"),
+                PhoneEntry("Half-typed", "   "),
+                PhoneEntry("", ""),
+            ),
+        )
+
+        assertEquals(listOf("Grandma"), payload.people.map { it.displayName })
     }
 }

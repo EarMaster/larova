@@ -10,12 +10,38 @@ import kotlin.test.assertTrue
  */
 class TileSymbolTest {
 
+    /**
+     * The set grows; nothing ever leaves it.
+     *
+     * These ten shipped in 0.1.0 and are sitting in `Card.icon` on real phones and in export files
+     * nobody can reach to correct. Renaming one silently repoints every tile that used it — on the
+     * phone and in the backups both — so this asserts they are all still here rather than
+     * asserting the whole list, which would only mean "nobody added an icon today".
+     */
     @Test
-    fun theSymbolKeysAreFrozen() {
-        assertEquals(
-            listOf("moon", "sun", "heart", "list", "note", "phone", "clock", "home", "meal", "star"),
-            TileSymbol.entries.map { it.key },
-        )
+    fun theOriginalSymbolKeysAreStillHere() {
+        val shippedFirst =
+            listOf("moon", "sun", "heart", "list", "note", "phone", "clock", "home", "meal", "star")
+        val keys = TileSymbol.entries.map { it.key }
+
+        for (key in shippedFirst) {
+            assertTrue(key in keys, "the symbol key '$key' was renamed or removed, which it cannot be")
+        }
+    }
+
+    /** Two entries with one key would make `fromKey` return whichever came first, silently. */
+    @Test
+    fun everyKeyIsUsedOnce() {
+        val keys = TileSymbol.entries.map { it.key }
+        assertEquals(keys.size, keys.toSet().size, "two symbols share a key")
+    }
+
+    /** The name is what the picker searches and what a screen reader reads out. */
+    @Test
+    fun everySymbolIsNamed() {
+        for (symbol in TileSymbol.entries) {
+            assertTrue(symbol.label.isNotBlank(), "${symbol.key} has no name")
+        }
     }
 
     @Test

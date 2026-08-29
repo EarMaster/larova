@@ -69,6 +69,10 @@
         <item quantity="one">Guide · %1$d step</item>
         <item quantity="other">Guide · %1$d steps</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Call · %1$d number</item>
+        <item quantity="other">Call · %1$d numbers</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Checklist · %1$d item</item>
         <item quantity="other">Checklist · %1$d items</item>
@@ -161,6 +165,7 @@
     <string name="edit_subtitle">Second line (optional)</string>
     <string name="edit_colour">Colour</string>
     <string name="edit_symbol">Symbol</string>
+    <string name="edit_symbol_search">Search symbols</string>
     <string name="edit_save">Save</string>
     <string name="edit_cancel">Cancel</string>
     <string name="edit_delete">Delete tile</string>
@@ -188,6 +193,8 @@
     <string name="edit_call_name">Name</string>
     <string name="edit_call_number">Phone number</string>
     <string name="edit_call_relation">Relation (optional)</string>
+    <string name="edit_add_contact">Add another number</string>
+    <string name="edit_contact_number">Person %1$d</string>
     <string name="edit_call_in_help">Also show under Get help</string>
     <string name="edit_record">Record with the microphone</string>
     <string name="edit_recording">Recording…</string>

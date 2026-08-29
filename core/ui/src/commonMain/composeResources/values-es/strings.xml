@@ -71,6 +71,10 @@
         <item quantity="one">Guía · %1$d paso</item>
         <item quantity="other">Guía · %1$d pasos</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Llamar · %1$d número</item>
+        <item quantity="other">Llamar · %1$d números</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Lista · %1$d elemento</item>
         <item quantity="other">Lista · %1$d elementos</item>
@@ -163,6 +167,7 @@
     <string name="edit_subtitle">Segunda línea (opcional)</string>
     <string name="edit_colour">Color</string>
     <string name="edit_symbol">Símbolo</string>
+    <string name="edit_symbol_search">Buscar símbolos</string>
     <string name="edit_save">Guardar</string>
     <string name="edit_cancel">Cancelar</string>
     <string name="edit_delete">Borrar tarjeta</string>
@@ -190,6 +195,8 @@
     <string name="edit_call_name">Nombre</string>
     <string name="edit_call_number">Número de teléfono</string>
     <string name="edit_call_relation">Parentesco (opcional)</string>
+    <string name="edit_add_contact">Añadir otro número</string>
+    <string name="edit_contact_number">Persona %1$d</string>
     <string name="edit_call_in_help">Mostrar también en Pedir ayuda</string>
     <string name="edit_record">Grabar con el micrófono</string>
     <string name="edit_recording">Grabando…</string>

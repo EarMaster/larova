@@ -12,7 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.larova.core.ui.component.HelpBar
 import app.larova.core.ui.component.TileCard
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
 import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.image
 import app.larova.core.ui.theme.AppMode
 import app.larova.core.ui.theme.TileColor
 import org.junit.Test
@@ -62,21 +71,37 @@ abstract class TokenScreenshotTest : ScreenshotTest() {
     }
 
     @Test
+    @OptIn(ExperimentalLayoutApi::class)
     fun symbols() {
         capture("tokens/symbols") {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(count = 2),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+            // A FlowRow rather than a LazyVerticalGrid, and the drawings rather than whole tiles.
+            // A lazy grid composes what fits on screen, so the moment the set grew past ten this
+            // golden quietly became a picture of the first ten — a check that passes because it
+            // stopped looking. Every symbol has to be in the frame for this to be worth having.
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(TileSymbol.entries) { symbol ->
-                    TileCard(
-                        title = symbol.key,
-                        colorToken = TileColor.SAND.key,
-                        symbolKey = symbol.key,
-                        onClick = {},
-                    )
+                for (symbol in TileSymbol.entries) {
+                    Column(
+                        modifier = Modifier.width(64.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        Icon(
+                            imageVector = symbol.image,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(28.dp),
+                        )
+                        Text(
+                            text = symbol.key,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                        )
+                    }
                 }
             }
         }

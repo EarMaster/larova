@@ -37,6 +37,50 @@ fun sanitizePhoneNumber(raw: String): String {
 }
 
 /**
+ * A call tile, with its two halves kept in step.
+ *
+ * Built here rather than in the editor for the same reason a table is squared off here: an import
+ * can come from anywhere, and the rules that make a tile renderable have to apply to a file
+ * somebody was sent as much as to one typed on this phone.
+ *
+ * The first person is written into the flat `displayName`/`number`/`relation`/`inHelpSheet` fields
+ * as well as into the list. That is what a version before 0.3.0 reads, and it is the whole of the
+ * compatibility story: an older Larova opens a four-number tile and shows the first number instead
+ * of failing to decode it. Losing three numbers is a bad afternoon; a tile that will not open is a
+ * caregiver who cannot reach anybody.
+ *
+ * Entries with no number at all are dropped — a name with nothing to dial is a row that does
+ * nothing when it is pressed, which on this tile is worse than an absence.
+ *
+ * No cap on how many. A guide takes as many steps as a bedtime has and a checklist as many items
+ * as a nursery bag holds, and a family's numbers are the same kind of list: whoever is writing it
+ * knows how long it needs to be, and a limit picked here would be a guess about their household.
+ * The help sheet is where a limit *does* belong, and it has one — four, because that list is read
+ * in an emergency rather than written at a kitchen table.
+ */
+fun phoneOf(contacts: List<PhoneEntry>): CardPayload.Phone {
+    val cleaned = contacts.asSequence()
+        .map { entry ->
+            entry.copy(
+                displayName = entry.displayName.trim(),
+                number = entry.number.trim(),
+                relation = entry.relation?.trim()?.takeIf { it.isNotEmpty() },
+            )
+        }
+        .filter { it.number.isNotBlank() }
+        .toList()
+
+    val first = cleaned.firstOrNull() ?: PhoneEntry()
+    return CardPayload.Phone(
+        displayName = first.displayName,
+        number = first.number,
+        relation = first.relation,
+        inHelpSheet = first.inHelpSheet,
+        contacts = cleaned,
+    )
+}
+
+/**
  * A table, squared off.
  *
  * The renderer reads a cell by its column position, so a stored table has to be rectangular: a row
