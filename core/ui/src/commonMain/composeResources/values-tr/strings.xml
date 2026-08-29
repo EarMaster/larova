@@ -169,6 +169,7 @@
     <string name="edit_subtitle">İkinci satır (isteğe bağlı)</string>
     <string name="edit_colour">Renk</string>
     <string name="edit_symbol">Simge</string>
+    <string name="edit_symbol_search">Simge ara</string>
     <string name="edit_save">Kaydet</string>
     <string name="edit_cancel">Vazgeç</string>
     <string name="edit_delete">Kartı sil</string>

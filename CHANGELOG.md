@@ -12,6 +12,13 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Added
+- Sixty-eight symbols to choose from instead of ten — beds, buses, a bath, a plaster, a rabbit —
+  grouped into everyday things, food and drink, care, home, out and about, play, people and notes,
+  with a search box for finding one by name. Tiles you already made are untouched: the ten original
+  symbols are still there under the same names, redrawn to match the rest.
+- Screenshots on larova.app open large when you press one, with the arrows to step through them.
+
 ### Changed
 - A call tile holds as many people as you need instead of one. Each has their own name, what they are to
   the child, and their number, and each can be marked to appear behind "Get help" on its own — so

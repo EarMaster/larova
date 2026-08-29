@@ -168,6 +168,7 @@
     <string name="edit_subtitle">第二行（可选）</string>
     <string name="edit_colour">颜色</string>
     <string name="edit_symbol">图标</string>
+    <string name="edit_symbol_search">搜索图标</string>
     <string name="edit_save">保存</string>
     <string name="edit_cancel">取消</string>
     <string name="edit_delete">删除卡片</string>

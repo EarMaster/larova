@@ -173,6 +173,7 @@
     <string name="edit_subtitle">Вторая строка (необязательно)</string>
     <string name="edit_colour">Цвет</string>
     <string name="edit_symbol">Символ</string>
+    <string name="edit_symbol_search">Поиск символов</string>
     <string name="edit_save">Сохранить</string>
     <string name="edit_cancel">Отмена</string>
     <string name="edit_delete">Удалить карточку</string>

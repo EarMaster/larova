@@ -165,6 +165,7 @@
     <string name="edit_subtitle">Second line (optional)</string>
     <string name="edit_colour">Colour</string>
     <string name="edit_symbol">Symbol</string>
+    <string name="edit_symbol_search">Search symbols</string>
     <string name="edit_save">Save</string>
     <string name="edit_cancel">Cancel</string>
     <string name="edit_delete">Delete tile</string>

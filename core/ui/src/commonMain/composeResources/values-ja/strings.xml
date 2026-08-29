@@ -165,6 +165,7 @@
     <string name="edit_subtitle">2行目（任意）</string>
     <string name="edit_colour">色</string>
     <string name="edit_symbol">アイコン</string>
+    <string name="edit_symbol_search">記号を検索</string>
     <string name="edit_save">保存</string>
     <string name="edit_cancel">キャンセル</string>
     <string name="edit_delete">カードを削除</string>

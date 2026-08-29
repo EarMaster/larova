@@ -1,13 +1,6 @@
 package app.larova.core.ui.icon
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.unit.dp
 
 /**
  * The symbols a tile can carry.
@@ -17,21 +10,104 @@ import androidx.compose.ui.unit.dp
  * means migrating other people's data, including data that exists only in a backup nobody can
  * reach.
  *
- * The drawing is deliberately on this side of the boundary. Storing a bitmap — or a font glyph,
- * which is a bitmap someone else chose — would tie a family's tiles to a rendering that cannot be
- * corrected. A key can be redrawn a hundred times and their tiles keep meaning what they meant.
+ * The drawing carries no such promise, and the sixty-eight here are proof of it: the ten keys that
+ * shipped first were hand-drawn and are now Lucide drawings under the same keys. A key can be
+ * redrawn a hundred times and the tiles using it keep meaning what they meant — which is the whole
+ * reason the key is a string and not a picture. See `core/ui/icons/README.md`.
+ *
+ * **[label] is English and is not translated.** That is a deliberate exception to the rule that no
+ * user-facing string is hardcoded, taken by the maintainer: sixty-eight nouns in fourteen
+ * languages is a translation surface as large as the rest of the app put together, for words a
+ * parent is reading *next to the picture they describe*. Somebody looking for a car finds it by
+ * looking at it; the name is there to be searched and to be read aloud by a screen reader. Do not
+ * "fix" this by moving it into `strings.xml` — it was considered.
  */
-enum class TileSymbol(val key: String) {
-    MOON("moon"),
-    SUN("sun"),
-    HEART("heart"),
-    LIST("list"),
-    NOTE("note"),
-    PHONE("phone"),
-    CLOCK("clock"),
-    HOME("home"),
-    MEAL("meal"),
-    STAR("star"),
+enum class TileSymbol(val key: String, val label: String, val group: SymbolGroup) {
+    // ---- the ten that shipped first. Their keys can never change. ----
+    MOON("moon", "Moon", SymbolGroup.EVERYDAY),
+    SUN("sun", "Sun", SymbolGroup.EVERYDAY),
+    HEART("heart", "Heart", SymbolGroup.PEOPLE),
+    LIST("list", "List", SymbolGroup.NOTES),
+    NOTE("note", "Note", SymbolGroup.NOTES),
+    PHONE("phone", "Phone", SymbolGroup.PEOPLE),
+    CLOCK("clock", "Clock", SymbolGroup.EVERYDAY),
+    HOME("home", "Home", SymbolGroup.HOME),
+    MEAL("meal", "Meal", SymbolGroup.FOOD),
+    STAR("star", "Star", SymbolGroup.NOTES),
+
+    // ---- everyday ----
+    BED("bed", "Bed", SymbolGroup.EVERYDAY),
+    BATH("bath", "Bath", SymbolGroup.EVERYDAY),
+    SUNRISE("sunrise", "Sunrise", SymbolGroup.EVERYDAY),
+    SUNSET("sunset", "Sunset", SymbolGroup.EVERYDAY),
+    ALARM("alarm", "Alarm", SymbolGroup.EVERYDAY),
+    BRUSH("brush", "Brush", SymbolGroup.EVERYDAY),
+
+    // ---- food and drink ----
+    CUP("cup", "Cup", SymbolGroup.FOOD),
+    WATER("water", "Water", SymbolGroup.FOOD),
+    APPLE("apple", "Apple", SymbolGroup.FOOD),
+    MILK("milk", "Milk", SymbolGroup.FOOD),
+    COOKIE("cookie", "Biscuit", SymbolGroup.FOOD),
+    CARROT("carrot", "Carrot", SymbolGroup.FOOD),
+    SANDWICH("sandwich", "Sandwich", SymbolGroup.FOOD),
+    CAKE("cake", "Cake", SymbolGroup.FOOD),
+
+    // ---- care ----
+    PILL("pill", "Pill", SymbolGroup.CARE),
+    THERMOMETER("thermometer", "Thermometer", SymbolGroup.CARE),
+    PLASTER("plaster", "Plaster", SymbolGroup.CARE),
+    STETHOSCOPE("stethoscope", "Stethoscope", SymbolGroup.CARE),
+    PULSE("pulse", "Heartbeat", SymbolGroup.CARE),
+    SYRINGE("syringe", "Syringe", SymbolGroup.CARE),
+
+    // ---- home ----
+    KEY("key", "Key", SymbolGroup.HOME),
+    SHIRT("shirt", "Shirt", SymbolGroup.HOME),
+    SHOE("shoe", "Shoes", SymbolGroup.HOME),
+    WASHING("washing", "Washing", SymbolGroup.HOME),
+    BIN("bin", "Bin", SymbolGroup.HOME),
+    LAMP("lamp", "Lamp", SymbolGroup.HOME),
+    DOOR("door", "Door", SymbolGroup.HOME),
+    BAG("bag", "Bag", SymbolGroup.HOME),
+
+    // ---- out and about ----
+    CAR("car", "Car", SymbolGroup.OUT),
+    BUS("bus", "Bus", SymbolGroup.OUT),
+    BIKE("bike", "Bike", SymbolGroup.OUT),
+    TRAIN("train", "Train", SymbolGroup.OUT),
+    TREE("tree", "Tree", SymbolGroup.OUT),
+    UMBRELLA("umbrella", "Umbrella", SymbolGroup.OUT),
+    MAP("map", "Place", SymbolGroup.OUT),
+    SCHOOL("school", "School", SymbolGroup.OUT),
+
+    // ---- play ----
+    BOOK("book", "Book", SymbolGroup.PLAY),
+    MUSIC("music", "Music", SymbolGroup.PLAY),
+    PAINT("paint", "Painting", SymbolGroup.PLAY),
+    PUZZLE("puzzle", "Puzzle", SymbolGroup.PLAY),
+    GAME("game", "Game", SymbolGroup.PLAY),
+    BLOCKS("blocks", "Blocks", SymbolGroup.PLAY),
+    SCISSORS("scissors", "Scissors", SymbolGroup.PLAY),
+    BALL("ball", "Ball", SymbolGroup.PLAY),
+
+    // ---- people ----
+    PEOPLE("people", "People", SymbolGroup.PEOPLE),
+    SMILE("smile", "Happy", SymbolGroup.PEOPLE),
+    SAD("sad", "Sad", SymbolGroup.PEOPLE),
+    HAND("hand", "Hand", SymbolGroup.PEOPLE),
+    BABY("baby", "Baby", SymbolGroup.PEOPLE),
+    DOG("dog", "Dog", SymbolGroup.PEOPLE),
+    CAT("cat", "Cat", SymbolGroup.PEOPLE),
+    RABBIT("rabbit", "Rabbit", SymbolGroup.PEOPLE),
+    MESSAGE("message", "Message", SymbolGroup.PEOPLE),
+
+    // ---- notes ----
+    CALENDAR("calendar", "Calendar", SymbolGroup.NOTES),
+    CAMERA("camera", "Camera", SymbolGroup.NOTES),
+    DONE("done", "Done", SymbolGroup.NOTES),
+    WARNING("warning", "Warning", SymbolGroup.NOTES),
+    PIN("pin", "Pin", SymbolGroup.NOTES),
     ;
 
     companion object {
@@ -46,230 +122,32 @@ enum class TileSymbol(val key: String) {
     }
 }
 
-/** The vector for this symbol. One per key, drawn in a 24×24 viewport. */
-val TileSymbol.image: ImageVector
-    get() = when (this) {
-        TileSymbol.MOON -> Moon
-        TileSymbol.SUN -> Sun
-        TileSymbol.HEART -> Heart
-        TileSymbol.LIST -> ListLines
-        TileSymbol.NOTE -> NoteSheet
-        TileSymbol.PHONE -> Phone
-        TileSymbol.CLOCK -> Clock
-        TileSymbol.HOME -> House
-        TileSymbol.MEAL -> Bowl
-        TileSymbol.STAR -> Star
-    }
-
-private const val VIEWPORT = 24f
-private const val STROKE = 1.8f
-
-private fun symbol(name: String, block: ImageVector.Builder.() -> Unit): ImageVector =
-    ImageVector.Builder(
-        name = name,
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = VIEWPORT,
-        viewportHeight = VIEWPORT,
-    ).apply(block).build()
-
-/** A crescent as one circle minus another, so it stays a crescent at any size. */
-private val Moon: ImageVector by lazy {
-    symbol("Moon") {
-        path(fill = SolidColor(Color.Black), pathFillType = PathFillType.EvenOdd) {
-            moveTo(12f, 3f)
-            arcToRelative(9f, 9f, 0f, true, false, 0f, 18f)
-            arcToRelative(9f, 9f, 0f, true, false, 0f, -18f)
-            close()
-            moveTo(16f, 3.5f)
-            arcToRelative(8.5f, 8.5f, 0f, true, false, 0f, 17f)
-            arcToRelative(8.5f, 8.5f, 0f, true, false, 0f, -17f)
-            close()
-        }
-    }
-}
-
-private val Sun: ImageVector by lazy {
-    symbol("Sun") {
-        path(fill = SolidColor(Color.Black)) {
-            moveTo(12f, 7f)
-            arcToRelative(5f, 5f, 0f, true, false, 0f, 10f)
-            arcToRelative(5f, 5f, 0f, true, false, 0f, -10f)
-            close()
-        }
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineCap = StrokeCap.Round,
-        ) {
-            moveTo(12f, 1.5f); lineTo(12f, 4f)
-            moveTo(12f, 20f); lineTo(12f, 22.5f)
-            moveTo(1.5f, 12f); lineTo(4f, 12f)
-            moveTo(20f, 12f); lineTo(22.5f, 12f)
-            moveTo(4.6f, 4.6f); lineTo(6.4f, 6.4f)
-            moveTo(17.6f, 17.6f); lineTo(19.4f, 19.4f)
-            moveTo(19.4f, 4.6f); lineTo(17.6f, 6.4f)
-            moveTo(6.4f, 17.6f); lineTo(4.6f, 19.4f)
-        }
-    }
-}
-
-private val Heart: ImageVector by lazy {
-    symbol("Heart") {
-        path(fill = SolidColor(Color.Black)) {
-            moveTo(12f, 20.5f)
-            curveTo(6f, 16.3f, 3f, 12.8f, 3f, 9.3f)
-            arcToRelative(4.6f, 4.6f, 0f, false, true, 9f, -1.9f)
-            arcToRelative(4.6f, 4.6f, 0f, false, true, 9f, 1.9f)
-            curveTo(21f, 12.8f, 18f, 16.3f, 12f, 20.5f)
-            close()
-        }
-    }
-}
-
-/** Three lines with a marker each: a list reads as a list even at 20dp. */
-private val ListLines: ImageVector by lazy {
-    symbol("ListLines") {
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineCap = StrokeCap.Round,
-        ) {
-            moveTo(9f, 7f); lineTo(20f, 7f)
-            moveTo(9f, 12f); lineTo(20f, 12f)
-            moveTo(9f, 17f); lineTo(20f, 17f)
-        }
-        path(fill = SolidColor(Color.Black)) {
-            moveTo(5f, 5.6f); arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, 2.8f)
-            arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, -2.8f); close()
-            moveTo(5f, 10.6f); arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, 2.8f)
-            arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, -2.8f); close()
-            moveTo(5f, 15.6f); arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, 2.8f)
-            arcToRelative(1.4f, 1.4f, 0f, true, false, 0f, -2.8f); close()
-        }
-    }
-}
-
-private val NoteSheet: ImageVector by lazy {
-    symbol("NoteSheet") {
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineJoin = StrokeJoin.Round,
-        ) {
-            moveTo(5.5f, 3.5f)
-            lineTo(18.5f, 3.5f)
-            lineTo(18.5f, 20.5f)
-            lineTo(5.5f, 20.5f)
-            close()
-        }
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineCap = StrokeCap.Round,
-        ) {
-            moveTo(8.5f, 8f); lineTo(15.5f, 8f)
-            moveTo(8.5f, 12f); lineTo(15.5f, 12f)
-            moveTo(8.5f, 16f); lineTo(13f, 16f)
-        }
-    }
+/**
+ * The shelves of the picker.
+ *
+ * Sixty-eight symbols in one flat grid is a wall somebody scrolls past rather than reads. The
+ * groups are what a family's tiles are actually about — the categories come from the six templates
+ * and from `docs/concept.md` §4.1, not from how an icon set happens to file its drawings.
+ *
+ * [label] is English for the same reason [TileSymbol.label] is.
+ */
+enum class SymbolGroup(val label: String) {
+    EVERYDAY("Everyday"),
+    FOOD("Food and drink"),
+    CARE("Care"),
+    HOME("Home"),
+    OUT("Out and about"),
+    PLAY("Play"),
+    PEOPLE("People"),
+    NOTES("Notes"),
 }
 
 /**
- * A handset, not a smartphone outline. The tile means "reach this person", and a rectangle reads
- * as a device rather than as a call.
+ * The vector for this symbol, drawn from `core/ui/icons/`.
+ *
+ * Falls back to the default's drawing and then to an empty mark, so a missing SVG is a tile with a
+ * plain symbol rather than a screen that will not compose. A family's board must survive an icon
+ * going astray.
  */
-private val Phone: ImageVector by lazy {
-    symbol("Phone") {
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
-            strokeLineCap = StrokeCap.Round,
-            strokeLineJoin = StrokeJoin.Round,
-        ) {
-            moveTo(7f, 3.5f)
-            lineTo(10f, 7.5f)
-            lineTo(8f, 10f)
-            curveTo(9.2f, 12.6f, 11.4f, 14.8f, 14f, 16f)
-            lineTo(16.5f, 14f)
-            lineTo(20.5f, 17f)
-            lineTo(17.5f, 20.5f)
-            curveTo(10.5f, 20f, 4f, 13.5f, 3.5f, 6.5f)
-            close()
-        }
-    }
-}
-
-private val Clock: ImageVector by lazy {
-    symbol("Clock") {
-        path(stroke = SolidColor(Color.Black), strokeLineWidth = STROKE) {
-            moveTo(12f, 3f)
-            arcToRelative(9f, 9f, 0f, true, false, 0f, 18f)
-            arcToRelative(9f, 9f, 0f, true, false, 0f, -18f)
-            close()
-        }
-        // Deliberately not mirrored in right-to-left layouts: a clock face runs the same way
-        // everywhere, and mirroring one is the classic localization mistake.
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
-            strokeLineCap = StrokeCap.Round,
-        ) {
-            moveTo(12f, 7.5f); lineTo(12f, 12f); lineTo(15.5f, 14f)
-        }
-    }
-}
-
-private val House: ImageVector by lazy {
-    symbol("House") {
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineJoin = StrokeJoin.Round,
-        ) {
-            moveTo(3.5f, 11f)
-            lineTo(12f, 3.8f)
-            lineTo(20.5f, 11f)
-            lineTo(20.5f, 20.5f)
-            lineTo(3.5f, 20.5f)
-            close()
-        }
-    }
-}
-
-private val Bowl: ImageVector by lazy {
-    symbol("Bowl") {
-        path(fill = SolidColor(Color.Black)) {
-            moveTo(3f, 11f)
-            lineTo(21f, 11f)
-            arcTo(9f, 9f, 0f, isMoreThanHalf = false, isPositiveArc = true, x1 = 3f, y1 = 11f)
-            close()
-        }
-        path(
-            stroke = SolidColor(Color.Black),
-            strokeLineWidth = STROKE,
-            strokeLineCap = StrokeCap.Round,
-        ) {
-            moveTo(9f, 7.5f); curveTo(9f, 6f, 10.5f, 5.5f, 10.5f, 4f)
-            moveTo(14f, 7.5f); curveTo(14f, 6f, 15.5f, 5.5f, 15.5f, 4f)
-        }
-    }
-}
-
-private val Star: ImageVector by lazy {
-    symbol("Star") {
-        path(fill = SolidColor(Color.Black)) {
-            moveTo(12f, 3f)
-            lineTo(14.23f, 8.93f)
-            lineTo(20.56f, 9.22f)
-            lineTo(15.61f, 13.17f)
-            lineTo(17.29f, 19.28f)
-            lineTo(12f, 15.8f)
-            lineTo(6.71f, 19.28f)
-            lineTo(8.39f, 13.17f)
-            lineTo(3.44f, 9.22f)
-            lineTo(9.77f, 8.93f)
-            close()
-        }
-    }
-}
+val TileSymbol.image: ImageVector
+    get() = tileSymbolVector(key) ?: tileSymbolVector(TileSymbol.DEFAULT.key) ?: BlankSymbol

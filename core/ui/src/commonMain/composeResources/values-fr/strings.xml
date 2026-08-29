@@ -173,6 +173,7 @@
     <string name="edit_subtitle">Deuxième ligne (facultatif)</string>
     <string name="edit_colour">Couleur</string>
     <string name="edit_symbol">Symbole</string>
+    <string name="edit_symbol_search">Rechercher un symbole</string>
     <string name="edit_save">Enregistrer</string>
     <string name="edit_cancel">Annuler</string>
     <string name="edit_delete">Supprimer la tuile</string>
