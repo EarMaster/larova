@@ -111,6 +111,10 @@ internal fun templateDraft(id: TemplateId): CardDraft = when (id) {
         subtitle = stringResource(Res.string.template_contacts_todo),
         colorToken = TileColor.CLAY.key,
         icon = TileSymbol.PHONE.key,
+        // Built directly rather than through `phoneOf`, which drops anyone with no number —
+        // correct for a tile somebody finished, wrong for the one case that is unfinished on
+        // purpose. The name and relation survive into the editor, where they are the example to
+        // type over; the tile itself shows nothing until a number exists.
         payload = CardPayload.Phone(
             displayName = stringResource(Res.string.template_contacts_name),
             number = "",

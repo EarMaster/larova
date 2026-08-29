@@ -77,6 +77,10 @@
         <item quantity="one">Guide · %1$d étape</item>
         <item quantity="other">Guide · %1$d étapes</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Appel · %1$d numéro</item>
+        <item quantity="other">Appel · %1$d numéros</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Liste · %1$d élément</item>
         <item quantity="other">Liste · %1$d éléments</item>
@@ -196,6 +200,8 @@
     <string name="edit_call_name">Nom</string>
     <string name="edit_call_number">Numéro de téléphone</string>
     <string name="edit_call_relation">Lien de parenté (facultatif)</string>
+    <string name="edit_add_contact">Ajouter un autre numéro</string>
+    <string name="edit_contact_number">Personne %1$d</string>
     <string name="edit_call_in_help">Afficher aussi sous Obtenir de l’aide</string>
     <string name="edit_record">Enregistrer avec le micro</string>
     <string name="edit_recording">Enregistrement…</string>

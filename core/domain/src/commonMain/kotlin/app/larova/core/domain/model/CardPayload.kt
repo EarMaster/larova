@@ -67,11 +67,33 @@ sealed interface CardPayload {
     @Serializable
     @SerialName("phone")
     data class Phone(
-        val displayName: String,
-        val number: String,
+        val displayName: String = "",
+        val number: String = "",
         val relation: String? = null,
         val inHelpSheet: Boolean = false,
-    ) : CardPayload
+        /**
+         * Everyone on this tile. Empty in a file written before 0.3.0, which had room for one
+         * person and stored them in the four fields above.
+         */
+        val contacts: List<PhoneEntry> = emptyList(),
+    ) : CardPayload {
+
+        /**
+         * The tile's people, however the file that held them was written.
+         *
+         * Read this rather than either half. [contacts] is what this version writes; the flat
+         * fields are what an older one wrote and what an older one still reads, and `phoneOf`
+         * keeps the two in step so both remain true of the same tile.
+         */
+        val people: List<PhoneEntry>
+            get() = contacts.ifEmpty {
+                if (number.isBlank() && displayName.isBlank()) {
+                    emptyList()
+                } else {
+                    listOf(PhoneEntry(displayName, number, relation, inHelpSheet))
+                }
+            }
+    }
 
     @Serializable
     @SerialName("web")
@@ -131,6 +153,25 @@ val CardPayload.referencedMediaIds: Set<Uuid>
         is CardPayload.Folder,
         -> emptySet()
     }
+
+/**
+ * One person a call tile can reach.
+ *
+ * A name of their own rather than only the tile's, because a tile called "Important numbers" holds
+ * four people and a caregiver has to be able to tell which is which. [relation] is free text and
+ * Larova never interprets it — "Mum", "the practice", "next door" are all the same kind of thing
+ * to the app.
+ *
+ * [inHelpSheet] is per person, not per tile: one tile can hold the doctor, the neighbour and the
+ * grandmother while only two of them belong behind the red bar.
+ */
+@Serializable
+data class PhoneEntry(
+    val displayName: String = "",
+    val number: String = "",
+    val relation: String? = null,
+    val inHelpSheet: Boolean = false,
+)
 
 /** The type a payload serializes as, so no caller has to hardcode a discriminator string. */
 val CardPayload.cardType: CardType

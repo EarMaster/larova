@@ -51,6 +51,8 @@ import app.larova.core.ui.resources.settings_log
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_item_count
+import app.larova.core.ui.resources.tile_number_count
+import app.larova.core.ui.resources.tile_number_count
 import app.larova.core.ui.resources.tile_step_count
 import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.tileColumns
@@ -283,6 +285,8 @@ private fun TileSubtitle.text(): String? = when (this) {
     is TileSubtitle.Custom -> text
     is TileSubtitle.Steps -> pluralStringResource(Res.plurals.tile_step_count, count, count)
     is TileSubtitle.Items -> pluralStringResource(Res.plurals.tile_item_count, count, count)
+    is TileSubtitle.Numbers -> pluralStringResource(Res.plurals.tile_number_count, count, count)
+    is TileSubtitle.Numbers -> pluralStringResource(Res.plurals.tile_number_count, count, count)
     TileSubtitle.Folder -> stringResource(Res.string.tile_folder)
 }
 

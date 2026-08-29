@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.media.isLargeMedia
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.domain.model.PhoneEntry
+import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.MAX_TABLE_COLUMNS
@@ -43,6 +45,20 @@ import kotlinx.coroutines.launch
 data class StepDraft(val text: String = "", val mediaId: String? = null)
 
 /**
+ * One person on a call tile as the editor holds them.
+ *
+ * Separate from the domain's `PhoneEntry` because this one may be half-typed: a name with no
+ * number yet is a perfectly good state to be in while filling a form, and an unusable state to
+ * store. `phoneOf` is what turns these into the other, dropping the ones nobody finished.
+ */
+data class ContactDraft(
+    val name: String = "",
+    val number: String = "",
+    val relation: String = "",
+    val inHelpSheet: Boolean = false,
+)
+
+/**
  * What the editor holds while a parent is typing.
  *
  * The fields of all five tile types sit side by side rather than in a sealed hierarchy per type.
@@ -67,10 +83,8 @@ data class EditUiState(
      */
     val columns: List<String> = listOf("", ""),
     val rows: List<List<String>> = listOf(listOf("", "")),
-    val callName: String = "",
-    val callNumber: String = "",
-    val callRelation: String = "",
-    val callInHelpSheet: Boolean = false,
+    /** A call tile starts with one empty person, so there is somewhere to type immediately. */
+    val contacts: List<ContactDraft> = listOf(ContactDraft()),
     val webUrl: String = "",
     val webLabel: String = "",
     /** The app a shortcut tile opens, and the words the parents put on it. */
@@ -212,14 +226,6 @@ class EditCardViewModel(
     fun onNoteChange(value: String) = _state.update { it.copy(noteText = value) }
 
     fun onResetDailyChange(value: Boolean) = _state.update { it.copy(resetDaily = value) }
-
-    fun onCallNameChange(value: String) = _state.update { it.copy(callName = value) }
-
-    fun onCallNumberChange(value: String) = _state.update { it.copy(callNumber = value) }
-
-    fun onCallRelationChange(value: String) = _state.update { it.copy(callRelation = value) }
-
-    fun onCallInHelpSheetChange(value: Boolean) = _state.update { it.copy(callInHelpSheet = value) }
 
     fun onWebLabelChange(value: String) = _state.update { it.copy(webLabel = value) }
 
@@ -417,6 +423,20 @@ class EditCardViewModel(
     }
 
     fun onAddItem() = _state.update { it.copy(items = it.items + CheckItem("")) }
+
+    fun onContactChange(index: Int, contact: ContactDraft) = _state.update { state ->
+        state.copy(
+            contacts = state.contacts.mapIndexed { i, existing -> if (i == index) contact else existing },
+        )
+    }
+
+    fun onAddContact() = _state.update { it.copy(contacts = it.contacts + ContactDraft()) }
+
+    fun onRemoveContact(index: Int) = _state.update { state ->
+        val remaining = state.contacts.filterIndexed { i, _ -> i != index }
+        // Never down to nothing: a call tile with no rows gives no way to start typing again.
+        state.copy(contacts = remaining.ifEmpty { listOf(ContactDraft()) })
+    }
 
     fun onColumnChange(index: Int, text: String) = _state.update { state ->
         state.copy(
@@ -655,12 +675,20 @@ private fun EditUiState.audioPayload(): CardPayload = parseUuidOrNull(mediaId)
     ?.let { CardPayload.Audio(mediaId = it, caption = mediaCaption.trim().ifEmpty { null }) }
     ?: CardPayload.Note(text = mediaCaption.trim())
 
-/** The tile's own title stands in for a name nobody typed: a number with no name is a riddle. */
-private fun EditUiState.phonePayload() = CardPayload.Phone(
-    displayName = callName.trim().ifEmpty { title.trim() },
-    number = callNumber.trim(),
-    relation = callRelation.trim().takeIf { it.isNotEmpty() },
-    inHelpSheet = callInHelpSheet,
+/**
+ * The tile's own title stands in for a name nobody typed, and only on the first person: a lone
+ * number with no name is a riddle, but the fourth row on "Important numbers" borrowing the tile's
+ * title would put the same name on four different people.
+ */
+private fun EditUiState.phonePayload() = phoneOf(
+    contacts.mapIndexed { index, draft ->
+        PhoneEntry(
+            displayName = draft.name.trim().ifEmpty { if (index == 0) title.trim() else "" },
+            number = draft.number.trim(),
+            relation = draft.relation.trim().takeIf { it.isNotEmpty() },
+            inHelpSheet = draft.inHelpSheet,
+        )
+    },
 )
 
 private fun EditUiState.webPayload() = CardPayload.Web(
@@ -740,10 +768,18 @@ private fun Tile.toEditState(): EditUiState {
         )
 
         is CardPayload.Phone -> base.copy(
-            callName = payload.displayName,
-            callNumber = payload.number,
-            callRelation = payload.relation.orEmpty(),
-            callInHelpSheet = payload.inHelpSheet,
+            // `people` rather than either half of the payload, so a tile written before 0.3.0
+            // opens in the editor as the one person it holds rather than as an empty form.
+            contacts = payload.people
+                .map { entry ->
+                    ContactDraft(
+                        name = entry.displayName,
+                        number = entry.number,
+                        relation = entry.relation.orEmpty(),
+                        inHelpSheet = entry.inHelpSheet,
+                    )
+                }
+                .ifEmpty { listOf(ContactDraft()) },
         )
 
         is CardPayload.Video -> base.copy(

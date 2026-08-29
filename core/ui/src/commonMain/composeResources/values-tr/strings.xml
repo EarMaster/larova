@@ -73,6 +73,10 @@
         <item quantity="one">Yönerge · %1$d adım</item>
         <item quantity="other">Yönerge · %1$d adım</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Arama · %1$d numara</item>
+        <item quantity="other">Arama · %1$d numara</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Liste · %1$d madde</item>
         <item quantity="other">Liste · %1$d madde</item>
@@ -192,6 +196,8 @@
     <string name="edit_call_name">Ad</string>
     <string name="edit_call_number">Telefon numarası</string>
     <string name="edit_call_relation">Yakınlık (isteğe bağlı)</string>
+    <string name="edit_add_contact">Başka numara ekle</string>
+    <string name="edit_contact_number">Kişi %1$d</string>
     <string name="edit_call_in_help">Yardım al bölümünde de göster</string>
     <string name="edit_record">Mikrofonla kaydet</string>
     <string name="edit_recording">Kaydediliyor…</string>

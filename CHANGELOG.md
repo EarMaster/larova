@@ -12,6 +12,17 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Changed
+- A call tile holds as many people as you need instead of one. Each has their own name, what they are to
+  the child, and their number, and each can be marked to appear behind "Get help" on its own — so
+  one tile can hold the doctor, the neighbour and the grandmother while only two of them are behind
+  the red bar. Opening the tile shows them as the same rows the help sheet uses, because it is the
+  same act: press a person, the phone app opens with their number in it. The tile on the start
+  screen says how many numbers are on it.
+- A tile made before this still opens and still shows its one number, and a tile made now still
+  opens in an older Larova — showing the first of its numbers rather than refusing the file. A
+  backup written today can be restored on a phone that has not been updated yet.
+
 ## [0.2.1] - 2026-08-29
 
 ### Changed

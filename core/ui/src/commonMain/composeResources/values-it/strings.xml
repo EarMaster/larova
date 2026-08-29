@@ -71,6 +71,10 @@
         <item quantity="one">Guida · %1$d passaggio</item>
         <item quantity="other">Guida · %1$d passaggi</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="one">Chiamata · %1$d numero</item>
+        <item quantity="other">Chiamata · %1$d numeri</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="one">Lista · %1$d voce</item>
         <item quantity="other">Lista · %1$d voci</item>
@@ -190,6 +194,8 @@
     <string name="edit_call_name">Nome</string>
     <string name="edit_call_number">Numero di telefono</string>
     <string name="edit_call_relation">Parentela (facoltativa)</string>
+    <string name="edit_add_contact">Aggiungi un altro numero</string>
+    <string name="edit_contact_number">Persona %1$d</string>
     <string name="edit_call_in_help">Mostra anche sotto Chiedi aiuto</string>
     <string name="edit_record">Registra con il microfono</string>
     <string name="edit_recording">Registrazione…</string>

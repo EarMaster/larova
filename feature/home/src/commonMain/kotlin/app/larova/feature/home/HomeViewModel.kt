@@ -109,6 +109,8 @@ private fun Tile.subtitle(): TileSubtitle {
     return when (val payload = payload) {
         is CardPayload.Guide -> TileSubtitle.Steps(payload.steps.size)
         is CardPayload.Checklist -> TileSubtitle.Items(payload.items.size)
+        is CardPayload.Phone -> TileSubtitle.Numbers(payload.people.size)
+        is CardPayload.Phone -> TileSubtitle.Numbers(payload.people.size)
         is CardPayload.Folder -> TileSubtitle.Folder
         else -> TileSubtitle.None
     }

@@ -74,6 +74,9 @@
     <plurals name="tile_step_count">
         <item quantity="other">指南 · %1$d 步</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="other">电话 · %1$d 个号码</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="other">清单 · %1$d 项</item>
     </plurals>
@@ -191,6 +194,8 @@
     <string name="edit_call_name">姓名</string>
     <string name="edit_call_number">电话号码</string>
     <string name="edit_call_relation">称呼（可选）</string>
+    <string name="edit_add_contact">再添加一个号码</string>
+    <string name="edit_contact_number">第 %1$d 位</string>
     <string name="edit_call_in_help">同时显示在“寻求帮助”里</string>
     <string name="edit_record">用麦克风录音</string>
     <string name="edit_recording">正在录音…</string>

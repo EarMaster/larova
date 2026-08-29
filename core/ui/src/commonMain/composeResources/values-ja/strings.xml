@@ -71,6 +71,9 @@
     <plurals name="tile_step_count">
         <item quantity="other">手順 · %1$dステップ</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="other">電話 · %1$d件</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="other">リスト · %1$d項目</item>
     </plurals>
@@ -188,6 +191,8 @@
     <string name="edit_call_name">名前</string>
     <string name="edit_call_number">電話番号</string>
     <string name="edit_call_relation">続柄（任意）</string>
+    <string name="edit_add_contact">番号をもう一つ追加</string>
+    <string name="edit_contact_number">%1$d 人目</string>
     <string name="edit_call_in_help">「助けを呼ぶ」にも表示する</string>
     <string name="edit_record">マイクで録音する</string>
     <string name="edit_recording">録音中…</string>

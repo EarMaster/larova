@@ -78,6 +78,14 @@
         <item quantity="many">دليل · %1$d خطوة</item>
         <item quantity="other">دليل · %1$d خطوة</item>
     </plurals>
+    <plurals name="tile_number_count">
+        <item quantity="zero">اتصال · بلا أرقام</item>
+        <item quantity="one">اتصال · رقم واحد</item>
+        <item quantity="two">اتصال · رقمان</item>
+        <item quantity="few">اتصال · %1$d أرقام</item>
+        <item quantity="many">اتصال · %1$d رقماً</item>
+        <item quantity="other">اتصال · %1$d رقم</item>
+    </plurals>
     <plurals name="tile_item_count">
         <item quantity="zero">قائمة · بلا عناصر</item>
         <item quantity="one">قائمة · عنصر واحد</item>
@@ -205,6 +213,8 @@
     <string name="edit_call_name">الاسم</string>
     <string name="edit_call_number">رقم الهاتف</string>
     <string name="edit_call_relation">صلة القرابة (اختياري)</string>
+    <string name="edit_add_contact">إضافة رقم آخر</string>
+    <string name="edit_contact_number">الشخص %1$d</string>
     <string name="edit_call_in_help">اعرضه أيضاً ضمن «اطلب المساعدة»</string>
     <string name="edit_record">التسجيل بالميكروفون</string>
     <string name="edit_recording">جارٍ التسجيل…</string>
