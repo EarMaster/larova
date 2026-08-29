@@ -45,27 +45,56 @@ description: An offline app you set up on your child's phone, so grandparents, a
 			<p class="subtext">These are not mock-ups. They are rendered from the app's own code on every re-record, alongside the screenshot tests, so this page cannot show a version of Larova that no longer exists.</p>
 			<ul class="screenshots">
 				<li>
-					<img src="{{ site.baseurl }}/assets/screenshots/01_start.png" alt="Larova's start screen: a grid of coloured tiles — Bedtime, Getting up, Food and drink, Bag for nursery — with a search field above and a red Get help bar along the bottom." loading="lazy" width="1233" height="2460">
+					<a class="shot" href="{{ site.baseurl }}/assets/screenshots/01_start.png" aria-label="Open this screenshot larger">
+						<img src="{{ site.baseurl }}/assets/screenshots/01_start.png" alt="Larova's start screen: a grid of coloured tiles — Bedtime, Getting up, Food and drink, Bag for nursery — with a search field above and a red Get help bar along the bottom." loading="lazy" width="1233" height="2460">
+					</a>
 					<span>The start screen. Everything on it was written by a parent.</span>
 				</li>
 				<li>
-					<img src="{{ site.baseurl }}/assets/screenshots/02_guide.png" alt="A guide tile open at step 1 of 5, showing one instruction in large text with a Next button." loading="lazy" width="1233" height="2460">
+					<a class="shot" href="{{ site.baseurl }}/assets/screenshots/02_guide.png" aria-label="Open this screenshot larger">
+						<img src="{{ site.baseurl }}/assets/screenshots/02_guide.png" alt="A guide tile open at step 1 of 5, showing one instruction in large text with a Next button." loading="lazy" width="1233" height="2460">
+					</a>
 					<span>A guide, one step at a time, at reading size.</span>
 				</li>
 				<li>
-					<img src="{{ site.baseurl }}/assets/screenshots/03_checklist.png" alt="A checklist tile with six items, two already ticked off." loading="lazy" width="1233" height="2460">
+					<a class="shot" href="{{ site.baseurl }}/assets/screenshots/03_checklist.png" aria-label="Open this screenshot larger">
+						<img src="{{ site.baseurl }}/assets/screenshots/03_checklist.png" alt="A checklist tile with six items, two already ticked off." loading="lazy" width="1233" height="2460">
+					</a>
 					<span>A checklist. Ticking off needs no unlocking.</span>
 				</li>
 				<li>
-					<img src="{{ site.baseurl }}/assets/screenshots/04_help.png" alt="The help sheet: three large rows, each a name, a relation and a phone number." loading="lazy" width="1233" height="2460">
+					<a class="shot" href="{{ site.baseurl }}/assets/screenshots/04_help.png" aria-label="Open this screenshot larger">
+						<img src="{{ site.baseurl }}/assets/screenshots/04_help.png" alt="The help sheet: three large rows, each a name, a relation and a phone number." loading="lazy" width="1233" height="2460">
+					</a>
 					<span>Behind “Get help”: the numbers you chose, and nothing else.</span>
 				</li>
 				<li>
-					<img src="{{ site.baseurl }}/assets/screenshots/05_night.png" alt="The same start screen in night mode: warm text on a near-black background." loading="lazy" width="1233" height="2460">
+					<a class="shot" href="{{ site.baseurl }}/assets/screenshots/05_night.png" aria-label="Open this screenshot larger">
+						<img src="{{ site.baseurl }}/assets/screenshots/05_night.png" alt="The same start screen in night mode: warm text on a near-black background." loading="lazy" width="1233" height="2460">
+					</a>
 					<span>Night mode, for reading a bedtime guide aloud in the dark.</span>
 				</li>
 			</ul>
 		</div>
+
+		<!--
+			The viewer. One <dialog> reused for all five rather than one per screenshot: the
+			browser gives Escape, the backdrop and the focus trap for free, and there is only
+			ever one open. Empty until a screenshot is pressed — the full-size images are
+			already on the page, so this fetches nothing.
+		-->
+		<dialog class="lightbox" aria-label="Screenshot viewer">
+			<button class="lightbox-close" type="button" aria-label="Close">&times;</button>
+			<figure>
+				<img alt="">
+				<figcaption></figcaption>
+			</figure>
+			<div class="lightbox-nav">
+				<button type="button" data-step="-1" aria-label="Previous screenshot">&lsaquo;</button>
+				<p class="lightbox-count" aria-live="polite"></p>
+				<button type="button" data-step="1" aria-label="Next screenshot">&rsaquo;</button>
+			</div>
+		</dialog>
 	</section>
 
 	<section>
@@ -118,3 +147,72 @@ description: An offline app you set up on your child's phone, so grandparents, a
 		</div>
 	</section>
 </div>
+
+<script>
+	// Screenshot viewer. Inline and vanilla for the same reason there is no analytics and no CDN
+	// font on this site: it hosts the privacy policy, and a visitor's browser should not talk to
+	// anybody else to read it.
+	//
+	// Every screenshot is already an ordinary link to its own file. If <dialog> is missing or
+	// scripting is off, that link is what happens — the picture opens on its own, which is the
+	// whole feature, just without the frame.
+	(function () {
+		var dialog = document.querySelector(".lightbox");
+		if (!dialog || typeof dialog.showModal !== "function") { return; }
+
+		var links = Array.prototype.slice.call(document.querySelectorAll(".screenshots a.shot"));
+		if (!links.length) { return; }
+
+		var view = dialog.querySelector("img");
+		var caption = dialog.querySelector("figcaption");
+		var count = dialog.querySelector(".lightbox-count");
+		var current = 0;
+
+		// Wraps at both ends, so the arrows never dead-end on a set this short.
+		function show(index) {
+			current = (index + links.length) % links.length;
+			var link = links[current];
+			var thumb = link.querySelector("img");
+			view.src = link.getAttribute("href");
+			// The alt text is the description already written for the thumbnail. Repeating it
+			// here keeps one description per screenshot rather than two that can drift.
+			view.alt = thumb.getAttribute("alt");
+			caption.textContent = link.parentNode.querySelector("span").textContent;
+			count.textContent = (current + 1) + " of " + links.length;
+		}
+
+		links.forEach(function (link, index) {
+			link.addEventListener("click", function (event) {
+				event.preventDefault();
+				show(index);
+				dialog.showModal();
+			});
+		});
+
+		dialog.querySelectorAll("[data-step]").forEach(function (button) {
+			button.addEventListener("click", function () {
+				show(current + Number(button.getAttribute("data-step")));
+			});
+		});
+
+		dialog.querySelector(".lightbox-close").addEventListener("click", function () {
+			dialog.close();
+		});
+
+		dialog.addEventListener("keydown", function (event) {
+			if (event.key === "ArrowRight") { show(current + 1); }
+			if (event.key === "ArrowLeft") { show(current - 1); }
+		});
+
+		// A click that lands on the dialog itself landed on the backdrop area around the figure,
+		// which is the gesture everybody tries first.
+		dialog.addEventListener("click", function (event) {
+			if (event.target === dialog) { dialog.close(); }
+		});
+
+		// Frees the memory a 1233x2460 PNG holds once the viewer is shut.
+		dialog.addEventListener("close", function () {
+			view.removeAttribute("src");
+		});
+	})();
+</script>
