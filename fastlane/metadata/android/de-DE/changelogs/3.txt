@@ -1,0 +1,1 @@
+Die vier Darstellungen — Telefon folgen, hell, dunkel und Nacht — stehen jetzt zusammen in einem Feld, und zu jeder steht, wie sie aussieht. Verknüpfungsnamen auf dem Startbildschirm werden nicht mehr abgeschnitten.
