@@ -1,0 +1,1 @@
+Un riquadro di chiamata contiene ora tutte le persone che servono — ognuna con il proprio nome, la parentela e il numero, e ognuna può comparire da sola sotto «Chiedi aiuto». Ci sono anche sessantotto simboli invece di dieci, con una ricerca. I riquadri già fatti restano invariati.

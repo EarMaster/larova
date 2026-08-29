@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-29
+
 ### Added
 - Sixty-eight symbols to choose from instead of ten — beds, buses, a bath, a plaster, a rabbit —
   grouped into everyday things, food and drink, care, home, out and about, play, people and notes,

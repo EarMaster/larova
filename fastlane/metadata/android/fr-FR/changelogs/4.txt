@@ -1,0 +1,1 @@
+Une tuile d’appel contient maintenant autant de personnes que nécessaire — chacune avec son nom, son lien de parenté et son numéro, et chacune peut apparaître seule sous « Obtenir de l’aide ». Il y a aussi soixante-huit symboles au lieu de dix, avec une recherche. Vos tuiles existantes ne changent pas.

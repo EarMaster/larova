@@ -1,0 +1,1 @@
+A call tile now holds as many people as you need — each with their own name, how they are related and their number, and each can appear behind Get help on its own. There are also sixty-eight symbols to choose from instead of ten, with a search box. Tiles you already made are unchanged.

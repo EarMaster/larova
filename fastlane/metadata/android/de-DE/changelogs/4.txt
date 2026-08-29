@@ -1,0 +1,1 @@
+Eine Anruf-Kachel fasst jetzt beliebig viele Personen — jede mit eigenem Namen, Verwandtschaft und Nummer, und jede kann einzeln unter „Hilfe holen“ erscheinen. Außerdem gibt es 68 statt zehn Symbole zur Auswahl, mit Suchfeld. Bereits angelegte Kacheln bleiben unverändert.
