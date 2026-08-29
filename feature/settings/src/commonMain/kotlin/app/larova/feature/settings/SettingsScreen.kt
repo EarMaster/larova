@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,10 +33,13 @@ import app.larova.core.ui.icon.Transfer
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.settings_appearance
 import app.larova.core.ui.resources.settings_appearance_dark
+import app.larova.core.ui.resources.settings_appearance_dark_hint
 import app.larova.core.ui.resources.settings_appearance_light
+import app.larova.core.ui.resources.settings_appearance_light_hint
 import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
+import app.larova.core.ui.resources.settings_appearance_system_hint
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.settings_transfer_hint
 import app.larova.core.ui.resources.transfer_title
@@ -112,19 +119,48 @@ fun SettingsScreen(
                 modifier = Modifier.padding(vertical = 12.dp),
             )
 
-            for (option in AppearanceSetting.entries) {
-                AppearanceOption(
-                    label = stringResource(option.label),
-                    // Under the option it belongs to, not under the list. As a fifth line at the
-                    // bottom it read as a note about all four, and left the obvious question of
-                    // why only one of them had been explained.
-                    hint = option.hint?.let { stringResource(it) },
-                    selected = option == appearance,
-                    onSelect = { onAppearanceChange(option) },
-                )
-            }
+            AppearanceOptions(
+                selected = appearance,
+                onSelect = onAppearanceChange,
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+/**
+ * The four appearances, as one thing.
+ *
+ * Loose rows on the page read as four separate settings that happen to be near each other, and a
+ * caregiver who reads them that way looks for the "off". One surface with a line between each row
+ * says what a radio group means — pick exactly one of these — before anybody has read a word of
+ * it. `selectableGroup` says the same to a screen reader, which otherwise announces four unrelated
+ * radio buttons rather than "1 of 4".
+ */
+@Composable
+private fun AppearanceOptions(
+    selected: AppearanceSetting,
+    onSelect: (AppearanceSetting) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(Dimens.TileRadius),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(modifier = Modifier.selectableGroup()) {
+            AppearanceSetting.entries.forEachIndexed { index, option ->
+                if (index > 0) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                }
+                AppearanceOption(
+                    label = stringResource(option.label),
+                    hint = stringResource(option.hint),
+                    selected = option == selected,
+                    onSelect = { onSelect(option) },
+                )
+            }
         }
     }
 }
@@ -133,11 +169,14 @@ fun SettingsScreen(
  * A row, not a switch. Four states cannot be a toggle, and a 56dp selectable row is easier to hit
  * than a radio button on its own — the whole row is the target, which is what
  * `Modifier.selectable` on the row rather than on the control gives.
+ *
+ * The padding is inside `selectable` rather than outside it, so the target is the full width of
+ * the card and not a strip down the middle of it.
  */
 @Composable
 private fun AppearanceOption(
     label: String,
-    hint: String?,
+    hint: String,
     selected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
@@ -147,23 +186,21 @@ private fun AppearanceOption(
             .fillMaxWidth()
             .heightIn(min = Dimens.MinTouchTarget)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
-            .padding(vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // null: the row above carries the semantics, so a screen reader announces one control
-        // rather than two — and the hint is then read as part of that control's own label, which
-        // is what makes it an explanation of this option rather than a stray sentence.
+        // null: the row carries the semantics, so a screen reader announces one control rather
+        // than two — and the hint is then read as part of that control's own label, which is what
+        // makes it an explanation of this option rather than a stray sentence.
         RadioButton(selected = selected, onClick = null)
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(text = label, style = MaterialTheme.typography.bodyLarge)
-            if (hint != null) {
-                Text(
-                    text = hint,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            Text(
+                text = hint,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -177,13 +214,16 @@ private val AppearanceSetting.label: StringResource
     }
 
 /**
- * Only night has one, and that is the point: it is the only appearance whose name does not say
- * what it is for. "Light", "Dark" and "Follow the phone" explain themselves.
+ * Every option has one, and they are deliberately parallel: three say what the screen will look
+ * like, and night says what it is *for*, because that is the one whose name does not carry it.
+ * Describing only night left the reasonable question of what was wrong with the other three.
  */
-private val AppearanceSetting.hint: StringResource?
+private val AppearanceSetting.hint: StringResource
     get() = when (this) {
+        AppearanceSetting.SYSTEM -> Res.string.settings_appearance_system_hint
+        AppearanceSetting.LIGHT -> Res.string.settings_appearance_light_hint
+        AppearanceSetting.DARK -> Res.string.settings_appearance_dark_hint
         AppearanceSetting.NIGHT -> Res.string.settings_appearance_night_hint
-        else -> null
     }
 
 /**

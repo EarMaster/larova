@@ -127,8 +127,11 @@
     <string name="settings_title">Settings</string>
     <string name="settings_appearance">Appearance</string>
     <string name="settings_appearance_system">Follow the phone</string>
+    <string name="settings_appearance_system_hint">Light or dark, whichever the phone is using.</string>
     <string name="settings_appearance_light">Light</string>
+    <string name="settings_appearance_light_hint">Dark text on a warm, pale background.</string>
     <string name="settings_appearance_dark">Dark</string>
+    <string name="settings_appearance_dark_hint">Light text on a dark background.</string>
     <string name="settings_appearance_night">Night</string>
     <string name="settings_appearance_night_hint">Warm and very dim, for reading aloud in a dark room.</string>
     <string name="settings_language">Language</string>

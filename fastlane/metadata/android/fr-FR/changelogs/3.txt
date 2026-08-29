@@ -1,0 +1,1 @@
+Les quatre apparences — suivre le téléphone, clair, sombre et nuit — sont maintenant regroupées dans un même bloc, et chacune indique à quoi elle ressemble. Les noms des raccourcis ne sont plus coupés.

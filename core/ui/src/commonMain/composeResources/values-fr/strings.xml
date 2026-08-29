@@ -135,8 +135,11 @@
     <string name="settings_title">Réglages</string>
     <string name="settings_appearance">Apparence</string>
     <string name="settings_appearance_system">Suivre le téléphone</string>
+    <string name="settings_appearance_system_hint">Clair ou sombre, selon ce qu’utilise le téléphone.</string>
     <string name="settings_appearance_light">Clair</string>
+    <string name="settings_appearance_light_hint">Texte foncé sur un fond clair et chaud.</string>
     <string name="settings_appearance_dark">Sombre</string>
+    <string name="settings_appearance_dark_hint">Texte clair sur un fond sombre.</string>
     <string name="settings_appearance_night">Nuit</string>
     <string name="settings_appearance_night_hint">Chaud et très tamisé, pour lire à voix haute dans une pièce sombre.</string>
     <string name="settings_language">Langue</string>

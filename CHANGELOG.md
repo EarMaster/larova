@@ -12,6 +12,19 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-29
+
+### Changed
+- The four appearance choices — follow the phone, light, dark, night — sit together in one panel
+  rather than as four loose rows, and each of them says what it looks like. Only Night was
+  explained before, which read as a note about all four and left the fair question of what was
+  wrong with the other three.
+
+### Fixed
+- Tile names on the home-screen shortcuts are no longer cut off mid-word. Larova was shortening
+  them itself at a fixed length; the phone's launcher shortens them properly, and only when it
+  actually runs out of room.
+
 ## [0.2.0] - 2026-08-28
 
 ### Added

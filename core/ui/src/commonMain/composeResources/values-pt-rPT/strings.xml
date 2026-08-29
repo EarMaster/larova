@@ -130,8 +130,11 @@
     <string name="settings_title">Definições</string>
     <string name="settings_appearance">Aspeto</string>
     <string name="settings_appearance_system">Seguir o telemóvel</string>
+    <string name="settings_appearance_system_hint">Claro ou escuro, conforme o que o telemóvel estiver a usar.</string>
     <string name="settings_appearance_light">Claro</string>
+    <string name="settings_appearance_light_hint">Texto escuro sobre um fundo claro e quente.</string>
     <string name="settings_appearance_dark">Escuro</string>
+    <string name="settings_appearance_dark_hint">Texto claro sobre um fundo escuro.</string>
     <string name="settings_appearance_night">Noite</string>
     <string name="settings_appearance_night_hint">Quente e muito ténue, para ler em voz alta num quarto às escuras.</string>
     <string name="settings_language">Idioma</string>
