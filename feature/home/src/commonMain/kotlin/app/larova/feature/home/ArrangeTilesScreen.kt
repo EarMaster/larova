@@ -51,12 +51,13 @@ fun ArrangeTilesScreen(
     onMoveUp: (Int) -> Unit,
     onMoveDown: (Int) -> Unit,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LarovaScaffold(
         title = stringResource(Res.string.arrange_title),
-        onHelp = onHelp,
+        // No help bar. This is parent-view work, opened on purpose, and the red bar is for
+        // the moment something is wrong while a child is here.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->

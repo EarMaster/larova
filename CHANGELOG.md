@@ -12,6 +12,11 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Fixed
+- The red "Get help" bar no longer appears on the screens only a parent sees: backup and transfer,
+  the tile editor, rearranging, unlocking parent view and choosing a PIN. It stays where a
+  caregiver reads — the start screen, every tile, and the help sheet itself.
+
 ## [0.3.0] - 2026-08-29
 
 ### Added

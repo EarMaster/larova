@@ -136,14 +136,15 @@ fun EditCardScreen(
     state: EditUiState,
     callbacks: EditCardCallbacks,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var confirmingDelete by remember { mutableStateOf(false) }
 
     LarovaScaffold(
         title = stringResource(if (state.isNew) Res.string.edit_new_tile else Res.string.edit_edit_tile),
-        onHelp = onHelp,
+        // No help bar. This is parent-view work, opened on purpose, and the red bar is for
+        // the moment something is wrong while a child is here.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->

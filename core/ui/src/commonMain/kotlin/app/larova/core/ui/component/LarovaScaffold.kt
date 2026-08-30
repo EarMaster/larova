@@ -29,10 +29,13 @@ import org.jetbrains.compose.resources.stringResource
  * on every screen because someone who needs it will not be on the screen that happened to include
  * it (docs/concept.md §4.3).
  *
- * Two screens pass `onHelp = null` and have no bar: settings and the activity log. Neither is a
- * screen a caregiver is on while something is going wrong — they are places a parent goes on
- * purpose, and a red emergency bar under a list of preferences dilutes the one colour in the
- * product that is allowed to mean "now". Everything a caregiver actually reads keeps it.
+ * The screens that pass `onHelp = null` have no bar, and they are all of a kind: settings, the
+ * activity log, backup and transfer, the tile editor, rearranging, unlocking parent view and
+ * choosing a PIN. None of them is a screen a caregiver is on while something is going wrong —
+ * every one is a place a parent goes on purpose, usually with the child not in the room. A red
+ * emergency bar under a form dilutes the one colour in the product that is allowed to mean "now",
+ * and it puts a way out of the editor where a thumb reaches for Save. Everything a caregiver
+ * actually reads — the grid, every tile type, the help sheet — keeps it.
  *
  * The frame is also where the app stops being a phone app. On anything wider than a phone the
  * content is capped at [contentWidth] and centred, and the help bar is capped and centred with it

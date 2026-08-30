@@ -171,7 +171,6 @@ fun LarovaNavHost(
                     requestMicrophone = requestMicrophone,
                 ),
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -187,7 +186,6 @@ fun LarovaNavHost(
                 onMoveUp = viewModel::onMoveUp,
                 onMoveDown = viewModel::onMoveDown,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -215,7 +213,6 @@ fun LarovaNavHost(
                 onUseBiometrics = rememberBiometricUnlock(onAccepted = viewModel::onBiometricsAccepted),
                 wrongPin = state.wrongPin,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -235,7 +232,6 @@ fun LarovaNavHost(
                 onSave = viewModel::onSave,
                 error = state.error,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -272,7 +268,6 @@ fun LarovaNavHost(
                 onConfirmImport = viewModel::onConfirmImport,
                 onCancelImport = viewModel::onCancelImport,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 

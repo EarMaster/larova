@@ -65,7 +65,6 @@ fun UnlockScreen(
     onUseBiometrics: (() -> Unit)?,
     wrongPin: Boolean,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Survives a rotation, so turning the phone while the prompt is up does not open a second one.
@@ -80,7 +79,9 @@ fun UnlockScreen(
 
     LarovaScaffold(
         title = stringResource(Res.string.view_unlock_title),
-        onHelp = onHelp,
+        // No help bar. This is parent-view work, opened on purpose, and the red bar is for
+        // the moment something is wrong while a child is here.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->
@@ -152,12 +153,13 @@ fun PinSetupScreen(
     onSave: () -> Unit,
     error: PinError?,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LarovaScaffold(
         title = stringResource(Res.string.view_pin_create_title),
-        onHelp = onHelp,
+        // No help bar. This is parent-view work, opened on purpose, and the red bar is for
+        // the moment something is wrong while a child is here.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->

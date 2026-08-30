@@ -74,7 +74,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onMoveUp = {},
                 onMoveDown = {},
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -203,7 +202,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onUseBiometrics = null,
                 wrongPin = false,
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -218,7 +216,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onUseBiometrics = null,
                 wrongPin = true,
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -239,7 +236,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onSave = {},
                 error = null,
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -264,7 +260,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 ),
                 callbacks = noOpEditCallbacks(),
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -277,7 +272,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 state = EditUiState(isNew = true),
                 callbacks = noOpEditCallbacks(),
                 onBack = {},
-                onHelp = {},
             )
         }
     }
@@ -309,7 +303,6 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
             onConfirmImport = {},
             onCancelImport = {},
             onBack = {},
-            onHelp = {},
         )
     }
 
