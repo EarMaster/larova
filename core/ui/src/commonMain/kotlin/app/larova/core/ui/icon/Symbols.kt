@@ -19,8 +19,10 @@ data class SymbolChoice(val key: String, val label: String, val group: SymbolGro
  * `core/ui/icons/`, named after the file it came from. A parent browsing sees the suggestions
  * first, and search reaches the rest.
  *
- * A drawing appears once. A symbol offered as a suggestion is not offered a second time under the
- * name of the file that draws it — `meal` is in the list and `utensils`, which draws it, is not.
+ * A drawing appears once, and so does a key. A symbol offered as a suggestion is not offered a
+ * second time under the name of the file that draws it — `meal` is in the list and `utensils`,
+ * which draws it, is not — nor under a file that happens to share its key: `key` is drawn by
+ * `key-round.svg`, and `key.svg` is the same key and, once resolved, the same picture.
  */
 object Symbols {
 
@@ -29,9 +31,14 @@ object Symbols {
     }
 
     val all: List<SymbolChoice> by lazy {
-        val drawnBySuggestion = TileSymbol.entries.map { it.drawing }.toSet()
+        // A suggestion owns two names on the shelf: the key it stores and the file that draws it,
+        // which for a third of them are different. `key` is drawn by `key-round.svg`, so `key.svg`
+        // is still sitting there — and offering it would put a second "Key" in the grid storing the
+        // same key and, because the key resolves through the suggestion, drawing the same picture.
+        // The grid keys its cells by the symbol key and throws when two of them meet on screen.
+        val ownedBySuggestion = TileSymbol.entries.flatMapTo(mutableSetOf()) { listOf(it.key, it.drawing) }
         val rest = SYMBOL_SHELVES
-            .filterKeys { it !in drawnBySuggestion }
+            .filterKeys { it !in ownedBySuggestion }
             .map { (key, shelf) -> SymbolChoice(key, prettify(key), shelfOf(shelf)) }
             .sortedBy { it.label }
         suggestions + rest

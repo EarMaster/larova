@@ -14,7 +14,10 @@ core/ui/icons/
 
 **The folder is the shelf.** An icon in `food/` appears under "Food and drink" in the picker, so
 the grouping lives beside the drawings instead of in a table somebody has to keep in step with
-them. 291 drawings across the eight shelves.
+them. 291 drawings across the eight shelves, of which the picker offers 288: `book.svg`, `key.svg`
+and `map.svg` carry names that are already suggestion keys drawn by `book-open`, `key-round` and
+`map-pin`, so a parent picking "Key" gets the round one either way. They stay vendored — a file is
+never deleted — but they are not offered twice under one key.
 
 ## The file name is the key, and the key is frozen
 
@@ -43,7 +46,9 @@ thing offline, which everything else about this app already is.
 ## Adding one
 
 1. Drop a 24×24 SVG into the right shelf under `lucide/` (from the pinned tag below) or
-   `larova/`. The file name becomes the key, so name it for what it is, not for what it draws.
+   `larova/`. The file name becomes the key, so name it for what it is, not for what it draws —
+   and not for a key `TileSymbol` already holds, which would be one key offered twice.
+   `SymbolsTest` catches that.
 2. To offer it as a suggestion, add the key to `TileSymbol` with its English name and shelf.
    Everything else is reachable through search without touching any Kotlin.
 3. Run `./gradlew :core:ui:generateTileSymbols` — or just build; it runs before compilation.
