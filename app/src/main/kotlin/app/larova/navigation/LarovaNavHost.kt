@@ -18,6 +18,7 @@ import app.larova.feature.card.CardScreen
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.SymbolPickerScreen
 import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
 import app.larova.feature.help.HelpViewModel
@@ -157,6 +158,13 @@ fun LarovaNavHost(
 
             // The picker belongs to the platform, so it is opened from here; the ViewModel has
             // already been told which step the picture is for.
+            // The picker pops back with its answer here rather than the editor being recreated
+            // around a new argument: everything else on this screen is half-typed and unsaved.
+            val chosenSymbol = entry.savedStateHandle.remove<String>(SYMBOL_RESULT)
+            LaunchedEffect(chosenSymbol) {
+                chosenSymbol?.let(viewModel::onSymbolChange)
+            }
+
             val pickPicture = rememberPicturePicker(viewModel::onPictureChosen)
             val pickVideo = rememberVideoPicker(viewModel::onMediaChosen)
             val pickSound = rememberSoundPicker(viewModel::onMediaChosen)
@@ -165,13 +173,20 @@ fun LarovaNavHost(
             EditCardScreen(
                 state = state,
                 callbacks = viewModel.callbacks(
+                    openSymbolPicker = {
+                        navController.navigate(
+                            SymbolPickerRoute(
+                                selectedKey = state.symbolKey,
+                                colorToken = state.colorToken,
+                            ),
+                        )
+                    },
                     openPicturePicker = pickPicture,
                     openVideoPicker = pickVideo,
                     openSoundPicker = pickSound,
                     requestMicrophone = requestMicrophone,
                 ),
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -187,7 +202,6 @@ fun LarovaNavHost(
                 onMoveUp = viewModel::onMoveUp,
                 onMoveDown = viewModel::onMoveDown,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -215,7 +229,20 @@ fun LarovaNavHost(
                 onUseBiometrics = rememberBiometricUnlock(onAccepted = viewModel::onBiometricsAccepted),
                 wrongPin = state.wrongPin,
                 onBack = goBack,
-                onHelp = openHelp,
+            )
+        }
+
+        composable<SymbolPickerRoute> { entry ->
+            val route = entry.toRoute<SymbolPickerRoute>()
+            SymbolPickerScreen(
+                selectedKey = route.selectedKey,
+                colorToken = route.colorToken,
+                onPick = { key ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle?.set(SYMBOL_RESULT, key)
+                    navController.popBackStack()
+                },
+                onBack = goBack,
             )
         }
 
@@ -235,7 +262,6 @@ fun LarovaNavHost(
                 onSave = viewModel::onSave,
                 error = state.error,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 
@@ -272,7 +298,6 @@ fun LarovaNavHost(
                 onConfirmImport = viewModel::onConfirmImport,
                 onCancelImport = viewModel::onCancelImport,
                 onBack = goBack,
-                onHelp = openHelp,
             )
         }
 

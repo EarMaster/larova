@@ -42,7 +42,6 @@ import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.ui.component.ColorTokenPicker
 import app.larova.core.ui.component.LarovaScaffold
-import app.larova.core.ui.component.SymbolPicker
 import app.larova.core.ui.icon.BackArrow
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_remove_line
@@ -87,6 +86,7 @@ import app.larova.core.ui.resources.edit_record
 import app.larova.core.ui.resources.edit_record_failed
 import app.larova.core.ui.resources.edit_record_stop
 import app.larova.core.ui.resources.edit_recording
+import app.larova.core.ui.resources.edit_link_caption
 import app.larova.core.ui.resources.edit_new_tile
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
@@ -99,6 +99,9 @@ import app.larova.core.ui.resources.edit_save
 import app.larova.core.ui.resources.edit_step_number
 import app.larova.core.ui.resources.edit_steps
 import app.larova.core.ui.resources.edit_subtitle
+import app.larova.core.ui.icon.Symbols
+import app.larova.core.ui.icon.symbolImage
+import app.larova.core.ui.resources.edit_symbol_change
 import app.larova.core.ui.resources.edit_symbol
 import app.larova.core.ui.resources.edit_title
 import app.larova.core.ui.resources.edit_title_required
@@ -110,11 +113,17 @@ import app.larova.core.ui.resources.tile_audio
 import app.larova.core.ui.resources.tile_checklist
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
-import app.larova.core.ui.resources.tile_link
+import app.larova.core.ui.resources.tile_app
 import app.larova.core.ui.resources.tile_note
-import app.larova.core.ui.resources.tile_link
+import app.larova.core.ui.resources.tile_web
 import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.resources.tile_video
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import app.larova.core.ui.theme.LocalAppMode
+import app.larova.core.ui.theme.TileColor
+import app.larova.core.ui.theme.resolve
+import androidx.compose.foundation.layout.Box
 import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.pluralStringResource
@@ -136,14 +145,15 @@ fun EditCardScreen(
     state: EditUiState,
     callbacks: EditCardCallbacks,
     onBack: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var confirmingDelete by remember { mutableStateOf(false) }
 
     LarovaScaffold(
         title = stringResource(if (state.isNew) Res.string.edit_new_tile else Res.string.edit_edit_tile),
-        onHelp = onHelp,
+        // No help bar. This is parent-view work, opened on purpose, and the red bar is for
+        // the moment something is wrong while a child is here.
+        onHelp = null,
         onBack = onBack,
         modifier = modifier,
     ) { insets ->
@@ -195,10 +205,12 @@ fun EditCardScreen(
             }
 
             Section(title = stringResource(Res.string.edit_symbol)) {
-                SymbolPicker(
-                    selectedKey = state.symbolKey,
+                // The chosen symbol and its name, and a way to the screen that holds the rest.
+                // Three hundred drawings inline pushed the title, the colour and Save off a phone.
+                ChosenSymbol(
+                    symbolKey = state.symbolKey,
                     colorToken = state.colorToken,
-                    onSelect = callbacks.onSymbolChange,
+                    onChange = callbacks.onChooseSymbol,
                 )
             }
 
@@ -347,6 +359,12 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
+                value = state.linkCaption,
+                onValueChange = callbacks.onLinkCaptionChange,
+                label = { Text(stringResource(Res.string.edit_link_caption)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            OutlinedTextField(
                 value = state.webLabel,
                 onValueChange = callbacks.onWebLabelChange,
                 label = { Text(stringResource(Res.string.edit_web_label)) },
@@ -483,6 +501,55 @@ private fun RecordingControls(state: EditUiState, callbacks: EditCardCallbacks) 
  * switch: a tile can hold the doctor, the neighbour and the grandmother while only two of them
  * belong behind the red bar.
  */
+/** What is on the tile now, and the way to change it. */
+@Composable
+private fun ChosenSymbol(
+    symbolKey: String,
+    colorToken: String,
+    onChange: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = TileColor.fromKey(colorToken).resolve(LocalAppMode.current)
+
+    Surface(
+        onClick = onChange,
+        modifier = modifier.fillMaxWidth().heightIn(min = Dimens.MinTouchTarget),
+        shape = RoundedCornerShape(Dimens.ChipRadius),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Surface(
+                modifier = Modifier.size(Dimens.MinTouchTarget),
+                shape = RoundedCornerShape(Dimens.ChipRadius),
+                color = colors.surface,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = symbolImage(symbolKey),
+                        contentDescription = null,
+                        tint = colors.accent,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+            Text(
+                text = Symbols.label(symbolKey),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = stringResource(Res.string.edit_symbol_change),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
 @Composable
 private fun CallFields(
     state: EditUiState,
@@ -591,6 +658,13 @@ private fun AppLinkFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 color = MaterialTheme.colorScheme.error,
             )
         }
+
+        OutlinedTextField(
+            value = state.linkCaption,
+            onValueChange = callbacks.onLinkCaptionChange,
+            label = { Text(stringResource(Res.string.edit_link_caption)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         OutlinedTextField(
             value = state.appLabel,
@@ -946,11 +1020,11 @@ private val CardType.label: StringResource
         CardType.NOTE -> Res.string.tile_note
         CardType.TABLE -> Res.string.tile_table
         CardType.FOLDER -> Res.string.tile_folder
-        CardType.APP_LINK -> Res.string.tile_link
+        CardType.APP_LINK -> Res.string.tile_app
         CardType.VIDEO -> Res.string.tile_video
         CardType.AUDIO -> Res.string.tile_audio
         CardType.PHONE -> Res.string.tile_call
-        CardType.WEB -> Res.string.tile_link
+        CardType.WEB -> Res.string.tile_web
     }
 
 private const val MIN_NOTE_LINES = 6
@@ -971,6 +1045,7 @@ data class EditCardCallbacks(
     val onSubtitleChange: (String) -> Unit,
     val onColorChange: (String) -> Unit,
     val onSymbolChange: (String) -> Unit,
+    val onChooseSymbol: () -> Unit,
     val onStepChange: (Int, String) -> Unit,
     val onAddStep: () -> Unit,
     val onRemoveStep: (Int) -> Unit,
@@ -993,6 +1068,7 @@ data class EditCardCallbacks(
     val onRemoveContact: (Int) -> Unit,
     val onWebUrlChange: (String) -> Unit,
     val onWebLabelChange: (String) -> Unit,
+    val onLinkCaptionChange: (String) -> Unit,
     val onChooseApp: () -> Unit,
     val onAppQueryChange: (String) -> Unit,
     val onAppPicked: (AppChoice) -> Unit,
@@ -1015,6 +1091,7 @@ data class EditCardCallbacks(
  * whatever comes back has somewhere to land.
  */
 fun EditCardViewModel.callbacks(
+    openSymbolPicker: () -> Unit = {},
     openPicturePicker: () -> Unit = {},
     openVideoPicker: () -> Unit = {},
     openSoundPicker: () -> Unit = {},
@@ -1025,6 +1102,7 @@ fun EditCardViewModel.callbacks(
     onSubtitleChange = ::onSubtitleChange,
     onColorChange = ::onColorChange,
     onSymbolChange = ::onSymbolChange,
+    onChooseSymbol = openSymbolPicker,
     onStepChange = ::onStepChange,
     onAddStep = ::onAddStep,
     onRemoveStep = ::onRemoveStep,
@@ -1049,6 +1127,7 @@ fun EditCardViewModel.callbacks(
     onRemoveContact = ::onRemoveContact,
     onWebUrlChange = ::onWebUrlChange,
     onWebLabelChange = ::onWebLabelChange,
+    onLinkCaptionChange = ::onLinkCaptionChange,
     onChooseApp = ::onChooseApp,
     onAppQueryChange = ::onAppQueryChange,
     onAppPicked = ::onAppPicked,

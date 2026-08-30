@@ -64,8 +64,10 @@
     <string name="tile_audio_hint">Bir ses dosyası ya da şimdi bir kayıt</string>
     <string name="tile_call">Ara</string>
     <string name="tile_call_hint">Bir ad, bir numara ve yakınlık</string>
-    <string name="tile_link">Web sitesi veya uygulama</string>
-    <string name="tile_link_hint">Bu telefondaki bir bağlantıyı veya uygulamayı açar</string>
+    <string name="tile_web">Web sitesi</string>
+    <string name="tile_web_hint">Bağlantıyı tarayıcıda açar</string>
+    <string name="tile_app">Uygulama</string>
+    <string name="tile_app_hint">Bu telefondaki bir uygulamayı açar</string>
     <string name="tile_folder">Klasör</string>
     <string name="tile_folder_hint">Birkaç kartı bir arada tutar</string>
 
@@ -107,6 +109,7 @@
     <string name="media_missing">Bu dosya telefonda yok. Yedekle birlikte gelmemiş olabilir.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Siteyi aç</string>
     <string name="app_open">Uygulamayı aç</string>
     <string name="app_missing">O uygulama artık bu telefonda yok.</string>
     <string name="app_choose">Hangi uygulama?</string>
@@ -169,6 +172,8 @@
     <string name="edit_subtitle">İkinci satır (isteğe bağlı)</string>
     <string name="edit_colour">Renk</string>
     <string name="edit_symbol">Simge</string>
+    <string name="edit_symbol_suggestions">Öneriler</string>
+    <string name="edit_symbol_change">Simgeyi değiştir</string>
     <string name="edit_symbol_search">Simge ara</string>
     <string name="edit_save">Kaydet</string>
     <string name="edit_cancel">Vazgeç</string>
@@ -216,6 +221,7 @@
     <string name="edit_app_chosen">%1$s uygulamasını açar</string>
     <string name="edit_app_label">Kartta ne yazacak</string>
     <string name="edit_app_required">Bu kartın açacağı uygulamayı seçin.</string>
+    <string name="edit_link_caption">Ne işe yaradığı (isteğe bağlı)</string>
     <string name="edit_web_address">Web adresi</string>
     <string name="edit_web_label">Etiket (isteğe bağlı)</string>
     <string name="edit_web_address_invalid">Bir web adresi http:// veya https:// ile başlamalı</string>

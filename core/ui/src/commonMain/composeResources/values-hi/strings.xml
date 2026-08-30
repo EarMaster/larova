@@ -62,8 +62,10 @@
     <string name="tile_audio_hint">कोई ऑडियो फ़ाइल, या अभी रिकॉर्ड करें</string>
     <string name="tile_call">कॉल</string>
     <string name="tile_call_hint">नाम, नंबर और रिश्ता</string>
-    <string name="tile_link">वेबसाइट या ऐप</string>
-    <string name="tile_link_hint">इस फ़ोन पर कोई लिंक या ऐप खोलता है</string>
+    <string name="tile_web">वेबसाइट</string>
+    <string name="tile_web_hint">ब्राउज़र में लिंक खोलता है</string>
+    <string name="tile_app">ऐप</string>
+    <string name="tile_app_hint">इस फ़ोन का कोई ऐप खोलता है</string>
     <string name="tile_folder">फ़ोल्डर</string>
     <string name="tile_folder_hint">कई टाइलों को एक साथ रखता है</string>
 
@@ -105,6 +107,7 @@
     <string name="media_missing">यह फ़ाइल फ़ोन में नहीं है। शायद बैकअप के साथ नहीं आई।</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">वेबसाइट खोलें</string>
     <string name="app_open">ऐप खोलें</string>
     <string name="app_missing">वह ऐप अब इस फ़ोन में नहीं है।</string>
     <string name="app_choose">कौन-सा ऐप?</string>
@@ -167,6 +170,8 @@
     <string name="edit_subtitle">दूसरी पंक्ति (वैकल्पिक)</string>
     <string name="edit_colour">रंग</string>
     <string name="edit_symbol">चिह्न</string>
+    <string name="edit_symbol_suggestions">सुझाव</string>
+    <string name="edit_symbol_change">चिह्न बदलें</string>
     <string name="edit_symbol_search">चिह्न खोजें</string>
     <string name="edit_save">सहेजें</string>
     <string name="edit_cancel">रद्द करें</string>
@@ -214,6 +219,7 @@
     <string name="edit_app_chosen">%1$s खोलता है</string>
     <string name="edit_app_label">टाइल पर क्या लिखा हो</string>
     <string name="edit_app_required">चुनें कि यह टाइल कौन-सा ऐप खोलेगी।</string>
+    <string name="edit_link_caption">यह किस लिए है (वैकल्पिक)</string>
     <string name="edit_web_address">वेब पता</string>
     <string name="edit_web_label">लेबल (वैकल्पिक)</string>
     <string name="edit_web_address_invalid">वेब पता http:// या https:// से शुरू होना चाहिए</string>

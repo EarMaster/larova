@@ -28,7 +28,10 @@ import app.larova.core.ui.theme.Signal
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Pinned to the bottom of every screen, in the one colour reserved for it.
+ * Pinned to the bottom of the caregiver's screens, in the one colour reserved for it.
+ *
+ * Which screens those are is [LarovaScaffold]'s decision, not this component's — see
+ * `docs/concept.md` §4.3.
  *
  * Alarm red appears exactly once in the product, which is why it is never misread — and why no
  * tile preset is a saturated red. Read under stress, so it says one thing and does one thing.

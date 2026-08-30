@@ -87,6 +87,12 @@ data class EditUiState(
     val contacts: List<ContactDraft> = listOf(ContactDraft()),
     val webUrl: String = "",
     val webLabel: String = "",
+    /**
+     * What the website or the app is for, in the family's own words. One field for both types
+     * because only one of them is ever being saved — the same reason `mediaCaption` serves a video
+     * and a recording.
+     */
+    val linkCaption: String = "",
     /** The app a shortcut tile opens, and the words the parents put on it. */
     val appPackage: String = "",
     val appLabel: String = "",
@@ -228,6 +234,8 @@ class EditCardViewModel(
     fun onResetDailyChange(value: Boolean) = _state.update { it.copy(resetDaily = value) }
 
     fun onWebLabelChange(value: String) = _state.update { it.copy(webLabel = value) }
+
+    fun onLinkCaptionChange(value: String) = _state.update { it.copy(linkCaption = value) }
 
     fun onWebUrlChange(value: String) = _state.update { it.copy(webUrl = value, urlInvalid = false) }
 
@@ -676,6 +684,22 @@ private fun EditUiState.audioPayload(): CardPayload = parseUuidOrNull(mediaId)
     ?: CardPayload.Note(text = mediaCaption.trim())
 
 /**
+ * The tile's people as the editor holds them, and never an empty list: a form with no rows gives
+ * nowhere to start typing. Reads `people` rather than either half of the payload, so a tile written
+ * before the list existed opens as the one person it holds.
+ */
+private fun CardPayload.Phone.contactDrafts(): List<ContactDraft> = people
+    .map { entry ->
+        ContactDraft(
+            name = entry.displayName,
+            number = entry.number,
+            relation = entry.relation.orEmpty(),
+            inHelpSheet = entry.inHelpSheet,
+        )
+    }
+    .ifEmpty { listOf(ContactDraft()) }
+
+/**
  * The tile's own title stands in for a name nobody typed, and only on the first person: a lone
  * number with no name is a riddle, but the fourth row on "Important numbers" borrowing the tile's
  * title would put the same name on four different people.
@@ -694,11 +718,13 @@ private fun EditUiState.phonePayload() = phoneOf(
 private fun EditUiState.webPayload() = CardPayload.Web(
     url = webUrl.trim(),
     label = webLabel.trim().takeIf { it.isNotEmpty() },
+    caption = linkCaption.trim().takeIf { it.isNotEmpty() },
 )
 
 private fun EditUiState.appLinkPayload() = CardPayload.AppLink(
     packageName = appPackage,
     label = appLabel.trim().ifEmpty { title.trim() },
+    caption = linkCaption.trim().takeIf { it.isNotEmpty() },
 )
 
 /**
@@ -770,16 +796,7 @@ private fun Tile.toEditState(): EditUiState {
         is CardPayload.Phone -> base.copy(
             // `people` rather than either half of the payload, so a tile written before 0.3.0
             // opens in the editor as the one person it holds rather than as an empty form.
-            contacts = payload.people
-                .map { entry ->
-                    ContactDraft(
-                        name = entry.displayName,
-                        number = entry.number,
-                        relation = entry.relation.orEmpty(),
-                        inHelpSheet = entry.inHelpSheet,
-                    )
-                }
-                .ifEmpty { listOf(ContactDraft()) },
+            contacts = payload.contactDrafts(),
         )
 
         is CardPayload.Video -> base.copy(
@@ -793,11 +810,13 @@ private fun Tile.toEditState(): EditUiState {
         )
 
         is CardPayload.AppLink -> base.copy(
+            linkCaption = payload.caption.orEmpty(),
             appPackage = payload.packageName,
             appLabel = payload.label,
         )
 
         is CardPayload.Web -> base.copy(
+            linkCaption = payload.caption.orEmpty(),
             webUrl = payload.url,
             webLabel = payload.label.orEmpty(),
         )

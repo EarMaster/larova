@@ -62,8 +62,10 @@
     <string name="tile_audio_hint">Un archivo de sonido, o graba uno ahora</string>
     <string name="tile_call">Llamar</string>
     <string name="tile_call_hint">Un nombre, un número y el parentesco</string>
-    <string name="tile_link">Página web o app</string>
-    <string name="tile_link_hint">Abre un enlace o una app de este teléfono</string>
+    <string name="tile_web">Página web</string>
+    <string name="tile_web_hint">Abre un enlace en el navegador</string>
+    <string name="tile_app">App</string>
+    <string name="tile_app_hint">Abre una app de este teléfono</string>
     <string name="tile_folder">Carpeta</string>
     <string name="tile_folder_hint">Agrupa varias tarjetas</string>
 
@@ -105,6 +107,7 @@
     <string name="media_missing">Este archivo no está en el teléfono. Puede que no llegara con la copia de seguridad.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Abrir la página</string>
     <string name="app_open">Abrir la app</string>
     <string name="app_missing">Esa app ya no está en este teléfono.</string>
     <string name="app_choose">¿Qué app?</string>
@@ -167,6 +170,8 @@
     <string name="edit_subtitle">Segunda línea (opcional)</string>
     <string name="edit_colour">Color</string>
     <string name="edit_symbol">Símbolo</string>
+    <string name="edit_symbol_suggestions">Sugerencias</string>
+    <string name="edit_symbol_change">Cambiar el símbolo</string>
     <string name="edit_symbol_search">Buscar símbolos</string>
     <string name="edit_save">Guardar</string>
     <string name="edit_cancel">Cancelar</string>
@@ -214,6 +219,7 @@
     <string name="edit_app_chosen">Abre %1$s</string>
     <string name="edit_app_label">Lo que dice la tarjeta</string>
     <string name="edit_app_required">Elige la app que abre esta tarjeta.</string>
+    <string name="edit_link_caption">Para qué sirve (opcional)</string>
     <string name="edit_web_address">Dirección web</string>
     <string name="edit_web_label">Etiqueta (opcional)</string>
     <string name="edit_web_address_invalid">Una dirección web tiene que empezar por http:// o https://</string>

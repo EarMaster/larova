@@ -68,8 +68,10 @@
     <string name="tile_audio_hint">Un fichier audio, ou un enregistrement fait maintenant</string>
     <string name="tile_call">Appeler</string>
     <string name="tile_call_hint">Un nom, un numéro et un lien de parenté</string>
-    <string name="tile_link">Site web ou appli</string>
-    <string name="tile_link_hint">Ouvre un lien ou une appli de ce téléphone</string>
+    <string name="tile_web">Site web</string>
+    <string name="tile_web_hint">Ouvre un lien dans le navigateur</string>
+    <string name="tile_app">Application</string>
+    <string name="tile_app_hint">Ouvre une application de ce téléphone</string>
     <string name="tile_folder">Dossier</string>
     <string name="tile_folder_hint">Regroupe plusieurs tuiles</string>
 
@@ -111,6 +113,7 @@
     <string name="media_missing">Ce fichier n’est pas sur le téléphone. Il n’est peut-être pas arrivé avec la sauvegarde.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Ouvrir le site</string>
     <string name="app_open">Ouvrir l’appli</string>
     <string name="app_missing">Cette appli n’est plus sur ce téléphone.</string>
     <string name="app_choose">Quelle appli ?</string>
@@ -173,6 +176,8 @@
     <string name="edit_subtitle">Deuxième ligne (facultatif)</string>
     <string name="edit_colour">Couleur</string>
     <string name="edit_symbol">Symbole</string>
+    <string name="edit_symbol_suggestions">Suggestions</string>
+    <string name="edit_symbol_change">Changer le symbole</string>
     <string name="edit_symbol_search">Rechercher un symbole</string>
     <string name="edit_save">Enregistrer</string>
     <string name="edit_cancel">Annuler</string>
@@ -220,6 +225,7 @@
     <string name="edit_app_chosen">Ouvre %1$s</string>
     <string name="edit_app_label">Ce que dit la tuile</string>
     <string name="edit_app_required">Choisissez l’appli que cette tuile ouvre.</string>
+    <string name="edit_link_caption">À quoi ça sert (facultatif)</string>
     <string name="edit_web_address">Adresse web</string>
     <string name="edit_web_label">Libellé (facultatif)</string>
     <string name="edit_web_address_invalid">Une adresse web doit commencer par http:// ou https://</string>

@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.symbolImage
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.LocalAppMode
@@ -123,7 +123,7 @@ private fun SymbolChip(symbolKey: String, tint: Color, modifier: Modifier = Modi
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
-                imageVector = TileSymbol.fromKey(symbolKey).image,
+                imageVector = symbolImage(symbolKey),
                 contentDescription = null,
                 tint = tint,
                 modifier = Modifier.size(24.dp),

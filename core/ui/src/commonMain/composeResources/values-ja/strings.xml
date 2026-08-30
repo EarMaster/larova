@@ -63,8 +63,10 @@
     <string name="tile_audio_hint">音声ファイル、または今から録音</string>
     <string name="tile_call">電話</string>
     <string name="tile_call_hint">名前・番号・続柄</string>
-    <string name="tile_link">ウェブサイトまたはアプリ</string>
-    <string name="tile_link_hint">このスマホのリンクやアプリを開きます</string>
+    <string name="tile_web">ウェブサイト</string>
+    <string name="tile_web_hint">ブラウザでリンクを開きます</string>
+    <string name="tile_app">アプリ</string>
+    <string name="tile_app_hint">このスマホのアプリを開きます</string>
     <string name="tile_folder">フォルダ</string>
     <string name="tile_folder_hint">いくつかのカードをまとめます</string>
 
@@ -103,6 +105,7 @@
     <string name="media_missing">このファイルはスマホにありません。バックアップと一緒に届かなかった可能性があります。</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">サイトを開く</string>
     <string name="app_open">アプリを開く</string>
     <string name="app_missing">そのアプリはこのスマホにもうありません。</string>
     <string name="app_choose">どのアプリですか？</string>
@@ -165,6 +168,8 @@
     <string name="edit_subtitle">2行目（任意）</string>
     <string name="edit_colour">色</string>
     <string name="edit_symbol">アイコン</string>
+    <string name="edit_symbol_suggestions">おすすめ</string>
+    <string name="edit_symbol_change">記号を変える</string>
     <string name="edit_symbol_search">記号を検索</string>
     <string name="edit_save">保存</string>
     <string name="edit_cancel">キャンセル</string>
@@ -211,6 +216,7 @@
     <string name="edit_app_chosen">%1$s を開きます</string>
     <string name="edit_app_label">カードに書く言葉</string>
     <string name="edit_app_required">このカードで開くアプリを選んでください。</string>
+    <string name="edit_link_caption">何のためのものか（任意）</string>
     <string name="edit_web_address">ウェブアドレス</string>
     <string name="edit_web_label">ラベル（任意）</string>
     <string name="edit_web_address_invalid">ウェブアドレスは http:// または https:// で始まる必要があります</string>

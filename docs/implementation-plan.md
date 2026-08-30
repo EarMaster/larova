@@ -43,7 +43,7 @@ The smallest thing a real family could actually use.
 - Start screen: tile grid, create, edit, reorder, delete, search
 - Tile types: **guide, note, checklist, call, website**
 - Caregiver view and parent view, PIN with biometric unlock, 5-minute auto-return
-- Help bar on every screen, contact sheet, `ACTION_DIAL` handoff
+- Help bar on the caregiver's screens, contact sheet, `ACTION_DIAL` handoff
 - Backup and restore: ZIP container, manifest with `schemaVersion`, system file picker for destination and source, merge-or-replace on import
 - Images in guides via the photo picker, downscaling, app-private media store
 - English and German

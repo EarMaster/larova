@@ -62,8 +62,10 @@
     <string name="tile_audio_hint">Звуковий файл або запис просто зараз</string>
     <string name="tile_call">Подзвонити</string>
     <string name="tile_call_hint">Імʼя, номер і хто це</string>
-    <string name="tile_link">Сайт або застосунок</string>
-    <string name="tile_link_hint">Відкриває посилання або застосунок на цьому телефоні</string>
+    <string name="tile_web">Сайт</string>
+    <string name="tile_web_hint">Відкриває посилання у браузері</string>
+    <string name="tile_app">Застосунок</string>
+    <string name="tile_app_hint">Відкриває застосунок на цьому телефоні</string>
     <string name="tile_folder">Тека</string>
     <string name="tile_folder_hint">Обʼєднує кілька карток</string>
 
@@ -111,6 +113,7 @@
     <string name="media_missing">Цього файлу немає на телефоні. Можливо, він не дійшов разом із резервною копією.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Відкрити сайт</string>
     <string name="app_open">Відкрити застосунок</string>
     <string name="app_missing">Цього застосунку більше немає на телефоні.</string>
     <string name="app_choose">Який застосунок?</string>
@@ -173,6 +176,8 @@
     <string name="edit_subtitle">Другий рядок (необовʼязково)</string>
     <string name="edit_colour">Колір</string>
     <string name="edit_symbol">Символ</string>
+    <string name="edit_symbol_suggestions">Пропозиції</string>
+    <string name="edit_symbol_change">Змінити символ</string>
     <string name="edit_symbol_search">Пошук символів</string>
     <string name="edit_save">Зберегти</string>
     <string name="edit_cancel">Скасувати</string>
@@ -222,6 +227,7 @@
     <string name="edit_app_chosen">Відкриває %1$s</string>
     <string name="edit_app_label">Що написано на картці</string>
     <string name="edit_app_required">Виберіть застосунок, який відкриває ця картка.</string>
+    <string name="edit_link_caption">Для чого це (необовʼязково)</string>
     <string name="edit_web_address">Вебадреса</string>
     <string name="edit_web_label">Підпис (необовʼязково)</string>
     <string name="edit_web_address_invalid">Вебадреса має починатися з http:// або https://</string>

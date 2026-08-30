@@ -25,7 +25,7 @@ import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.help_call_note
 import app.larova.core.ui.resources.home_empty_title
 import app.larova.core.ui.resources.tile_call
-import app.larova.core.ui.resources.tile_link
+import app.larova.core.ui.resources.web_open
 import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.GuideStepStyle
 import org.jetbrains.compose.resources.stringResource
@@ -137,6 +137,14 @@ fun WebsiteView(
                 color = MaterialTheme.colorScheme.onBackground,
             )
         }
+        val caption = web.caption
+        if (!caption.isNullOrBlank()) {
+            Text(
+                text = caption,
+                style = GuideStepStyle,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         Text(
             text = web.url,
             style = MaterialTheme.typography.bodyLarge,
@@ -148,7 +156,7 @@ fun WebsiteView(
                 .fillMaxWidth()
                 .heightIn(min = Dimens.MinTouchTarget),
         ) {
-            Text(stringResource(Res.string.tile_link))
+            Text(stringResource(Res.string.web_open))
         }
     }
 }
