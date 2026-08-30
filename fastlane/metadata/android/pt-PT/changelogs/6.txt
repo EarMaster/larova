@@ -1,0 +1,1 @@
+Procurar um símbolo podia fechar a aplicação: três símbolos apareciam duas vezes na lista e a aplicação desistia quando uma pesquisa mostrava as duas cópias ao mesmo tempo. Agora cada um aparece só uma vez e a pesquisa volta a funcionar.

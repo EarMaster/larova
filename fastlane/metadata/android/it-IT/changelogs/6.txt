@@ -1,0 +1,1 @@
+Cercare un simbolo poteva chiudere l’app: tre simboli comparivano due volte nell’elenco e l’app si arrendeva quando una ricerca mostrava insieme le due copie. Ora ognuno compare una sola volta e la ricerca si può usare di nuovo.

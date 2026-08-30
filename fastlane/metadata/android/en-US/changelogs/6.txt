@@ -1,0 +1,1 @@
+Searching for a symbol could close the app: three symbols were in the list twice, and it gave up when a search put both copies on the screen together. Each one is offered once now, and the search is safe to use again.

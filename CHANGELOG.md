@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-08-30
+
 ### Fixed
 - Searching for a symbol could close the app. Three of them were in the list twice, and the moment
   a search brought both copies of one onto the screen together, the picker gave up. Each is offered

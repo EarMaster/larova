@@ -26,8 +26,8 @@ android {
         applicationId = "app.larova"
         minSdk = providers.gradleProperty("larova.minSdk").get().toInt()
         targetSdk = providers.gradleProperty("larova.targetSdk").get().toInt()
-        versionCode = 5
-        versionName = "0.3.1"
+        versionCode = 6
+        versionName = "0.3.2"
         // The two lines above are read by release.yml and google-play.yml with grep and sed, which
         // take the *first* match in this file. Keep them as plain assignments, and do not mention
         // either identifier in a comment above them.

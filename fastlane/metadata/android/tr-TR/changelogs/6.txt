@@ -1,0 +1,1 @@
+Bir simge aramak uygulamayı kapatabiliyordu: üç simge listede iki kez vardı ve arama iki kopyayı bir arada gösterdiğinde uygulama pes ediyordu. Artık her biri bir kez sunuluyor ve arama yeniden kullanılabilir.
