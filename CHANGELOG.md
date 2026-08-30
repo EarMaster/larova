@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-30
+
 ### Added
 - 291 symbols to choose from, and choosing one is now its own screen rather than a block of icons
   wedged into the tile editor. The sixty-eight everyday ones are offered first as suggestions, and
