@@ -68,7 +68,7 @@ This belongs prominently in the store listing: **no account, no cloud, no intern
 
 1. **A night at the grandparents'.** Grandma opens "Bedtime", follows five steps with pictures, and plays the song the mother recorded.
 2. **First day at daycare.** The teacher skims "What helps when he cries" and "Food and drink".
-3. **Something goes wrong.** A bar at the bottom of every screen reads "Get help"; behind it are two or three stored numbers, one tap to dial.
+3. **Something goes wrong.** A bar reading "Get help" sits at the bottom of every screen the caregiver reads; behind it are two or three stored numbers, one tap to dial.
 4. **A new caregiver.** The parents export a package and send it by messenger. The other person imports it into their own installation.
 5. **Looking back.** In the evening the parents see which tiles were opened and which checklist items were ticked.
 
@@ -91,7 +91,7 @@ Start screen (tile grid, freely arranged)
 ├── Tile → App shortcut
 └── Tile → Folder → further tiles
 
-Always visible:  Search · Get help
+Always visible:  Search · Get help   (on the caregiver's screens — see 4.3)
 Via menu:        Switch view · Log · Backup & transfer · Settings
 ```
 
@@ -107,7 +107,11 @@ This is the single most consequential decision in the product. It makes the inte
 
 ### 4.3 Get help
 
-A bar pinned to the bottom of every screen, in the signal colour. Tapping it opens a sheet with the stored contacts, each large, with a photo and a relation.
+A bar pinned to the bottom, in the signal colour. Tapping it opens a sheet with the stored contacts, each large, with a photo and a relation.
+
+**It belongs to the caregiver, and that is what decides where it appears.** It is on the screens somebody reads while they are looking after the child: the tile grid and every tile they open. The help sheet still shows the bar so the screens do not jump, but it is inert there — it is already the destination, and a second copy of the sheet on the back stack helps nobody. It is not on the screens somebody opens on purpose to change something: settings, the activity log, the tile editor, choosing a symbol, backup and transfer, rearranging tiles, unlocking parent view and choosing a PIN.
+
+The rule used to read the other way round — on every screen, with exceptions accumulating one at a time — and each exception had to be argued separately. Stated as the caregiver's bar it answers itself: a parent halfway through a form is not the person the bar is for, and a red emergency control under a list of preferences spends the one colour in the product allowed to mean "now" on a moment that is not one. In the editor it was worse than dilution, because it sat where a thumb reaches for Save and what it did was leave the screen.
 
 Explicitly **no** automatic emergency call and **no** automatic location sharing. The call is prepared in the phone app; the caregiver triggers it. This keeps the app out of emergency-services regulation and makes misuse harmless.
 

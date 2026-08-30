@@ -118,9 +118,10 @@ Use the system font. A bundled display face would need glyph coverage for Latin,
 - Every tile is the same height — 72dp of chrome plus 84dp of text, the text half multiplied by
   the font scale. Content-sized tiles turn a grid into a skyline; the symbol sits at the top of
   the tile and the words at the bottom, so a one-line title still looks composed
-- Help bar pinned 16dp from the bottom, above all content, on every screen a caregiver reads.
-  **Not** on settings or the activity log: those are opened on purpose by a parent, and an
-  emergency bar under a list of preferences spends the one colour that means "now"
+- Help bar pinned 16dp from the bottom, above all content, **on the caregiver's screens**: the
+  tile grid and every tile. Not on anything a parent opens on purpose
+  to change something — settings, the activity log, the editor, the symbol picker, backup and
+  transfer, rearranging, unlock and PIN setup. `docs/concept.md` §4.3 has the reasoning
 
 ### Width
 

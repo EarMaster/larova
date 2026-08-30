@@ -25,17 +25,17 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Every screen in Larova has the same frame: a title, an optional way back, and the help bar.
  *
- * The help bar being part of the frame rather than something each screen adds is the point — it is
- * on every screen because someone who needs it will not be on the screen that happened to include
- * it (docs/concept.md §4.3).
+ * **The help bar is the caregiver's, and that is what decides where it goes** (docs/concept.md
+ * §4.3). It is part of the frame rather than something each screen remembers to add, because
+ * somebody who needs it will not be on the screen that happened to include it: the tile grid and
+ * every tile they open pass an `onHelp`. So does the help sheet, but an inert one — it is already
+ * the destination, and stacking a second copy of it helps nobody.
  *
- * The screens that pass `onHelp = null` have no bar, and they are all of a kind: settings, the
- * activity log, backup and transfer, the tile editor, rearranging, unlocking parent view and
- * choosing a PIN. None of them is a screen a caregiver is on while something is going wrong —
- * every one is a place a parent goes on purpose, usually with the child not in the room. A red
- * emergency bar under a form dilutes the one colour in the product that is allowed to mean "now",
- * and it puts a way out of the editor where a thumb reaches for Save. Everything a caregiver
- * actually reads — the grid, every tile type, the help sheet — keeps it.
+ * A screen a parent opens on purpose to change something passes `onHelp = null` — settings, the
+ * activity log, the tile editor, the symbol picker, backup and transfer, rearranging, unlocking
+ * parent view and choosing a PIN. None of them is a screen anybody is on while something is going
+ * wrong. A red emergency control under a form spends the one colour in the product allowed to mean
+ * "now" on a moment that is not one, and in the editor it sat where a thumb reaches for Save.
  *
  * The frame is also where the app stops being a phone app. On anything wider than a phone the
  * content is capped at [contentWidth] and centred, and the help bar is capped and centred with it
