@@ -9,6 +9,7 @@ import app.larova.core.domain.model.LastBackup
 import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditUiState
 import app.larova.feature.card.edit.StepDraft
+import app.larova.feature.card.edit.SymbolPickerScreen
 import app.larova.feature.help.HelpScreen
 import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.HomeScreen
@@ -271,6 +272,19 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
             EditCardScreen(
                 state = EditUiState(isNew = true),
                 callbacks = noOpEditCallbacks(),
+                onBack = {},
+            )
+        }
+    }
+
+    /** The picker, browsing: sixty-eight suggestions first, the other two hundred behind search. */
+    @Test
+    fun symbol_picker() {
+        capture("screens/symbol_picker") {
+            SymbolPickerScreen(
+                selectedKey = "moon",
+                colorToken = "sage",
+                onPick = {},
                 onBack = {},
             )
         }

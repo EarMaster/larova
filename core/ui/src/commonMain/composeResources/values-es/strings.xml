@@ -170,6 +170,8 @@
     <string name="edit_subtitle">Segunda línea (opcional)</string>
     <string name="edit_colour">Color</string>
     <string name="edit_symbol">Símbolo</string>
+    <string name="edit_symbol_suggestions">Sugerencias</string>
+    <string name="edit_symbol_change">Cambiar el símbolo</string>
     <string name="edit_symbol_search">Buscar símbolos</string>
     <string name="edit_save">Guardar</string>
     <string name="edit_cancel">Cancelar</string>

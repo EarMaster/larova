@@ -82,19 +82,23 @@ The outermost point of the drawing sits 32dp from centre against a 33dp safe rad
 
 ### Tile symbols
 
-Sixty-eight, from [Lucide](https://lucide.dev) (ISC) with two drawn here, all on the same 24×24
-grid at a 2px stroke with round caps — the geometry the hand-drawn originals already used, which
-is why the vendored and the drawn sit together without a seam.
+291, from [Lucide](https://lucide.dev) (ISC) with two drawn here, all on the same 24×24 grid at a
+2px stroke with round caps — the geometry the hand-drawn originals already used, which is why the
+vendored and the drawn sit together without a seam.
 
 - The **key** is frozen and the **drawing is not**. `Card.icon` stores `"bed"`; what `"bed"` looks
   like can be redrawn any number of times. The ten symbols that shipped in 0.1.0 were hand-drawn
   and are now Lucide drawings under the same keys.
 - Grouped into eight shelves — everyday, food and drink, care, home, out and about, play, people,
-  notes — because sixty-eight in one grid is a wall rather than a choice. The picker searches by
-  name.
+  notes — by the folder each SVG sits in. **Choosing one is its own screen**, not a block in the
+  editor: 291 drawings inline pushed the title, the colour and Save off a phone. Sixty-eight
+  suggestions are offered first and search reaches the rest.
+- Every symbol shows its name, which is how somebody finds the same one again a month later, and
+  is what a screen reader reads out on a grid whose content is entirely pictures.
 - **The names are English and are not translated.** A deliberate exception: they sit next to the
-  picture they describe, and sixty-eight nouns in fourteen languages buys very little for a parent
-  who can see a car.
+  picture they describe, and 291 nouns in fourteen languages buys very little for a parent who can
+  see a car. The sixty-eight suggestions are named here; the rest keep the file name, tidied —
+  "cup-soda" reads as "Cup soda", which is a catalogue in the long tail and the honest trade.
 - Sources live in `core/ui/icons/`; `./gradlew :core:ui:generateTileSymbols` converts them.
 
 ## 4. Typography

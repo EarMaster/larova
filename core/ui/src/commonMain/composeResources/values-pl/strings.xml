@@ -177,6 +177,8 @@
     <string name="edit_subtitle">Druga linia (opcjonalnie)</string>
     <string name="edit_colour">Kolor</string>
     <string name="edit_symbol">Symbol</string>
+    <string name="edit_symbol_suggestions">Propozycje</string>
+    <string name="edit_symbol_change">Zmień symbol</string>
     <string name="edit_symbol_search">Szukaj symboli</string>
     <string name="edit_save">Zapisz</string>
     <string name="edit_cancel">Anuluj</string>

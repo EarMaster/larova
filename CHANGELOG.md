@@ -12,6 +12,12 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Added
+- 291 symbols to choose from, and choosing one is now its own screen rather than a block of icons
+  wedged into the tile editor. The sixty-eight everyday ones are offered first as suggestions, and
+  the search covers all of them. Every symbol shows its name, so a symbol you liked is one you can
+  find again.
+
 ### Changed
 - "Website or app" was one entry in the tile chooser that could make either kind of tile, with no
   way to tell which you were getting. They are two now — "Website", which opens a link in the

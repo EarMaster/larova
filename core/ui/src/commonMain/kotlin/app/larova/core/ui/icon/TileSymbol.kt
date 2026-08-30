@@ -22,17 +22,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * looking at it; the name is there to be searched and to be read aloud by a screen reader. Do not
  * "fix" this by moving it into `strings.xml` — it was considered.
  */
-enum class TileSymbol(val key: String, val label: String, val group: SymbolGroup) {
+enum class TileSymbol(
+    val key: String,
+    val label: String,
+    val group: SymbolGroup,
+    private val drawingOrNull: String? = null,
+) {
     // ---- the ten that shipped first. Their keys can never change. ----
     MOON("moon", "Moon", SymbolGroup.EVERYDAY),
     SUN("sun", "Sun", SymbolGroup.EVERYDAY),
     HEART("heart", "Heart", SymbolGroup.PEOPLE),
     LIST("list", "List", SymbolGroup.NOTES),
-    NOTE("note", "Note", SymbolGroup.NOTES),
+    NOTE("note", "Note", SymbolGroup.NOTES, drawingOrNull = "notebook-pen"),
     PHONE("phone", "Phone", SymbolGroup.PEOPLE),
     CLOCK("clock", "Clock", SymbolGroup.EVERYDAY),
-    HOME("home", "Home", SymbolGroup.HOME),
-    MEAL("meal", "Meal", SymbolGroup.FOOD),
+    HOME("home", "Home", SymbolGroup.HOME, drawingOrNull = "house"),
+    MEAL("meal", "Meal", SymbolGroup.FOOD, drawingOrNull = "utensils"),
     STAR("star", "Star", SymbolGroup.NOTES),
 
     // ---- everyday ----
@@ -40,12 +45,12 @@ enum class TileSymbol(val key: String, val label: String, val group: SymbolGroup
     BATH("bath", "Bath", SymbolGroup.EVERYDAY),
     SUNRISE("sunrise", "Sunrise", SymbolGroup.EVERYDAY),
     SUNSET("sunset", "Sunset", SymbolGroup.EVERYDAY),
-    ALARM("alarm", "Alarm", SymbolGroup.EVERYDAY),
+    ALARM("alarm", "Alarm", SymbolGroup.EVERYDAY, drawingOrNull = "alarm-clock"),
     BRUSH("brush", "Brush", SymbolGroup.EVERYDAY),
 
     // ---- food and drink ----
-    CUP("cup", "Cup", SymbolGroup.FOOD),
-    WATER("water", "Water", SymbolGroup.FOOD),
+    CUP("cup", "Cup", SymbolGroup.FOOD, drawingOrNull = "cup-soda"),
+    WATER("water", "Water", SymbolGroup.FOOD, drawingOrNull = "glass-water"),
     APPLE("apple", "Apple", SymbolGroup.FOOD),
     MILK("milk", "Milk", SymbolGroup.FOOD),
     COOKIE("cookie", "Biscuit", SymbolGroup.FOOD),
@@ -56,43 +61,43 @@ enum class TileSymbol(val key: String, val label: String, val group: SymbolGroup
     // ---- care ----
     PILL("pill", "Pill", SymbolGroup.CARE),
     THERMOMETER("thermometer", "Thermometer", SymbolGroup.CARE),
-    PLASTER("plaster", "Plaster", SymbolGroup.CARE),
+    PLASTER("plaster", "Plaster", SymbolGroup.CARE, drawingOrNull = "bandage"),
     STETHOSCOPE("stethoscope", "Stethoscope", SymbolGroup.CARE),
-    PULSE("pulse", "Heartbeat", SymbolGroup.CARE),
+    PULSE("pulse", "Heartbeat", SymbolGroup.CARE, drawingOrNull = "heart-pulse"),
     SYRINGE("syringe", "Syringe", SymbolGroup.CARE),
 
     // ---- home ----
-    KEY("key", "Key", SymbolGroup.HOME),
+    KEY("key", "Key", SymbolGroup.HOME, drawingOrNull = "key-round"),
     SHIRT("shirt", "Shirt", SymbolGroup.HOME),
-    SHOE("shoe", "Shoes", SymbolGroup.HOME),
-    WASHING("washing", "Washing", SymbolGroup.HOME),
-    BIN("bin", "Bin", SymbolGroup.HOME),
+    SHOE("shoe", "Shoes", SymbolGroup.HOME, drawingOrNull = "footprints"),
+    WASHING("washing", "Washing", SymbolGroup.HOME, drawingOrNull = "washing-machine"),
+    BIN("bin", "Bin", SymbolGroup.HOME, drawingOrNull = "trash-2"),
     LAMP("lamp", "Lamp", SymbolGroup.HOME),
-    DOOR("door", "Door", SymbolGroup.HOME),
-    BAG("bag", "Bag", SymbolGroup.HOME),
+    DOOR("door", "Door", SymbolGroup.HOME, drawingOrNull = "door-open"),
+    BAG("bag", "Bag", SymbolGroup.HOME, drawingOrNull = "backpack"),
 
     // ---- out and about ----
     CAR("car", "Car", SymbolGroup.OUT),
     BUS("bus", "Bus", SymbolGroup.OUT),
     BIKE("bike", "Bike", SymbolGroup.OUT),
-    TRAIN("train", "Train", SymbolGroup.OUT),
-    TREE("tree", "Tree", SymbolGroup.OUT),
+    TRAIN("train", "Train", SymbolGroup.OUT, drawingOrNull = "train-front"),
+    TREE("tree", "Tree", SymbolGroup.OUT, drawingOrNull = "tree-pine"),
     UMBRELLA("umbrella", "Umbrella", SymbolGroup.OUT),
-    MAP("map", "Place", SymbolGroup.OUT),
+    MAP("map", "Place", SymbolGroup.OUT, drawingOrNull = "map-pin"),
     SCHOOL("school", "School", SymbolGroup.OUT),
 
     // ---- play ----
-    BOOK("book", "Book", SymbolGroup.PLAY),
+    BOOK("book", "Book", SymbolGroup.PLAY, drawingOrNull = "book-open"),
     MUSIC("music", "Music", SymbolGroup.PLAY),
-    PAINT("paint", "Painting", SymbolGroup.PLAY),
+    PAINT("paint", "Painting", SymbolGroup.PLAY, drawingOrNull = "palette"),
     PUZZLE("puzzle", "Puzzle", SymbolGroup.PLAY),
-    GAME("game", "Game", SymbolGroup.PLAY),
+    GAME("game", "Game", SymbolGroup.PLAY, drawingOrNull = "gamepad-2"),
     BLOCKS("blocks", "Blocks", SymbolGroup.PLAY),
     SCISSORS("scissors", "Scissors", SymbolGroup.PLAY),
-    BALL("ball", "Ball", SymbolGroup.PLAY),
+    BALL("ball", "Ball", SymbolGroup.PLAY, drawingOrNull = "volleyball"),
 
     // ---- people ----
-    PEOPLE("people", "People", SymbolGroup.PEOPLE),
+    PEOPLE("people", "People", SymbolGroup.PEOPLE, drawingOrNull = "users"),
     SMILE("smile", "Happy", SymbolGroup.PEOPLE),
     SAD("sad", "Sad", SymbolGroup.PEOPLE),
     HAND("hand", "Hand", SymbolGroup.PEOPLE),
@@ -100,15 +105,22 @@ enum class TileSymbol(val key: String, val label: String, val group: SymbolGroup
     DOG("dog", "Dog", SymbolGroup.PEOPLE),
     CAT("cat", "Cat", SymbolGroup.PEOPLE),
     RABBIT("rabbit", "Rabbit", SymbolGroup.PEOPLE),
-    MESSAGE("message", "Message", SymbolGroup.PEOPLE),
+    MESSAGE("message", "Message", SymbolGroup.PEOPLE, drawingOrNull = "message-circle"),
 
     // ---- notes ----
     CALENDAR("calendar", "Calendar", SymbolGroup.NOTES),
     CAMERA("camera", "Camera", SymbolGroup.NOTES),
-    DONE("done", "Done", SymbolGroup.NOTES),
-    WARNING("warning", "Warning", SymbolGroup.NOTES),
+    DONE("done", "Done", SymbolGroup.NOTES, drawingOrNull = "circle-check"),
+    WARNING("warning", "Warning", SymbolGroup.NOTES, drawingOrNull = "triangle-alert"),
     PIN("pin", "Pin", SymbolGroup.NOTES),
     ;
+
+    /**
+     * The file under `core/ui/icons/` this is drawn from, which is usually the key and sometimes
+     * not. `meal` is drawn by `utensils`, `bin` by `trash-2`: the key was ours to choose and is
+     * frozen, while the drawing is upstream's to name and can be swapped.
+     */
+    val drawing: String get() = drawingOrNull ?: key
 
     companion object {
         val DEFAULT = STAR
@@ -149,5 +161,4 @@ enum class SymbolGroup(val label: String) {
  * plain symbol rather than a screen that will not compose. A family's board must survive an icon
  * going astray.
  */
-val TileSymbol.image: ImageVector
-    get() = tileSymbolVector(key) ?: tileSymbolVector(TileSymbol.DEFAULT.key) ?: BlankSymbol
+val TileSymbol.image: ImageVector get() = symbolImage(key)

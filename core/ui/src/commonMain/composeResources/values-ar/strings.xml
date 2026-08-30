@@ -185,6 +185,8 @@
     <string name="edit_subtitle">السطر الثاني (اختياري)</string>
     <string name="edit_colour">اللون</string>
     <string name="edit_symbol">الرمز</string>
+    <string name="edit_symbol_suggestions">اقتراحات</string>
+    <string name="edit_symbol_change">تغيير الرمز</string>
     <string name="edit_symbol_search">البحث عن رمز</string>
     <string name="edit_save">حفظ</string>
     <string name="edit_cancel">إلغاء</string>

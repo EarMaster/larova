@@ -46,5 +46,18 @@ data object SettingsRoute
 @Serializable
 data object UnlockRoute
 
+/**
+ * Choosing a tile's symbol, on its own screen.
+ *
+ * Carries what is chosen now and the tile's colour, so the grid can show the selection the way it
+ * will look. The answer travels back the other way through the editor's `SavedStateHandle` — see
+ * `SYMBOL_RESULT` — because the editor owns the half-finished tile and must not be rebuilt.
+ */
+@Serializable
+data class SymbolPickerRoute(val selectedKey: String, val colorToken: String)
+
+/** The key the picker leaves on the editor's back stack entry. */
+const val SYMBOL_RESULT = "app.larova.symbolKey"
+
 @Serializable
 data object PinSetupRoute

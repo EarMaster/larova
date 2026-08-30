@@ -19,6 +19,7 @@ internal fun noOpEditCallbacks() = EditCardCallbacks(
     onSubtitleChange = {},
     onColorChange = {},
     onSymbolChange = {},
+    onChooseSymbol = {},
     onStepChange = { _, _ -> },
     onAddStep = {},
     onRemoveStep = {},

@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.BackArrow
-import app.larova.core.ui.icon.TileSymbol
+import app.larova.core.ui.icon.symbolImage
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.arrange_hint
@@ -108,7 +108,7 @@ private fun ArrangeRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(
-            imageVector = TileSymbol.fromKey(tile.symbolKey).image,
+            imageVector = symbolImage(tile.symbolKey),
             contentDescription = null,
             tint = colors.accent,
             modifier = Modifier.size(24.dp),

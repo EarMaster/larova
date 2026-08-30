@@ -170,6 +170,8 @@
     <string name="edit_subtitle">दूसरी पंक्ति (वैकल्पिक)</string>
     <string name="edit_colour">रंग</string>
     <string name="edit_symbol">चिह्न</string>
+    <string name="edit_symbol_suggestions">सुझाव</string>
+    <string name="edit_symbol_change">चिह्न बदलें</string>
     <string name="edit_symbol_search">चिह्न खोजें</string>
     <string name="edit_save">सहेजें</string>
     <string name="edit_cancel">रद्द करें</string>

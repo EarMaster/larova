@@ -170,6 +170,8 @@
     <string name="edit_subtitle">Seconda riga (facoltativa)</string>
     <string name="edit_colour">Colore</string>
     <string name="edit_symbol">Simbolo</string>
+    <string name="edit_symbol_suggestions">Suggerimenti</string>
+    <string name="edit_symbol_change">Cambia il simbolo</string>
     <string name="edit_symbol_search">Cerca simboli</string>
     <string name="edit_save">Salva</string>
     <string name="edit_cancel">Annulla</string>
