@@ -50,6 +50,15 @@ fun AppLinkView(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
+        val caption = appLink.caption
+        if (!caption.isNullOrBlank()) {
+            Text(
+                text = caption,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
         if (isInstalled) {
             Button(
                 onClick = { onOpenApp(appLink.packageName) },

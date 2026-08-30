@@ -65,8 +65,10 @@
     <string name="tile_audio_hint">ملف صوتي، أو سجّل واحداً الآن</string>
     <string name="tile_call">اتصال</string>
     <string name="tile_call_hint">اسم ورقم وصلة القرابة</string>
-    <string name="tile_link">موقع أو تطبيق</string>
-    <string name="tile_link_hint">يفتح رابطاً أو تطبيقاً على هذا الهاتف</string>
+    <string name="tile_web">موقع إلكتروني</string>
+    <string name="tile_web_hint">يفتح رابطاً في المتصفح</string>
+    <string name="tile_app">تطبيق</string>
+    <string name="tile_app_hint">يفتح تطبيقاً على هذا الهاتف</string>
     <string name="tile_folder">مجلد</string>
     <string name="tile_folder_hint">يجمع عدة بطاقات معاً</string>
 
@@ -120,6 +122,7 @@
     <string name="media_missing">هذا الملف غير موجود على الهاتف. ربما لم يصل مع النسخة الاحتياطية.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">فتح الموقع</string>
     <string name="app_open">فتح التطبيق</string>
     <string name="app_missing">لم يعد هذا التطبيق على الهاتف.</string>
     <string name="app_choose">أي تطبيق؟</string>
@@ -233,6 +236,7 @@
     <string name="edit_app_chosen">يفتح %1$s</string>
     <string name="edit_app_label">ما تقوله البطاقة</string>
     <string name="edit_app_required">اختر التطبيق الذي تفتحه هذه البطاقة.</string>
+    <string name="edit_link_caption">لماذا يُستخدم (اختياري)</string>
     <string name="edit_web_address">عنوان الموقع</string>
     <string name="edit_web_label">التسمية (اختياري)</string>
     <string name="edit_web_address_invalid">يجب أن يبدأ عنوان الموقع بـ ‎http://‎ أو ‎https://‎</string>

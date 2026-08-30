@@ -63,8 +63,10 @@
     <string name="tile_audio_hint">Um ficheiro de som, ou grave um agora</string>
     <string name="tile_call">Ligar</string>
     <string name="tile_call_hint">Um nome, um número e o parentesco</string>
-    <string name="tile_link">Site ou aplicação</string>
-    <string name="tile_link_hint">Abre uma ligação ou uma aplicação deste telemóvel</string>
+    <string name="tile_web">Site</string>
+    <string name="tile_web_hint">Abre uma ligação no navegador</string>
+    <string name="tile_app">Aplicação</string>
+    <string name="tile_app_hint">Abre uma aplicação deste telemóvel</string>
     <string name="tile_folder">Pasta</string>
     <string name="tile_folder_hint">Junta vários cartões</string>
 
@@ -106,6 +108,7 @@
     <string name="media_missing">Este ficheiro não está no telemóvel. Pode não ter vindo com a cópia de segurança.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Abrir o site</string>
     <string name="app_open">Abrir a aplicação</string>
     <string name="app_missing">Essa aplicação já não está neste telemóvel.</string>
     <string name="app_choose">Que aplicação?</string>
@@ -215,6 +218,7 @@
     <string name="edit_app_chosen">Abre %1$s</string>
     <string name="edit_app_label">O que o cartão diz</string>
     <string name="edit_app_required">Escolha a aplicação que este cartão abre.</string>
+    <string name="edit_link_caption">Para que serve (opcional)</string>
     <string name="edit_web_address">Endereço web</string>
     <string name="edit_web_label">Etiqueta (opcional)</string>
     <string name="edit_web_address_invalid">Um endereço web tem de começar por http:// ou https://</string>

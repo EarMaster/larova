@@ -95,16 +95,27 @@ sealed interface CardPayload {
             }
     }
 
+    /**
+     * [label] is what the tile's button says; [caption] is the line above it, for what the page is
+     * actually for. "Line 142 from the corner" is the sort of thing that makes a bookmark usable
+     * by somebody who did not save it.
+     */
     @Serializable
     @SerialName("web")
-    data class Web(val url: String, val label: String? = null) : CardPayload
+    data class Web(
+        val url: String,
+        val label: String? = null,
+        val caption: String? = null,
+    ) : CardPayload
 
+    /** [caption] is what the app is for, in the family's own words rather than the store's. */
     @Serializable
     @SerialName("appLink")
     data class AppLink(
         val packageName: String,
         val label: String,
         val deepLink: String? = null,
+        val caption: String? = null,
     ) : CardPayload
 
     /** Points at the board holding the tiles inside it. One level deep, by design. */

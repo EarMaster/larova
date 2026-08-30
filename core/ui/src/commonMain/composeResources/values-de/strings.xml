@@ -71,8 +71,10 @@
     <string name="tile_audio_hint">Eine Tondatei, oder jetzt aufnehmen</string>
     <string name="tile_call">Anruf</string>
     <string name="tile_call_hint">Ein Name, eine Nummer und wer die Person ist</string>
-    <string name="tile_link">Website oder App</string>
-    <string name="tile_link_hint">Öffnet einen Link oder eine App auf diesem Telefon</string>
+    <string name="tile_web">Webseite</string>
+    <string name="tile_web_hint">Öffnet einen Link im Browser</string>
+    <string name="tile_app">App</string>
+    <string name="tile_app_hint">Öffnet eine App auf diesem Telefon</string>
     <string name="tile_folder">Ordner</string>
     <string name="tile_folder_hint">Fasst mehrere Kacheln zusammen</string>
 
@@ -114,6 +116,7 @@
     <string name="media_missing">Diese Datei liegt nicht auf dem Telefon. Vielleicht ist sie mit der Sicherung nicht mitgekommen.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Webseite öffnen</string>
     <string name="app_open">App öffnen</string>
     <string name="app_missing">Diese App ist nicht mehr auf diesem Telefon.</string>
     <string name="app_choose">Welche App?</string>
@@ -223,6 +226,7 @@
     <string name="edit_app_chosen">Öffnet %1$s</string>
     <string name="edit_app_label">Was auf der Kachel steht</string>
     <string name="edit_app_required">Bitte die App auswählen, die diese Kachel öffnet.</string>
+    <string name="edit_link_caption">Wofür es da ist (optional)</string>
     <string name="edit_web_address">Webadresse</string>
     <string name="edit_web_label">Bezeichnung (optional)</string>
     <string name="edit_web_address_invalid">Eine Webadresse muss mit http:// oder https:// beginnen</string>

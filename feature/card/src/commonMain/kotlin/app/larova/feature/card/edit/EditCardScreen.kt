@@ -87,6 +87,7 @@ import app.larova.core.ui.resources.edit_record
 import app.larova.core.ui.resources.edit_record_failed
 import app.larova.core.ui.resources.edit_record_stop
 import app.larova.core.ui.resources.edit_recording
+import app.larova.core.ui.resources.edit_link_caption
 import app.larova.core.ui.resources.edit_new_tile
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
@@ -110,9 +111,9 @@ import app.larova.core.ui.resources.tile_audio
 import app.larova.core.ui.resources.tile_checklist
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
-import app.larova.core.ui.resources.tile_link
+import app.larova.core.ui.resources.tile_app
 import app.larova.core.ui.resources.tile_note
-import app.larova.core.ui.resources.tile_link
+import app.larova.core.ui.resources.tile_web
 import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.resources.tile_video
 import app.larova.core.ui.theme.Dimens
@@ -345,6 +346,12 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                     keyboardType = KeyboardType.Uri,
                 ),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            OutlinedTextField(
+                value = state.linkCaption,
+                onValueChange = callbacks.onLinkCaptionChange,
+                label = { Text(stringResource(Res.string.edit_link_caption)) },
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
@@ -592,6 +599,13 @@ private fun AppLinkFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 color = MaterialTheme.colorScheme.error,
             )
         }
+
+        OutlinedTextField(
+            value = state.linkCaption,
+            onValueChange = callbacks.onLinkCaptionChange,
+            label = { Text(stringResource(Res.string.edit_link_caption)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         OutlinedTextField(
             value = state.appLabel,
@@ -947,11 +961,11 @@ private val CardType.label: StringResource
         CardType.NOTE -> Res.string.tile_note
         CardType.TABLE -> Res.string.tile_table
         CardType.FOLDER -> Res.string.tile_folder
-        CardType.APP_LINK -> Res.string.tile_link
+        CardType.APP_LINK -> Res.string.tile_app
         CardType.VIDEO -> Res.string.tile_video
         CardType.AUDIO -> Res.string.tile_audio
         CardType.PHONE -> Res.string.tile_call
-        CardType.WEB -> Res.string.tile_link
+        CardType.WEB -> Res.string.tile_web
     }
 
 private const val MIN_NOTE_LINES = 6
@@ -994,6 +1008,7 @@ data class EditCardCallbacks(
     val onRemoveContact: (Int) -> Unit,
     val onWebUrlChange: (String) -> Unit,
     val onWebLabelChange: (String) -> Unit,
+    val onLinkCaptionChange: (String) -> Unit,
     val onChooseApp: () -> Unit,
     val onAppQueryChange: (String) -> Unit,
     val onAppPicked: (AppChoice) -> Unit,
@@ -1050,6 +1065,7 @@ fun EditCardViewModel.callbacks(
     onRemoveContact = ::onRemoveContact,
     onWebUrlChange = ::onWebUrlChange,
     onWebLabelChange = ::onWebLabelChange,
+    onLinkCaptionChange = ::onLinkCaptionChange,
     onChooseApp = ::onChooseApp,
     onAppQueryChange = ::onAppQueryChange,
     onAppPicked = ::onAppPicked,

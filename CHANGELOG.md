@@ -12,6 +12,14 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Changed
+- "Website or app" was one entry in the tile chooser that could make either kind of tile, with no
+  way to tell which you were getting. They are two now — "Website", which opens a link in the
+  browser, and "App", which opens something on the phone.
+- A website tile and an app tile can both carry a line saying what they are for, the way a video
+  tile can. "Line 142 from the corner" is what makes a bookmark usable by somebody who did not
+  save it.
+
 ### Fixed
 - The red "Get help" bar no longer appears on the screens only a parent sees: backup and transfer,
   the tile editor, rearranging, unlocking parent view and choosing a PIN. It stays where a

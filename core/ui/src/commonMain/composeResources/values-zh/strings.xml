@@ -66,8 +66,10 @@
     <string name="tile_audio_hint">一个音频文件，或者现在录一段</string>
     <string name="tile_call">打电话</string>
     <string name="tile_call_hint">姓名、号码和称呼</string>
-    <string name="tile_link">网站或应用</string>
-    <string name="tile_link_hint">打开这部手机上的链接或应用</string>
+    <string name="tile_web">网站</string>
+    <string name="tile_web_hint">在浏览器中打开链接</string>
+    <string name="tile_app">应用</string>
+    <string name="tile_app_hint">打开这部手机上的应用</string>
     <string name="tile_folder">文件夹</string>
     <string name="tile_folder_hint">把几张卡片放在一起</string>
 
@@ -106,6 +108,7 @@
     <string name="media_missing">手机上没有这个文件。可能它没有随备份一起过来。</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">打开网站</string>
     <string name="app_open">打开应用</string>
     <string name="app_missing">这部手机上已经没有那个应用了。</string>
     <string name="app_choose">哪个应用？</string>
@@ -214,6 +217,7 @@
     <string name="edit_app_chosen">打开 %1$s</string>
     <string name="edit_app_label">卡片上写什么</string>
     <string name="edit_app_required">选择这张卡片要打开的应用。</string>
+    <string name="edit_link_caption">用来做什么（可选）</string>
     <string name="edit_web_address">网址</string>
     <string name="edit_web_label">标签（可选）</string>
     <string name="edit_web_address_invalid">网址必须以 http:// 或 https:// 开头</string>

@@ -63,8 +63,10 @@
     <string name="tile_audio_hint">Plik dźwiękowy albo nagranie zrobione teraz</string>
     <string name="tile_call">Zadzwoń</string>
     <string name="tile_call_hint">Imię, numer i kto to jest</string>
-    <string name="tile_link">Strona lub aplikacja</string>
-    <string name="tile_link_hint">Otwiera link albo aplikację na tym telefonie</string>
+    <string name="tile_web">Strona</string>
+    <string name="tile_web_hint">Otwiera link w przeglądarce</string>
+    <string name="tile_app">Aplikacja</string>
+    <string name="tile_app_hint">Otwiera aplikację na tym telefonie</string>
     <string name="tile_folder">Folder</string>
     <string name="tile_folder_hint">Grupuje kilka kafelków</string>
 
@@ -112,6 +114,7 @@
     <string name="media_missing">Tego pliku nie ma w telefonie. Mógł nie dojść razem z kopią zapasową.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Otwórz stronę</string>
     <string name="app_open">Otwórz aplikację</string>
     <string name="app_missing">Tej aplikacji już nie ma na tym telefonie.</string>
     <string name="app_choose">Która aplikacja?</string>
@@ -223,6 +226,7 @@
     <string name="edit_app_chosen">Otwiera %1$s</string>
     <string name="edit_app_label">Co jest napisane na kafelku</string>
     <string name="edit_app_required">Wybierz aplikację, którą otwiera ten kafelek.</string>
+    <string name="edit_link_caption">Do czego służy (opcjonalnie)</string>
     <string name="edit_web_address">Adres strony</string>
     <string name="edit_web_label">Etykieta (opcjonalnie)</string>
     <string name="edit_web_address_invalid">Adres strony musi zaczynać się od http:// albo https://</string>

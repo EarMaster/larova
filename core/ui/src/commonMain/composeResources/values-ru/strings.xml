@@ -62,8 +62,10 @@
     <string name="tile_audio_hint">Звуковой файл или запись прямо сейчас</string>
     <string name="tile_call">Позвонить</string>
     <string name="tile_call_hint">Имя, номер и кем приходится</string>
-    <string name="tile_link">Сайт или приложение</string>
-    <string name="tile_link_hint">Открывает ссылку или приложение на этом телефоне</string>
+    <string name="tile_web">Сайт</string>
+    <string name="tile_web_hint">Открывает ссылку в браузере</string>
+    <string name="tile_app">Приложение</string>
+    <string name="tile_app_hint">Открывает приложение на этом телефоне</string>
     <string name="tile_folder">Папка</string>
     <string name="tile_folder_hint">Объединяет несколько карточек</string>
 
@@ -111,6 +113,7 @@
     <string name="media_missing">Этого файла нет на телефоне. Возможно, он не пришёл вместе с резервной копией.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Открыть сайт</string>
     <string name="app_open">Открыть приложение</string>
     <string name="app_missing">Этого приложения больше нет на телефоне.</string>
     <string name="app_choose">Какое приложение?</string>
@@ -222,6 +225,7 @@
     <string name="edit_app_chosen">Открывает %1$s</string>
     <string name="edit_app_label">Что написано на карточке</string>
     <string name="edit_app_required">Выберите приложение, которое открывает эта карточка.</string>
+    <string name="edit_link_caption">Для чего это (необязательно)</string>
     <string name="edit_web_address">Веб-адрес</string>
     <string name="edit_web_label">Подпись (необязательно)</string>
     <string name="edit_web_address_invalid">Веб-адрес должен начинаться с http:// или https://</string>

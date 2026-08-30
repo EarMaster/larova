@@ -40,6 +40,7 @@ internal fun noOpEditCallbacks() = EditCardCallbacks(
     onRemoveContact = {},
     onWebUrlChange = {},
     onWebLabelChange = {},
+    onLinkCaptionChange = {},
     onChooseApp = {},
     onAppQueryChange = {},
     onAppPicked = {},

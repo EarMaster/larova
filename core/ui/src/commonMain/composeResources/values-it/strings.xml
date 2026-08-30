@@ -62,8 +62,10 @@
     <string name="tile_audio_hint">Un file audio, oppure registrane uno adesso</string>
     <string name="tile_call">Chiama</string>
     <string name="tile_call_hint">Un nome, un numero e una parentela</string>
-    <string name="tile_link">Sito web o app</string>
-    <string name="tile_link_hint">Apre un link o un’app di questo telefono</string>
+    <string name="tile_web">Sito web</string>
+    <string name="tile_web_hint">Apre un link nel browser</string>
+    <string name="tile_app">App</string>
+    <string name="tile_app_hint">Apre un'app di questo telefono</string>
     <string name="tile_folder">Cartella</string>
     <string name="tile_folder_hint">Raggruppa più riquadri</string>
 
@@ -105,6 +107,7 @@
     <string name="media_missing">Questo file non è sul telefono. Forse non è arrivato con il backup.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Apri il sito</string>
     <string name="app_open">Apri l’app</string>
     <string name="app_missing">Quell’app non è più su questo telefono.</string>
     <string name="app_choose">Quale app?</string>
@@ -214,6 +217,7 @@
     <string name="edit_app_chosen">Apre %1$s</string>
     <string name="edit_app_label">Cosa dice il riquadro</string>
     <string name="edit_app_required">Scegli l’app che questo riquadro apre.</string>
+    <string name="edit_link_caption">A cosa serve (facoltativo)</string>
     <string name="edit_web_address">Indirizzo web</string>
     <string name="edit_web_label">Etichetta (facoltativa)</string>
     <string name="edit_web_address_invalid">Un indirizzo web deve iniziare con http:// o https://</string>

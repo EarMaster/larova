@@ -60,8 +60,10 @@
     <string name="tile_audio_hint">A sound file, or record one now</string>
     <string name="tile_call">Call</string>
     <string name="tile_call_hint">A name, a number and a relation</string>
-    <string name="tile_link">Website or app</string>
-    <string name="tile_link_hint">Opens a link or an app on this phone</string>
+    <string name="tile_web">Website</string>
+    <string name="tile_web_hint">Opens a link in the browser</string>
+    <string name="tile_app">App</string>
+    <string name="tile_app_hint">Opens an app on this phone</string>
     <string name="tile_folder">Folder</string>
     <string name="tile_folder_hint">Groups several tiles together</string>
 
@@ -103,6 +105,7 @@
     <string name="media_missing">This file is not on the phone. It may not have come through with the backup.</string>
 
     <!-- ===== App shortcut ===== -->
+    <string name="web_open">Open the website</string>
     <string name="app_open">Open the app</string>
     <string name="app_missing">That app is not on this phone any more.</string>
     <string name="app_choose">Which app?</string>
@@ -212,6 +215,7 @@
     <string name="edit_app_chosen">Opens %1$s</string>
     <string name="edit_app_label">What the tile says</string>
     <string name="edit_app_required">Choose the app this tile opens.</string>
+    <string name="edit_link_caption">What it is for (optional)</string>
     <string name="edit_web_address">Web address</string>
     <string name="edit_web_label">Label (optional)</string>
     <string name="edit_web_address_invalid">A web address has to start with http:// or https://</string>
