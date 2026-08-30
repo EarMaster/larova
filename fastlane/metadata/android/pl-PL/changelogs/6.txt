@@ -1,0 +1,1 @@
+Wyszukiwanie symbolu mogło zamknąć aplikację: trzy symbole były na liście dwa razy, a aplikacja poddawała się, gdy wyszukiwanie pokazało obie kopie naraz. Teraz każdy jest na niej tylko raz i wyszukiwanie znów działa.

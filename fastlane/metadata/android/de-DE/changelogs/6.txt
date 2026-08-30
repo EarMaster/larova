@@ -1,0 +1,1 @@
+Die Suche nach einem Symbol konnte die App beenden: Drei Symbole standen doppelt in der Liste, und sobald eine Suche beide zugleich anzeigte, gab die App auf. Jedes wird jetzt nur einmal angeboten, und die Suche lässt sich wieder gefahrlos benutzen.
