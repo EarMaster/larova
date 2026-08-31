@@ -213,6 +213,49 @@ val OpenFile: ImageVector by lazy {
     }
 }
 
+/**
+ * A padlock, for a tile type that has not been bought yet.
+ *
+ * Not mirrored: a padlock has no direction, and `autoMirror` on something symmetrical is how a
+ * mirrored clock face ends up shipping. Drawn shut rather than open — an open padlock is the icon
+ * for "this is unprotected", which is the opposite of what it would mean here.
+ */
+val Lock: ImageVector by lazy {
+    uiIcon("Lock") {
+        // The body, as a rounded rectangle traced by hand: the builder has no rounded-rect path,
+        // and four arcs at a 2f radius is what the rest of this file would have written.
+        path(
+            stroke = SolidColor(Color.Black),
+            strokeLineWidth = STROKE,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+        ) {
+            moveTo(6f, 13f)
+            arcToRelative(2f, 2f, 0f, false, true, 2f, -2f)
+            lineTo(16f, 11f)
+            arcToRelative(2f, 2f, 0f, false, true, 2f, 2f)
+            lineTo(18f, 18f)
+            arcToRelative(2f, 2f, 0f, false, true, -2f, 2f)
+            lineTo(8f, 20f)
+            arcToRelative(2f, 2f, 0f, false, true, -2f, -2f)
+            close()
+        }
+        // The shackle, stopping at the top of the body rather than overlapping it, so the two
+        // shapes still read apart at 24dp.
+        path(
+            stroke = SolidColor(Color.Black),
+            strokeLineWidth = STROKE,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+        ) {
+            moveTo(8.5f, 11f)
+            lineTo(8.5f, 7.5f)
+            arcToRelative(3.5f, 3.5f, 0f, false, true, 7f, 0f)
+            lineTo(15.5f, 11f)
+        }
+    }
+}
+
 /** Every icon above is drawn in the same 24×24 viewport at the same weight. */
 private const val STROKE = 2f
 

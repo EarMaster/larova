@@ -84,7 +84,9 @@ fun rememberBiometricUnlock(onAccepted: () -> Unit): (() -> Unit)? {
     }
 }
 
-private tailrec fun android.content.Context.findFragmentActivity(): FragmentActivity? = when (this) {
+// Internal rather than private: UnlockPurchase.kt needs the same walk up the context chain,
+// and two copies of it would drift.
+internal tailrec fun android.content.Context.findFragmentActivity(): FragmentActivity? = when (this) {
     is FragmentActivity -> this
     is android.content.ContextWrapper -> baseContext.findFragmentActivity()
     else -> null

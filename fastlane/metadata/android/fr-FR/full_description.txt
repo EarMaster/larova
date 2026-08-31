@@ -46,6 +46,10 @@ La langue de Larova se règle indépendamment de celle du téléphone. Une grand
 
 L'application est traduite. Ce que vous écrivez ne l'est pas — vos mots restent exactement tels que vous les avez écrits, et ne sont jamais envoyés ailleurs pour être traduits.
 
+QUI L'ÉCRIT
+
+Écrite par un parent de trois enfants, dont un a besoin de plus d'aide.
+
 CE QUE LAROVA N'EST PAS
 
 Larova est un carnet. Elle ne pose aucun diagnostic, ne calcule rien, n'interprète pas ce que vous écrivez et ne donne aucun conseil. Ce n'est pas un dispositif médical ni un service d'urgence. En cas d'urgence, appelez votre numéro d'urgence local.

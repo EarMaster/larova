@@ -46,6 +46,10 @@ You can set Larova's language independently of the phone's. A grandmother who do
 
 The app is translated. What you write is not — your words stay exactly as you wrote them, and are never sent anywhere to be translated.
 
+WHO MAKES IT
+
+Larova is written by one person: a parent of three, one of whom needs more help than the others. No company, no investor, no advertising — the full version pays for the time.
+
 WHAT LAROVA IS NOT
 
 Larova is a notebook. It does not diagnose, does not calculate, does not interpret what you write, and does not give advice. It is not a medical device and not an emergency service. In an emergency, call your local emergency number.

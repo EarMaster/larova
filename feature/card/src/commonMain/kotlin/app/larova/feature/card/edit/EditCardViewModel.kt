@@ -19,6 +19,8 @@ import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.Media
+import app.larova.core.domain.usecase.ObserveLockedTypes
+import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
@@ -58,6 +60,15 @@ data class ContactDraft(
     val inHelpSheet: Boolean = false,
 )
 
+/** Why an attempt to buy the unlock did not end with it being bought. */
+enum class OfferMessage {
+    /** Cash or a carrier bill: taken, not yet paid. It arrives on a later start-up. */
+    PENDING,
+
+    /** No store, no connection, or nothing on sale. Worth retrying, not worth explaining twice. */
+    UNAVAILABLE,
+}
+
 /**
  * What the editor holds while a parent is typing.
  *
@@ -96,6 +107,25 @@ data class EditUiState(
     /** The app a shortcut tile opens, and the words the parents put on it. */
     val appPackage: String = "",
     val appLabel: String = "",
+    /**
+     * The tile types that need buying before they can be authored, empty once anything has
+     * vouched for this installation.
+     *
+     * State rather than a lookup inside the screen, for the same reason everything else here is:
+     * the screenshot tests hand a fixture in and take a picture, and a screen that asked a
+     * repository could not be photographed locked and unlocked.
+     */
+    val lockedTypes: Set<CardType> = emptySet(),
+    /** What the editor offers to sell when somebody taps a locked type. Null until they do. */
+    val offeredType: CardType? = null,
+    /**
+     * The price, as Google Play writes it for this buyer's country. Null while it is being fetched
+     * and null for good on a phone that cannot reach the store — the offer is still shown, with a
+     * button that does not name a number.
+     */
+    val offerPrice: String? = null,
+    /** What went wrong, or did not finish, the last time somebody tried to buy. */
+    val offerMessage: OfferMessage? = null,
     /** What the picker is showing. Empty until it is opened — a phone has a hundred apps on it. */
     val apps: List<AppChoice> = emptyList(),
     val appQuery: String = "",
@@ -155,6 +185,12 @@ data class EditUiState(
  * A folder is missing from the list when the editor was opened inside one. Not greyed out, not
  * refused on save: absent, because one level deep is the shape of the product rather than a limit
  * to explain (docs/concept.md §4.1).
+ *
+ * The paid types are handled the other way round, and the difference is deliberate. They stay in
+ * this list and the picker marks them with a lock, because somebody who cannot see what buying
+ * would get them has no reason to buy it. A folder is absent because it does not exist here; a
+ * paid tile is present because it does exist and is simply not paid for yet. Which ones those are
+ * is `EditUiState.lockedTypes`, not this function: the answer changes while the app is running.
  */
 fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
     CardType.GUIDE,
@@ -187,9 +223,14 @@ data class EditTarget(val cardId: String = "", val boardId: String = "")
  * forty classes. Collapsing the handlers into one `onFieldChange(name, value)` would trade the
  * compiler's checking for the counter, which is the worse trade — a misspelt field name would then
  * be a silent no-op on a screen a parent only sees once.
+ *
+ * The parameter count is suppressed for the same kind of reason. Seven of the eight are the use
+ * cases this one screen genuinely needs, and the eighth is the paid unlock. Bundling them into a
+ * holder object to satisfy the counter would hide which screen depends on what, which is the thing
+ * the counter exists to make visible.
  */
 @OptIn(ExperimentalUuidApi::class)
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 class EditCardViewModel(
     target: EditTarget,
     private val tile: TileEditing,
@@ -197,6 +238,8 @@ class EditCardViewModel(
     private val recording: Recording,
     private val folders: Folders,
     private val apps: Apps,
+    lockedTypes: ObserveLockedTypes,
+    private val unlockPrice: UnlockPrice,
 ) : ViewModel() {
 
     private val cardId: String? = target.cardId.takeIf { it.isNotEmpty() }
@@ -219,6 +262,52 @@ class EditCardViewModel(
 
     init {
         if (!cardId.isNullOrEmpty()) load(cardId)
+        // Collected rather than read once: a purchase can complete while this screen is open, and
+        // the lock has to come off the chips without the parent having to back out and return.
+        viewModelScope.launch {
+            lockedTypes().collect { locked -> _state.update { it.copy(lockedTypes = locked) } }
+        }
+    }
+
+    /**
+     * Somebody tapped a type they have not bought.
+     *
+     * The type is not selected — half a screen of fields for a tile that cannot be saved would be
+     * a worse answer than none. What is recorded is which type was asked for, so the sheet can name
+     * it, and `:app` turns that into Play's own sheet.
+     */
+    fun onLockedType(type: CardType) {
+        _state.update { it.copy(offeredType = type) }
+        fetchPrice()
+    }
+
+    fun onDismissOffer() = _state.update { it.copy(offeredType = null, offerMessage = null) }
+
+    /**
+     * The three outcomes worth telling somebody about, as three methods rather than one parameter.
+     *
+     * `:app` does the translating from the store's own result type, which is what keeps
+     * `:core:billing` out of this module. A cancelled purchase is deliberately not among them:
+     * somebody who changed their mind has already been told what they decided.
+     */
+    fun onPurchased() = _state.update { it.copy(offeredType = null, offerMessage = null) }
+
+    fun onPurchasePending() = _state.update { it.copy(offerMessage = OfferMessage.PENDING) }
+
+    fun onPurchaseUnavailable() =
+        _state.update { it.copy(offerMessage = OfferMessage.UNAVAILABLE) }
+
+    /**
+     * Asked for once per offer rather than held: the price can change between one launch and the
+     * next, and a number cached from a fortnight ago is worse than no number at all. Failure is
+     * silent by design — see [UnlockPrice].
+     */
+    private fun fetchPrice() {
+        if (_state.value.offerPrice != null) return
+        viewModelScope.launch {
+            val price = unlockPrice()
+            if (price != null) _state.update { it.copy(offerPrice = price) }
+        }
     }
 
     fun onTitleChange(value: String) = _state.update { it.copy(title = value, titleMissing = false) }
@@ -512,6 +601,9 @@ class EditCardViewModel(
         val refusal = current.refusal()
         if (refusal != null) {
             _state.value = refusal
+            // The refusal may be "this type has to be bought", in which case the sheet needs a
+            // price. Harmless for every other refusal: it returns early if one is already known.
+            if (refusal.offeredType != null) fetchPrice()
             return
         }
 
@@ -744,6 +836,11 @@ private fun EditUiState.folderPayload(): CardPayload = parseUuidOrNull(folderBoa
  * field was filled in, because a screen can be left half-finished and come back.
  */
 private fun EditUiState.refusal(): EditUiState? = when {
+    // Before the field checks, because "this type has to be bought" is the answer to give even if
+    // the title is also empty. Reachable on an existing tile of a paid type in a build that is not
+    // unlocked — an imported backup, most likely — where viewing the tile is fine and rewriting it
+    // is what is being sold.
+    type in lockedTypes -> copy(offeredType = type)
     title.isBlank() -> copy(titleMissing = true)
     type == CardType.WEB && !isOpenableUrl(webUrl) -> copy(urlInvalid = true)
     type == CardType.APP_LINK && appPackage.isBlank() -> copy(appMissing = true)

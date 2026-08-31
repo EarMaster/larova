@@ -73,6 +73,29 @@ android {
         }
     }
 
+    // Whether this build has a paid tier at all, and the key that lets it check a purchase
+    // offline. Both are build inputs rather than constants, because the same source produces two
+    // artifacts: the AAB that Play sells, and the APK attached to the GitHub Release.
+    //
+    // `larova.paidTier=false` produces the unlocked build. That is not a loophole left open by
+    // accident — the licence lets anyone delete the check and rebuild, so the honest sideload build
+    // says so up front instead of pretending to a lock it cannot keep. release.yml passes it for
+    // the APK and leaves the default for the AAB.
+    //
+    // The licensing key is the base64 string from Play Console -> Monetise -> Licensing. It is a
+    // public key, so unlike the upload keystore it is not a secret and may sit in gradle.properties
+    // or the environment. Absent, PurchaseVerifier rejects everything and the app stays locked,
+    // which is the safe direction for a build assembled without it.
+    val paidTier = providers.gradleProperty("larova.paidTier").orNull?.toBoolean() ?: true
+    val licensingKey = providers.gradleProperty("larova.licensingKey").orNull
+        ?: providers.environmentVariable("LAROVA_LICENSING_KEY").orNull
+        ?: ""
+
+    defaultConfig {
+        buildConfigField("boolean", "PAID_TIER", paidTier.toString())
+        buildConfigField("String", "LICENSING_KEY", "\"$licensingKey\"")
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.findByName("upload")
@@ -86,8 +109,8 @@ android {
     }
 
     buildFeatures {
-        // Only for VERSION_NAME, which goes into every export manifest. Reading it from the build
-        // rather than repeating the version in a constant that would drift.
+        // VERSION_NAME, which goes into every export manifest, plus the two unlock fields above.
+        // Reading them from the build rather than repeating them in constants that would drift.
         buildConfig = true
     }
 
@@ -245,6 +268,9 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":core:platform"))
+    // The only module that links Google Play Billing. Named here and nowhere else; see its build
+    // file for the dependency exclusions that keep INTERNET out of the merged manifest.
+    implementation(project(":core:billing"))
 
     implementation(project(":feature:home"))
     implementation(project(":feature:card"))

@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import app.larova.core.billing.PurchaseOutcome
 import app.larova.rememberBiometricUnlock
+import app.larova.rememberUnlockPurchase
 import app.larova.core.domain.model.AppearanceSetting
 import androidx.compose.runtime.LaunchedEffect
 import app.larova.di.arrangeViewModelParameters
@@ -169,6 +171,19 @@ fun LarovaNavHost(
             val pickVideo = rememberVideoPicker(viewModel::onMediaChosen)
             val pickSound = rememberSoundPicker(viewModel::onMediaChosen)
             val requestMicrophone = rememberMicrophoneRequest(viewModel::onStartRecording)
+            // The store's own result type is translated here rather than in :feature:card, which is
+            // what keeps :core:billing out of every feature module. A cancelled purchase is left
+            // alone on purpose: somebody who backed out has already seen their own decision.
+            val buyUnlock = rememberUnlockPurchase { outcome ->
+                when (outcome) {
+                    is PurchaseOutcome.Purchased, PurchaseOutcome.AlreadyOwned ->
+                        viewModel.onPurchased()
+
+                    PurchaseOutcome.Pending -> viewModel.onPurchasePending()
+                    is PurchaseOutcome.Unavailable -> viewModel.onPurchaseUnavailable()
+                    PurchaseOutcome.Cancelled -> Unit
+                }
+            }
 
             EditCardScreen(
                 state = state,
@@ -185,6 +200,7 @@ fun LarovaNavHost(
                     openVideoPicker = pickVideo,
                     openSoundPicker = pickSound,
                     requestMicrophone = requestMicrophone,
+                    buyUnlock = buyUnlock,
                 ),
                 onBack = goBack,
             )

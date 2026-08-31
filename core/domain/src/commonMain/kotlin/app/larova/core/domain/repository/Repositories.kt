@@ -3,9 +3,11 @@ package app.larova.core.domain.repository
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.Entitlement
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
+import app.larova.core.domain.model.Receipt
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
@@ -115,5 +117,61 @@ interface PinRepository {
     suspend fun verify(pin: String): Boolean
 
     /** Removes it. Parent view then has no lock, which is a decision the parents get to make. */
+    suspend fun clear()
+}
+
+/**
+ * What this installation is entitled to author.
+ *
+ * Deliberately the narrowest interface in this file. It cannot be told to unlock: there is no
+ * `setUnlocked`, because a screen that could call one would be the shortest path to a paid tier
+ * that any crash log could explain how to defeat. The only ways in are a store purchase and a
+ * signed key, and both are checked below this line.
+ *
+ * [refresh] asks the store again and is allowed to *raise* the answer. It is never allowed to lower
+ * it on a failure — see the cache-positive rule on [EntitlementCache].
+ */
+interface EntitlementRepository {
+
+    fun observe(): Flow<Entitlement>
+
+    /**
+     * Re-asks whatever can vouch for this installation. Safe to call on every start and safe to
+     * fail: an offline phone answers "no idea", which must never read as "not paid".
+     */
+    suspend fun refresh()
+
+    /**
+     * What the unlock costs, already formatted in the buyer's own currency, or null if nobody could
+     * be asked — offline, or a build with nothing for sale.
+     *
+     * A formatted string rather than an amount and a currency code, because the store is the only
+     * thing that knows how to write a price for a given country, and a number formatted here would
+     * be wrong in a way nobody would notice until a review said so.
+     */
+    suspend fun formattedPrice(): String?
+}
+
+/**
+ * Where the evidence for an unlock is remembered between launches.
+ *
+ * In the preferences file rather than the database, for the same reason the PIN is: it is not
+ * content, and a package handed to a grandparent must not carry the parents' purchase with it.
+ * Keeping it out of the schema is what makes that true by construction instead of by remembering
+ * to exclude it from an export.
+ *
+ * **The cache-positive rule.** Nothing here is cleared because a lookup failed. A child's phone can
+ * be offline for weeks, and the store cannot be reached from a process with no internet permission
+ * at all — every unsuccessful query is therefore "unknown", never "unpaid". [clear] exists for a
+ * refund the store actually reported and for tests, and for nothing else.
+ */
+interface EntitlementCache {
+
+    /** Null until something has been stored. Re-checked on the way out, never trusted as stored. */
+    fun observe(): Flow<Receipt?>
+
+    suspend fun write(receipt: Receipt)
+
+    /** Only for a revocation the store returned successfully. Not for a failed lookup. */
     suspend fun clear()
 }

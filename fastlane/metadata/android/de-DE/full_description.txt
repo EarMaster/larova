@@ -46,6 +46,10 @@ Die Sprache von Larova lässt sich unabhängig von der des Telefons einstellen. 
 
 Die App ist übersetzt. Was Sie schreiben, ist es nicht — Ihre Worte bleiben genau so, wie Sie sie geschrieben haben, und werden nirgendwohin zum Übersetzen gesendet.
 
+WER SIE SCHREIBT
+
+Larova wird von einer einzigen Person geschrieben: einem Elternteil von drei Kindern, von denen eines mehr Hilfe braucht als die anderen. Keine Firma, kein Investor, keine Werbung — die Vollversion bezahlt die Zeit.
+
 WAS LAROVA NICHT IST
 
 Larova ist ein Notizbuch. Es stellt keine Diagnose, berechnet nichts, deutet nicht, was Sie schreiben, und gibt keine Ratschläge. Es ist kein Medizinprodukt und kein Notrufdienst. Rufen Sie im Notfall Ihre örtliche Notrufnummer.

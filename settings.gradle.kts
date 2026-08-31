@@ -28,6 +28,9 @@ include(":core:data")
 include(":core:ui")
 include(":core:platform")
 
+// Android-only, and the only module that links Google Play Billing. See its build file for why.
+include(":core:billing")
+
 include(":feature:home")
 include(":feature:card")
 include(":feature:help")

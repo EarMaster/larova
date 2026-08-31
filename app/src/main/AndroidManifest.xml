@@ -54,6 +54,27 @@
         android:name="android.permission.WAKE_LOCK"
         tools:node="remove" />
 
+    <!--
+      INTERNET is removed rather than merely absent, and it has to be said explicitly because it is
+      no longer only this file that decides.
+
+      com.android.billingclient:billing depends on com.google.android.datatransport, whose manifest
+      declares INTERNET and ACCESS_NETWORK_STATE and whose job is uploading telemetry to Google.
+      That dependency is excluded in core/billing/build.gradle.kts, so nothing merges it in today
+      and this line is a no-op — which is exactly what it is for. A version bump that reintroduces
+      the dependency fails the permission check in ci.yml instead of quietly shipping INTERNET in
+      an app whose store listing, README and privacy policy all say it has none.
+
+      Billing itself needs no network permission here. It binds over IPC to the Play Store, which
+      does the network under its own. The one permission it does contribute is
+      com.android.vending.BILLING: protectionLevel normal, declared by the Play Store, in no
+      permission group, so it grants nothing and appears in no permission list on the phone. Play's
+      listing shows an "In-app purchases" badge instead, which is honest and is the point.
+    -->
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
