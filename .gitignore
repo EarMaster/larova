@@ -117,5 +117,10 @@ _site/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/test_output/
+#
+# Regenerated from the Fastfile whenever a lane runs, which now happens whenever anyone
+# debugs the listing upload locally. Its boilerplate opens by telling Android developers
+# to install the Xcode command line tools, which is reason enough not to check it in.
+fastlane/README.md
 # Resolved by play-listing.yml on the runner, never here — see the Gemfile.
 Gemfile.lock
