@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-01
+
 ### Added
 - App, video and sound tiles are now part of a paid full version, bought once through Google Play.
   Everything else stays free: guides, notes, checklists, tables, call tiles, folders, websites,
