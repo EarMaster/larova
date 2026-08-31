@@ -23,18 +23,23 @@ platform :android do
       json_key_data: service_account_json,
       metadata_path: "fastlane/metadata/android",
 
-      # The release the listing belongs to.
+      # The release the listing belongs to — normally left unset.
       #
-      # Not optional in practice, though it looks it. `supply` handles listing text and release
-      # notes in one pass, and that pass begins by finding a track and a release to hang the notes
-      # on — before it has looked at whether changelogs were skipped. With no version code it
-      # searches for a release of version code `nil`, finds none, and stops with "Could not find
-      # release for version code ''".
-      #
-      # Two things follow. The number has to be passed (the workflow reads it from
-      # app/build.gradle.kts), and **the track has to have a release already**: this pushes the
-      # listing for an app that is published somewhere, it cannot bootstrap one. The first AAB still
+      # `supply` handles listing text and release notes in one pass, and that pass begins by
+      # finding a track and a release to hang the notes on, before it has looked at whether
+      # changelogs were skipped. So **the track has to have a release already**: this pushes the
+      # listing for an app that is published somewhere, it cannot bootstrap one. The first AAB
       # goes up by hand — docs/release-setup.md §3.7.
+      #
+      # The *number*, though, is better not passed. With no version code supply skips the version
+      # filter and takes the track's release as it finds it; with one, it demands a release
+      # carrying exactly that code and stops dead otherwise. Since the only source for the number
+      # here would be app/build.gradle.kts — the repository's idea of the version, not the store's
+      # — passing it turns every drift between the two into "Could not find release for version
+      # code N", which is how all three of this workflow's pushes to main uploaded nothing.
+      #
+      # Passed only to break a tie: if the track ever holds more than one release, supply says so
+      # and asks for a code, and `version_code:` on the lane is how you give it one.
       version_code: options[:version_code],
 
       # No binaries. This lane exists to change words and pictures, and an accidental release from

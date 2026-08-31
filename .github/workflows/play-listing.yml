@@ -58,20 +58,12 @@ jobs:
       - name: Validate store metadata
         run: tools/check_store_metadata.sh
 
-      # supply needs a release to attach the listing edit to, even when it is uploading nothing but
-      # text — see the comment in the Fastfile. On main this number is the released one, because
-      # release.yml built the release from this same file.
-      - name: Read versionCode
-        id: version
-        run: |
-          CODE=$(sed -n 's/.*versionCode[[:space:]]*=[[:space:]]*\([0-9][0-9]*\).*/\1/p' app/build.gradle.kts | head -1)
-          if [ -z "$CODE" ]; then
-            echo "::error::Could not read versionCode from app/build.gradle.kts"
-            exit 1
-          fi
-          echo "code=$CODE" >> "$GITHUB_OUTPUT"
-          echo "Listing will be attached to versionCode $CODE on the internal track."
-
+      # No versionCode is read here, deliberately. supply needs a *release* on the internal track to
+      # attach the listing edit to (see the Fastfile), but it does not need to be told which one:
+      # given no version code it takes the release the track actually has. Reading the number out of
+      # app/build.gradle.kts instead asks the store for the repository's version, and the two drift
+      # every time main is bumped without a listing change — which is what kept this workflow green
+      # and silent while it uploaded nothing.
       - uses: ruby/setup-ruby@v1
         with:
           # The Gemfile pins fastlane; Ruby itself only has to be recent enough to run it. No
@@ -94,29 +86,30 @@ jobs:
         if: >-
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        # Reports without blocking, and only until the app has shipped once. Play refuses a listing
-        # edit for a track with no release on it (see the Fastfile), so until the first AAB is up by
-        # hand this check cannot pass — and a red cross on every pull request that touches a
-        # description is how people learn to stop reading the crosses. Remove this line once there
-        # is a release on the internal track: from then on a failure here is a real one.
-        continue-on-error: true
+        # Blocking, as of 2026-08-31. This step spent its first four days as continue-on-error,
+        # because Play refuses a listing edit for a track with no release on it and a red cross on
+        # every pull request that touches a description is how people learn to stop reading the
+        # crosses. The internal track has a release now and this validates against Play cleanly, so
+        # the exemption is spent: from here a failure is a real one and should stop the pull request.
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
+        run: bundle exec fastlane android listing dry_run:true
 
-      # One failure here is not a defect: until the first AAB has been uploaded by hand there is no
-      # release on the internal track for supply to attach a listing edit to, and a workflow whose
-      # job is "keep the listing in step with the released app" has nothing to do when nothing is
-      # released. That case is reported and skipped; everything else still fails.
+      # Every failure here is a failure. There was once an exception — before the first AAB existed
+      # the internal track had no release for supply to attach a listing edit to, so "no release"
+      # was reported and the run went green — and that exception is why all three of this
+      # workflow's pushes to main reported success and uploaded nothing: the escape hatch swallowed a
+      # genuine error (a version code that did not match the track) and then a second one behind it
+      # (the service account could not edit an unpublished app's draft). The track has a release now. A workflow that
+      # cannot tell "nothing to do" from "did not work" is worse than one that just fails.
       - name: Upload listing to Play
         id: upload
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          CODE: ${{ steps.version.outputs.code }}
         run: |
           set +e
-          OUTPUT=$(bundle exec fastlane android listing version_code:"$CODE" 2>&1)
+          OUTPUT=$(bundle exec fastlane android listing 2>&1)
           STATUS=$?
           printf '%s\n' "$OUTPUT"
 
@@ -125,15 +118,22 @@ jobs:
             exit 0
           fi
 
-          if printf '%s' "$OUTPUT" | grep -q "Could not find release for version code"; then
-            echo "::notice::No release with versionCode $CODE on the internal track yet, so the listing was not uploaded. Upload the first AAB by hand (docs/release-setup.md 3.7), then re-run this workflow."
-            echo "uploaded=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          # Real failures, but ones with a one-click fix that no stack trace mentions.
+          #
+          # Two different boxes produce this same 403, and the obvious one is the wrong one. While
+          # Larova is an unpublished draft its listing and app details are draft content, so the
+          # account needs "Edit and delete app drafts" as well as "Manage store presence" — with
+          # only the latter, releases go through and every listing edit is refused.
+          if printf '%s' "$OUTPUT" | grep -q "caller does not have permission"; then
+            echo "::error::The service account can reach the app and the track but not the store listing. In the Play Console under Users and permissions, for Larova, tick BOTH Edit and delete app drafts (German: App-Entwuerfe bearbeiten und loeschen) and Manage store presence (older Consoles: Edit store listing, pricing and distribution), then re-run. The draft one is the easy one to miss and is required until the app's first release is published."
           fi
 
-          # A real failure, but one with a one-click fix that no stack trace mentions.
-          if printf '%s' "$OUTPUT" | grep -q "caller does not have permission"; then
-            echo "::error::The service account can reach the app and the track but not the store listing. In the Play Console under Users and permissions, give it Manage store presence (older Consoles: Edit store listing, pricing and distribution) for Larova, then re-run."
+          if printf '%s' "$OUTPUT" | grep -q "Could not find release for version code"; then
+            echo "::error::The internal track has no release with that version code. This lane passes none, so supply takes the track's own release — if you see this, a version_code was supplied somewhere, or the track holds no release at all (upload the first AAB by hand, docs/release-setup.md 3.7)."
+          fi
+
+          if printf '%s' "$OUTPUT" | grep -q "More than one release found in this track"; then
+            echo "::error::The internal track holds more than one release, so supply cannot pick one. Re-run this workflow and pass the version code you mean, or tidy the track in the Console."
           fi
 
           exit "$STATUS"
@@ -142,30 +142,39 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: bundle exec fastlane android listing dry_run:true version_code:${{ steps.version.outputs.code }}
+        run: bundle exec fastlane android listing dry_run:true
 
       # Said in words rather than left as a fastlane stack trace, on the pull-request path and on
       # any genuine failure.
-      - name: Explain a missing release
+      - name: Explain the failure
         if: failure() || steps.validate.outcome == 'failure'
         run: |
           {
             echo "### Listing not uploaded"
             echo
-            echo "If this failed with **Could not find release for version code**, the internal"
-            echo "track has no release with versionCode \`${{ steps.version.outputs.code }}\` yet."
-            echo "\`fastlane supply\` attaches a listing edit to a release even when it uploads"
-            echo "only text, so it cannot publish the listing of an app that has never shipped."
-            echo
-            echo "Upload the first AAB by hand (docs/release-setup.md §3.7), then re-run this"
-            echo "workflow."
-            echo
-            echo "If it failed with **The caller does not have permission**, the release was found"
+            echo "If this failed with **The caller does not have permission**, the release was found"
             echo "and the listing call was refused: the service account holds release permissions"
-            echo "but not store-listing ones. In the Play Console, under *Users and permissions*,"
-            echo "give it **Manage store presence** for Larova — older Consoles call the same box"
-            echo "*Edit store listing, pricing and distribution* — and re-run. Nothing needs"
-            echo "rebuilding; the listing upload reads the repository, not the release."
+            echo "but not the ones covering store presence. Staging the text succeeds and only the"
+            echo "commit is rejected, so the log looks like a successful upload right up to its"
+            echo "last line."
+            echo
+            echo "In the Play Console, under *Users and permissions*, open Larova and tick **both**"
+            echo "*Edit and delete app drafts* and *Manage store presence* — older Consoles call the"
+            echo "second one *Edit store listing, pricing and distribution*. The first is the one"
+            echo "that gets missed: while the app is an unpublished draft its listing and app"
+            echo "details count as draft content, so store presence on its own is refused and only"
+            echo "release calls go through. Nothing needs rebuilding; the listing upload reads the"
+            echo "repository, not the release."
+            echo
+            echo "If it failed with **Could not find release for version code**, the internal track"
+            echo "has no release at all. \`fastlane supply\` attaches a listing edit to a release"
+            echo "even when it uploads only text, so it cannot publish the listing of an app that"
+            echo "has never shipped. Upload the first AAB by hand (docs/release-setup.md §3.7),"
+            echo "then re-run this workflow."
+            echo
+            echo "If it failed with **More than one release found in this track**, supply cannot"
+            echo "choose between them. Tidy the track in the Console, or dispatch this workflow"
+            echo "again once it can."
           } >> "$GITHUB_STEP_SUMMARY"
 
       # The edit is committed but not submitted: a new app whose first release has not been reviewed
@@ -180,18 +189,4 @@ jobs:
             echo "The text and any images in \`fastlane/metadata/android\` are now on the Play"
             echo "Console entry for \`app.larova\`, as a committed edit that has **not** been sent"
             echo "for review. Open the Console and press *Send for review* to publish it."
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Say why nothing was uploaded
-        if: steps.upload.outputs.uploaded == 'false'
-        run: |
-          {
-            echo "### Listing not uploaded yet"
-            echo
-            echo "The internal track has no release with versionCode"
-            echo "\`${{ steps.version.outputs.code }}\` on it, and \`fastlane supply\` attaches a"
-            echo "listing edit to a release even when it uploads only text. Nothing was changed."
-            echo
-            echo "Upload the first AAB by hand — docs/release-setup.md §3.7 — and re-run this"
-            echo "workflow from the Actions tab. Everything after that first upload is automatic."
           } >> "$GITHUB_STEP_SUMMARY"
