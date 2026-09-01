@@ -90,7 +90,13 @@ write and does not give advice. It is not a medical device and not an emergency 
 ### Children
 
 Larova is set up and read by adults, even though it usually lives on a child's device. It is not
-directed at children, carries no advertising, and has no in-app purchases or social features.
+directed at children, carries no advertising, and has no social features.
+
+Some tile types are part of a paid full version, bought once through Google Play. Google handles
+the payment; Larova never sees a card number, a name or an address, and nothing about the purchase
+is sent anywhere by the app. What it keeps on the device is the receipt Google signed, so that it
+can check the purchase again without asking anyone — including when the phone is offline. Tiles
+that arrive in a backup from somebody else keep working whether anything was bought or not.
 
 ## This website
 

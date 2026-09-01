@@ -46,6 +46,10 @@ O idioma da Larova define-se independentemente do idioma do telefone. Uma avó q
 
 A aplicação está traduzida. O que escreve não está — as suas palavras ficam exatamente como as escreveu e nunca são enviadas para nenhum lugar para serem traduzidas.
 
+QUEM A ESCREVE
+
+A Larova é escrita por uma só pessoa, com três filhos, um deles precisa de mais ajuda do que os outros. Sem empresa, sem investidores e sem publicidade: a versão completa paga o tempo.
+
 O QUE A LAROVA NÃO É
 
 A Larova é um caderno. Não diagnostica, não calcula, não interpreta o que escreve e não dá conselhos. Não é um dispositivo médico nem um serviço de emergência. Numa emergência, ligue para o número de emergência da sua zona.

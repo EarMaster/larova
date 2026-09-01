@@ -277,6 +277,20 @@ Break one of these and it cannot be repaired later, because users own the data.
 6. **No internet permission, ever.** No analytics, no crash reporter with
    content access, no network dependency. This is on the store page and in the
    data safety form.
+
+   Google Play Billing is the one dependency that tests this, and it stays
+   inside the invariant rather than being an exception to it. The library itself
+   needs no network permission — it binds over IPC to the Play Store, which does
+   the network under its own — but its POM pulls
+   `com.google.android.datatransport`, a telemetry uploader whose manifest
+   declares `INTERNET` and `ACCESS_NETWORK_STATE`. That group is excluded in
+   `core/billing/build.gradle.kts`, stripped again with `tools:node="remove"` in
+   the manifest, and asserted on the built APK by `ci.yml`. Three layers because
+   the first one is a dependency declaration that a version bump can undo
+   silently. The only permission billing contributes is
+   `com.android.vending.BILLING`: `protectionLevel` normal, no permission group,
+   invisible in the phone's permission list. `docs/technical-notes.md` §7 has the
+   bytecode evidence that the exclusion is safe.
 7. **Never interpret user content.** Larova stores and displays; it does not
    diagnose, calculate doses, score or trend. `docs/concept.md` §2.2 has the
    build / do-not-build table — that table is the scope check, and it exists to

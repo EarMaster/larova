@@ -24,6 +24,12 @@ okio = "3.18.1"
 
 koin = "4.2.2"
 
+# Google Play Billing. Pulled in with two exclusions in :core:billing/build.gradle.kts, because
+# its POM drags in com.google.android.datatransport — a telemetry uploader that declares INTERNET.
+# Not Apache/MIT: this one is under the Android SDK licence and is the reason LICENCE carries a
+# GPLv3 section 7 additional permission. Check the merged manifest after every bump.
+billing = "9.1.0"
+
 # Screenshot testing. Robolectric renders the real Compose UI on the JVM with native graphics and
 # Roborazzi writes and compares the PNGs, so there is no emulator anywhere in this — see
 # AGENTS.md, "Screenshot tests".
@@ -81,6 +87,7 @@ androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", vers
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 argon2kt = { module = "com.lambdapioneer.argon2kt:argon2kt", version.ref = "argon2" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 

@@ -46,6 +46,10 @@ La lingua di Larova si imposta indipendentemente da quella del telefono. Una non
 
 L'app è tradotta. Quello che scrivete voi non lo è — le vostre parole restano esattamente come le avete scritte e non vengono mai inviate altrove per essere tradotte.
 
+CHI LA SCRIVE
+
+Larova è scritta da una sola persona, genitore di tre figli, uno dei quali ha bisogno di più aiuto degli altri. Nessuna azienda, nessun investitore, nessuna pubblicità: la versione completa paga il tempo.
+
 COSA LAROVA NON È
 
 Larova è un quaderno. Non fa diagnosi, non calcola niente, non interpreta quello che scrivete e non dà consigli. Non è un dispositivo medico e non è un servizio di emergenza. In caso di emergenza chiamate il numero di emergenza locale.

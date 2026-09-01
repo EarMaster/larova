@@ -12,6 +12,21 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-01
+
+### Added
+- App, video and sound tiles are now part of a paid full version, bought once through Google Play.
+  Everything else stays free: guides, notes, checklists, tables, call tiles, folders, websites,
+  backups, the parent-view lock, night mode and all fourteen languages.
+- Tiles somebody else made keep working whether or not you have bought anything. A backup restored
+  from another phone arrives complete, and every tile in it opens and plays. What the full version
+  buys is *making* app, video and sound tiles — not opening them.
+- The app asks Google Play once per launch what you already own, so a new phone, a reinstall or a
+  payment that finished after you closed the app all restore the full version on their own. There is
+  no button for it and nothing to find.
+- The version built from source, including the APK on the GitHub release page, has no paid tier at
+  all and never asks for anything.
+
 ## [0.3.2] - 2026-08-30
 
 ### Fixed

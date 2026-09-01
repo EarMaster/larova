@@ -167,6 +167,16 @@
     <string name="edit_new_tile">Novo cartão</string>
     <string name="edit_edit_tile">Editar cartão</string>
     <string name="edit_choose_type">O que vai neste cartão?</string>
+    <string name="edit_type_locked">Requer a versão completa</string>
+    <string name="purchase_title">A versão completa</string>
+    <string name="purchase_reason">Os cartões %1$s fazem parte da versão completa.</string>
+    <string name="purchase_body">Um único pagamento, sem subscrição. Tudo o resto na Larova continua gratuito, e os cartões que alguém lhe envia funcionam à mesma. A Larova é feita por uma só pessoa; comprar a versão completa é o que a mantém.</string>
+    <string name="purchase_buy_price">Desbloquear por %1$s</string>
+    <string name="purchase_buy">Desbloquear</string>
+    <string name="purchase_later">Agora não</string>
+    <string name="purchase_unavailable">Não é possível aceder à loja. Tente novamente quando este telemóvel estiver online.</string>
+    <string name="purchase_pending">Pagamento iniciado. Os cartões desbloqueiam assim que for concluído.</string>
+    <string name="purchase_done">Desbloqueado. Obrigado.</string>
     <string name="edit_title">Título</string>
     <string name="edit_subtitle">Segunda linha (opcional)</string>
     <string name="edit_colour">Cor</string>

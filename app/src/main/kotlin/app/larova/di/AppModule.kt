@@ -3,8 +3,13 @@ package app.larova.di
 import app.larova.AndroidShortcuts
 import app.larova.AppViewModel
 import app.larova.BuildConfig
+import app.larova.core.billing.BuildUnlockedEntitlementRepository
+import app.larova.core.billing.PlayBilling
+import app.larova.core.billing.PlayEntitlementRepository
+import app.larova.core.billing.PurchaseVerifier
 import app.larova.core.data.db.LarovaDatabase
 import app.larova.core.data.db.createLarovaDatabase
+import app.larova.core.data.prefs.DataStoreEntitlementCache
 import app.larova.core.data.prefs.DataStorePinRepository
 import app.larova.core.data.prefs.DataStorePreferencesRepository
 import androidx.datastore.core.DataStore
@@ -15,6 +20,8 @@ import app.larova.core.data.repository.RoomCardRepository
 import app.larova.core.data.repository.RoomLogRepository
 import app.larova.core.data.repository.RoomMediaRepository
 import app.larova.core.domain.repository.BoardRepository
+import app.larova.core.domain.repository.EntitlementCache
+import app.larova.core.domain.repository.EntitlementRepository
 import app.larova.core.domain.repository.CardRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
@@ -42,7 +49,9 @@ import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.LoadImage
 import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
+import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveLastBackup
+import app.larova.core.domain.usecase.ObserveLockedTypes
 import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
@@ -62,6 +71,8 @@ import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.RefreshEntitlement
+import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.ReorderTiles
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.SearchTiles
@@ -156,6 +167,31 @@ val appModule = module {
 
     single<PreferencesRepository> { DataStorePreferencesRepository(get()) }
 
+    // The paid unlock.
+    //
+    // Two bindings behind one interface, chosen by a build flag rather than by a flavour: the AAB
+    // Play sells checks a purchase, and the APK on the GitHub Release has no store behind it and
+    // says so. Nothing above this line can tell the difference, which is the point — the editor
+    // asks one question and gets one answer.
+    //
+    // PlayBilling is a singleton because a BillingClient is: it owns a binding to the Play Store,
+    // and a second one is a second connection nobody closes.
+    single<EntitlementCache> { DataStoreEntitlementCache(get()) }
+    single { PurchaseVerifier(BuildConfig.LICENSING_KEY) }
+    single { PlayBilling(androidContext()) }
+    // Bound under its own type as well as behind the interface: launching a purchase needs an
+    // Activity, so it is deliberately not on EntitlementRepository, and `rememberUnlockPurchase`
+    // asks for the concrete one. Lazy, so a build with no paid tier never constructs a
+    // BillingClient — nothing injects it there.
+    single { PlayEntitlementRepository(cache = get(), verifier = get(), billing = get()) }
+    single<EntitlementRepository> {
+        if (BuildConfig.PAID_TIER) {
+            get<PlayEntitlementRepository>()
+        } else {
+            BuildUnlockedEntitlementRepository()
+        }
+    }
+
     // Use cases are factories rather than singletons: each one is a couple of fields around a
     // repository, and none of them holds state worth sharing.
     factory { EnsureRootBoard(get()) }
@@ -195,6 +231,11 @@ val appModule = module {
     factory { UnlockWithBiometrics(get(), get()) }
     factory { LockParentView(get()) }
 
+    factory { ObserveEntitlement(get()) }
+    factory { ObserveLockedTypes(get()) }
+    factory { RefreshEntitlement(get()) }
+    factory { UnlockPrice(get()) }
+
     // The version in the manifest is the app's own, read from the build rather than written twice.
     factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
     factory { ObserveLastBackup(get()) }
@@ -202,7 +243,7 @@ val appModule = module {
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
@@ -216,7 +257,7 @@ val appModule = module {
         CardViewModel(parameters.get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
-        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get())
+        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get(), get(), get())
     }
 }
 

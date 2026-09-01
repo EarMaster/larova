@@ -173,6 +173,16 @@
     <string name="edit_new_tile">Nowy kafelek</string>
     <string name="edit_edit_tile">Edytuj kafelek</string>
     <string name="edit_choose_type">Co ma być na tym kafelku?</string>
+    <string name="edit_type_locked">Wymaga pełnej wersji</string>
+    <string name="purchase_title">Pełna wersja</string>
+    <string name="purchase_reason">Kafelki %1$s należą do pełnej wersji.</string>
+    <string name="purchase_body">Jedna płatność, bez abonamentu. Cała reszta w Larovie pozostaje bezpłatna, a kafelki, które ktoś Ci prześle, działają tak czy inaczej. Larovę tworzy jedna osoba; zakup pełnej wersji pozwala ją rozwijać.</string>
+    <string name="purchase_buy_price">Odblokuj za %1$s</string>
+    <string name="purchase_buy">Odblokuj</string>
+    <string name="purchase_later">Nie teraz</string>
+    <string name="purchase_unavailable">Nie można połączyć się ze sklepem. Spróbuj ponownie, gdy telefon będzie online.</string>
+    <string name="purchase_pending">Płatność rozpoczęta. Kafelki odblokują się, gdy tylko przejdzie.</string>
+    <string name="purchase_done">Odblokowano. Dziękujemy.</string>
     <string name="edit_title">Tytuł</string>
     <string name="edit_subtitle">Druga linia (opcjonalnie)</string>
     <string name="edit_colour">Kolor</string>

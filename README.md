@@ -110,6 +110,10 @@ Larova is free software under the **GNU Affero General Public License v3.0**. Yo
 
 See [`LICENSE`](LICENSE) for the full text.
 
+**Additional permission under GNU AGPL version 3 section 7.** You have permission to link or combine this program with Google Play Billing Library and Google Play services, and to convey the resulting work under terms of your choice, notwithstanding the requirements of the AGPL that would otherwise apply to those libraries. If you modify this program, you may extend this permission to your version, but you are not obliged to do so.
+
+That permission exists so a fork can keep selling through Play if it wants to. It is not needed to build Larova: the paid tier is a build flag, `-Plarova.paidTier=false` produces a version with no store code in the path at all, and that is what the APK on the release page is. Nothing here restricts what you may do with the source.
+
 ---
 
 ## Documentation

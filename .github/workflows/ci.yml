@@ -49,6 +49,46 @@ jobs:
       - name: Assemble debug APK
         run: ./gradlew assembleDebug
 
+      # The permission list is a promise, not a detail. It is on the store listing, in the README,
+      # in the privacy policy and in the data safety form, and the manifest says there will never be
+      # an internet permission (AGENTS.md invariant 6).
+      #
+      # It stopped being only the manifest's decision when Play Billing arrived: billing depends on
+      # com.google.android.datatransport, whose manifest declares INTERNET and ACCESS_NETWORK_STATE
+      # and whose job is uploading telemetry to Google. That is excluded in
+      # core/billing/build.gradle.kts and stripped again with tools:node="remove" in the manifest,
+      # and this step is what stops a version bump from quietly undoing both.
+      #
+      # Checked on the built APK rather than on the merged manifest: the artifact is what ships.
+      #
+      # The expected list lives in `env` rather than in the script. A quoted shell string whose
+      # continuation lines start at column 0 ends this YAML block scalar early, which silently
+      # breaks the whole workflow into "no jobs were run" - which is how this step first shipped.
+      - name: Assert the permission list
+        env:
+          EXPECTED_PERMISSIONS: |
+            android.permission.RECORD_AUDIO
+            android.permission.USE_BIOMETRIC
+            android.permission.USE_FINGERPRINT
+            app.larova.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+            com.android.vending.BILLING
+        run: |
+          set -euo pipefail
+          AAPT2="$(find "$ANDROID_HOME/build-tools" -name aapt2 -type f | sort -V | tail -1)"
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          ACTUAL="$("$AAPT2" dump badging "$APK" | sed -n "s/^uses-permission: name='\([^']*\)'.*/\1/p" | sort)"
+          echo "$ACTUAL"
+          if echo "$ACTUAL" | grep -qE 'android\.permission\.(INTERNET|ACCESS_NETWORK_STATE)'; then
+            echo "::error::$APK declares a network permission. Larova has no internet permission and never will (AGENTS.md invariant 6). Most likely a dependency bump reintroduced com.google.android.datatransport - see core/billing/build.gradle.kts and docs/technical-notes.md section 7."
+            exit 1
+          fi
+          EXPECTED="$(echo "$EXPECTED_PERMISSIONS" | sed '/^[[:space:]]*$/d' | sed 's/^[[:space:]]*//' | sort)"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::The permission list changed. If the new entry is intended, add it to EXPECTED_PERMISSIONS in this step with the reason written next to it, and update the manifest comment, docs/technical-notes.md section 7 and the Play data safety form."
+            diff <(echo "$EXPECTED") <(echo "$ACTUAL") || true
+            exit 1
+          fi
+
   test:
     name: Unit Tests
     needs: detect

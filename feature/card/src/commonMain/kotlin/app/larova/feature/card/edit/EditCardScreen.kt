@@ -2,6 +2,7 @@ package app.larova.feature.card.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -13,15 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +40,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.CardType
@@ -43,53 +49,56 @@ import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.ui.component.ColorTokenPicker
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.BackArrow
+import app.larova.core.ui.icon.Lock
+import app.larova.core.ui.icon.Symbols
+import app.larova.core.ui.icon.symbolImage
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_remove_line
 import app.larova.core.ui.resources.cd_step_picture
+import app.larova.core.ui.resources.edit_add_column
+import app.larova.core.ui.resources.edit_add_contact
 import app.larova.core.ui.resources.edit_add_item
 import app.larova.core.ui.resources.edit_add_picture
+import app.larova.core.ui.resources.edit_add_row
+import app.larova.core.ui.resources.edit_add_step
 import app.larova.core.ui.resources.edit_app_chosen
 import app.larova.core.ui.resources.edit_app_label
 import app.larova.core.ui.resources.edit_app_none_chosen
 import app.larova.core.ui.resources.edit_app_required
-import app.larova.core.ui.resources.edit_choose_app
-import app.larova.core.ui.resources.edit_choose_sound
-import app.larova.core.ui.resources.edit_choose_video
-import app.larova.core.ui.resources.edit_add_column
-import app.larova.core.ui.resources.edit_add_row
-import app.larova.core.ui.resources.edit_add_step
-import app.larova.core.ui.resources.edit_change_picture
 import app.larova.core.ui.resources.edit_call_in_help
 import app.larova.core.ui.resources.edit_call_name
 import app.larova.core.ui.resources.edit_call_number
 import app.larova.core.ui.resources.edit_call_relation
-import app.larova.core.ui.resources.edit_add_contact
-import app.larova.core.ui.resources.edit_contact_number
 import app.larova.core.ui.resources.edit_cancel
+import app.larova.core.ui.resources.edit_change_picture
+import app.larova.core.ui.resources.edit_choose_app
+import app.larova.core.ui.resources.edit_choose_sound
 import app.larova.core.ui.resources.edit_choose_type
+import app.larova.core.ui.resources.edit_choose_video
 import app.larova.core.ui.resources.edit_colour
 import app.larova.core.ui.resources.edit_column_number
 import app.larova.core.ui.resources.edit_columns
+import app.larova.core.ui.resources.edit_contact_number
 import app.larova.core.ui.resources.edit_delete
 import app.larova.core.ui.resources.edit_delete_folder_question
 import app.larova.core.ui.resources.edit_delete_question
-import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_edit_tile
+import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
+import app.larova.core.ui.resources.edit_link_caption
 import app.larova.core.ui.resources.edit_media_caption
 import app.larova.core.ui.resources.edit_media_chosen
 import app.larova.core.ui.resources.edit_media_large
 import app.larova.core.ui.resources.edit_media_none_chosen
 import app.larova.core.ui.resources.edit_media_required
+import app.larova.core.ui.resources.edit_new_tile
+import app.larova.core.ui.resources.edit_note_text
+import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_record
 import app.larova.core.ui.resources.edit_record_failed
 import app.larova.core.ui.resources.edit_record_stop
 import app.larova.core.ui.resources.edit_recording
-import app.larova.core.ui.resources.edit_link_caption
-import app.larova.core.ui.resources.edit_new_tile
-import app.larova.core.ui.resources.edit_note_text
-import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_remove
 import app.larova.core.ui.resources.edit_remove_picture
 import app.larova.core.ui.resources.edit_reset_daily
@@ -99,32 +108,36 @@ import app.larova.core.ui.resources.edit_save
 import app.larova.core.ui.resources.edit_step_number
 import app.larova.core.ui.resources.edit_steps
 import app.larova.core.ui.resources.edit_subtitle
-import app.larova.core.ui.icon.Symbols
-import app.larova.core.ui.icon.symbolImage
-import app.larova.core.ui.resources.edit_symbol_change
 import app.larova.core.ui.resources.edit_symbol
+import app.larova.core.ui.resources.edit_symbol_change
 import app.larova.core.ui.resources.edit_title
 import app.larova.core.ui.resources.edit_title_required
+import app.larova.core.ui.resources.edit_type_locked
 import app.larova.core.ui.resources.edit_web_address
 import app.larova.core.ui.resources.edit_web_address_invalid
 import app.larova.core.ui.resources.edit_web_label
-import app.larova.core.ui.resources.tile_call
+import app.larova.core.ui.resources.purchase_body
+import app.larova.core.ui.resources.purchase_buy
+import app.larova.core.ui.resources.purchase_buy_price
+import app.larova.core.ui.resources.purchase_later
+import app.larova.core.ui.resources.purchase_pending
+import app.larova.core.ui.resources.purchase_reason
+import app.larova.core.ui.resources.purchase_title
+import app.larova.core.ui.resources.purchase_unavailable
+import app.larova.core.ui.resources.tile_app
 import app.larova.core.ui.resources.tile_audio
+import app.larova.core.ui.resources.tile_call
 import app.larova.core.ui.resources.tile_checklist
 import app.larova.core.ui.resources.tile_folder
 import app.larova.core.ui.resources.tile_guide
-import app.larova.core.ui.resources.tile_app
 import app.larova.core.ui.resources.tile_note
-import app.larova.core.ui.resources.tile_web
 import app.larova.core.ui.resources.tile_table
 import app.larova.core.ui.resources.tile_video
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
+import app.larova.core.ui.resources.tile_web
+import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.LocalAppMode
 import app.larova.core.ui.theme.TileColor
 import app.larova.core.ui.theme.resolve
-import androidx.compose.foundation.layout.Box
-import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
@@ -170,7 +183,9 @@ fun EditCardScreen(
                     TypePicker(
                         types = editableTypes(state.isNested),
                         selected = state.type,
+                        locked = state.lockedTypes,
                         onSelect = callbacks.onTypeChange,
+                        onLockedSelect = callbacks.onLockedType,
                     )
                 }
             }
@@ -251,6 +266,63 @@ fun EditCardScreen(
                 }
             }
         }
+    }
+
+    state.offeredType?.let { offered ->
+        // Shown when a locked type is tapped, and again if a save is refused because the tile being
+        // edited is of a type this build has not paid for — an imported backup, most likely.
+        //
+        // What it does not do is hide anything. The tile types stay visible, the sheet says which
+        // one is being sold and why, and it is explicit that tiles somebody else made keep working:
+        // what is for sale is making them, not opening them.
+        AlertDialog(
+            onDismissRequest = callbacks.onDismissOffer,
+            icon = { Icon(imageVector = Lock, contentDescription = null) },
+            title = { Text(stringResource(Res.string.purchase_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(
+                            Res.string.purchase_reason,
+                            stringResource(offered.label),
+                        ),
+                    )
+                    Text(stringResource(Res.string.purchase_body))
+                    state.offerMessage?.let { message ->
+                        Text(
+                            text = when (message) {
+                                OfferMessage.PENDING -> stringResource(Res.string.purchase_pending)
+                                OfferMessage.UNAVAILABLE ->
+                                    stringResource(Res.string.purchase_unavailable)
+                            },
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { callbacks.onBuyUnlock?.invoke() },
+                    // Null when this build has nothing for sale. Nothing is locked in that case, so
+                    // this dialog should be unreachable — disabled rather than absent, because a
+                    // button that does nothing is worse than one that says it cannot.
+                    enabled = callbacks.onBuyUnlock != null,
+                ) {
+                    Text(
+                        // The price when the store answered, the plain label when it did not. Never
+                        // a number written here: only Play knows how to price for a country.
+                        text = state.offerPrice
+                            ?.let { stringResource(Res.string.purchase_buy_price, it) }
+                            ?: stringResource(Res.string.purchase_buy),
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = callbacks.onDismissOffer) {
+                    Text(stringResource(Res.string.purchase_later))
+                }
+            },
+        )
     }
 
     if (confirmingDelete) {
@@ -964,19 +1036,45 @@ private fun LineList(
 private fun TypePicker(
     types: List<CardType>,
     selected: CardType,
+    locked: Set<CardType>,
     onSelect: (CardType) -> Unit,
+    onLockedSelect: (CardType) -> Unit,
 ) {
+    // Read once rather than per chip: stringResource inside the loop is the same lookup ten times.
+    val lockedDescription = stringResource(Res.string.edit_type_locked)
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         for (type in types) {
+            val isLocked = type in locked
             FilterChip(
-                selected = type == selected,
-                onClick = { onSelect(type) },
+                selected = type == selected && !isLocked,
+                // Still clickable, deliberately. A chip with `enabled = false` cannot be tapped and
+                // TalkBack skips past it, so the one gesture that leads to buying the thing would
+                // be the one gesture the affordance refuses. The lock is what says it is not
+                // available; the tap is what explains how it becomes available.
+                onClick = { if (isLocked) onLockedSelect(type) else onSelect(type) },
                 label = { Text(stringResource(type.label)) },
-                modifier = Modifier.heightIn(min = 44.dp),
+                leadingIcon = if (isLocked) {
+                    {
+                        Icon(
+                            imageVector = Lock,
+                            // Null: the state is announced by the chip's own description below,
+                            // so a screen reader should not read "lock" twice per chip.
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
+                modifier = Modifier
+                    .heightIn(min = 44.dp)
+                    .semantics {
+                        if (isLocked) stateDescription = lockedDescription
+                    },
             )
         }
     }
@@ -1041,6 +1139,15 @@ private const val BYTES_IN_MB = 1024 * 1024
  */
 data class EditCardCallbacks(
     val onTypeChange: (CardType) -> Unit,
+    /** A type that has not been bought was tapped. The type is not selected; the offer is shown. */
+    val onLockedType: (CardType) -> Unit,
+    val onDismissOffer: () -> Unit,
+    /**
+     * Opens the store's own purchase sheet. Null in a build with nothing for sale, the same way
+     * `onUseBiometrics` is null on a phone with no sensor: the screen is told what is possible
+     * rather than asking a service that `:feature:card` should not know about.
+     */
+    val onBuyUnlock: (() -> Unit)?,
     val onTitleChange: (String) -> Unit,
     val onSubtitleChange: (String) -> Unit,
     val onColorChange: (String) -> Unit,
@@ -1096,8 +1203,13 @@ fun EditCardViewModel.callbacks(
     openVideoPicker: () -> Unit = {},
     openSoundPicker: () -> Unit = {},
     requestMicrophone: () -> Unit = {},
+    // Null by default so the previews and the screenshot fixtures need not know about the store.
+    buyUnlock: (() -> Unit)? = null,
 ) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
+    onLockedType = ::onLockedType,
+    onDismissOffer = ::onDismissOffer,
+    onBuyUnlock = buyUnlock,
     onTitleChange = ::onTitleChange,
     onSubtitleChange = ::onSubtitleChange,
     onColorChange = ::onColorChange,

@@ -89,9 +89,22 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # Play Console -> Monetise -> Licensing. A public key, so unlike the four above it is not
+          # a secret; it is kept as one only so it lives beside them. Absent, PurchaseVerifier
+          # rejects every receipt and the paid tiles stay locked for everyone who bought them.
+          LAROVA_LICENSING_KEY: ${{ secrets.LICENSING_KEY }}
         # reportSigning first: it says in the log whether this build will be signed, before the
         # twenty minutes that produce something Play would refuse.
-        run: ./gradlew reportSigning assembleRelease bundleRelease
+        #
+        # Two invocations, because the two artifacts are not the same app. The AAB is what Play
+        # sells, so it keeps the paid tier and needs the licensing key. The APK attached to the
+        # GitHub Release has no store behind it and ships unlocked: Play Billing cannot transact for
+        # an app Play did not install, and the licence lets anybody rebuild without the check in five
+        # minutes anyway, so a crippled sideload build would buy nothing and cost goodwill. See
+        # docs/technical-notes.md §7.
+        run: |
+          ./gradlew reportSigning bundleRelease
+          ./gradlew assembleRelease -Plarova.paidTier=false
 
       # AGP names an unsigned APK `app-release-unsigned.apk`, so a signing config that did not take
       # effect shows up here as a `mv` that cannot find its source — after the tag has already been

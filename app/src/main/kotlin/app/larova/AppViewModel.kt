@@ -9,6 +9,7 @@ import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.usecase.PruneLog
+import app.larova.core.domain.usecase.RefreshEntitlement
 import app.larova.core.domain.usecase.PublishShortcuts
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +25,13 @@ import kotlinx.coroutines.launch
  * from a file read. That means the very first frame can be light while the user has chosen dark.
  * The alternative is holding the first frame back until a disk read finishes, which is a worse
  * trade on an app that is opened in a hurry.
+ *
+ * The parameter count is suppressed rather than bundled. Four of the seven are launch-time
+ * housekeeping that has no screen to belong to — sweeping orphaned pictures, pruning the log,
+ * republishing shortcuts, asking the store what was already bought — and a holder object wrapping
+ * them would hide that this is the one place any of them is called from.
  */
+@Suppress("LongParameterList")
 class AppViewModel(
     private val preferences: PreferencesRepository,
     private val lockParentView: LockParentView,
@@ -32,6 +39,7 @@ class AppViewModel(
     cleanUpMedia: CleanUpMedia,
     pruneLog: PruneLog,
     publishShortcuts: PublishShortcuts,
+    refreshEntitlement: RefreshEntitlement,
 ) : ViewModel() {
 
     /**
@@ -66,6 +74,15 @@ class AppViewModel(
             pruneLog()
             publishShortcuts()
         }
+        // Asks the store once per launch what this account owns. This is the whole of "restore
+        // purchases": a new phone, a reinstall or a purchase finished after the app was closed all
+        // arrive here, so there is no button for it and nothing for anybody to find.
+        //
+        // Failure is the normal case and is silent. There is no internet permission in this app, so
+        // the question goes through the Play Store app, and on a phone that has been offline for a
+        // fortnight there is nothing to ask. It never removes an unlock — see
+        // PlayEntitlementRepository.
+        viewModelScope.launch { refreshEntitlement() }
     }
 
     private companion object {
