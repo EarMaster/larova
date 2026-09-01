@@ -11,6 +11,17 @@ name: Play Store Listing
 # is released. A change to the text lands on `develop` with everything else and reaches the store
 # when the release does.
 
+# One listing run at a time. A Play "Edit" is exclusive per app: two `fastlane supply` runs
+# overlapping means whichever commits first invalidates the other, which fails with the unhelpful
+# "Invalid request - This Edit has been deleted." That is not hypothetical - two pushes four
+# seconds apart did exactly this, and only the second run's text would have reached the store.
+#
+# cancel-in-progress, because the newest listing text is the one that should win; an older run
+# still uploading superseded copy has nothing worth finishing.
+concurrency:
+  group: play-listing
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main]
