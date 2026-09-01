@@ -166,6 +166,16 @@
     <string name="edit_new_tile">Nueva tarjeta</string>
     <string name="edit_edit_tile">Editar tarjeta</string>
     <string name="edit_choose_type">¿Qué va en esta tarjeta?</string>
+    <string name="edit_type_locked">Requiere la versión completa</string>
+    <string name="purchase_title">La versión completa</string>
+    <string name="purchase_reason">Las fichas %1$s forman parte de la versión completa.</string>
+    <string name="purchase_body">Un solo pago, sin suscripción. Todo lo demás en Larova sigue siendo gratuito, y las fichas que alguien te envía funcionan igualmente. Larova la hace una sola persona; comprar la versión completa es lo que permite seguir.</string>
+    <string name="purchase_buy_price">Desbloquear por %1$s</string>
+    <string name="purchase_buy">Desbloquear</string>
+    <string name="purchase_later">Ahora no</string>
+    <string name="purchase_unavailable">No se puede acceder a la tienda. Inténtalo de nuevo cuando este teléfono esté en línea.</string>
+    <string name="purchase_pending">Pago iniciado. Las fichas se desbloquean en cuanto se complete.</string>
+    <string name="purchase_done">Desbloqueado. Gracias.</string>
     <string name="edit_title">Título</string>
     <string name="edit_subtitle">Segunda línea (opcional)</string>
     <string name="edit_colour">Color</string>
