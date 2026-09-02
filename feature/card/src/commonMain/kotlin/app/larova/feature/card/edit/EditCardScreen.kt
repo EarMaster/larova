@@ -104,7 +104,6 @@ import app.larova.core.ui.resources.edit_record
 import app.larova.core.ui.resources.edit_record_failed
 import app.larova.core.ui.resources.edit_record_stop
 import app.larova.core.ui.resources.edit_recording
-import app.larova.core.ui.resources.edit_remove
 import app.larova.core.ui.resources.edit_remove_picture
 import app.larova.core.ui.resources.edit_reset_daily
 import app.larova.core.ui.resources.edit_row_number
@@ -124,7 +123,6 @@ import app.larova.core.ui.resources.edit_web_label
 import app.larova.core.ui.resources.purchase_body
 import app.larova.core.ui.resources.purchase_buy
 import app.larova.core.ui.resources.purchase_buy_price
-import app.larova.core.ui.resources.purchase_later
 import app.larova.core.ui.resources.purchase_pending
 import app.larova.core.ui.resources.purchase_reason
 import app.larova.core.ui.resources.purchase_title
