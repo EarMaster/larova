@@ -181,10 +181,8 @@
     <!-- %1$s is the price, formatted by Google Play in the buyer's own currency. -->
     <string name="purchase_buy_price">Unlock for %1$s</string>
     <string name="purchase_buy">Unlock</string>
-    <string name="purchase_later">Not now</string>
     <string name="purchase_unavailable">The store cannot be reached. Try again when this phone is online.</string>
     <string name="purchase_pending">Payment started. The tiles unlock as soon as it goes through.</string>
-    <string name="purchase_done">Unlocked. Thank you.</string>
     <string name="edit_title">Title</string>
     <string name="edit_subtitle">Second line (optional)</string>
     <string name="edit_colour">Colour</string>

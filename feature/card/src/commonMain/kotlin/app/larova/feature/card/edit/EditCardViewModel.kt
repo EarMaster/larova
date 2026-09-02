@@ -116,8 +116,6 @@ data class EditUiState(
      * repository could not be photographed locked and unlocked.
      */
     val lockedTypes: Set<CardType> = emptySet(),
-    /** What the editor offers to sell when somebody taps a locked type. Null until they do. */
-    val offeredType: CardType? = null,
     /**
      * The price, as Google Play writes it for this buyer's country. Null while it is being fetched
      * and null for good on a phone that cannot reach the store — the offer is still shown, with a
@@ -265,23 +263,15 @@ class EditCardViewModel(
         // Collected rather than read once: a purchase can complete while this screen is open, and
         // the lock has to come off the chips without the parent having to back out and return.
         viewModelScope.launch {
-            lockedTypes().collect { locked -> _state.update { it.copy(lockedTypes = locked) } }
+            lockedTypes().collect { locked ->
+                _state.update { it.copy(lockedTypes = locked) }
+                // Also covers an existing tile of a paid type — an imported backup, most likely —
+                // which is opened without anybody having tapped a chip.
+                if (_state.value.type in locked) fetchPrice()
+            }
         }
     }
 
-    /**
-     * Somebody tapped a type they have not bought.
-     *
-     * The type is not selected — half a screen of fields for a tile that cannot be saved would be
-     * a worse answer than none. What is recorded is which type was asked for, so the sheet can name
-     * it, and `:app` turns that into Play's own sheet.
-     */
-    fun onLockedType(type: CardType) {
-        _state.update { it.copy(offeredType = type) }
-        fetchPrice()
-    }
-
-    fun onDismissOffer() = _state.update { it.copy(offeredType = null, offerMessage = null) }
 
     /**
      * The three outcomes worth telling somebody about, as three methods rather than one parameter.
@@ -290,7 +280,12 @@ class EditCardViewModel(
      * `:core:billing` out of this module. A cancelled purchase is deliberately not among them:
      * somebody who changed their mind has already been told what they decided.
      */
-    fun onPurchased() = _state.update { it.copy(offeredType = null, offerMessage = null) }
+    /**
+     * Nothing to dismiss here. The overlay is a function of `lockedTypes`, which the entitlement
+     * flow empties on its own the moment the purchase verifies — so the fields simply become
+     * usable. Only the message is cleared, so a previous failure does not outlive it.
+     */
+    fun onPurchased() = _state.update { it.copy(offerMessage = null) }
 
     fun onPurchasePending() = _state.update { it.copy(offerMessage = OfferMessage.PENDING) }
 
@@ -444,7 +439,17 @@ class EditCardViewModel(
     }
 
     /** Offered while creating only: changing the type of a filled-in tile would discard content. */
-    fun onTypeChange(type: CardType) = _state.update { it.copy(type = type) }
+    /**
+     * A type was chosen, paid or not.
+     *
+     * A locked type is selected like any other and its fields are built as usual. The screen then
+     * covers them with the offer, so somebody can see what buying would get them before deciding —
+     * which is a better answer than a dialog in front of a form they never got to look at.
+     */
+    fun onTypeChange(type: CardType) {
+        _state.update { it.copy(type = type) }
+        if (type in _state.value.lockedTypes) fetchPrice()
+    }
 
     fun onStepChange(index: Int, text: String) = _state.update { state ->
         state.copy(
@@ -598,12 +603,13 @@ class EditCardViewModel(
 
     fun onSave() {
         val current = _state.value
+        // Unreachable from the screen: the overlay covers Save along with the rest of the form.
+        // Kept as a backstop so no future entry point can write a tile of a type nobody paid for,
+        // and silent because there is no way to arrive here with something to explain.
+        if (current.type in current.lockedTypes) return
         val refusal = current.refusal()
         if (refusal != null) {
             _state.value = refusal
-            // The refusal may be "this type has to be bought", in which case the sheet needs a
-            // price. Harmless for every other refusal: it returns early if one is already known.
-            if (refusal.offeredType != null) fetchPrice()
             return
         }
 
@@ -836,11 +842,6 @@ private fun EditUiState.folderPayload(): CardPayload = parseUuidOrNull(folderBoa
  * field was filled in, because a screen can be left half-finished and come back.
  */
 private fun EditUiState.refusal(): EditUiState? = when {
-    // Before the field checks, because "this type has to be bought" is the answer to give even if
-    // the title is also empty. Reachable on an existing tile of a paid type in a build that is not
-    // unlocked — an imported backup, most likely — where viewing the tile is fine and rewriting it
-    // is what is being sold.
-    type in lockedTypes -> copy(offeredType = type)
     title.isBlank() -> copy(titleMissing = true)
     type == CardType.WEB && !isOpenableUrl(webUrl) -> copy(urlInvalid = true)
     type == CardType.APP_LINK && appPackage.isBlank() -> copy(appMissing = true)

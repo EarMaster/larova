@@ -187,10 +187,8 @@
     <string name="purchase_body">دفعة واحدة، بلا اشتراك. يبقى كل ما عداها في لاروفا مجانياً، والبطاقات التي يرسلها إليك أحد تعمل في الحالتين. يصنع لاروفا شخص واحد؛ وشراء النسخة الكاملة هو ما يُبقيها مستمرة.</string>
     <string name="purchase_buy_price">افتحها مقابل %1$s</string>
     <string name="purchase_buy">افتحها</string>
-    <string name="purchase_later">ليس الآن</string>
     <string name="purchase_unavailable">تعذّر الوصول إلى المتجر. حاول مرة أخرى عندما يكون الهاتف متصلاً.</string>
     <string name="purchase_pending">بدأت عملية الدفع. ستُفتح البطاقات فور اكتمالها.</string>
-    <string name="purchase_done">تم الفتح. شكراً لك.</string>
     <string name="edit_title">العنوان</string>
     <string name="edit_subtitle">السطر الثاني (اختياري)</string>
     <string name="edit_colour">اللون</string>

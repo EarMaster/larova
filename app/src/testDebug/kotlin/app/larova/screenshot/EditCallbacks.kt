@@ -15,8 +15,6 @@ import app.larova.feature.card.edit.EditCardCallbacks
  */
 internal fun noOpEditCallbacks() = EditCardCallbacks(
     onTypeChange = {},
-    onLockedType = {},
-    onDismissOffer = {},
     onBuyUnlock = null,
     onTitleChange = {},
     onSubtitleChange = {},

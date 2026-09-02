@@ -1,8 +1,11 @@
 package app.larova.feature.card.edit
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -38,8 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.KeyboardType
@@ -170,6 +175,10 @@ fun EditCardScreen(
         onBack = onBack,
         modifier = modifier,
     ) { insets ->
+        // Whether the offer is covering the form: a function of the chosen type, not of a tap.
+        // A purchase that completes elsewhere empties `lockedTypes` and the cover simply lifts.
+        val offerCovers = state.type in state.lockedTypes
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -185,144 +194,110 @@ fun EditCardScreen(
                         selected = state.type,
                         locked = state.lockedTypes,
                         onSelect = callbacks.onTypeChange,
-                        onLockedSelect = callbacks.onLockedType,
                     )
                 }
             }
 
-            OutlinedTextField(
-                value = state.title,
-                onValueChange = callbacks.onTitleChange,
-                label = { Text(stringResource(Res.string.edit_title)) },
-                isError = state.titleMissing,
-                supportingText = if (state.titleMissing) {
-                    { Text(stringResource(Res.string.edit_title_required)) }
-                } else {
-                    null
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            OutlinedTextField(
-                value = state.subtitle,
-                onValueChange = callbacks.onSubtitleChange,
-                label = { Text(stringResource(Res.string.edit_subtitle)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            TypeFields(state = state, callbacks = callbacks)
-
-            Section(title = stringResource(Res.string.edit_colour)) {
-                ColorTokenPicker(
-                    selectedToken = state.colorToken,
-                    onSelect = callbacks.onColorChange,
-                )
-            }
-
-            Section(title = stringResource(Res.string.edit_symbol)) {
-                // The chosen symbol and its name, and a way to the screen that holds the rest.
-                // Three hundred drawings inline pushed the title, the colour and Save off a phone.
-                ChosenSymbol(
-                    symbolKey = state.symbolKey,
-                    colorToken = state.colorToken,
-                    onChange = callbacks.onChooseSymbol,
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                OutlinedButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .weight(1f)
-                        .heightIn(min = Dimens.MinTouchTarget),
+            // The form and the offer that covers it, in one Box.
+            //
+            // The type picker above stays outside and stays live, so somebody looking at a locked
+            // type can simply choose a different one. For an existing tile there is no picker, and
+            // the way out is Back — which is correct, since the type of a saved tile never changes.
+            Box {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    // Hidden from TalkBack while covered. A screen reader that walked into fields
+                    // nobody can fill would be worse than no fields at all, and this is the idiom
+                    // GuideView and TableView already use for content the eye reads as one thing.
+                    modifier = if (offerCovers) Modifier.clearAndSetSemantics { } else Modifier,
                 ) {
-                    Text(stringResource(Res.string.edit_cancel))
+                    OutlinedTextField(
+                        value = state.title,
+                        onValueChange = callbacks.onTitleChange,
+                        label = { Text(stringResource(Res.string.edit_title)) },
+                        isError = state.titleMissing,
+                        supportingText = if (state.titleMissing) {
+                            { Text(stringResource(Res.string.edit_title_required)) }
+                        } else {
+                            null
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    OutlinedTextField(
+                        value = state.subtitle,
+                        onValueChange = callbacks.onSubtitleChange,
+                        label = { Text(stringResource(Res.string.edit_subtitle)) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    TypeFields(state = state, callbacks = callbacks)
+
+                    Section(title = stringResource(Res.string.edit_colour)) {
+                        ColorTokenPicker(
+                            selectedToken = state.colorToken,
+                            onSelect = callbacks.onColorChange,
+                        )
+                    }
+
+                    Section(title = stringResource(Res.string.edit_symbol)) {
+                        // The chosen symbol and its name, and a way to the screen that holds the rest.
+                        // Three hundred drawings inline pushed the title, the colour and Save off a phone.
+                        ChosenSymbol(
+                            symbolKey = state.symbolKey,
+                            colorToken = state.colorToken,
+                            onChange = callbacks.onChooseSymbol,
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        OutlinedButton(
+                            onClick = onBack,
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Text(stringResource(Res.string.edit_cancel))
+                        }
+                        Button(
+                            onClick = callbacks.onSave,
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Text(stringResource(Res.string.edit_save))
+                        }
+                    }
+
+                    if (!state.isNew) {
+                        TextButton(
+                            onClick = { confirmingDelete = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = Dimens.MinTouchTarget)
+                                .padding(bottom = 16.dp),
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.edit_delete),
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
                 }
-                Button(
-                    onClick = callbacks.onSave,
-                    modifier = Modifier
-                        .weight(1f)
-                        .heightIn(min = Dimens.MinTouchTarget),
-                ) {
-                    Text(stringResource(Res.string.edit_save))
-                }
-            }
 
-            if (!state.isNew) {
-                TextButton(
-                    onClick = { confirmingDelete = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = Dimens.MinTouchTarget)
-                        .padding(bottom = 16.dp),
-                ) {
-                    Text(
-                        text = stringResource(Res.string.edit_delete),
-                        color = MaterialTheme.colorScheme.error,
+                if (offerCovers) {
+                    UnlockOverlay(
+                        type = state.type,
+                        price = state.offerPrice,
+                        message = state.offerMessage,
+                        onBuy = callbacks.onBuyUnlock,
                     )
                 }
             }
         }
-    }
-
-    state.offeredType?.let { offered ->
-        // Shown when a locked type is tapped, and again if a save is refused because the tile being
-        // edited is of a type this build has not paid for — an imported backup, most likely.
-        //
-        // What it does not do is hide anything. The tile types stay visible, the sheet says which
-        // one is being sold and why, and it is explicit that tiles somebody else made keep working:
-        // what is for sale is making them, not opening them.
-        AlertDialog(
-            onDismissRequest = callbacks.onDismissOffer,
-            icon = { Icon(imageVector = Lock, contentDescription = null) },
-            title = { Text(stringResource(Res.string.purchase_title)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        stringResource(
-                            Res.string.purchase_reason,
-                            stringResource(offered.label),
-                        ),
-                    )
-                    Text(stringResource(Res.string.purchase_body))
-                    state.offerMessage?.let { message ->
-                        Text(
-                            text = when (message) {
-                                OfferMessage.PENDING -> stringResource(Res.string.purchase_pending)
-                                OfferMessage.UNAVAILABLE ->
-                                    stringResource(Res.string.purchase_unavailable)
-                            },
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { callbacks.onBuyUnlock?.invoke() },
-                    // Null when this build has nothing for sale. Nothing is locked in that case, so
-                    // this dialog should be unreachable — disabled rather than absent, because a
-                    // button that does nothing is worse than one that says it cannot.
-                    enabled = callbacks.onBuyUnlock != null,
-                ) {
-                    Text(
-                        // The price when the store answered, the plain label when it did not. Never
-                        // a number written here: only Play knows how to price for a country.
-                        text = state.offerPrice
-                            ?.let { stringResource(Res.string.purchase_buy_price, it) }
-                            ?: stringResource(Res.string.purchase_buy),
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = callbacks.onDismissOffer) {
-                    Text(stringResource(Res.string.purchase_later))
-                }
-            },
-        )
     }
 
     if (confirmingDelete) {
@@ -1031,6 +1006,97 @@ private fun LineList(
     }
 }
 
+/**
+ * The offer, laid over the fields of a tile type nobody has paid for.
+ *
+ * A cover rather than a dialog, because the point is that the form underneath stays visible: what
+ * is being sold is easier to judge when you can see the thing you would be buying. The scrim is
+ * deliberately not opaque.
+ *
+ * Taps are swallowed, scrolling is not. A long form — a table, a guide with several steps — has to
+ * remain readable end to end, and that is doubly true at the 200 % font scale this app promises, so
+ * `detectTapGestures` consumes the presses that would focus a field while vertical drags still
+ * reach the scrolling column above.
+ *
+ * There is no dismiss button. For a new tile the type picker is still live above the cover, so
+ * choosing something else is the way out; for a saved tile the way out is Back, because the type of
+ * a tile that already exists never changes anyway.
+ */
+@Composable
+private fun BoxScope.UnlockOverlay(
+    type: CardType,
+    price: String?,
+    message: OfferMessage?,
+    onBuy: (() -> Unit)?,
+) {
+    // Two siblings rather than a card nested in the scrim. `matchParentSize` contributes no size,
+    // so the scrim takes the form's height; the card is aligned instead, which does contribute, so
+    // a card taller than the form it covers grows the Box rather than being clipped. That is the
+    // case at a 200 % font scale over a one-field type like Note.
+    Box(
+        modifier = Modifier
+            .matchParentSize()
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = SCRIM_ALPHA))
+            .pointerInput(Unit) { detectTapGestures { } },
+    )
+    Surface(
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .padding(vertical = 24.dp),
+        shape = MaterialTheme.shapes.large,
+        tonalElevation = 3.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(imageVector = Lock, contentDescription = null)
+            Text(
+                text = stringResource(Res.string.purchase_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(Res.string.purchase_reason, stringResource(type.label)),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Text(
+                text = stringResource(Res.string.purchase_body),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            message?.let {
+                Text(
+                    text = when (it) {
+                        OfferMessage.PENDING -> stringResource(Res.string.purchase_pending)
+                        OfferMessage.UNAVAILABLE ->
+                            stringResource(Res.string.purchase_unavailable)
+                    },
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            Button(
+                onClick = { onBuy?.invoke() },
+                // Null in a build with nothing for sale. Nothing is locked there, so this
+                // should be unreachable — disabled rather than absent, because a button that
+                // silently does nothing is worse than one that says it cannot.
+                enabled = onBuy != null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(
+                    // Play's own price when the store answered, the plain label when it did
+                    // not. Never a number written here: only Play prices for a country.
+                    text = price
+                        ?.let { stringResource(Res.string.purchase_buy_price, it) }
+                        ?: stringResource(Res.string.purchase_buy),
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TypePicker(
@@ -1038,7 +1104,6 @@ private fun TypePicker(
     selected: CardType,
     locked: Set<CardType>,
     onSelect: (CardType) -> Unit,
-    onLockedSelect: (CardType) -> Unit,
 ) {
     // Read once rather than per chip: stringResource inside the loop is the same lookup ten times.
     val lockedDescription = stringResource(Res.string.edit_type_locked)
@@ -1050,12 +1115,12 @@ private fun TypePicker(
         for (type in types) {
             val isLocked = type in locked
             FilterChip(
-                selected = type == selected && !isLocked,
-                // Still clickable, deliberately. A chip with `enabled = false` cannot be tapped and
-                // TalkBack skips past it, so the one gesture that leads to buying the thing would
-                // be the one gesture the affordance refuses. The lock is what says it is not
-                // available; the tap is what explains how it becomes available.
-                onClick = { if (isLocked) onLockedSelect(type) else onSelect(type) },
+                selected = type == selected,
+                // A locked chip selects like any other and its fields are built as usual; the
+                // screen then covers them with the offer. Somebody can therefore look at what
+                // buying would get them before deciding, which a dialog in front of a form they
+                // never saw does not allow. The padlock is what says it is not paid for yet.
+                onClick = { onSelect(type) },
                 label = { Text(stringResource(type.label)) },
                 leadingIcon = if (isLocked) {
                     {
@@ -1125,6 +1190,13 @@ private val CardType.label: StringResource
         CardType.WEB -> Res.string.tile_web
     }
 
+/**
+ * Enough to say "not yours yet" and still let the form read through it clearly. The first attempt
+ * at 0.93 hid the fields almost completely, which turned the cover back into a dialog with extra
+ * steps — the very thing it replaces. The point is to see what you would be buying.
+ */
+private const val SCRIM_ALPHA = 0.72f
+
 private const val MIN_NOTE_LINES = 6
 
 /** The size is shown in whole megabytes; a file this matters for is never a few kilobytes. */
@@ -1139,9 +1211,6 @@ private const val BYTES_IN_MB = 1024 * 1024
  */
 data class EditCardCallbacks(
     val onTypeChange: (CardType) -> Unit,
-    /** A type that has not been bought was tapped. The type is not selected; the offer is shown. */
-    val onLockedType: (CardType) -> Unit,
-    val onDismissOffer: () -> Unit,
     /**
      * Opens the store's own purchase sheet. Null in a build with nothing for sale, the same way
      * `onUseBiometrics` is null on a phone with no sensor: the screen is told what is possible
@@ -1207,8 +1276,6 @@ fun EditCardViewModel.callbacks(
     buyUnlock: (() -> Unit)? = null,
 ) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
-    onLockedType = ::onLockedType,
-    onDismissOffer = ::onDismissOffer,
     onBuyUnlock = buyUnlock,
     onTitleChange = ::onTitleChange,
     onSubtitleChange = ::onSubtitleChange,
