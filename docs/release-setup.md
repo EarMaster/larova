@@ -230,8 +230,6 @@ gh api -X DELETE repos/EarMaster/larova/branches/main/protection
 | Listing text pushed from the repo | written, M2 — `play-listing.yml`, `fastlane supply`. Validates end to end against Play as of 2026-08-31. It needs a release on the internal track to attach the edit to (there is one): it publishes the listing of an app that has shipped, it cannot bootstrap one |
 | Listing screenshots | M3. `play-listing.yml` will upload them once they exist at `en-US/images/phoneScreenshots/`; until then Console-uploaded images are left untouched |
 | In-app product `app.larova.unlock` | done, 2026-09-02 — created through the Play Developer API with the release service account, not by hand: one-time product, purchase option `unlock`, `legacyCompatible` so `queryProductDetailsAsync` also returns the classic offer shape, listings in all fourteen languages, 173 regions, state ACTIVE. Priced so a buyer in DE/AT pays **4.99 EUR** — note `pricing:convertRegionPrices` treats its input as net, so the base is 4.19 and Germany lands on 4.99. Change the price any time; nothing is baked into the build. Three traps, all recorded because they cost time: the legacy `inappproducts` endpoint now returns 403 *"Please migrate to the new publishing API"*; only `patch` is bound to lower-case `onetimeproducts` while every other method uses `oneTimeProducts` (check the discovery document, not the reference pages); and regions version `2022/02` rejects the euro for Bulgaria, so take the version from the conversion response — it was `2025/03` |
-| ~~Family Library on the product~~ | **not possible, and never was.** Play Family Library shares paid *apps*, films and books; the help page is explicit that "you can't share in-app purchases". There is no checkbox to find and no field for it anywhere in the Developer API — `OneTimeProduct` has none. What is written elsewhere about family sharing being on by default and no longer optional is true of **paid apps**, not of in-app products. So the unlock is per Google account, and the household problem below is real and unsolved |
-| One purchase, several children | **open question, not a task.** A child's phone signed into the parent's Google account carries the unlock; children with their own accounts under Family Link each need their own purchase. Three options if that matters: leave it and say so plainly in the store listing, sell Larova as a paid app instead — which *is* family-shareable but drops the free tier — or issue signed unlock keys by hand for households that ask, which is the offline key path the paid-tier design already anticipated |
 | `LICENSING_KEY` GitHub secret, from Console → Monetise → Licensing | **yours** — the base64 RSA key `PurchaseVerifier` checks receipts against. A *public* key, so not a secret in the cryptographic sense; kept as one only so it lives beside the other four. Absent, every receipt is rejected and paying customers stay locked |
 | Licence testers added, so billing can be tested without paying | **yours** — Console → Settings → Licence testing. The only way to transact against a sideloaded build |
 | The purchase flow exercised on a physical device | **yours** — the one thing that cannot be checked here. Buy, kill the app, relaunch with the phone offline, confirm it is still unlocked. Also confirm no `NoClassDefFoundError` naming `com.google.android.datatransport`: see `docs/technical-notes.md` §7 |
@@ -244,16 +242,11 @@ gh api -X DELETE repos/EarMaster/larova/branches/main/protection
 
 There is nothing to log into, so the App access declaration is an explanation. Paste this:
 
-> Larova has no accounts, no sign-in and no server, so there are no credentials to provide.
+> Parent view: 
+> On a fresh installation no PIN exists, so the whole app is reachable immediately. A PIN is only asked for once somebody has set one during setup.
 >
-> Parent view: on a fresh installation no PIN exists, so the whole app is reachable immediately. A PIN is only
-> asked for once somebody has set one during setup.
->
-> In-app purchase: three of the ten tile types — App, Video and Sound — need a one-time purchase
-> (`app.larova.unlock`, non-consumable). The other seven (guide, note, checklist, table, call, website, folder),
-> along with backup and restore, the parent-view lock, night mode and all fourteen languages, are free and need no
-> purchase. Choosing a paid type shows that tile's own fields with the offer laid over them, so what is being sold
-> is visible without buying it. Tiles of a paid type that arrive in a restored backup work without any purchase.
+> In-app purchase: 
+> Some of the ten tile types — like App, Video and Sound — need a one-time purchase (app.larova.unlock, non-consumable). Choosing a paid type shows that tile's own fields with the offer laid over them, so what is being sold is visible without buying it. Tiles of a paid type that arrive in a restored backup work without any purchase.
 
 Keep it in step with `PAID_TILE_TYPES` in `core/domain/.../usecase/Entitlements.kt`: if what is sold changes, this
 text is wrong until it is changed too.
