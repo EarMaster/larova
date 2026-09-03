@@ -164,9 +164,8 @@
     <string name="settings_unlock">Pełna wersja</string>
     <string name="settings_unlock_owned">Odblokowana</string>
     <string name="settings_unlock_none">Nieodblokowana</string>
-    <string name="settings_unlock_build">Odblokowana — ta wersja nie ma wersji płatnej</string>
-    <string name="settings_unlock_check">Sprawdź ponownie</string>
-    <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Użyj tego, jeśli kupiłeś pełną wersję na innym telefonie lub ten telefon był offline.</string>
+    <string name="settings_unlock_build">Ta kompilacja nie ma wersji płatnej, więc dostępne są wszystkie rodzaje kafelków.</string>
+    <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Dotknij, aby zapytać ponownie — po zakupie na innym telefonie lub po uruchomieniu, gdy ten telefon był offline.</string>
     <string name="settings_version">Wersja %1$s</string>
     <string name="settings_support">Wsparcie rozwoju</string>
     <string name="settings_support_hint">Larovę tworzy jedna osoba, bez firmy za plecami. To pomaga opłacić ten czas; nic nie odblokowuje.</string>

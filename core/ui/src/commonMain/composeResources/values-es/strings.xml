@@ -157,9 +157,8 @@
     <string name="settings_unlock">La versión completa</string>
     <string name="settings_unlock_owned">Desbloqueada</string>
     <string name="settings_unlock_none">No desbloqueada</string>
-    <string name="settings_unlock_build">Desbloqueada — esta versión no tiene versión de pago</string>
-    <string name="settings_unlock_check">Volver a comprobar</string>
-    <string name="settings_unlock_hint">Larova consulta Google Play cada vez que se abre. Usa esto si compraste la versión completa en otro teléfono o si este teléfono estaba sin conexión.</string>
+    <string name="settings_unlock_build">Esta compilación no tiene versión de pago, así que todos los tipos de tarjeta están disponibles.</string>
+    <string name="settings_unlock_hint">Larova consulta a Google Play en cada inicio. Toca para volver a preguntar — después de comprar en otro teléfono, o de un inicio con este teléfono sin conexión.</string>
     <string name="settings_version">Versión %1$s</string>
     <string name="settings_support">Apoyar el desarrollo</string>
     <string name="settings_support_hint">Larova la hace una sola persona, sin ninguna empresa detrás. Esto ayuda a pagar el tiempo; no desbloquea nada.</string>

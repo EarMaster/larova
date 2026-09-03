@@ -158,9 +158,8 @@
     <string name="settings_unlock">完整版</string>
     <string name="settings_unlock_owned">已解锁</string>
     <string name="settings_unlock_none">未解锁</string>
-    <string name="settings_unlock_build">已解锁 — 此版本没有付费版</string>
-    <string name="settings_unlock_check">重新检查</string>
-    <string name="settings_unlock_hint">Larova 每次启动时都会向 Google Play 查询。如果你在另一部手机上购买了完整版，或这部手机当时离线，可以用它。</string>
+    <string name="settings_unlock_build">此构建没有付费版本，因此所有卡片类型都可用。</string>
+    <string name="settings_unlock_hint">Larova 每次启动都会询问 Google Play。点按可再次询问 — 例如在另一部手机上购买之后，或本机启动时处于离线状态。</string>
     <string name="settings_version">版本 %1$s</string>
     <string name="settings_support">支持开发</string>
     <string name="settings_support_hint">Larova 由一个人制作，背后没有公司。这有助于补偿投入的时间；不会解锁任何内容。</string>

@@ -155,9 +155,8 @@
     <string name="settings_unlock">The full version</string>
     <string name="settings_unlock_owned">Unlocked</string>
     <string name="settings_unlock_none">Not unlocked</string>
-    <string name="settings_unlock_build">Unlocked — this build has no paid version</string>
-    <string name="settings_unlock_check">Check again</string>
-    <string name="settings_unlock_hint">Larova asks Google Play every time it starts. Use this if you bought the full version on another phone, or if this phone was offline.</string>
+    <string name="settings_unlock_build">This build has no paid version, so every kind of tile is available.</string>
+    <string name="settings_unlock_hint">Larova asks Google Play at every start. Tap to ask again — after buying on another phone, or after a start while this phone was offline.</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_support">Support the development</string>
     <string name="settings_support_hint">Larova is made by one person, with no company behind it. This is a way to help pay for the time; it unlocks nothing.</string>

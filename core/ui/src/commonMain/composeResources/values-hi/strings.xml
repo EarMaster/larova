@@ -157,9 +157,8 @@
     <string name="settings_unlock">पूर्ण संस्करण</string>
     <string name="settings_unlock_owned">अनलॉक है</string>
     <string name="settings_unlock_none">अनलॉक नहीं है</string>
-    <string name="settings_unlock_build">अनलॉक है — इस बिल्ड में कोई सशुल्क संस्करण नहीं है</string>
-    <string name="settings_unlock_check">फिर जाँचें</string>
-    <string name="settings_unlock_hint">Larova हर बार शुरू होने पर Google Play से पूछता है। इसका उपयोग करें यदि आपने पूर्ण संस्करण किसी दूसरे फ़ोन पर खरीदा था, या यह फ़ोन ऑफ़लाइन था।</string>
+    <string name="settings_unlock_build">इस बिल्ड में कोई सशुल्क संस्करण नहीं है, इसलिए हर तरह की कार्ड उपलब्ध है।</string>
+    <string name="settings_unlock_hint">Larova हर बार शुरू होने पर Google Play से पूछता है। दोबारा पूछने के लिए टैप करें — किसी दूसरे फ़ोन पर ख़रीदने के बाद, या ऐसे स्टार्ट के बाद जब यह फ़ोन ऑफ़लाइन था।</string>
     <string name="settings_version">संस्करण %1$s</string>
     <string name="settings_support">विकास का समर्थन करें</string>
     <string name="settings_support_hint">Larova को एक ही व्यक्ति बनाता है, पीछे कोई कंपनी नहीं। यह उस समय का ख़र्च उठाने में मदद करता है; इससे कुछ अनलॉक नहीं होता।</string>

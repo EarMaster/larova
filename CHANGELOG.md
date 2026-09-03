@@ -13,6 +13,10 @@ docs-only changes do not belong here.
 ## [Unreleased]
 
 ### Changed
+- The full-version section of the settings now looks like the backup and contribution sections
+  around it: one card, with the icon, the status and the explanation inside it, and tapping the
+  card is what asks Google Play again. It used to be loose text with a small link under it, which
+  read like part of a different screen.
 - Choosing a tile type that needs the full version now shows you the tile first. The fields are
   laid out as usual, greyed but readable, with one "Locked — tap to unlock" button above them, so
   you can see what a Video or Sound tile actually asks for before deciding whether it is worth

@@ -158,9 +158,8 @@
     <string name="settings_unlock">A versão completa</string>
     <string name="settings_unlock_owned">Desbloqueada</string>
     <string name="settings_unlock_none">Não desbloqueada</string>
-    <string name="settings_unlock_build">Desbloqueada — esta versão não tem versão paga</string>
-    <string name="settings_unlock_check">Verificar novamente</string>
-    <string name="settings_unlock_hint">A Larova consulta a Google Play sempre que arranca. Use isto se comprou a versão completa noutro telemóvel ou se este telemóvel estava offline.</string>
+    <string name="settings_unlock_build">Esta compilação não tem versão paga, pelo que todos os tipos de mosaico estão disponíveis.</string>
+    <string name="settings_unlock_hint">A Larova consulta a Google Play em cada início. Toque para perguntar novamente — após uma compra noutro telefone, ou um início com este telefone offline.</string>
     <string name="settings_version">Versão %1$s</string>
     <string name="settings_support">Apoiar o desenvolvimento</string>
     <string name="settings_support_hint">A Larova é feita por uma só pessoa, sem empresa por trás. Isto ajuda a pagar o tempo; não desbloqueia nada.</string>

@@ -21,7 +21,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,7 @@ import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
 import app.larova.core.ui.component.ActionCard
 import app.larova.core.ui.component.LarovaScaffold
+import app.larova.core.ui.icon.Lock
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.Transfer
 import app.larova.core.ui.icon.image
@@ -54,7 +54,6 @@ import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.settings_transfer_hint
 import app.larova.core.ui.resources.settings_unlock
 import app.larova.core.ui.resources.settings_unlock_build
-import app.larova.core.ui.resources.settings_unlock_check
 import app.larova.core.ui.resources.settings_unlock_hint
 import app.larova.core.ui.resources.settings_unlock_none
 import app.larova.core.ui.resources.settings_unlock_owned
@@ -144,9 +143,39 @@ fun SettingsScreen(
 
                 // Parent view only: buying and checking a purchase is parent-view work, and a
                 // caregiver has no use for either.
-                UnlockStatus(
-                    entitlement = entitlement,
-                    onCheck = onCheckPurchases,
+                //
+                // A card like the two around it, and tappable as a whole rather than carrying a
+                // button of its own. The status matters more than the tap: restoring already
+                // happens at every launch, so somebody who paid on another phone is usually
+                // unlocked before they think to look — what they lack is a way to *see* that.
+                // The retry is for the one case the automatic attempt cannot cover, a phone that
+                // was offline at start and is online now, and the description says so.
+                ActionCard(
+                    // A padlock while it is shut, a key once it is not. A lock beside the word
+                    // "Unlocked" contradicts the only line anybody reads.
+                    icon = if (entitlement == Entitlement.NONE) Lock else TileSymbol.KEY.image,
+                    title = stringResource(Res.string.settings_unlock),
+                    status = when (entitlement) {
+                        Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
+                        Entitlement.PLAY,
+                        Entitlement.KEY,
+                        Entitlement.BUILD,
+                        -> stringResource(Res.string.settings_unlock_owned)
+                    },
+                    // Keyed on the store rather than on the entitlement: with nothing to ask,
+                    // the honest sentence is why everything is available, not how to restore it.
+                    // Somebody who compiled Larova themselves would otherwise be left wondering.
+                    description = if (onCheckPurchases != null) {
+                        stringResource(Res.string.settings_unlock_hint)
+                    } else {
+                        stringResource(Res.string.settings_unlock_build)
+                    },
+                    onClick = onCheckPurchases ?: {},
+                    enabled = onCheckPurchases != null,
+                    // Sky: not sand, which is the backup card, and not rose, which is the
+                    // contribution. Three blocks, three colours, so they read as three things.
+                    token = TileColor.SKY,
+                    modifier = Modifier.padding(vertical = 8.dp),
                 )
 
                 // Below the unlock, and visually a sibling of the backup card rather than of it:
@@ -214,54 +243,6 @@ private fun supportDescription(count: Int, message: SupportMessage?): String = w
     message == SupportMessage.THANKS -> stringResource(Res.string.settings_support_thanks)
     count > 0 -> pluralStringResource(Res.plurals.settings_support_count, count, count)
     else -> stringResource(Res.string.settings_support_hint)
-}
-
-/**
- * Whether the full version is unlocked, and a way to ask the store again.
- *
- * The status matters more than the button. Restoring already happens at every launch, so somebody
- * who paid on another phone is usually unlocked before they think to look — what they lack is a
- * way to *see* that, and a retry for the case the automatic attempt could not cover: a phone that
- * was offline at start and is online now.
- *
- * A build with no paid tier says so rather than showing a lock. Otherwise somebody who compiled
- * Larova themselves would be left wondering why everything is available.
- */
-@Composable
-private fun UnlockStatus(
-    entitlement: Entitlement,
-    onCheck: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(
-            text = stringResource(Res.string.settings_unlock),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 4.dp),
-        )
-        Text(
-            text = when (entitlement) {
-                Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
-                Entitlement.PLAY, Entitlement.KEY -> stringResource(Res.string.settings_unlock_owned)
-                Entitlement.BUILD -> stringResource(Res.string.settings_unlock_build)
-            },
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        if (onCheck != null) {
-            Text(
-                text = stringResource(Res.string.settings_unlock_hint),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            TextButton(
-                onClick = onCheck,
-                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-            ) {
-                Text(stringResource(Res.string.settings_unlock_check))
-            }
-        }
-    }
 }
 
 /**

@@ -159,9 +159,8 @@
     <string name="settings_unlock">Tam sürüm</string>
     <string name="settings_unlock_owned">Açıldı</string>
     <string name="settings_unlock_none">Açılmadı</string>
-    <string name="settings_unlock_build">Açıldı — bu yapının ücretli sürümü yok</string>
-    <string name="settings_unlock_check">Yeniden denetle</string>
-    <string name="settings_unlock_hint">Larova her açılışta Google Play’e sorar. Tam sürümü başka bir telefonda aldıysanız ya da bu telefon çevrimdışıysa bunu kullanın.</string>
+    <string name="settings_unlock_build">Bu derlemede ücretli sürüm yok, bu yüzden her tür kart kullanılabilir.</string>
+    <string name="settings_unlock_hint">Larova her açılışta Google Play’e sorar. Yeniden sormak için dokunun — başka bir telefonda satın aldıktan sonra ya da bu telefon çevrimdışıyken açıldıysa.</string>
     <string name="settings_version">Sürüm %1$s</string>
     <string name="settings_support">Geliştirmeyi destekle</string>
     <string name="settings_support_hint">Larova’yı tek bir kişi yapıyor, arkasında bir şirket yok. Bu, o zamanın karşılığına yardım eder; hiçbir şey açmaz.</string>

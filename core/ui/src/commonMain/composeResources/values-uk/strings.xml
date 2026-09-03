@@ -163,9 +163,8 @@
     <string name="settings_unlock">Повна версія</string>
     <string name="settings_unlock_owned">Розблоковано</string>
     <string name="settings_unlock_none">Не розблоковано</string>
-    <string name="settings_unlock_build">Розблоковано — ця збірка не має платної версії</string>
-    <string name="settings_unlock_check">Перевірити ще раз</string>
-    <string name="settings_unlock_hint">Larova запитує Google Play під час кожного запуску. Скористайтеся цим, якщо ви купили повну версію на іншому телефоні або цей телефон був офлайн.</string>
+    <string name="settings_unlock_build">Ця збірка не має платної версії, тому доступні всі види плиток.</string>
+    <string name="settings_unlock_hint">Larova запитує Google Play під час кожного запуску. Торкніться, щоб запитати ще раз — після покупки на іншому телефоні або запуску, коли цей телефон був поза мережею.</string>
     <string name="settings_version">Версія %1$s</string>
     <string name="settings_support">Підтримати розробку</string>
     <string name="settings_support_hint">Larova робить одна людина, без жодної компанії за нею. Це допомагає оплатити час; нічого не розблоковується.</string>
