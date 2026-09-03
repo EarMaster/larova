@@ -12,6 +12,11 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Fixed
+- When more than one price is on offer for the full version — during a sale, for instance — Larova
+  now shows and charges the lower one. It could previously have shown one price and charged
+  another.
+
 ## [0.4.1] - 2026-09-03
 
 ### Changed

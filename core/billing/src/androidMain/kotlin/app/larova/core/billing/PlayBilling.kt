@@ -92,7 +92,7 @@ class PlayBilling(
     /** Play's own price string, or null if it could not be asked. Never a number written here. */
     suspend fun offer(): Offer? {
         val details = productDetails() ?: return null
-        val price = details.oneTimePurchaseOfferDetailsList.orEmpty().firstOrNull()?.formattedPrice
+        val price = bestOffer(details)?.formattedPrice
             ?: details.oneTimePurchaseOfferDetails?.formattedPrice
             ?: return null
         return Offer(price)
@@ -169,9 +169,9 @@ class PlayBilling(
                 // One-time products gained offer tokens in 8.x. Details in the older shape have
                 // none, and setting a null token is an error rather than a no-op, so it is only
                 // set when there is one.
-                details.oneTimePurchaseOfferDetailsList.orEmpty().firstOrNull()
-                    ?.offerToken
-                    ?.let(::setOfferToken)
+                // The same offer the price came from. Picking separately is how an app ends up
+                // advertising one amount and charging another.
+                bestOffer(details)?.offerToken?.let(::setOfferToken)
             }
             .build()
         return BillingFlowParams.newBuilder()
@@ -195,6 +195,22 @@ class PlayBilling(
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> PurchaseOutcome.AlreadyOwned
             else -> PurchaseOutcome.Unavailable(result.responseCode)
         }
+
+    /**
+     * The cheapest offer on a product, which is the one the buyer should get.
+     *
+     * A product carries one offer per purchase option plus one for every discount running on it,
+     * so as soon as anything is on sale the list has more than one entry and `first()` is a coin
+     * toss — it could show the sale price and charge full, or the reverse. Lowest price is both
+     * self-consistent and the answer nobody has to apologise for.
+     *
+     * Falls back to the singular `oneTimePurchaseOfferDetails` at the call sites, for details in
+     * the pre-8.x shape that carry no offer list at all.
+     */
+    private fun bestOffer(details: ProductDetails): ProductDetails.OneTimePurchaseOfferDetails? =
+        details.oneTimePurchaseOfferDetailsList
+            .orEmpty()
+            .minByOrNull { it.priceAmountMicros }
 
     private suspend fun productDetails(): ProductDetails? {
         if (!connect()) return null
