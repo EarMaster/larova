@@ -43,6 +43,10 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # The footer is appended here rather than written into CHANGELOG.md, because it belongs to
+      # one distribution channel and not to the version. Play's release notes come from
+      # fastlane/metadata and must never carry it: an appeal to donate beside a paid unlock would
+      # be asking twice, and Play's own policies are not the place to find out how that reads.
       - name: Extract release notes from CHANGELOG.md
         if: steps.ready.outputs.ready == 'true' && steps.tag_check.outputs.exists == 'false'
         id: notes
@@ -53,6 +57,22 @@ jobs:
           {
             echo "body<<RELEASE_NOTES_EOF"
             echo "$NOTES"
+            echo ""
+            echo "---"
+            echo ""
+            echo "### The APK below is the full version"
+            echo ""
+            echo "The build attached here is assembled with \`-Plarova.paidTier=false\`: every tile"
+            echo "type is available, nothing asks for money, and no store code runs. That is"
+            echo "deliberate — the licence lets anyone rebuild Larova without the paid tier in about"
+            echo "five minutes, so a crippled sideload build would buy nothing and cost goodwill."
+            echo ""
+            echo "It does mean this build has no way to contribute. If it is useful to you and you"
+            echo "would like to help pay for the time it takes:"
+            echo ""
+            echo "**<https://liberapay.com/EarMaster/>**"
+            echo ""
+            echo "Entirely optional, and it unlocks nothing — there is nothing left to unlock."
             echo "RELEASE_NOTES_EOF"
           } >> "$GITHUB_OUTPUT"
 

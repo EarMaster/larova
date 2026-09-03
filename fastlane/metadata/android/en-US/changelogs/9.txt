@@ -1,0 +1,1 @@
+You can now support the development from the settings, once parent view is on — a contribution rather than a purchase, and Larova keeps count. The settings also say whether the full version is unlocked, and show the app version. During a sale, the lower price is shown and charged.

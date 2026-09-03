@@ -144,6 +144,22 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_hint">Larovaはスマホ本体とは別の言語にできます。</string>
     <string name="settings_transfer_hint">すべてを1つのファイルに保存したり、バックアップを戻したりします。</string>
+    <string name="settings_unlock">フル版</string>
+    <string name="settings_unlock_owned">解除済み</string>
+    <string name="settings_unlock_none">未解除</string>
+    <string name="settings_unlock_build">解除済み — このビルドに有料版はありません</string>
+    <string name="settings_unlock_check">もう一度確認</string>
+    <string name="settings_unlock_hint">Larova は起動するたびに Google Play に問い合わせます。フル版を別の端末で購入した場合や、この端末がオフラインだった場合にお使いください。</string>
+    <string name="settings_version">バージョン %1$s</string>
+    <string name="settings_support">開発を支援する</string>
+    <string name="settings_support_hint">Larova は一人で作っていて、後ろに会社はありません。これは費やした時間を支える助けになります。何も解除されません。</string>
+    <string name="settings_support_give">支援する</string>
+    <string name="settings_support_thanks">ありがとうございます。</string>
+    <string name="settings_support_unavailable">ストアに接続できません。この端末がオンラインになってからもう一度お試しください。</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">1 回支援しました</item>
+        <item quantity="other">%1$d 回支援しました</item>
+    </plurals>
     <string name="settings_log">記録</string>
     <string name="settings_log_retention">%1$d日間保存</string>
     <string name="settings_log_clear">記録を消す</string>

@@ -161,6 +161,22 @@
     <string name="settings_language">اللغة</string>
     <string name="settings_language_hint">يمكن أن يعمل Larova بلغة غير لغة بقية الهاتف.</string>
     <string name="settings_transfer_hint">احفظ كل شيء في ملف واحد، أو استعد نسخة احتياطية.</string>
+    <string name="settings_unlock">النسخة الكاملة</string>
+    <string name="settings_unlock_owned">مفتوحة</string>
+    <string name="settings_unlock_none">غير مفتوحة</string>
+    <string name="settings_unlock_build">مفتوحة — هذه النسخة لا تتضمّن إصداراً مدفوعاً</string>
+    <string name="settings_unlock_check">تحقّق مرة أخرى</string>
+    <string name="settings_unlock_hint">تسأل لاروفا متجر Google Play عند كل تشغيل. استخدم هذا إن اشتريت النسخة الكاملة على هاتف آخر أو كان هذا الهاتف غير متصل.</string>
+    <string name="settings_version">الإصدار %1$s</string>
+    <string name="settings_support">دعم التطوير</string>
+    <string name="settings_support_hint">يصنع لاروفا شخص واحد، ولا شركة خلفه. هذا يساعد في تعويض الوقت؛ ولا يفتح شيئاً.</string>
+    <string name="settings_support_give">ادعم</string>
+    <string name="settings_support_thanks">شكراً لك.</string>
+    <string name="settings_support_unavailable">تعذّر الوصول إلى المتجر. حاول مرة أخرى عندما يكون الهاتف متصلاً.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">تم الدعم مرة واحدة</item>
+        <item quantity="other">تم الدعم %1$d مرات</item>
+    </plurals>
     <string name="settings_log">سجل النشاط</string>
     <string name="settings_log_retention">الاحتفاظ %1$d يوماً</string>
     <string name="settings_log_clear">مسح السجل</string>

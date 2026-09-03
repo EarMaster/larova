@@ -8,11 +8,18 @@ import app.larova.core.domain.repository.PreferencesRepository
 import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
+import app.larova.core.domain.model.Entitlement
+import app.larova.feature.settings.SupportMessage
+import app.larova.core.domain.usecase.ObserveEntitlement
+import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.PruneLog
+import app.larova.core.domain.usecase.RecordSupport
 import app.larova.core.domain.usecase.RefreshEntitlement
 import app.larova.core.domain.usecase.PublishShortcuts
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -39,7 +46,10 @@ class AppViewModel(
     cleanUpMedia: CleanUpMedia,
     pruneLog: PruneLog,
     publishShortcuts: PublishShortcuts,
-    refreshEntitlement: RefreshEntitlement,
+    observeEntitlement: ObserveEntitlement,
+    observeSupportCount: ObserveSupportCount,
+    private val refreshEntitlement: RefreshEntitlement,
+    private val recordSupport: RecordSupport,
 ) : ViewModel() {
 
     /**
@@ -47,6 +57,38 @@ class AppViewModel(
      * When the five minutes run out, every screen loses its editing controls in the same frame.
      */
     val viewMode: StateFlow<ViewMode> = session.mode
+
+    /**
+     * What the settings screen says about the paid unlock, and why.
+     *
+     * Held here rather than in a settings ViewModel because the answer is the same everywhere and
+     * the editor is already collecting it: two collectors of one flow beats two sources of truth.
+     */
+    val entitlement: StateFlow<Entitlement> = observeEntitlement()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+            initialValue = Entitlement.NONE,
+        )
+
+    /**
+     * How many times this installation has contributed. Kept beside the entitlement because both
+     * are answers the settings screen needs and neither belongs to a tile.
+     *
+     * Arguably one screen's state rather than the app's, and the first candidate to move if
+     * settings grows a ViewModel of its own. One integer and two actions did not justify one yet.
+     */
+    val supportCount: StateFlow<Int> = observeSupportCount()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+            initialValue = 0,
+        )
+
+    private val _supportMessage = MutableStateFlow<SupportMessage?>(null)
+
+    /** What the contribution card says happened last. Null until anything has. */
+    val supportMessage: StateFlow<SupportMessage?> = _supportMessage.asStateFlow()
 
     val appearance: StateFlow<AppearanceSetting> = preferences.observeAppearance()
         .stateIn(
@@ -60,6 +102,30 @@ class AppViewModel(
     }
 
     fun leaveParentView() = lockParentView()
+
+    /**
+     * Asks the store again, on request.
+     *
+     * The same call already runs at every launch, so this is not a second mechanism — it is a
+     * retry for the case the automatic one cannot cover: a phone that was offline when the app
+     * started and is online now, with the app still open. Nothing is reported back, because the
+     * only honest outcome to show is the entitlement itself, and that arrives through [entitlement].
+     */
+    /** Counted only after Play confirmed and signed it — see `SupportPurchases.contribute`. */
+    fun onSupported() {
+        viewModelScope.launch {
+            recordSupport()
+            _supportMessage.value = SupportMessage.THANKS
+        }
+    }
+
+    fun onSupportUnavailable() {
+        _supportMessage.value = SupportMessage.UNAVAILABLE
+    }
+
+    fun checkPurchasesAgain() {
+        viewModelScope.launch { refreshEntitlement() }
+    }
 
     init {
         // Pictures whose step never made it into a saved tile: picked, and then the editor was left

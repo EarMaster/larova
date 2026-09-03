@@ -60,12 +60,24 @@ class DataStorePreferencesRepository(
         }
     }
 
+    override fun observeSupportCount(): Flow<Int> =
+        dataStore.data.map { it[SUPPORT_COUNT] ?: 0 }
+
+    /**
+     * Read-then-write inside one `edit`, which DataStore serialises — two taps in quick succession
+     * therefore count as two rather than racing to the same number.
+     */
+    override suspend fun addSupport() {
+        dataStore.edit { it[SUPPORT_COUNT] = (it[SUPPORT_COUNT] ?: 0) + 1 }
+    }
+
     private companion object {
         /** The stored key, not the enum name. Renaming the enum must not reset anyone's setting. */
         val APPEARANCE = stringPreferencesKey("appearance")
         val LAST_BACKUP_AT = longPreferencesKey("lastBackupAt")
         val LAST_BACKUP_CARDS = intPreferencesKey("lastBackupCards")
         val LAST_BACKUP_MEDIA = intPreferencesKey("lastBackupMedia")
+        val SUPPORT_COUNT = intPreferencesKey("supportCount")
     }
 }
 

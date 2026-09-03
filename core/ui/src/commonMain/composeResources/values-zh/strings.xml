@@ -147,6 +147,22 @@
     <string name="settings_language">语言</string>
     <string name="settings_language_hint">Larova 可以使用和手机其他部分不同的语言。</string>
     <string name="settings_transfer_hint">把所有内容存成一个文件，或者恢复一份备份。</string>
+    <string name="settings_unlock">完整版</string>
+    <string name="settings_unlock_owned">已解锁</string>
+    <string name="settings_unlock_none">未解锁</string>
+    <string name="settings_unlock_build">已解锁 — 此版本没有付费版</string>
+    <string name="settings_unlock_check">重新检查</string>
+    <string name="settings_unlock_hint">Larova 每次启动时都会向 Google Play 查询。如果你在另一部手机上购买了完整版，或这部手机当时离线，可以用它。</string>
+    <string name="settings_version">版本 %1$s</string>
+    <string name="settings_support">支持开发</string>
+    <string name="settings_support_hint">Larova 由一个人制作，背后没有公司。这有助于补偿投入的时间；不会解锁任何内容。</string>
+    <string name="settings_support_give">支持</string>
+    <string name="settings_support_thanks">谢谢。</string>
+    <string name="settings_support_unavailable">无法连接商店。请在手机联网后重试。</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">已支持 1 次</item>
+        <item quantity="other">已支持 %1$d 次</item>
+    </plurals>
     <string name="settings_log">活动日志</string>
     <string name="settings_log_retention">保留 %1$d 天</string>
     <string name="settings_log_clear">清空日志</string>

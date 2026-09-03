@@ -5,6 +5,7 @@ import app.larova.core.domain.export.ExportCounts
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.CardType
+import app.larova.core.domain.model.Entitlement
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.usecase.PAID_TILE_TYPES
 import app.larova.feature.card.edit.EditCardScreen
@@ -101,6 +102,12 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
         }
     }
 
+    /**
+     * A literal, never BuildConfig.VERSION_NAME. A golden that carries the real version would go
+     * stale on every single release, and the failure would look like a UI regression.
+     */
+    private val FIXTURE_VERSION = "0.0.0"
+
     @Test
     fun settings() {
         capture("screens/settings") {
@@ -113,6 +120,13 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onChangePin = {},
                 onOpenTransfer = {},
                 onBack = {},
+                // Hidden in the caregiver view, so the value cannot show up in the picture.
+                entitlement = Entitlement.NONE,
+                onCheckPurchases = {},
+                supportCount = 0,
+                onSupport = null,
+                supportMessage = null,
+                appVersion = FIXTURE_VERSION,
             )
         }
     }
@@ -129,6 +143,15 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onChangePin = {},
                 onOpenTransfer = {},
                 onBack = {},
+                // Not bought: the state most people are in, and the only one that draws the
+                // status, the explanation and the button together.
+                entitlement = Entitlement.NONE,
+                onCheckPurchases = {},
+                // Twice already: the count is the interesting state, not the empty one.
+                supportCount = 2,
+                onSupport = {},
+                supportMessage = null,
+                appVersion = FIXTURE_VERSION,
             )
         }
     }

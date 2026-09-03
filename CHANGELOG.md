@@ -12,6 +12,23 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-03
+
+### Added
+- You can support the development from the settings, once parent view is on. It is a contribution
+  rather than a purchase: nothing is unlocked by it, it can be given more than once, and the app
+  keeps count of how many times you have.
+- The settings now say whether the full version is unlocked, with a way to ask Google Play again.
+  That helps if you bought it on another phone, or if this phone was offline when Larova last
+  started. A version built from source says so instead of showing a lock.
+- The app version is shown at the bottom of the settings, so it is at hand when something needs
+  reporting.
+
+### Fixed
+- When more than one price is on offer for the full version — during a sale, for instance — Larova
+  now shows and charges the lower one. It could previously have shown one price and charged
+  another.
+
 ## [0.4.1] - 2026-09-03
 
 ### Changed

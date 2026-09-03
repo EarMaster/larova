@@ -7,6 +7,7 @@ import app.larova.core.billing.BuildUnlockedEntitlementRepository
 import app.larova.core.billing.PlayBilling
 import app.larova.core.billing.PlayEntitlementRepository
 import app.larova.core.billing.PurchaseVerifier
+import app.larova.core.billing.SupportPurchases
 import app.larova.core.data.db.LarovaDatabase
 import app.larova.core.data.db.createLarovaDatabase
 import app.larova.core.data.prefs.DataStoreEntitlementCache
@@ -52,6 +53,7 @@ import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveLastBackup
 import app.larova.core.domain.usecase.ObserveLockedTypes
+import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
@@ -71,6 +73,7 @@ import app.larova.core.domain.usecase.ObserveBoardTiles
 import app.larova.core.domain.usecase.ObserveHelpContacts
 import app.larova.core.domain.usecase.ObserveHomeTiles
 import app.larova.core.domain.usecase.ObserveTile
+import app.larova.core.domain.usecase.RecordSupport
 import app.larova.core.domain.usecase.RefreshEntitlement
 import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.ReorderTiles
@@ -179,6 +182,9 @@ val appModule = module {
     single<EntitlementCache> { DataStoreEntitlementCache(get()) }
     single { PurchaseVerifier(BuildConfig.LICENSING_KEY) }
     single { PlayBilling(androidContext()) }
+    // Separate from the entitlement repository: a contribution unlocks nothing, and the two must
+    // not be able to influence each other.
+    single { SupportPurchases(billing = get(), verifier = get()) }
     // Bound under its own type as well as behind the interface: launching a purchase needs an
     // Activity, so it is deliberately not on EntitlementRepository, and `rememberUnlockPurchase`
     // asks for the concrete one. Lazy, so a build with no paid tier never constructs a
@@ -235,6 +241,8 @@ val appModule = module {
     factory { ObserveLockedTypes(get()) }
     factory { RefreshEntitlement(get()) }
     factory { UnlockPrice(get()) }
+    factory { ObserveSupportCount(get()) }
+    factory { RecordSupport(get()) }
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
     factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
@@ -243,7 +251,7 @@ val appModule = module {
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { AppViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
