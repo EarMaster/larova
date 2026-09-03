@@ -167,13 +167,11 @@
     <string name="edit_type_locked">フル版が必要です</string>
     <string name="purchase_title">フル版</string>
     <string name="purchase_reason">%1$s のタイルはフル版に含まれます。</string>
-    <string name="purchase_body">支払いは一度きりで、定期購入はありません。Larova のほかの機能はこれまでどおり無料で、誰かから届いたタイルもそのまま使えます。Larova は一人で作っています。フル版の購入が、それを続ける支えになります。</string>
+    <string name="purchase_body">支払いは一度きりで、定期購入はありません。解除は購入した Google アカウントに紐づきます。Larova のほかの機能はこれまでどおり無料で、誰かから届いたタイルもそのまま使えます。Larova は一人で作っています。フル版の購入が、それを続ける支えになります。</string>
     <string name="purchase_buy_price">%1$s で解除</string>
     <string name="purchase_buy">解除する</string>
-    <string name="purchase_later">今はしない</string>
     <string name="purchase_unavailable">ストアに接続できません。この端末がオンラインになってからもう一度お試しください。</string>
     <string name="purchase_pending">支払いを開始しました。完了しだいタイルが使えるようになります。</string>
-    <string name="purchase_done">解除しました。ありがとうございます。</string>
     <string name="edit_title">タイトル</string>
     <string name="edit_subtitle">2行目（任意）</string>
     <string name="edit_colour">色</string>

@@ -1,0 +1,1 @@
+Choosing a tile type that belongs to the full version now shows you the tile as it would be, with the offer laid over it. You can see what you would be getting before deciding, and pick a different type without dismissing anything.

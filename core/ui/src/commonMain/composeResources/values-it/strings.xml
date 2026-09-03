@@ -169,13 +169,11 @@
     <string name="edit_type_locked">Richiede la versione completa</string>
     <string name="purchase_title">La versione completa</string>
     <string name="purchase_reason">Le caselle %1$s fanno parte della versione completa.</string>
-    <string name="purchase_body">Un solo pagamento, nessun abbonamento. Tutto il resto in Larova resta gratuito e le caselle che qualcuno ti invia funzionano comunque. Larova è fatta da una sola persona; acquistare la versione completa è ciò che la tiene viva.</string>
+    <string name="purchase_body">Un solo pagamento, nessun abbonamento, e lo sblocco appartiene all’account Google che lo acquista. Tutto il resto in Larova resta gratuito e le caselle che qualcuno ti invia funzionano comunque. Larova è fatta da una sola persona; acquistare la versione completa è ciò che la tiene viva.</string>
     <string name="purchase_buy_price">Sblocca per %1$s</string>
     <string name="purchase_buy">Sblocca</string>
-    <string name="purchase_later">Non ora</string>
     <string name="purchase_unavailable">Impossibile raggiungere lo store. Riprova quando questo telefono è online.</string>
     <string name="purchase_pending">Pagamento avviato. Le caselle si sbloccano appena va a buon fine.</string>
-    <string name="purchase_done">Sbloccato. Grazie.</string>
     <string name="edit_title">Titolo</string>
     <string name="edit_subtitle">Seconda riga (facoltativa)</string>
     <string name="edit_colour">Colore</string>

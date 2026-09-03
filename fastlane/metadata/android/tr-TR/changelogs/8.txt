@@ -1,0 +1,1 @@
+Tam sürüme ait bir kart türünü seçtiğinizde artık kartı nasıl olacağıyla görüyorsunuz, teklif de üzerinde duruyor. Böylece karar vermeden önce ne alacağınızı görebilir, hiçbir şeyi kapatmadan başka bir tür seçebilirsiniz.

@@ -171,13 +171,11 @@
     <string name="edit_type_locked">Tam sürüm gerekir</string>
     <string name="purchase_title">Tam sürüm</string>
     <string name="purchase_reason">%1$s kartları tam sürümün parçasıdır.</string>
-    <string name="purchase_body">Tek seferlik ödeme, abonelik yok. Larova’daki her şey ücretsiz kalır ve birinin size gönderdiği kartlar yine de çalışır. Larova’yı tek bir kişi yapıyor; tam sürümü almak devam etmesini sağlıyor.</string>
+    <string name="purchase_body">Tek seferlik ödeme, abonelik yok ve kilit açma, satın alan Google hesabına aittir. Larova’daki her şey ücretsiz kalır ve birinin size gönderdiği kartlar yine de çalışır. Larova’yı tek bir kişi yapıyor; tam sürümü almak devam etmesini sağlıyor.</string>
     <string name="purchase_buy_price">%1$s karşılığında aç</string>
     <string name="purchase_buy">Aç</string>
-    <string name="purchase_later">Şimdi değil</string>
     <string name="purchase_unavailable">Mağazaya ulaşılamıyor. Bu telefon çevrimiçi olduğunda tekrar deneyin.</string>
     <string name="purchase_pending">Ödeme başlatıldı. Ödeme tamamlanınca kartlar açılır.</string>
-    <string name="purchase_done">Açıldı. Teşekkürler.</string>
     <string name="edit_title">Başlık</string>
     <string name="edit_subtitle">İkinci satır (isteğe bağlı)</string>
     <string name="edit_colour">Renk</string>

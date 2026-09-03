@@ -24,7 +24,6 @@ import app.larova.core.ui.component.ContactRow
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.help_call_note
 import app.larova.core.ui.resources.home_empty_title
-import app.larova.core.ui.resources.tile_call
 import app.larova.core.ui.resources.web_open
 import app.larova.core.ui.theme.Dimens
 import app.larova.core.ui.theme.GuideStepStyle

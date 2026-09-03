@@ -6,6 +6,7 @@ import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.LastBackup
+import app.larova.core.domain.usecase.PAID_TILE_TYPES
 import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditUiState
 import app.larova.feature.card.edit.StepDraft
@@ -272,6 +273,31 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
             EditCardScreen(
                 state = EditUiState(isNew = true),
                 callbacks = noOpEditCallbacks(),
+                onBack = {},
+            )
+        }
+    }
+
+    /**
+     * A paid tile type chosen in a build that has not bought it.
+     *
+     * The fields are built as usual and then covered by the offer, so the picture is the whole
+     * point of the interaction: you can see what buying would get you. The type picker stays
+     * outside the cover, which is what makes choosing something else the way out.
+     */
+    @Test
+    fun choosing_a_tile_type_that_costs_money() {
+        capture("screens/edit_locked") {
+            EditCardScreen(
+                state = EditUiState(
+                    isNew = true,
+                    type = CardType.AUDIO,
+                    lockedTypes = PAID_TILE_TYPES,
+                    offerPrice = "€4.99",
+                ),
+                // A non-null onBuyUnlock, because the default fixture leaves it null and the
+                // button would then be captured disabled — which is not what anybody sees.
+                callbacks = noOpEditCallbacks().copy(onBuyUnlock = {}),
                 onBack = {},
             )
         }

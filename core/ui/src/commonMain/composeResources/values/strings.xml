@@ -177,14 +177,12 @@
     <string name="purchase_title">The full version</string>
     <!-- %1$s is the name of a tile type, as it appears on the type picker. -->
     <string name="purchase_reason">%1$s tiles are part of the full version.</string>
-    <string name="purchase_body">One payment, no subscription. Everything else in Larova stays free, and tiles somebody sends you keep working either way. Larova is made by one person; buying the full version is what keeps it being made.</string>
+    <string name="purchase_body">One payment, no subscription, and the unlock belongs to the Google account that buys it. Everything else in Larova stays free, and tiles somebody sends you keep working either way. Larova is made by one person; buying the full version is what keeps it being made.</string>
     <!-- %1$s is the price, formatted by Google Play in the buyer's own currency. -->
     <string name="purchase_buy_price">Unlock for %1$s</string>
     <string name="purchase_buy">Unlock</string>
-    <string name="purchase_later">Not now</string>
     <string name="purchase_unavailable">The store cannot be reached. Try again when this phone is online.</string>
     <string name="purchase_pending">Payment started. The tiles unlock as soon as it goes through.</string>
-    <string name="purchase_done">Unlocked. Thank you.</string>
     <string name="edit_title">Title</string>
     <string name="edit_subtitle">Second line (optional)</string>
     <string name="edit_colour">Colour</string>

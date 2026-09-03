@@ -178,13 +178,11 @@
     <string name="edit_type_locked">Erfordert die Vollversion</string>
     <string name="purchase_title">Die Vollversion</string>
     <string name="purchase_reason">%1$s-Kacheln gehören zur Vollversion.</string>
-    <string name="purchase_body">Einmal bezahlen, kein Abo. Alles andere in Larova bleibt kostenlos, und Kacheln, die Ihnen jemand schickt, funktionieren so oder so. Larova wird von einer einzigen Person gemacht; der Kauf der Vollversion hält sie am Leben.</string>
+    <string name="purchase_body">Einmal bezahlen, kein Abo, und die Freischaltung gehört zum Google-Konto, das sie kauft. Alles andere in Larova bleibt kostenlos, und Kacheln, die Ihnen jemand schickt, funktionieren so oder so. Larova wird von einer einzigen Person gemacht; der Kauf der Vollversion hält sie am Leben.</string>
     <string name="purchase_buy_price">Für %1$s freischalten</string>
     <string name="purchase_buy">Freischalten</string>
-    <string name="purchase_later">Jetzt nicht</string>
     <string name="purchase_unavailable">Der Store ist nicht erreichbar. Versuchen Sie es erneut, wenn dieses Telefon online ist.</string>
     <string name="purchase_pending">Zahlung gestartet. Die Kacheln werden freigeschaltet, sobald sie durch ist.</string>
-    <string name="purchase_done">Freigeschaltet. Vielen Dank.</string>
     <string name="edit_title">Titel</string>
     <string name="edit_subtitle">Zweite Zeile (optional)</string>
     <string name="edit_colour">Farbe</string>

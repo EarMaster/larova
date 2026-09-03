@@ -1,0 +1,1 @@
+En choisissant un type de tuile de la version complète, vous voyez maintenant la tuile telle qu’elle serait, avec l’offre par-dessus. Vous pouvez donc voir ce que vous obtiendriez avant de décider, et choisir un autre type sans rien fermer.

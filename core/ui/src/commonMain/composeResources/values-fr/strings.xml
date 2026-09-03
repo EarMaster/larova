@@ -175,13 +175,11 @@
     <string name="edit_type_locked">Nécessite la version complète</string>
     <string name="purchase_title">La version complète</string>
     <string name="purchase_reason">Les tuiles %1$s font partie de la version complète.</string>
-    <string name="purchase_body">Un seul paiement, sans abonnement. Tout le reste dans Larova reste gratuit, et les tuiles que quelqu’un vous envoie fonctionnent dans tous les cas. Larova est faite par une seule personne ; acheter la version complète permet de continuer.</string>
+    <string name="purchase_body">Un seul paiement, sans abonnement, et le déblocage appartient au compte Google qui l’achète. Tout le reste dans Larova reste gratuit, et les tuiles que quelqu’un vous envoie fonctionnent dans tous les cas. Larova est faite par une seule personne ; acheter la version complète permet de continuer.</string>
     <string name="purchase_buy_price">Débloquer pour %1$s</string>
     <string name="purchase_buy">Débloquer</string>
-    <string name="purchase_later">Pas maintenant</string>
     <string name="purchase_unavailable">Le store est inaccessible. Réessayez quand ce téléphone sera en ligne.</string>
     <string name="purchase_pending">Paiement lancé. Les tuiles se débloquent dès qu’il aboutit.</string>
-    <string name="purchase_done">Débloqué. Merci.</string>
     <string name="edit_title">Titre</string>
     <string name="edit_subtitle">Deuxième ligne (facultatif)</string>
     <string name="edit_colour">Couleur</string>
