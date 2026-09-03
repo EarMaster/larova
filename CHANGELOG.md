@@ -12,6 +12,14 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-09-03
+
+### Changed
+- Picking a tile type that belongs to the full version now shows the tile as it would be, with the
+  offer laid over it, instead of a message in front of a screen you had not seen. You can look at
+  what you would be getting before deciding, and choose a different type without dismissing
+  anything first.
+
 ## [0.4.0] - 2026-09-01
 
 ### Added

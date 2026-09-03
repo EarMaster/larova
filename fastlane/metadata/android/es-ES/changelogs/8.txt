@@ -1,0 +1,1 @@
+Al elegir un tipo de ficha de la versión completa, ahora ves la ficha tal como sería, con la oferta encima. Así puedes ver qué obtendrías antes de decidir y elegir otro tipo sin cerrar nada.
