@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-03
+
 ### Added
 - You can support the development from the settings, once parent view is on. It is a contribution
   rather than a purchase: nothing is unlocked by it, it can be given more than once, and the app
