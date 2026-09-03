@@ -148,6 +148,22 @@
     <string name="settings_language">Dil</string>
     <string name="settings_language_hint">Larova, telefonun geri kalanından farklı bir dil kullanabilir.</string>
     <string name="settings_transfer_hint">Her şeyi tek bir dosyaya kaydedin ya da bir yedeği geri getirin.</string>
+    <string name="settings_unlock">Tam sürüm</string>
+    <string name="settings_unlock_owned">Açıldı</string>
+    <string name="settings_unlock_none">Açılmadı</string>
+    <string name="settings_unlock_build">Açıldı — bu yapının ücretli sürümü yok</string>
+    <string name="settings_unlock_check">Yeniden denetle</string>
+    <string name="settings_unlock_hint">Larova her açılışta Google Play’e sorar. Tam sürümü başka bir telefonda aldıysanız ya da bu telefon çevrimdışıysa bunu kullanın.</string>
+    <string name="settings_version">Sürüm %1$s</string>
+    <string name="settings_support">Geliştirmeyi destekle</string>
+    <string name="settings_support_hint">Larova’yı tek bir kişi yapıyor, arkasında bir şirket yok. Bu, o zamanın karşılığına yardım eder; hiçbir şey açmaz.</string>
+    <string name="settings_support_give">Destekle</string>
+    <string name="settings_support_thanks">Teşekkürler.</string>
+    <string name="settings_support_unavailable">Mağazaya ulaşılamıyor. Bu telefon çevrimiçi olduğunda tekrar deneyin.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Bir kez desteklendi</item>
+        <item quantity="other">%1$d kez desteklendi</item>
+    </plurals>
     <string name="settings_log">Etkinlik kaydı</string>
     <string name="settings_log_retention">%1$d gün sakla</string>
     <string name="settings_log_clear">Kaydı temizle</string>

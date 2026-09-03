@@ -152,6 +152,22 @@
     <string name="settings_language">Мова</string>
     <string name="settings_language_hint">Larova може працювати іншою мовою, ніж решта телефона.</string>
     <string name="settings_transfer_hint">Зберегти все в один файл або повернути копію.</string>
+    <string name="settings_unlock">Повна версія</string>
+    <string name="settings_unlock_owned">Розблоковано</string>
+    <string name="settings_unlock_none">Не розблоковано</string>
+    <string name="settings_unlock_build">Розблоковано — ця збірка не має платної версії</string>
+    <string name="settings_unlock_check">Перевірити ще раз</string>
+    <string name="settings_unlock_hint">Larova запитує Google Play під час кожного запуску. Скористайтеся цим, якщо ви купили повну версію на іншому телефоні або цей телефон був офлайн.</string>
+    <string name="settings_version">Версія %1$s</string>
+    <string name="settings_support">Підтримати розробку</string>
+    <string name="settings_support_hint">Larova робить одна людина, без жодної компанії за нею. Це допомагає оплатити час; нічого не розблоковується.</string>
+    <string name="settings_support_give">Підтримати</string>
+    <string name="settings_support_thanks">Дякуємо.</string>
+    <string name="settings_support_unavailable">Не вдається зв’язатися з магазином. Спробуйте ще раз, коли телефон буде онлайн.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Підтримано один раз</item>
+        <item quantity="other">Підтримано %1$d разів</item>
+    </plurals>
     <string name="settings_log">Журнал подій</string>
     <string name="settings_log_retention">Зберігати %1$d днів</string>
     <string name="settings_log_clear">Очистити журнал</string>

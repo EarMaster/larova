@@ -152,6 +152,22 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_hint">Larova может работать на другом языке, чем весь остальной телефон.</string>
     <string name="settings_transfer_hint">Сохранить всё в один файл или вернуть копию.</string>
+    <string name="settings_unlock">Полная версия</string>
+    <string name="settings_unlock_owned">Разблокирована</string>
+    <string name="settings_unlock_none">Не разблокирована</string>
+    <string name="settings_unlock_build">Разблокирована — в этой сборке нет платной версии</string>
+    <string name="settings_unlock_check">Проверить снова</string>
+    <string name="settings_unlock_hint">Larova спрашивает Google Play при каждом запуске. Воспользуйтесь этим, если вы купили полную версию на другом телефоне или этот телефон был offline.</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="settings_support">Поддержать разработку</string>
+    <string name="settings_support_hint">Larova делает один человек, без компании за спиной. Это помогает оплатить время; ничего не разблокируется.</string>
+    <string name="settings_support_give">Поддержать</string>
+    <string name="settings_support_thanks">Спасибо.</string>
+    <string name="settings_support_unavailable">Не удаётся связаться с магазином. Попробуйте снова, когда телефон будет в сети.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Поддержано один раз</item>
+        <item quantity="other">Поддержано %1$d раз</item>
+    </plurals>
     <string name="settings_log">Журнал</string>
     <string name="settings_log_retention">Хранить %1$d дней</string>
     <string name="settings_log_clear">Очистить журнал</string>

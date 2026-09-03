@@ -155,6 +155,22 @@
     <string name="settings_language">Sprache</string>
     <string name="settings_language_hint">Larova kann eine andere Sprache verwenden als das übrige Telefon.</string>
     <string name="settings_transfer_hint">Alles in eine Datei sichern oder eine Sicherung zurückholen.</string>
+    <string name="settings_unlock">Die Vollversion</string>
+    <string name="settings_unlock_owned">Freigeschaltet</string>
+    <string name="settings_unlock_none">Nicht freigeschaltet</string>
+    <string name="settings_unlock_build">Freigeschaltet — diese Fassung hat keine Kaufversion</string>
+    <string name="settings_unlock_check">Erneut prüfen</string>
+    <string name="settings_unlock_hint">Larova fragt Google Play bei jedem Start. Nutzen Sie das, wenn Sie die Vollversion auf einem anderen Telefon gekauft haben oder dieses Telefon offline war.</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_support">Die Entwicklung unterstützen</string>
+    <string name="settings_support_hint">Larova wird von einer einzigen Person gemacht, ohne Firma dahinter. Das hier hilft, die Zeit zu bezahlen; es schaltet nichts frei.</string>
+    <string name="settings_support_give">Unterstützen</string>
+    <string name="settings_support_thanks">Vielen Dank.</string>
+    <string name="settings_support_unavailable">Der Store ist nicht erreichbar. Versuchen Sie es erneut, wenn dieses Telefon online ist.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Einmal unterstützt</item>
+        <item quantity="other">%1$d-mal unterstützt</item>
+    </plurals>
     <string name="settings_log">Protokoll</string>
     <string name="settings_log_retention">%1$d Tage aufbewahren</string>
     <string name="settings_log_clear">Protokoll löschen</string>

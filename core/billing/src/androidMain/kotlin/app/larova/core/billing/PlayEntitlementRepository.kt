@@ -41,11 +41,12 @@ class PlayEntitlementRepository(
     }
 
     override suspend fun refresh() {
-        val receipt = billing.ownedUnlock() ?: return
+        val receipt = billing.ownedPurchase(UNLOCK_PRODUCT_ID) ?: return
         if (verifier.verify(receipt)) cache.write(receipt)
     }
 
-    override suspend fun formattedPrice(): String? = billing.offer()?.formattedPrice
+    override suspend fun formattedPrice(): String? =
+        billing.offer(UNLOCK_PRODUCT_ID)?.formattedPrice
 
     /**
      * Not on [EntitlementRepository], because the domain has no business knowing what an Activity
@@ -56,7 +57,8 @@ class PlayEntitlementRepository(
      * reported as unavailable, which is the truthful thing to say about it.
      */
     suspend fun purchase(activity: Activity): PurchaseOutcome {
-        val outcome = billing.purchase(activity)
+        // repeatable = false: the unlock stays owned, so Play never offers it again.
+        val outcome = billing.purchase(activity, UNLOCK_PRODUCT_ID, repeatable = false)
         if (outcome is PurchaseOutcome.Purchased) {
             if (!verifier.verify(outcome.receipt)) {
                 return PurchaseOutcome.Unavailable(SIGNATURE_REJECTED)

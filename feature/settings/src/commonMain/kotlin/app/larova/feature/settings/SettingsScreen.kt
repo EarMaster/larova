@@ -21,15 +21,20 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.AppearanceSetting
+import app.larova.core.domain.model.Entitlement
 import app.larova.core.ui.component.ActionCard
 import app.larova.core.ui.component.LarovaScaffold
+import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.Transfer
+import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.settings_appearance
 import app.larova.core.ui.resources.settings_appearance_dark
@@ -40,8 +45,20 @@ import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
 import app.larova.core.ui.resources.settings_appearance_system_hint
+import app.larova.core.ui.resources.settings_support
+import app.larova.core.ui.resources.settings_support_count
+import app.larova.core.ui.resources.settings_support_hint
+import app.larova.core.ui.resources.settings_support_thanks
+import app.larova.core.ui.resources.settings_support_unavailable
 import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.settings_transfer_hint
+import app.larova.core.ui.resources.settings_unlock
+import app.larova.core.ui.resources.settings_unlock_build
+import app.larova.core.ui.resources.settings_unlock_check
+import app.larova.core.ui.resources.settings_unlock_hint
+import app.larova.core.ui.resources.settings_unlock_none
+import app.larova.core.ui.resources.settings_unlock_owned
+import app.larova.core.ui.resources.settings_version
 import app.larova.core.ui.resources.transfer_title
 import app.larova.core.ui.resources.view_leave
 import app.larova.core.ui.resources.view_locked_note
@@ -49,7 +66,9 @@ import app.larova.core.ui.resources.view_parent_active
 import app.larova.core.ui.resources.view_pin_change
 import app.larova.core.ui.resources.view_unlock_title
 import app.larova.core.ui.theme.Dimens
+import app.larova.core.ui.theme.TileColor
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -74,6 +93,17 @@ fun SettingsScreen(
     onChangePin: () -> Unit,
     onOpenTransfer: () -> Unit,
     onBack: () -> Unit,
+    entitlement: Entitlement,
+    /**
+     * Asks the store again. Null in a build with no store behind it, where there is nothing to
+     * ask and the status line says so instead.
+     */
+    onCheckPurchases: (() -> Unit)?,
+    supportCount: Int,
+    /** Opens Play's sheet for the contribution. Null in a build with no store behind it. */
+    onSupport: (() -> Unit)?,
+    supportMessage: SupportMessage?,
+    appVersion: String,
     modifier: Modifier = Modifier,
 ) {
     LarovaScaffold(
@@ -111,6 +141,27 @@ fun SettingsScreen(
                     onClick = onOpenTransfer,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
+
+                // Parent view only: buying and checking a purchase is parent-view work, and a
+                // caregiver has no use for either.
+                UnlockStatus(
+                    entitlement = entitlement,
+                    onCheck = onCheckPurchases,
+                )
+
+                // Below the unlock, and visually a sibling of the backup card rather than of it:
+                // this buys nothing and must not read as a second paid tier.
+                if (onSupport != null) {
+                    ActionCard(
+                        icon = TileSymbol.HEART.image,
+                        title = stringResource(Res.string.settings_support),
+                        description = supportDescription(supportCount, supportMessage),
+                        onClick = onSupport,
+                        // Rose rather than sand: warm, and not the colour of anything functional.
+                        token = TileColor.ROSE,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                    )
+                }
             }
 
             Text(
@@ -125,6 +176,90 @@ fun SettingsScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            // Not hidden behind parent view. It is the first thing any support message needs and
+            // the last thing anybody would think to ask a caregiver to find.
+            Text(
+                text = stringResource(Res.string.settings_version, appVersion),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+/** What the contribution card says under its title, which changes as things happen. */
+enum class SupportMessage {
+    /** A contribution just went through. The count has already gone up beside it. */
+    THANKS,
+
+    /** Play could not be reached, or refused. Worth saying; not worth a dialog. */
+    UNAVAILABLE,
+}
+
+/**
+ * The line under the contribution card.
+ *
+ * The count is the feedback that matters — "supported once" becoming "supported twice" is what
+ * tells somebody their tap did something, better than any toast would. The outcome message takes
+ * precedence only while there is one, and the explanation shows until anybody has given at all.
+ */
+@Composable
+private fun supportDescription(count: Int, message: SupportMessage?): String = when {
+    message == SupportMessage.UNAVAILABLE -> stringResource(Res.string.settings_support_unavailable)
+    message == SupportMessage.THANKS -> stringResource(Res.string.settings_support_thanks)
+    count > 0 -> pluralStringResource(Res.plurals.settings_support_count, count, count)
+    else -> stringResource(Res.string.settings_support_hint)
+}
+
+/**
+ * Whether the full version is unlocked, and a way to ask the store again.
+ *
+ * The status matters more than the button. Restoring already happens at every launch, so somebody
+ * who paid on another phone is usually unlocked before they think to look — what they lack is a
+ * way to *see* that, and a retry for the case the automatic attempt could not cover: a phone that
+ * was offline at start and is online now.
+ *
+ * A build with no paid tier says so rather than showing a lock. Otherwise somebody who compiled
+ * Larova themselves would be left wondering why everything is available.
+ */
+@Composable
+private fun UnlockStatus(
+    entitlement: Entitlement,
+    onCheck: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = stringResource(Res.string.settings_unlock),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(vertical = 4.dp),
+        )
+        Text(
+            text = when (entitlement) {
+                Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
+                Entitlement.PLAY, Entitlement.KEY -> stringResource(Res.string.settings_unlock_owned)
+                Entitlement.BUILD -> stringResource(Res.string.settings_unlock_build)
+            },
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        if (onCheck != null) {
+            Text(
+                text = stringResource(Res.string.settings_unlock_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+            TextButton(
+                onClick = onCheck,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.settings_unlock_check))
+            }
         }
     }
 }

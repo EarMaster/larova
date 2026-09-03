@@ -98,6 +98,22 @@ interface PreferencesRepository {
     fun observeLastBackup(): Flow<LastBackup?>
 
     suspend fun setLastBackup(backup: LastBackup)
+
+    /**
+     * How many times somebody has contributed to the development, on this installation.
+     *
+     * A tally rather than a fact about the account. The contribution is consumed after each
+     * purchase so it can be bought again, which means Play does not remember it and cannot be
+     * asked — so this is what there is. It does not survive a reinstall, and that is the cost of
+     * the product being repeatable.
+     *
+     * Here rather than in the database for the same reason as the rest of this interface: it is
+     * not content, and it has no business travelling in a backup somebody hands to a grandparent.
+     */
+    fun observeSupportCount(): Flow<Int>
+
+    /** One more. Never resets — nothing anybody paid for should quietly become zero. */
+    suspend fun addSupport()
 }
 
 /**

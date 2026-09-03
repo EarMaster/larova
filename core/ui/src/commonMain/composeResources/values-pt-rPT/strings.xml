@@ -147,6 +147,22 @@
     <string name="settings_language">Idioma</string>
     <string name="settings_language_hint">A Larova pode usar um idioma diferente do resto do telemóvel.</string>
     <string name="settings_transfer_hint">Guarde tudo num ficheiro, ou traga uma cópia de volta.</string>
+    <string name="settings_unlock">A versão completa</string>
+    <string name="settings_unlock_owned">Desbloqueada</string>
+    <string name="settings_unlock_none">Não desbloqueada</string>
+    <string name="settings_unlock_build">Desbloqueada — esta versão não tem versão paga</string>
+    <string name="settings_unlock_check">Verificar novamente</string>
+    <string name="settings_unlock_hint">A Larova consulta a Google Play sempre que arranca. Use isto se comprou a versão completa noutro telemóvel ou se este telemóvel estava offline.</string>
+    <string name="settings_version">Versão %1$s</string>
+    <string name="settings_support">Apoiar o desenvolvimento</string>
+    <string name="settings_support_hint">A Larova é feita por uma só pessoa, sem empresa por trás. Isto ajuda a pagar o tempo; não desbloqueia nada.</string>
+    <string name="settings_support_give">Apoiar</string>
+    <string name="settings_support_thanks">Obrigado.</string>
+    <string name="settings_support_unavailable">Não é possível aceder à loja. Tente novamente quando este telemóvel estiver online.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Apoiado uma vez</item>
+        <item quantity="other">Apoiado %1$d vezes</item>
+    </plurals>
     <string name="settings_log">Registo de atividade</string>
     <string name="settings_log_retention">Guardar %1$d dias</string>
     <string name="settings_log_clear">Limpar o registo</string>

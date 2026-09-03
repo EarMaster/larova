@@ -146,6 +146,22 @@
     <string name="settings_language">भाषा</string>
     <string name="settings_language_hint">Larova बाकी फ़ोन से अलग भाषा में चल सकता है।</string>
     <string name="settings_transfer_hint">सब कुछ एक फ़ाइल में सहेजें, या कोई बैकअप वापस लाएँ।</string>
+    <string name="settings_unlock">पूर्ण संस्करण</string>
+    <string name="settings_unlock_owned">अनलॉक है</string>
+    <string name="settings_unlock_none">अनलॉक नहीं है</string>
+    <string name="settings_unlock_build">अनलॉक है — इस बिल्ड में कोई सशुल्क संस्करण नहीं है</string>
+    <string name="settings_unlock_check">फिर जाँचें</string>
+    <string name="settings_unlock_hint">Larova हर बार शुरू होने पर Google Play से पूछता है। इसका उपयोग करें यदि आपने पूर्ण संस्करण किसी दूसरे फ़ोन पर खरीदा था, या यह फ़ोन ऑफ़लाइन था।</string>
+    <string name="settings_version">संस्करण %1$s</string>
+    <string name="settings_support">विकास का समर्थन करें</string>
+    <string name="settings_support_hint">Larova को एक ही व्यक्ति बनाता है, पीछे कोई कंपनी नहीं। यह उस समय का ख़र्च उठाने में मदद करता है; इससे कुछ अनलॉक नहीं होता।</string>
+    <string name="settings_support_give">समर्थन करें</string>
+    <string name="settings_support_thanks">धन्यवाद।</string>
+    <string name="settings_support_unavailable">स्टोर तक नहीं पहुँचा जा सका। जब यह फ़ोन ऑनलाइन हो तब फिर कोशिश करें।</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">एक बार समर्थन किया</item>
+        <item quantity="other">%1$d बार समर्थन किया</item>
+    </plurals>
     <string name="settings_log">गतिविधि लॉग</string>
     <string name="settings_log_retention">%1$d दिन तक रखें</string>
     <string name="settings_log_clear">लॉग साफ़ करें</string>

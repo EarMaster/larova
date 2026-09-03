@@ -152,6 +152,22 @@
     <string name="settings_language">Langue</string>
     <string name="settings_language_hint">Larova peut utiliser une autre langue que le reste du téléphone.</string>
     <string name="settings_transfer_hint">Tout enregistrer dans un fichier, ou récupérer une sauvegarde.</string>
+    <string name="settings_unlock">La version complète</string>
+    <string name="settings_unlock_owned">Débloquée</string>
+    <string name="settings_unlock_none">Non débloquée</string>
+    <string name="settings_unlock_build">Débloquée — cette version n’a pas de version payante</string>
+    <string name="settings_unlock_check">Vérifier à nouveau</string>
+    <string name="settings_unlock_hint">Larova interroge Google Play à chaque démarrage. Utilisez ceci si vous avez acheté la version complète sur un autre téléphone, ou si celui-ci était hors ligne.</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_support">Soutenir le développement</string>
+    <string name="settings_support_hint">Larova est faite par une seule personne, sans société derrière. Ceci aide à payer le temps ; cela ne débloque rien.</string>
+    <string name="settings_support_give">Soutenir</string>
+    <string name="settings_support_thanks">Merci.</string>
+    <string name="settings_support_unavailable">Le store est inaccessible. Réessayez quand ce téléphone sera en ligne.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Soutenu une fois</item>
+        <item quantity="other">Soutenu %1$d fois</item>
+    </plurals>
     <string name="settings_log">Journal d’activité</string>
     <string name="settings_log_retention">Conserver %1$d jours</string>
     <string name="settings_log_clear">Effacer le journal</string>

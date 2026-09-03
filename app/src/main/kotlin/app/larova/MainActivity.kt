@@ -71,12 +71,22 @@ private fun LarovaApp(openCardId: String? = null) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
     val viewMode by viewModel.viewMode.collectAsStateWithLifecycle()
 
+    val entitlement by viewModel.entitlement.collectAsStateWithLifecycle()
+    val supportCount by viewModel.supportCount.collectAsStateWithLifecycle()
+    val supportMessage by viewModel.supportMessage.collectAsStateWithLifecycle()
+
     LarovaTheme(mode = appearance.resolve()) {
         LarovaNavHost(
             appearance = appearance,
             onAppearanceChange = viewModel::setAppearance,
             isParentView = viewMode.isParent,
             onLockParentView = viewModel::leaveParentView,
+            entitlement = entitlement,
+            onCheckPurchases = viewModel::checkPurchasesAgain,
+            supportCount = supportCount,
+            supportMessage = supportMessage,
+            onSupported = viewModel::onSupported,
+            onSupportUnavailable = viewModel::onSupportUnavailable,
             onPrepareCall = actions::prepareCall,
             onOpenUrl = actions::openUrl,
             onOpenApp = actions::openApp,

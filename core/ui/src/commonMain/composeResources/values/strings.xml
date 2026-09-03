@@ -144,6 +144,22 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_hint">Larova can use a different language from the rest of the phone.</string>
     <string name="settings_transfer_hint">Save everything to one file, or bring a backup back.</string>
+    <string name="settings_unlock">The full version</string>
+    <string name="settings_unlock_owned">Unlocked</string>
+    <string name="settings_unlock_none">Not unlocked</string>
+    <string name="settings_unlock_build">Unlocked — this build has no paid version</string>
+    <string name="settings_unlock_check">Check again</string>
+    <string name="settings_unlock_hint">Larova asks Google Play every time it starts. Use this if you bought the full version on another phone, or if this phone was offline.</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_support">Support the development</string>
+    <string name="settings_support_hint">Larova is made by one person, with no company behind it. This is a way to help pay for the time; it unlocks nothing.</string>
+    <string name="settings_support_give">Support</string>
+    <string name="settings_support_thanks">Thank you.</string>
+    <string name="settings_support_unavailable">The store cannot be reached. Try again when this phone is online.</string>
+    <plurals name="settings_support_count">
+        <item quantity="one">Supported once</item>
+        <item quantity="other">Supported %1$d times</item>
+    </plurals>
     <string name="settings_log">Activity log</string>
     <string name="settings_log_retention">Keep for %1$d days</string>
     <string name="settings_log_clear">Clear the log</string>

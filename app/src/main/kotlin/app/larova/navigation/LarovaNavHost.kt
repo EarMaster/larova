@@ -1,6 +1,7 @@
 package app.larova.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -8,11 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import app.larova.BuildConfig
 import app.larova.core.billing.PurchaseOutcome
-import app.larova.rememberBiometricUnlock
-import app.larova.rememberUnlockPurchase
 import app.larova.core.domain.model.AppearanceSetting
-import androidx.compose.runtime.LaunchedEffect
+import app.larova.core.domain.model.Entitlement
 import app.larova.di.arrangeViewModelParameters
 import app.larova.di.cardViewModelParameters
 import app.larova.di.editCardViewModelParameters
@@ -40,10 +40,14 @@ import app.larova.feature.transfer.TransferViewModel
 import app.larova.formatExportDate
 import app.larova.formatLogTime
 import app.larova.rememberBackupPicker
+import app.larova.rememberBiometricUnlock
 import app.larova.rememberMicrophoneRequest
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import app.larova.rememberSoundPicker
+import app.larova.feature.settings.SupportMessage
+import app.larova.rememberSupportPurchase
+import app.larova.rememberUnlockPurchase
 import app.larova.rememberVideoPicker
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,6 +61,12 @@ fun LarovaNavHost(
     onAppearanceChange: (AppearanceSetting) -> Unit,
     isParentView: Boolean,
     onLockParentView: () -> Unit,
+    entitlement: Entitlement,
+    onCheckPurchases: () -> Unit,
+    supportCount: Int,
+    supportMessage: SupportMessage?,
+    onSupported: () -> Unit,
+    onSupportUnavailable: () -> Unit,
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
     onOpenApp: (String) -> Unit,
@@ -174,16 +184,7 @@ fun LarovaNavHost(
             // The store's own result type is translated here rather than in :feature:card, which is
             // what keeps :core:billing out of every feature module. A cancelled purchase is left
             // alone on purpose: somebody who backed out has already seen their own decision.
-            val buyUnlock = rememberUnlockPurchase { outcome ->
-                when (outcome) {
-                    is PurchaseOutcome.Purchased, PurchaseOutcome.AlreadyOwned ->
-                        viewModel.onPurchased()
-
-                    PurchaseOutcome.Pending -> viewModel.onPurchasePending()
-                    is PurchaseOutcome.Unavailable -> viewModel.onPurchaseUnavailable()
-                    PurchaseOutcome.Cancelled -> Unit
-                }
-            }
+            val buyUnlock = rememberUnlockPurchase(viewModel::applyUnlockOutcome)
 
             EditCardScreen(
                 state = state,
@@ -335,6 +336,11 @@ fun LarovaNavHost(
         }
 
         composable<SettingsRoute> {
+            // Cancelled is deliberately silent: somebody who backed out of paying has already
+            // seen their own decision, and a card that said so would be nagging.
+            val support = rememberSupportPurchase { outcome ->
+                outcome.applyTo(onSupported = onSupported, onUnavailable = onSupportUnavailable)
+            }
             SettingsScreen(
                 appearance = appearance,
                 onAppearanceChange = onAppearanceChange,
@@ -344,7 +350,51 @@ fun LarovaNavHost(
                 onChangePin = { navController.navigate(PinSetupRoute) },
                 onOpenTransfer = { navController.navigate(TransferRoute) },
                 onBack = goBack,
+                entitlement = entitlement,
+                // Null in a build with no store behind it: there is nothing to ask, and the status
+                // line says as much instead of offering a button that cannot help.
+                onCheckPurchases = onCheckPurchases.takeIf { BuildConfig.PAID_TIER },
+                supportCount = supportCount,
+                onSupport = support,
+                supportMessage = supportMessage,
+                appVersion = BuildConfig.VERSION_NAME,
             )
         }
+    }
+}
+
+/**
+ * The store's own result type, translated for the editor.
+ *
+ * Extracted from the graph rather than written inline: two `when` blocks over a sealed interface
+ * pushed `LarovaNavHost` past the complexity the project allows, and a navigation graph is the
+ * wrong place to read purchase semantics anyway. This is also the one place that decides Play's
+ * vocabulary maps onto the app's, which is easier to check when it is one function.
+ *
+ * `AlreadyOwned` counts as success: a reinstall that already paid is unlocked, not refused.
+ * `Cancelled` is silent — somebody who backed out has already seen their own decision.
+ */
+private fun EditCardViewModel.applyUnlockOutcome(outcome: PurchaseOutcome) {
+    when (outcome) {
+        is PurchaseOutcome.Purchased, PurchaseOutcome.AlreadyOwned -> onPurchased()
+        PurchaseOutcome.Pending -> onPurchasePending()
+        is PurchaseOutcome.Unavailable -> onPurchaseUnavailable()
+        PurchaseOutcome.Cancelled -> Unit
+    }
+}
+
+/**
+ * The same translation for the repeatable contribution, which reads differently.
+ *
+ * `Pending` is silent here rather than reported: an unpaid cash order is not a contribution yet,
+ * and the tally must only ever count money that arrived. `AlreadyOwned` is a failure rather than a
+ * success — it means a previous purchase was never consumed, so the sweep in `rememberSupportPurchase`
+ * has not caught up and nothing new was bought.
+ */
+private fun PurchaseOutcome.applyTo(onSupported: () -> Unit, onUnavailable: () -> Unit) {
+    when (this) {
+        is PurchaseOutcome.Purchased -> onSupported()
+        PurchaseOutcome.Cancelled, PurchaseOutcome.Pending -> Unit
+        PurchaseOutcome.AlreadyOwned, is PurchaseOutcome.Unavailable -> onUnavailable()
     }
 }

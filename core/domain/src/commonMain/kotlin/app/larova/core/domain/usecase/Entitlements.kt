@@ -3,6 +3,7 @@ package app.larova.core.domain.usecase
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.Entitlement
 import app.larova.core.domain.repository.EntitlementRepository
+import app.larova.core.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -68,4 +69,20 @@ class RefreshEntitlement(private val entitlements: EntitlementRepository) {
  */
 class UnlockPrice(private val entitlements: EntitlementRepository) {
     suspend operator fun invoke(): String? = entitlements.formattedPrice()
+}
+
+/**
+ * How many times the development has been supported from this installation.
+ *
+ * Nothing depends on the number: it unlocks nothing and gates nothing. It is shown because
+ * somebody who gave three times should see three, and because a button that looks identical
+ * before and after paying feels like it did not work.
+ */
+class ObserveSupportCount(private val preferences: PreferencesRepository) {
+    operator fun invoke(): Flow<Int> = preferences.observeSupportCount()
+}
+
+/** Counts one contribution. Called only after Play confirmed and signed it. */
+class RecordSupport(private val preferences: PreferencesRepository) {
+    suspend operator fun invoke() = preferences.addSupport()
 }
