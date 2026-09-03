@@ -1,9 +1,7 @@
 package app.larova.core.domain.model
 
-import app.larova.core.domain.serialization.UuidSerializer
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import kotlinx.serialization.Serializable
 
 /**
  * A picture, video or recording.
@@ -14,11 +12,13 @@ import kotlinx.serialization.Serializable
  *
  * [sha256] is what lets an import tell "the same file again" from "a different file with the same
  * name", and lets an export verify it arrived intact.
+ *
+ * Not `@Serializable`: the file format has its own row types in `export/ExportRows.kt`, for the
+ * reason [Card] gives.
  */
 @OptIn(ExperimentalUuidApi::class)
-@Serializable
 data class MediaAsset(
-    @Serializable(with = UuidSerializer::class) val id: Uuid,
+    val id: Uuid,
     /** Relative to the media root, so an export stays portable between installations. */
     val relativePath: String,
     val mimeType: String,

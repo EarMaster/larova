@@ -1,11 +1,8 @@
 package app.larova.core.domain.model
 
-import app.larova.core.domain.serialization.InstantSerializer
-import app.larova.core.domain.serialization.UuidSerializer
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import kotlinx.serialization.Serializable
 
 /**
  * One tile.
@@ -17,12 +14,18 @@ import kotlinx.serialization.Serializable
  * [payload] is serialized JSON of a [CardPayload]. That is what lets a new tile type ship without
  * a database migration, and what lets a payload from a newer version be skipped rather than bring
  * an entire import down.
+ *
+ * Not `@Serializable`, and that is the point. A file format that borrows its fields from a domain
+ * model is one ordinary refactoring away from changing what every backup contains — which is how
+ * this class came to write `"type": "GUIDE"` into export files while the database column said
+ * `guide`. The wire shape lives in `export/ExportRows.kt` now, and the missing annotation here is
+ * what turns "someone serialized a domain model again" into a compile error rather than a format
+ * change nobody notices until a family cannot open their backup.
  */
 @OptIn(ExperimentalUuidApi::class)
-@Serializable
 data class Card(
-    @Serializable(with = UuidSerializer::class) val id: Uuid,
-    @Serializable(with = UuidSerializer::class) val boardId: Uuid,
+    val id: Uuid,
+    val boardId: Uuid,
     val title: String,
     val subtitle: String? = null,
     val icon: String,
@@ -33,7 +36,7 @@ data class Card(
     val payload: String,
     /** Reserved for a per-card second language. Unused in v1, written to exports from the start. */
     val locale: String? = null,
-    @Serializable(with = InstantSerializer::class) val updatedAt: Instant,
+    val updatedAt: Instant,
 )
 
 /**
