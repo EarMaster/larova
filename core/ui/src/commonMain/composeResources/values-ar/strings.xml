@@ -184,7 +184,7 @@
     <string name="edit_type_locked">يتطلب النسخة الكاملة</string>
     <string name="purchase_title">النسخة الكاملة</string>
     <string name="purchase_reason">بطاقات %1$s جزء من النسخة الكاملة.</string>
-    <string name="purchase_body">دفعة واحدة، بلا اشتراك. يبقى كل ما عداها في لاروفا مجانياً، والبطاقات التي يرسلها إليك أحد تعمل في الحالتين. يصنع لاروفا شخص واحد؛ وشراء النسخة الكاملة هو ما يُبقيها مستمرة.</string>
+    <string name="purchase_body">دفعة واحدة، بلا اشتراك، والفتح يتبع حساب Google الذي يشتريه. يبقى كل ما عداها في لاروفا مجانياً، والبطاقات التي يرسلها إليك أحد تعمل في الحالتين. يصنع لاروفا شخص واحد؛ وشراء النسخة الكاملة هو ما يُبقيها مستمرة.</string>
     <string name="purchase_buy_price">افتحها مقابل %1$s</string>
     <string name="purchase_buy">افتحها</string>
     <string name="purchase_unavailable">تعذّر الوصول إلى المتجر. حاول مرة أخرى عندما يكون الهاتف متصلاً.</string>

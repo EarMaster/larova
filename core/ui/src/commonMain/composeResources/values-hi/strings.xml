@@ -169,7 +169,7 @@
     <string name="edit_type_locked">पूर्ण संस्करण चाहिए</string>
     <string name="purchase_title">पूर्ण संस्करण</string>
     <string name="purchase_reason">%1$s टाइलें पूर्ण संस्करण का हिस्सा हैं।</string>
-    <string name="purchase_body">एक बार भुगतान, कोई सदस्यता नहीं। Larova में बाकी सब मुफ़्त रहता है, और कोई आपको जो टाइलें भेजे वे दोनों ही स्थितियों में काम करती हैं। Larova को एक ही व्यक्ति बनाता है; पूर्ण संस्करण खरीदना ही इसे चलाए रखता है।</string>
+    <string name="purchase_body">एक बार भुगतान, कोई सदस्यता नहीं, और अनलॉक उसी Google खाते का होता है जो उसे खरीदता है। Larova में बाकी सब मुफ़्त रहता है, और कोई आपको जो टाइलें भेजे वे दोनों ही स्थितियों में काम करती हैं। Larova को एक ही व्यक्ति बनाता है; पूर्ण संस्करण खरीदना ही इसे चलाए रखता है।</string>
     <string name="purchase_buy_price">%1$s में अनलॉक करें</string>
     <string name="purchase_buy">अनलॉक करें</string>
     <string name="purchase_unavailable">स्टोर तक नहीं पहुँचा जा सका। जब यह फ़ोन ऑनलाइन हो तब फिर कोशिश करें।</string>

@@ -175,7 +175,7 @@
     <string name="edit_type_locked">Нужна полная версия</string>
     <string name="purchase_title">Полная версия</string>
     <string name="purchase_reason">Плитки «%1$s» входят в полную версию.</string>
-    <string name="purchase_body">Одна оплата, без подписки. Всё остальное в Larova остаётся бесплатным, а плитки, которые вам пришлют, работают в любом случае. Larova делает один человек; покупка полной версии позволяет продолжать.</string>
+    <string name="purchase_body">Одна оплата, без подписки, и разблокировка принадлежит аккаунту Google, который её купил. Всё остальное в Larova остаётся бесплатным, а плитки, которые вам пришлют, работают в любом случае. Larova делает один человек; покупка полной версии позволяет продолжать.</string>
     <string name="purchase_buy_price">Разблокировать за %1$s</string>
     <string name="purchase_buy">Разблокировать</string>
     <string name="purchase_unavailable">Не удаётся связаться с магазином. Попробуйте снова, когда телефон будет в сети.</string>

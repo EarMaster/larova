@@ -19,6 +19,9 @@ docs-only changes do not belong here.
   offer laid over it, instead of a message in front of a screen you had not seen. You can look at
   what you would be getting before deciding, and choose a different type without dismissing
   anything first.
+- The offer now says plainly that the full version belongs to the Google account that buys it.
+  Google Play cannot share an in-app purchase between family members the way it shares a paid app,
+  so it is better said before paying than discovered afterwards.
 
 ## [0.4.0] - 2026-09-01
 

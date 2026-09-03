@@ -170,7 +170,7 @@
     <string name="edit_type_locked">需要完整版</string>
     <string name="purchase_title">完整版</string>
     <string name="purchase_reason">%1$s 磁贴属于完整版。</string>
-    <string name="purchase_body">一次付款，无需订阅。Larova 的其余功能仍然免费，别人发给你的磁贴也照常可用。Larova 由一个人制作；购买完整版让它得以继续。</string>
+    <string name="purchase_body">一次付款，无需订阅，解锁归购买它的 Google 账号所有。Larova 的其余功能仍然免费，别人发给你的磁贴也照常可用。Larova 由一个人制作；购买完整版让它得以继续。</string>
     <string name="purchase_buy_price">%1$s 解锁</string>
     <string name="purchase_buy">解锁</string>
     <string name="purchase_unavailable">无法连接商店。请在手机联网后重试。</string>

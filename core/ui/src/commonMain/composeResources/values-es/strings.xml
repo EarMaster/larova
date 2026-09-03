@@ -169,7 +169,7 @@
     <string name="edit_type_locked">Requiere la versión completa</string>
     <string name="purchase_title">La versión completa</string>
     <string name="purchase_reason">Las fichas %1$s forman parte de la versión completa.</string>
-    <string name="purchase_body">Un solo pago, sin suscripción. Todo lo demás en Larova sigue siendo gratuito, y las fichas que alguien te envía funcionan igualmente. Larova la hace una sola persona; comprar la versión completa es lo que permite seguir.</string>
+    <string name="purchase_body">Un solo pago, sin suscripción, y el desbloqueo pertenece a la cuenta de Google que lo compra. Todo lo demás en Larova sigue siendo gratuito, y las fichas que alguien te envía funcionan igualmente. Larova la hace una sola persona; comprar la versión completa es lo que permite seguir.</string>
     <string name="purchase_buy_price">Desbloquear por %1$s</string>
     <string name="purchase_buy">Desbloquear</string>
     <string name="purchase_unavailable">No se puede acceder a la tienda. Inténtalo de nuevo cuando este teléfono esté en línea.</string>
