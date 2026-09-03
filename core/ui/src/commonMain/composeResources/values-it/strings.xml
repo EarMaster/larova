@@ -191,9 +191,11 @@
     <string name="edit_edit_tile">Modifica riquadro</string>
     <string name="edit_choose_type">Cosa va su questo riquadro?</string>
     <string name="edit_type_locked">Richiede la versione completa</string>
+    <string name="purchase_show">Bloccato — tocca per sbloccare</string>
     <string name="purchase_title">La versione completa</string>
     <string name="purchase_reason">Le caselle %1$s fanno parte della versione completa.</string>
-    <string name="purchase_body">Un solo pagamento, nessun abbonamento, e lo sblocco appartiene all’account Google che lo acquista. Tutto il resto in Larova resta gratuito e le caselle che qualcuno ti invia funzionano comunque. Larova è fatta da una sola persona; acquistare la versione completa è ciò che la tiene viva.</string>
+    <string name="purchase_body">Un pagamento unico, nessun abbonamento. Tutto il resto in Larova resta gratuito. I contenuti creati possono sempre essere condivisi — non serve un altro acquisto.</string>
+    <string name="purchase_body_support">Larova è realizzato da una sola persona — acquistare la versione completa è ciò che tiene in vita lo sviluppo.</string>
     <string name="purchase_buy_price">Sblocca per %1$s</string>
     <string name="purchase_buy">Sblocca</string>
     <string name="purchase_unavailable">Impossibile raggiungere lo store. Riprova quando questo telefono è online.</string>

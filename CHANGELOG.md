@@ -12,6 +12,16 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Changed
+- Choosing a tile type that needs the full version now shows you the tile first. The fields are
+  laid out as usual, greyed but readable, with one "Locked — tap to unlock" button above them, so
+  you can see what a Video or Sound tile actually asks for before deciding whether it is worth
+  paying for. The offer with the price arrives when you tap that button. It used to appear straight
+  away, on top of the very fields it was describing.
+- The text about the full version is shorter and says the part that matters: one payment, no
+  subscription, everything else stays free, and anything you make can always be shared without a
+  second purchase.
+
 ### Fixed
 - Restoring a backup that contains a kind of tile this version does not know now brings back
   everything else and says how many it had to leave out — and that they are still in your file, so

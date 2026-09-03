@@ -193,9 +193,11 @@
     <string name="edit_edit_tile">Kartı düzenle</string>
     <string name="edit_choose_type">Bu kartta ne olacak?</string>
     <string name="edit_type_locked">Tam sürüm gerekir</string>
+    <string name="purchase_show">Kilitli — açmak için dokunun</string>
     <string name="purchase_title">Tam sürüm</string>
     <string name="purchase_reason">%1$s kartları tam sürümün parçasıdır.</string>
-    <string name="purchase_body">Tek seferlik ödeme, abonelik yok ve kilit açma, satın alan Google hesabına aittir. Larova’daki her şey ücretsiz kalır ve birinin size gönderdiği kartlar yine de çalışır. Larova’yı tek bir kişi yapıyor; tam sürümü almak devam etmesini sağlıyor.</string>
+    <string name="purchase_body">Tek seferlik ödeme, abonelik yok. Larova’daki her şey ücretsiz kalır. Oluşturulan içerikler her zaman paylaşılabilir — ek satın alma gerekmez.</string>
+    <string name="purchase_body_support">Larova tek bir kişi tarafından yapılıyor — tam sürümü satın almak geliştirmeyi ayakta tutan şey.</string>
     <string name="purchase_buy_price">%1$s karşılığında aç</string>
     <string name="purchase_buy">Aç</string>
     <string name="purchase_unavailable">Mağazaya ulaşılamıyor. Bu telefon çevrimiçi olduğunda tekrar deneyin.</string>

@@ -200,9 +200,11 @@
     <string name="edit_edit_tile">Kachel bearbeiten</string>
     <string name="edit_choose_type">Was kommt auf diese Kachel?</string>
     <string name="edit_type_locked">Erfordert die Vollversion</string>
+    <string name="purchase_show">Gesperrt — zum Freischalten tippen</string>
     <string name="purchase_title">Die Vollversion</string>
     <string name="purchase_reason">%1$s-Kacheln gehören zur Vollversion.</string>
-    <string name="purchase_body">Einmal bezahlen, kein Abo, und die Freischaltung gehört zum Google-Konto, das sie kauft. Alles andere in Larova bleibt kostenlos, und Kacheln, die Ihnen jemand schickt, funktionieren so oder so. Larova wird von einer einzigen Person gemacht; der Kauf der Vollversion hält sie am Leben.</string>
+    <string name="purchase_body">Einmal bezahlen, kein Abo. Alles andere in Larova bleibt kostenlos. Erstellte Inhalte können immer geteilt werden — kein zusätzlicher Kauf notwendig.</string>
+    <string name="purchase_body_support">Larova wird von einer einzigen Person gemacht — der Kauf der Vollversion erhält die Entwicklung am Leben.</string>
     <string name="purchase_buy_price">Für %1$s freischalten</string>
     <string name="purchase_buy">Freischalten</string>
     <string name="purchase_unavailable">Der Store ist nicht erreichbar. Versuchen Sie es erneut, wenn dieses Telefon online ist.</string>

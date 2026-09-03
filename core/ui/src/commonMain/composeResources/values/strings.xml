@@ -198,10 +198,15 @@
       unrelated things both called "unlock" in one string file is how the wrong one gets shown.
     -->
     <string name="edit_type_locked">Needs the full version</string>
+    <!-- The button the offer folds down to. It sits over the fields of a locked tile type,
+         which stay readable behind it: the point is to be able to see what a Video tile
+         asks for before deciding whether it is worth paying for. -->
+    <string name="purchase_show">Locked — tap to unlock</string>
     <string name="purchase_title">The full version</string>
     <!-- %1$s is the name of a tile type, as it appears on the type picker. -->
     <string name="purchase_reason">%1$s tiles are part of the full version.</string>
-    <string name="purchase_body">One payment, no subscription, and the unlock belongs to the Google account that buys it. Everything else in Larova stays free, and tiles somebody sends you keep working either way. Larova is made by one person; buying the full version is what keeps it being made.</string>
+    <string name="purchase_body">One payment, no subscription. Everything else in Larova stays free. Anything you create can always be shared — no second purchase needed.</string>
+    <string name="purchase_body_support">Larova is made by one person — buying the full version is what keeps the development alive.</string>
     <!-- %1$s is the price, formatted by Google Play in the buyer's own currency. -->
     <string name="purchase_buy_price">Unlock for %1$s</string>
     <string name="purchase_buy">Unlock</string>

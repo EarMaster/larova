@@ -197,9 +197,11 @@
     <string name="edit_edit_tile">Modifier la tuile</string>
     <string name="edit_choose_type">Que contient cette tuile ?</string>
     <string name="edit_type_locked">Nécessite la version complète</string>
+    <string name="purchase_show">Verrouillé — appuyez pour débloquer</string>
     <string name="purchase_title">La version complète</string>
     <string name="purchase_reason">Les tuiles %1$s font partie de la version complète.</string>
-    <string name="purchase_body">Un seul paiement, sans abonnement, et le déblocage appartient au compte Google qui l’achète. Tout le reste dans Larova reste gratuit, et les tuiles que quelqu’un vous envoie fonctionnent dans tous les cas. Larova est faite par une seule personne ; acheter la version complète permet de continuer.</string>
+    <string name="purchase_body">Un seul paiement, pas d’abonnement. Tout le reste dans Larova reste gratuit. Les contenus créés peuvent toujours être partagés — aucun achat supplémentaire n’est nécessaire.</string>
+    <string name="purchase_body_support">Larova est développé par une seule personne — l’achat de la version complète est ce qui maintient le développement en vie.</string>
     <string name="purchase_buy_price">Débloquer pour %1$s</string>
     <string name="purchase_buy">Débloquer</string>
     <string name="purchase_unavailable">Le store est inaccessible. Réessayez quand ce téléphone sera en ligne.</string>

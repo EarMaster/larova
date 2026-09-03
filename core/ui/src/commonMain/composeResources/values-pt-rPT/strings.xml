@@ -192,9 +192,11 @@
     <string name="edit_edit_tile">Editar cartão</string>
     <string name="edit_choose_type">O que vai neste cartão?</string>
     <string name="edit_type_locked">Requer a versão completa</string>
+    <string name="purchase_show">Bloqueado — toque para desbloquear</string>
     <string name="purchase_title">A versão completa</string>
     <string name="purchase_reason">Os cartões %1$s fazem parte da versão completa.</string>
-    <string name="purchase_body">Um único pagamento, sem subscrição, e o desbloqueio pertence à conta Google que o compra. Tudo o resto na Larova continua gratuito, e os cartões que alguém lhe envia funcionam à mesma. A Larova é feita por uma só pessoa; comprar a versão completa é o que a mantém.</string>
+    <string name="purchase_body">Um único pagamento, sem subscrição. Todo o resto na Larova continua gratuito. Os conteúdos criados podem sempre ser partilhados — sem qualquer compra adicional.</string>
+    <string name="purchase_body_support">A Larova é feita por uma única pessoa — comprar a versão completa é o que mantém o desenvolvimento vivo.</string>
     <string name="purchase_buy_price">Desbloquear por %1$s</string>
     <string name="purchase_buy">Desbloquear</string>
     <string name="purchase_unavailable">Não é possível aceder à loja. Tente novamente quando este telemóvel estiver online.</string>
