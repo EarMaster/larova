@@ -1,7 +1,7 @@
 package app.larova.core.domain.usecase
 
 import app.larova.core.domain.export.ExportCodec
-import app.larova.core.domain.export.ExportContent
+import app.larova.core.domain.export.DecodedContent
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.export.ImportMode
 import app.larova.core.domain.model.LogEntry
@@ -45,7 +45,16 @@ class ImportPackage(
 ) {
 
     sealed interface Result {
-        data class Imported(val boards: Int, val cards: Int, val media: Int) : Result
+        /**
+         * [skippedCards] is how many tiles this build could not read — a type a newer Larova
+         * wrote. They are still in the file, which is what the screen tells the person.
+         */
+        data class Imported(
+            val boards: Int,
+            val cards: Int,
+            val media: Int,
+            val skippedCards: Int = 0,
+        ) : Result
 
         /** Written by a newer version. The manifest is returned so the screen can say which. */
         data class TooNew(val schemaVersion: Int) : Result
@@ -53,8 +62,18 @@ class ImportPackage(
         /** The content does not match the hash in the manifest: truncated or altered in transit. */
         data object Damaged : Result
 
-        /** Not a Larova package at all, or unopenable. */
+        /** Opened, but not a Larova package: no manifest, or no content beside it. */
         data object Unreadable : Result
+
+        /**
+         * The file itself could not be opened — a permission that lapsed between the picker and
+         * the read, or a cloud file the provider has not downloaded yet.
+         *
+         * Split out from [Unreadable] because the remedies have nothing in common. "This is not a
+         * Larova backup" is the wrong thing to tell somebody whose backup is fine and merely
+         * still in the cloud, and it is the sentence that makes them go looking for another copy.
+         */
+        data object CouldNotOpen : Result
     }
 
     suspend operator fun invoke(source: String, mode: ImportMode): Result {
@@ -66,7 +85,7 @@ class ImportPackage(
     }
 
     private sealed interface Read {
-        data class Accepted(val content: ExportContent, val mediaNames: List<String>) : Read
+        data class Accepted(val content: DecodedContent, val mediaNames: List<String>) : Read
         data class Refused(val result: Result) : Read
     }
 
@@ -85,7 +104,11 @@ class ImportPackage(
         val foundContent = contentJson
         refusalFor(opened, manifest, foundContent)?.let { return Read.Refused(it) }
 
-        val content = decodeOrNull(requireNotNull(foundContent)) ?: return Read.Refused(Result.Damaged)
+        // Null here means the JSON itself is unreadable. A row this build does not understand is a
+        // different thing entirely: the decode counts it and carries on, so a backup written by a
+        // newer Larova is no longer reported as damaged.
+        val content = ExportCodec.decodeContentOrNull(requireNotNull(foundContent))
+            ?: return Read.Refused(Result.Damaged)
         return Read.Accepted(content = content, mediaNames = mediaNames)
     }
 
@@ -95,7 +118,8 @@ class ImportPackage(
      */
     private fun refusalFor(opened: Boolean, manifest: ExportManifest?, content: String?): Result? =
         when {
-            !opened || manifest == null || content == null -> Result.Unreadable
+            !opened -> Result.CouldNotOpen
+            manifest == null || content == null -> Result.Unreadable
             !manifest.isReadable -> Result.TooNew(manifest.schemaVersion)
             io.digest.sha256(content) != manifest.contentSha256 -> Result.Damaged
             else -> null
@@ -104,7 +128,7 @@ class ImportPackage(
     private suspend fun apply(
         source: String,
         mode: ImportMode,
-        content: ExportContent,
+        content: DecodedContent,
         mediaNames: List<String>,
     ): Result {
         if (mode == ImportMode.REPLACE) clearEverything()
@@ -137,6 +161,7 @@ class ImportPackage(
             boards = content.boards.size,
             cards = content.cards.size,
             media = restored,
+            skippedCards = content.skippedCards,
         )
     }
 
@@ -208,11 +233,4 @@ class ImportPackage(
         if (incoming != null && id == incoming) existing else id
     }
 
-    private fun decodeOrNull(json: String): ExportContent? = try {
-        ExportCodec.json.decodeFromString<ExportContent>(json)
-    } catch (_: kotlinx.serialization.SerializationException) {
-        null
-    } catch (_: IllegalArgumentException) {
-        null
-    }
 }

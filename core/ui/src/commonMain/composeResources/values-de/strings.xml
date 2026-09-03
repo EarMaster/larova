@@ -134,12 +134,20 @@
     <string name="transfer_preview">%1$d Kacheln, %2$d Dateien, %3$s</string>
     <string name="transfer_replace">Alles ersetzen</string>
     <string name="transfer_merge">Zum Vorhandenen hinzufügen</string>
-    <string name="transfer_version_too_new">Diese Datei wurde mit einer neueren Version von Larova erstellt. Zum Öffnen die App aktualisieren.</string>
+    <string name="transfer_version_too_new">Diese Datei wurde mit Sicherungsformat %1$d von Larova geschrieben, diese App liest bis Version %2$d. Aktualisieren Sie die App und öffnen Sie sie erneut.</string>
     <string name="transfer_saved">Gesichert: %1$d Kacheln und %2$d Dateien.</string>
     <string name="transfer_restored">Wiederhergestellt: %1$d Kacheln und %2$d Dateien.</string>
     <string name="transfer_backup_failed">Die Sicherung konnte nicht geschrieben werden. Einen anderen Speicherort versuchen.</string>
-    <string name="transfer_damaged">Diese Datei ist unvollständig — sie wurde vielleicht nicht ganz übertragen. Es wurde nichts geändert.</string>
-    <string name="transfer_unreadable">Das ist keine Larova-Sicherung.</string>
+    <string name="transfer_damaged">Diese Datei ist unvollständig — sie wurde vielleicht nicht ganz übertragen. Es wurde nichts geändert. Lassen Sie sie sich erneut schicken, am besten über einen Cloud-Speicher statt über einen Messenger.</string>
+    <string name="transfer_unreadable">Das ist keine Larova-Sicherung. Eine Larova-Sicherung ist eine einzelne Datei, deren Name auf .larova endet — suchen Sie nach dieser, oder legen Sie auf dem anderen Telefon eine neue Sicherung an.</string>
+    <string name="transfer_cannot_open">Larova konnte diese Datei nicht öffnen. Wenn sie in einem Cloud-Speicher liegt, laden Sie sie erst auf dieses Telefon herunter und wählen Sie sie dann erneut.</string>
+    <string name="transfer_media_missing">Einige Bilder und Aufnahmen waren nicht in der Datei und konnten nicht zurückgeholt werden. Die Kacheln dazu sind da, nur ohne sie.</string>
+    <string name="transfer_replace_warning">Beim Ersetzen wird zuerst gelöscht, was auf diesem Telefon ist. Das lässt sich nicht rückgängig machen.</string>
+    <string name="transfer_cancel">Abbrechen</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Eine Kachel braucht ein neueres Larova und wurde weggelassen. In Ihrer Datei ist sie weiterhin enthalten.</item>
+        <item quantity="other">%1$d Kacheln brauchen ein neueres Larova und wurden weggelassen. In Ihrer Datei sind sie weiterhin enthalten.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Einstellungen</string>

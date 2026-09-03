@@ -12,6 +12,19 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Fixed
+- Restoring a backup that contains a kind of tile this version does not know now brings back
+  everything else and says how many it had to leave out — and that they are still in your file, so
+  updating Larova and restoring again gets them. Before, one unfamiliar tile made the whole file
+  refuse to open, and it said "this is not a Larova backup" about a perfectly good one.
+- The messages when a restore cannot go ahead now say what to do about it. A file that could not be
+  opened at all — one still sitting in cloud storage, most often — no longer claims not to be a
+  Larova backup, and the others suggest a next step instead of stopping at the bad news.
+- Replacing everything when you restore is harder to do by accident: the dialog now says that it
+  removes what is on the phone first and cannot be undone, the two choices no longer sit in the
+  order that favoured the destructive one, and there is a Cancel button rather than only tapping
+  outside.
+
 ## [0.4.2] - 2026-09-03
 
 ### Added

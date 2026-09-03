@@ -1,27 +1,32 @@
 package app.larova.core.domain
 
+import app.larova.core.domain.export.ExportCard
 import app.larova.core.domain.export.ExportCodec
 import app.larova.core.domain.export.ExportContent
-import app.larova.core.domain.model.Card
 import app.larova.core.domain.model.CardType
+import app.larova.core.domain.model.LogKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import kotlinx.serialization.SerializationException
 
 /**
- * What an older build actually does with a package containing a tile type it has never heard of.
+ * What a build does with a package containing a tile type or log kind it has never heard of.
  *
- * `Card.payload` is a raw `String` precisely so a newer payload shape cannot bring an import down,
- * and `CardType.fromKey` returns null so an unrecognised type is skipped rather than guessed at.
- * Those two together are meant to make a future tile type a per-tile miss.
+ * **What this used to be.** These tests were written to record a defect and now record its
+ * absence. `ExportContent` used to serialize the domain models, so `Card.type` was the enum
+ * itself — no default, and no `coerceInputValues` on the codec — and a single unrecognised value
+ * failed the decode of the *entire* `content.json`. `ImportPackage` reported that as `Unreadable`
+ * and the transfer screen said "This is not a Larova backup" about a perfectly good backup written
+ * by a newer version. The same code wrote `"type": "GUIDE"`, the Kotlin constant name, pinning the
+ * file format to identifier spelling that nothing pinned back.
  *
- * `Card.type` is the enum itself, though, and these tests pin down what that costs at the file
- * boundary — where the decision is all-or-nothing rather than per tile.
+ * Both enums carried doc comments promising per-row tolerance. These tests are what make those
+ * comments true rather than aspirational.
  */
 @OptIn(ExperimentalUuidApi::class)
 class UnknownTileTypeTest {
@@ -29,87 +34,115 @@ class UnknownTileTypeTest {
     private val boardId = Uuid.random()
     private val at = Instant.fromEpochMilliseconds(1_700_000_000_000)
 
-    /** The documented promise: a payload from the future is carried, not rejected. */
+    /** A payload from the future is carried through untouched — that always worked. */
     @Test
     fun aPayloadShapeFromTheFutureSurvivesTheRoundTrip() {
-        val json = ExportCodec.json.encodeToString(content(payload = """{"type":"guide"}"""))
-            .replace(
-                """{\"type\":\"guide\"}""",
-                """{\"type\":\"guide\",\"somethingNewEntirely\":42}""",
-            )
+        val payload = """{"type":"guide","somethingNewEntirely":42}"""
 
-        val decoded = ExportCodec.json.decodeFromString<ExportContent>(json)
+        val decoded = ExportCodec.decodeContentOrNull(
+            ExportCodec.json.encodeToString(content(type = "guide", payload = payload)),
+        )
 
-        assertEquals(1, decoded.cards.size)
-        assertNotNull(decoded.cards.single().payload)
+        assertNotNull(decoded)
+        assertEquals(payload, decoded.cards.single().payload)
+        assertEquals(0, decoded.skippedCards)
+    }
+
+    /** The fix: one unfamiliar tile costs that tile, and the count reaches the caller. */
+    @Test
+    fun anUnknownTileTypeCostsOneTileRatherThanTheFile() {
+        val json = ExportCodec.json.encodeToString(
+            ExportContent(
+                cards = listOf(
+                    card(type = "guide", title = "Bedtime"),
+                    card(type = "timetable", title = "From a newer Larova"),
+                    card(type = "note", title = "Allergies"),
+                ),
+            ),
+        )
+
+        val decoded = ExportCodec.decodeContentOrNull(json)
+
+        assertNotNull(decoded, "an unknown type must no longer fail the whole file")
+        assertEquals(2, decoded.cards.size)
+        assertEquals(1, decoded.skippedCards)
+        assertEquals(listOf("Bedtime", "Allergies"), decoded.cards.map { it.title })
+    }
+
+    /** Same tolerance one model over, where the comment made the same promise. */
+    @Test
+    fun anUnknownLogKindCostsOneLineRatherThanTheFile() {
+        val json = ExportCodec.json.encodeToString(content(type = "guide"))
+            .replace("\"log\": []", LOG_WITH_ONE_UNKNOWN_KIND)
+
+        val decoded = ExportCodec.decodeContentOrNull(json)
+
+        assertNotNull(decoded)
+        assertEquals(1, decoded.log.size)
+        assertEquals(LogKind.CARD_OPENED, decoded.log.single().kind)
+        assertEquals(1, decoded.skippedLogEntries)
+    }
+
+    /** Genuinely broken JSON is still refused outright. Tolerance is per row, not per file. */
+    @Test
+    fun unreadableJsonIsStillRefused() {
+        assertNull(ExportCodec.decodeContentOrNull("not json at all"))
+        assertNull(ExportCodec.decodeContentOrNull("""{"cards": "should be a list"}"""))
     }
 
     /**
-     * And the cost: an unrecognised *type* is not a per-tile miss. `Card.type` is the enum, the
-     * export `Json` sets no `coerceInputValues`, and the property has no default — so the whole
-     * `content.json` fails to decode, not the one card.
+     * The file writes the frozen key, matching the database column and the payload discriminator.
      *
-     * `ImportPackage.decodeOrNull` turns that into `Result.Unreadable`, which the transfer screen
-     * shows as "not a Larova package at all". The file is a perfectly good Larova package written
-     * by a newer version, and the person is told the wrong thing about it.
+     * The inverse of what this file once asserted. One concept used to have three spellings.
      */
     @Test
-    fun anUnknownTileTypeFailsTheWholeContentRatherThanOneCard() {
-        val json = ExportCodec.json
-            .encodeToString(content(payload = """{"type":"guide"}"""))
-            .replace("\"GUIDE\"", "\"TIMETABLE\"")
+    fun theFileWritesTheFrozenKey() {
+        val json = ExportCodec.json.encodeToString(content(type = "appLink"))
 
-        val thrown = runCatching { ExportCodec.json.decodeFromString<ExportContent>(json) }
-            .exceptionOrNull()
-
-        assertNotNull(thrown, "an unknown type is expected to fail the decode")
-        assertEquals(true, thrown is SerializationException)
+        assertTrue(json.contains("\"type\": \"appLink\""), json)
+        assertTrue(!json.contains("APP_LINK"), json)
+        assertEquals("appLink", CardType.APP_LINK.key)
     }
 
-    /**
-     * What the export file actually writes for a tile type: the **enum constant name**, not the
-     * frozen `key`.
-     *
-     * `CardType` carries no `@SerialName`, so kotlinx uses its default enum serializer and the
-     * file says `GUIDE` while the database column says `guide` and the payload discriminator says
-     * `guide`. The doc comment on `CardType` claims the key is "the value stored in the database
-     * and in every export file"; only the first half is true.
-     *
-     * This test exists to make that a decision rather than an accident. The export format is
-     * currently pinned to Kotlin identifiers, so renaming `APP_LINK` to `APP` would change the
-     * file format for every tile of that kind and no compiler would object.
-     */
-    @Test
-    fun theFileWritesTheEnumNameRatherThanTheFrozenKey() {
-        val json = ExportCodec.json.encodeToString(content(payload = "{}"))
-
-        assertEquals(true, json.contains("\"type\": \"GUIDE\""), json)
-        assertEquals(false, json.contains("\"type\": \"guide\""), json)
-        // The frozen key, for contrast - what the database and the payload discriminator use.
-        assertEquals("guide", CardType.GUIDE.key)
-    }
-
-    /** The read-out-of-the-database side does behave per tile, which is where fromKey is used. */
+    /** Reading out of the database is per row too, which is where `fromKey` has always been used. */
     @Test
     fun anUnknownKeyResolvesToNothingRatherThanToTheWrongType() {
         assertNull(CardType.fromKey("timetable"))
         assertNull(CardType.fromKey(null))
         assertEquals(CardType.GUIDE, CardType.fromKey("guide"))
+        assertNull(LogKind.fromKey("somethingElse"))
     }
 
-    private fun content(payload: String) = ExportContent(
-        cards = listOf(
-            Card(
-                id = Uuid.random(),
-                boardId = boardId,
-                title = "Bedtime",
-                icon = "moon",
-                colorToken = "sage",
-                sortIndex = 0,
-                type = CardType.GUIDE,
-                payload = payload,
-                updatedAt = at,
-            ),
-        ),
+    private fun content(type: String, payload: String = "{}") =
+        ExportContent(cards = listOf(card(type = type, payload = payload)))
+
+    private fun card(type: String, title: String = "Bedtime", payload: String = "{}") = ExportCard(
+        id = Uuid.random(),
+        boardId = boardId,
+        title = title,
+        icon = "moon",
+        colorToken = "sage",
+        sortIndex = 0,
+        type = type,
+        payload = payload,
+        updatedAt = at,
     )
+
+    private companion object {
+        /** One kind this build knows and one it does not, spliced into an otherwise valid file. */
+        val LOG_WITH_ONE_UNKNOWN_KIND = """
+            "log": [
+                {
+                  "id": "cccccccc-cccc-4ccc-8ccc-000000000001",
+                  "at": "2026-02-25T06:13:20Z",
+                  "kind": "cardOpened"
+                },
+                {
+                  "id": "cccccccc-cccc-4ccc-8ccc-000000000002",
+                  "at": "2026-02-25T06:13:20Z",
+                  "kind": "moodRecorded"
+                }
+            ]
+        """.trimIndent()
+    }
 }

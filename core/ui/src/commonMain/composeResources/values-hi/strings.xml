@@ -125,12 +125,20 @@
     <string name="transfer_preview">%1$d टाइलें, %2$d फ़ाइलें, %3$s</string>
     <string name="transfer_replace">सब कुछ बदल दें</string>
     <string name="transfer_merge">जो है उसमें जोड़ें</string>
-    <string name="transfer_version_too_new">यह फ़ाइल Larova के नए संस्करण से बनी है। खोलने के लिए ऐप अपडेट करें।</string>
+    <string name="transfer_version_too_new">यह फ़ाइल Larova के बैकअप फ़ॉर्मैट के संस्करण %1$d से बनी है, और यह ऐप संस्करण %2$d तक पढ़ता है। ऐप अपडेट करें, फिर इसे दोबारा खोलें।</string>
     <string name="transfer_saved">बैकअप हो गया: %1$d टाइलें और %2$d फ़ाइलें।</string>
     <string name="transfer_restored">वापस आ गया: %1$d टाइलें और %2$d फ़ाइलें।</string>
     <string name="transfer_backup_failed">बैकअप लिखा नहीं जा सका। किसी और जगह सहेजकर देखें।</string>
-    <string name="transfer_damaged">यह फ़ाइल अधूरी है — शायद पूरी नहीं भेजी गई। कुछ भी नहीं बदला गया।</string>
-    <string name="transfer_unreadable">यह Larova का बैकअप नहीं है।</string>
+    <string name="transfer_damaged">यह फ़ाइल अधूरी है — शायद यह पूरी नहीं भेजी गई। कुछ भी नहीं बदला गया। इसे दोबारा भेजने को कहें, और हो सके तो मैसेंजर की जगह क्लाउड स्टोरेज से कॉपी करें।</string>
+    <string name="transfer_unreadable">यह Larova का बैकअप नहीं है। Larova का बैकअप एक ही फ़ाइल होती है जिसका नाम .larova पर ख़त्म होता है — वही ढूँढें, या दूसरे फ़ोन पर नया बैकअप बनाएँ।</string>
+    <string name="transfer_cannot_open">Larova वह फ़ाइल नहीं खोल सका। अगर वह क्लाउड स्टोरेज में है, तो पहले उसे इस फ़ोन पर डाउनलोड करें, फिर दोबारा चुनें।</string>
+    <string name="transfer_media_missing">कुछ तस्वीरें और रिकॉर्डिंग फ़ाइल में नहीं थीं, इसलिए वापस नहीं लाई जा सकीं। उनका उपयोग करने वाली टाइलें मौजूद हैं, उनके बिना।</string>
+    <string name="transfer_replace_warning">बदलने पर पहले इस फ़ोन का सब कुछ हट जाता है। इसे पलटा नहीं जा सकता।</string>
+    <string name="transfer_cancel">रद्द करें</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">एक टाइल को नया Larova चाहिए, इसलिए छोड़ दी गई। आपकी फ़ाइल में वह अब भी है।</item>
+        <item quantity="other">%1$d टाइलों को नया Larova चाहिए, इसलिए छोड़ दी गईं। आपकी फ़ाइल में वे अब भी हैं।</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">सेटिंग</string>

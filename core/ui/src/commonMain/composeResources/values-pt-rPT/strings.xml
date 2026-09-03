@@ -126,12 +126,20 @@
     <string name="transfer_preview">%1$d cartões, %2$d ficheiros, %3$s</string>
     <string name="transfer_replace">Substituir tudo</string>
     <string name="transfer_merge">Juntar ao que está aqui</string>
-    <string name="transfer_version_too_new">Este ficheiro foi criado com uma versão mais recente da Larova. Atualize a aplicação para o abrir.</string>
+    <string name="transfer_version_too_new">Este ficheiro foi criado com a versão %1$d do formato de cópia da Larova, e esta app lê até à versão %2$d. Atualize a app e abra-o novamente.</string>
     <string name="transfer_saved">Cópia feita: %1$d cartões e %2$d ficheiros.</string>
     <string name="transfer_restored">Restaurado: %1$d cartões e %2$d ficheiros.</string>
     <string name="transfer_backup_failed">A cópia não pôde ser escrita. Experimente guardá-la noutro sítio.</string>
-    <string name="transfer_damaged">Este ficheiro está incompleto — pode não ter sido enviado por inteiro. Não foi alterado nada.</string>
-    <string name="transfer_unreadable">Isto não é uma cópia da Larova.</string>
+    <string name="transfer_damaged">Este ficheiro está incompleto — pode não ter sido enviado por inteiro. Nada foi alterado. Peça-o outra vez e, se puder, copie-o de um armazenamento na nuvem em vez de uma aplicação de mensagens.</string>
+    <string name="transfer_unreadable">Esta não é uma cópia da Larova. Uma cópia da Larova é um único ficheiro cujo nome termina em .larova — procure esse, ou faça uma cópia nova no outro telemóvel.</string>
+    <string name="transfer_cannot_open">A Larova não conseguiu abrir esse ficheiro. Se estiver na nuvem, transfira-o primeiro para este telemóvel e escolha-o outra vez.</string>
+    <string name="transfer_media_missing">Algumas imagens e gravações não estavam no ficheiro e não foi possível recuperá-las. Os cartões que as usavam estão aqui, sem elas.</string>
+    <string name="transfer_replace_warning">Substituir apaga primeiro o que está neste telemóvel. Não é possível desfazer.</string>
+    <string name="transfer_cancel">Cancelar</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Um cartão precisa de uma Larova mais recente e foi deixado de fora. Continua no seu ficheiro.</item>
+        <item quantity="other">%1$d cartões precisam de uma Larova mais recente e foram deixados de fora. Continuam no seu ficheiro.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Definições</string>

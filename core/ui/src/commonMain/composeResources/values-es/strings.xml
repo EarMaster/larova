@@ -125,12 +125,20 @@
     <string name="transfer_preview">%1$d tarjetas, %2$d archivos, %3$s</string>
     <string name="transfer_replace">Sustituir todo</string>
     <string name="transfer_merge">Añadir a lo que hay</string>
-    <string name="transfer_version_too_new">Este archivo se creó con una versión más nueva de Larova. Actualiza la app para abrirlo.</string>
+    <string name="transfer_version_too_new">Este archivo se creó con la versión %1$d del formato de copia de Larova, y esta app lee hasta la versión %2$d. Actualiza la app y vuelve a abrirlo.</string>
     <string name="transfer_saved">Copia hecha: %1$d tarjetas y %2$d archivos.</string>
     <string name="transfer_restored">Restaurado: %1$d tarjetas y %2$d archivos.</string>
     <string name="transfer_backup_failed">No se pudo escribir la copia. Prueba a guardarla en otro sitio.</string>
-    <string name="transfer_damaged">Este archivo está incompleto — puede que no se enviara entero. No se ha cambiado nada.</string>
-    <string name="transfer_unreadable">Esto no es una copia de Larova.</string>
+    <string name="transfer_damaged">Este archivo está incompleto — puede que no se haya enviado entero. No se ha cambiado nada. Pide que te lo manden otra vez, mejor desde un almacenamiento en la nube que por mensajería.</string>
+    <string name="transfer_unreadable">Esta no es una copia de Larova. Una copia de Larova es un solo archivo cuyo nombre termina en .larova — busca ese, o haz una copia nueva en el otro teléfono.</string>
+    <string name="transfer_cannot_open">Larova no pudo abrir ese archivo. Si está en la nube, descárgalo primero a este teléfono y vuelve a elegirlo.</string>
+    <string name="transfer_media_missing">Algunas imágenes y grabaciones no estaban en el archivo y no se pudieron recuperar. Las fichas que las usaban están aquí, sin ellas.</string>
+    <string name="transfer_replace_warning">Reemplazar borra primero lo que hay en este teléfono. No se puede deshacer.</string>
+    <string name="transfer_cancel">Cancelar</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Una ficha necesita un Larova más nuevo y se ha omitido. Sigue estando en tu archivo.</item>
+        <item quantity="other">%1$d fichas necesitan un Larova más nuevo y se han omitido. Siguen estando en tu archivo.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Ajustes</string>

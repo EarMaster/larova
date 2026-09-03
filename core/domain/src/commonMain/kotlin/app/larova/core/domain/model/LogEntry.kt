@@ -24,7 +24,12 @@ data class LogEntry(
     val note: String? = null,
 )
 
-/** [key] is written to export files, so these strings are frozen like the card types are. */
+/**
+ * [key] is written to export files, so these strings are frozen like the card types are.
+ *
+ * So are the constant names: files written before `0.5.0` spell them `CARD_OPENED` rather than
+ * `cardOpened`, and the reader still accepts those. `ModelKeysTest` pins both.
+ */
 enum class LogKind(val key: String) {
     CARD_OPENED("cardOpened"),
     CHECK_TOGGLED("checkToggled"),
@@ -33,7 +38,10 @@ enum class LogKind(val key: String) {
     ;
 
     companion object {
-        /** Unknown kinds from a newer export are skipped, not fatal. */
+        /**
+         * Unknown kinds from a newer export are skipped, not fatal — the container writes this key
+         * as a plain string precisely so that is true. `LegacyPackageTest` holds it to it.
+         */
         fun fromKey(key: String?): LogKind? = entries.firstOrNull { it.key == key }
     }
 }

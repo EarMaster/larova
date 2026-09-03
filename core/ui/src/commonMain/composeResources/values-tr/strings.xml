@@ -127,12 +127,20 @@
     <string name="transfer_preview">%1$d kart, %2$d dosya, %3$s</string>
     <string name="transfer_replace">Hepsini değiştir</string>
     <string name="transfer_merge">Var olanın üstüne ekle</string>
-    <string name="transfer_version_too_new">Bu dosya Larova’nın daha yeni bir sürümüyle oluşturulmuş. Açmak için uygulamayı güncelleyin.</string>
+    <string name="transfer_version_too_new">Bu dosya Larova’nın %1$d numaralı yedek biçimiyle oluşturuldu, bu uygulama ise %2$d sürümüne kadar okuyor. Uygulamayı güncelleyip yeniden açın.</string>
     <string name="transfer_saved">Yedeklendi: %1$d kart ve %2$d dosya.</string>
     <string name="transfer_restored">Geri yüklendi: %1$d kart ve %2$d dosya.</string>
     <string name="transfer_backup_failed">Yedek yazılamadı. Başka bir yere kaydetmeyi deneyin.</string>
-    <string name="transfer_damaged">Bu dosya eksik — tamamı gönderilmemiş olabilir. Hiçbir şey değiştirilmedi.</string>
-    <string name="transfer_unreadable">Bu bir Larova yedeği değil.</string>
+    <string name="transfer_damaged">Bu dosya eksik — tamamı aktarılmamış olabilir. Hiçbir şey değişmedi. Yeniden göndermesini isteyin ve mümkünse mesajlaşma uygulaması yerine bir bulut deposundan kopyalayın.</string>
+    <string name="transfer_unreadable">Bu bir Larova yedeği değil. Larova yedeği, adı .larova ile biten tek bir dosyadır — onu arayın ya da diğer telefonda yeni bir yedek alın.</string>
+    <string name="transfer_cannot_open">Larova bu dosyayı açamadı. Bulutta duruyorsa önce bu telefona indirin, sonra yeniden seçin.</string>
+    <string name="transfer_media_missing">Bazı resimler ve kayıtlar dosyada yoktu, bu yüzden geri getirilemedi. Onları kullanan kartlar burada, ama içerikleri olmadan.</string>
+    <string name="transfer_replace_warning">Değiştirmek, önce bu telefondakileri siler. Bu geri alınamaz.</string>
+    <string name="transfer_cancel">Vazgeç</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Bir kart daha yeni bir Larova gerektiriyor ve atlandı. Dosyanızda hâlâ duruyor.</item>
+        <item quantity="other">%1$d kart daha yeni bir Larova gerektiriyor ve atlandı. Dosyanızda hâlâ duruyorlar.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Ayarlar</string>

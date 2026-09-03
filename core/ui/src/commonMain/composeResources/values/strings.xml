@@ -123,12 +123,20 @@
     <string name="transfer_preview">%1$d tiles, %2$d files, %3$s</string>
     <string name="transfer_replace">Replace everything</string>
     <string name="transfer_merge">Add to what is here</string>
-    <string name="transfer_version_too_new">This file was made with a newer version of Larova. Update the app to open it.</string>
+    <string name="transfer_version_too_new">This file was made with Larova version %1$d of the backup format, and this app reads up to version %2$d. Update the app, then open it again.</string>
     <string name="transfer_saved">Backed up: %1$d tiles and %2$d files.</string>
     <string name="transfer_restored">Restored: %1$d tiles and %2$d files.</string>
     <string name="transfer_backup_failed">The backup could not be written. Try a different place to save it.</string>
-    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed.</string>
-    <string name="transfer_unreadable">This is not a Larova backup.</string>
+    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed. Ask for it again, and copy it from cloud storage rather than through a messenger if you can.</string>
+    <string name="transfer_unreadable">This is not a Larova backup. A Larova backup is one file whose name ends in .larova — look for that one, or make a new backup on the other phone.</string>
+    <string name="transfer_cannot_open">Larova could not open that file. If it is in cloud storage, download it to this phone first, then choose it again.</string>
+    <string name="transfer_media_missing">Some pictures and recordings were not in the file and could not be brought back. The tiles that used them are here, without them.</string>
+    <string name="transfer_replace_warning">Replacing removes what is on this phone first. That cannot be undone.</string>
+    <string name="transfer_cancel">Cancel</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">One tile needs a newer Larova and was left out. Your file still has it.</item>
+        <item quantity="other">%1$d tiles need a newer Larova and were left out. Your file still has them.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Settings</string>

@@ -138,7 +138,7 @@ larova-2026-08-21.larova            (ZIP container)
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "appVersion": "1.0.0",
   "exportedAt": "2026-08-21T18:12:00Z",
   "label": "Larova for Jonas",
@@ -151,6 +151,10 @@ larova-2026-08-21.larova            (ZIP container)
 Optional encryption: AES-256-GCM, key derived from the password with Argon2id. `manifest.json` stays in the clear so the preview works; `content.json` and `media/` are encrypted.
 
 `schemaVersion` is the migration anchor. Import checks it first and declines newer versions politely.
+
+**Rows carry frozen keys, and two spellings are accepted.** A tile type is written as its `CardType.key` — `"type": "guide"`, `"type": "appLink"` — matching the database column and the `CardPayload` discriminator. A log kind is written as its `LogKind.key`. Schema **1** (`0.1.0` to `0.4.2`) wrote the *Kotlin constant names* instead (`"GUIDE"`, `"CARD_OPENED"`), because `content.json` was serialized straight from the domain models and inherited their enum casing. The reader accepts both spellings and always will, so every v1 file still imports; `LegacyPackageFixture` is a real v1 `content.json` and the tests around it are what keep that true. Both spellings are therefore frozen — `ModelKeysTest` pins the keys *and* the constant names, so renaming `APP_LINK` is a failing test rather than a silently broken reader.
+
+The container has its own row types (`ExportRows.kt`) rather than reusing the models the app works with. That is what keeps the format from following identifier spelling, and it is also what makes an unfamiliar row survivable: `type` and `kind` are plain strings on the wire, so a tile type a newer Larova invented costs **that tile** rather than the whole file. The import counts what it had to leave behind and says so, and the file itself is untouched — update the app and re-import to get them.
 
 ## 7. Android specifics
 

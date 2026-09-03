@@ -131,12 +131,20 @@
     <string name="transfer_preview">%1$d карточек, %2$d файлов, %3$s</string>
     <string name="transfer_replace">Заменить всё</string>
     <string name="transfer_merge">Добавить к тому, что есть</string>
-    <string name="transfer_version_too_new">Этот файл создан более новой версией Larova. Обновите приложение, чтобы открыть его.</string>
+    <string name="transfer_version_too_new">Этот файл создан в версии %1$d формата резервных копий Larova, а это приложение читает до версии %2$d. Обновите приложение и откройте файл снова.</string>
     <string name="transfer_saved">Копия сделана: %1$d карточек и %2$d файлов.</string>
     <string name="transfer_restored">Восстановлено: %1$d карточек и %2$d файлов.</string>
     <string name="transfer_backup_failed">Копию не удалось записать. Попробуйте сохранить в другом месте.</string>
-    <string name="transfer_damaged">Этот файл неполный — возможно, он был отправлен не целиком. Ничего не изменено.</string>
-    <string name="transfer_unreadable">Это не резервная копия Larova.</string>
+    <string name="transfer_damaged">Этот файл неполный — возможно, он передался не целиком. Ничего не изменено. Попросите прислать его снова, и лучше скопируйте из облачного хранилища, а не через мессенджер.</string>
+    <string name="transfer_unreadable">Это не резервная копия Larova. Копия Larova — это один файл, имя которого заканчивается на .larova. Найдите именно его или сделайте новую копию на другом телефоне.</string>
+    <string name="transfer_cannot_open">Larova не смогла открыть этот файл. Если он в облаке, сначала скачайте его на этот телефон, а затем выберите снова.</string>
+    <string name="transfer_media_missing">Некоторых изображений и записей в файле не было, поэтому вернуть их не удалось. Плитки, которые их использовали, на месте — но без них.</string>
+    <string name="transfer_replace_warning">Замена сначала удаляет то, что есть на этом телефоне. Отменить это нельзя.</string>
+    <string name="transfer_cancel">Отмена</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Одна плитка требует более новой Larova, поэтому её пропустили. В вашем файле она осталась.</item>
+        <item quantity="other">%1$d плиток требуют более новой Larova, поэтому их пропустили. В вашем файле они остались.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Настройки</string>

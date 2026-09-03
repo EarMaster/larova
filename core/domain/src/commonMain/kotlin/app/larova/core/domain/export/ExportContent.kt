@@ -1,9 +1,5 @@
 package app.larova.core.domain.export
 
-import app.larova.core.domain.model.Board
-import app.larova.core.domain.model.Card
-import app.larova.core.domain.model.LogEntry
-import app.larova.core.domain.model.MediaAsset
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,13 +12,17 @@ import kotlinx.serialization.Serializable
  *
  * [log] is present and empty until M2 fills it. A field that appears later is a format change; a
  * field that was always there and was empty is not.
+ *
+ * The four lists hold [ExportRows] types rather than the models the app works with. See that file
+ * for why: a container that serializes domain models inherits their Kotlin identifier spelling as
+ * its wire format, which is how this one came to write `"type": "GUIDE"`.
  */
 @Serializable
 data class ExportContent(
-    val boards: List<Board> = emptyList(),
-    val cards: List<Card> = emptyList(),
-    val media: List<MediaAsset> = emptyList(),
-    val log: List<LogEntry> = emptyList(),
+    val boards: List<ExportBoard> = emptyList(),
+    val cards: List<ExportCard> = emptyList(),
+    val media: List<ExportMediaAsset> = emptyList(),
+    val log: List<ExportLogEntry> = emptyList(),
 ) {
     val counts: ExportCounts
         get() = ExportCounts(boards = boards.size, cards = cards.size, media = media.size)

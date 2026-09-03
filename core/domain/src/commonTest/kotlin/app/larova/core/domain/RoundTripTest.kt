@@ -1,6 +1,7 @@
 package app.larova.core.domain
 
 import app.larova.core.domain.export.ExportCodec
+import app.larova.core.domain.export.ExportCounts
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.export.ImportMode
 import app.larova.core.domain.export.PackageIo
@@ -15,9 +16,9 @@ import app.larova.core.domain.model.LogKind
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.usecase.EnsureRootBoard
-import app.larova.core.domain.usecase.LOG_RETENTION_DAYS
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ImportPackage
+import app.larova.core.domain.usecase.LOG_RETENTION_DAYS
 import app.larova.core.domain.usecase.ReadPackagePreview
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -321,6 +322,54 @@ class RoundTripTest {
         assertEquals(listOf("Their own tile"), other.cards.observeAllCards().first().map { it.title })
     }
 
+    /**
+     * A real backup from a shipped version, restored end to end.
+     *
+     * [LEGACY_CONTENT_JSON] spells tile types as Kotlin constant names, which is what every file
+     * written between `0.1.0` and `0.4.2` does. The reader accepts both spellings forever, and
+     * this is the test that says so through the whole use case rather than only the codec: the
+     * manifest, the hash, and a REPLACE that wipes a tile made on this phone first.
+     */
+    @Test
+    fun aPackageWrittenByAShippedVersionStillRestores() = runTest {
+        val source = "content://downloads/larova-from-0.4.2.larova"
+        val digest = FakeDigest()
+        val shelf = mutableMapOf(
+            source to mutableMapOf(
+                "manifest.json" to ExportCodec.encode(
+                    ExportManifest(
+                        schemaVersion = LEGACY_SCHEMA_VERSION,
+                        appVersion = LEGACY_APP_VERSION,
+                        exportedAt = Instant.fromEpochMilliseconds(1_772_000_000_000),
+                        counts = ExportCounts(boards = 2, cards = 8, media = 1),
+                        // Computed, never pinned. FakeDigest is "len<n>:<hashCode>", and a baked
+                        // String.hashCode is a trap for whoever next edits the fixture.
+                        contentSha256 = digest.sha256(LEGACY_CONTENT_JSON),
+                    ),
+                ),
+                "content.json" to LEGACY_CONTENT_JSON,
+            ),
+        )
+
+        val world = World(shelf)
+        world.addNote("A tile made on this phone", sortIndex = 0)
+        val result = world.import(source, ImportMode.REPLACE)
+
+        assertIs<ImportPackage.Result.Imported>(result)
+        assertEquals(8, result.cards)
+        assertEquals(0, result.skippedCards, "a v1 file holds nothing this build cannot read")
+        // Zero media: the fixture names an asset the archive does not carry, which restoreMedia
+        // skips rather than registering a row for a file that is not there.
+        assertEquals(0, result.media)
+
+        assertEquals(
+            LEGACY_CARD_TITLES.sorted(),
+            world.cards.observeAllCards().first().map { it.title }.sorted(),
+        )
+        // The folder tile still opens a board that exists, after the root was remapped.
+        assertTrue(world.boards.all().any { it.title == "Mornings" })
+    }
+
     @Test
     fun aTruncatedPackageIsRefusedBeforeAnythingIsWritten() = runTest {
         // What a messenger that cut the file in half produces. Without the hash it would import as
@@ -338,12 +387,32 @@ class RoundTripTest {
         assertEquals(listOf("Their own tile"), other.cards.observeAllCards().first().map { it.title })
     }
 
+    /**
+     * A file that cannot be opened at all, which is not the same as a file that is not a package.
+     *
+     * This case used to share `Unreadable` with the one below, and so shared its message: "this is
+     * not a Larova backup". That is the wrong thing to say to somebody whose backup is fine and
+     * merely still sitting in cloud storage undownloaded, and it is the sentence that sends them
+     * looking for a copy that does not exist.
+     */
     @Test
-    fun somethingThatIsNotAPackageIsRefused() = runTest {
+    fun aFileThatCannotBeOpenedSaysSoRatherThanBlamingTheFile() = runTest {
         val world = World()
         assertEquals(
+            ImportPackage.Result.CouldNotOpen,
+            world.import("content://cloud/not-downloaded-yet.larova", ImportMode.REPLACE),
+        )
+    }
+
+    /** Opened, and genuinely not a package: no manifest beside the content. */
+    @Test
+    fun somethingThatIsNotAPackageIsRefused() = runTest {
+        val source = "content://downloads/holiday.jpg"
+        val world = World(mutableMapOf(source to mutableMapOf("exif.txt" to "not a manifest")))
+
+        assertEquals(
             ImportPackage.Result.Unreadable,
-            world.import("content://downloads/holiday.jpg", ImportMode.REPLACE),
+            world.import(source, ImportMode.REPLACE),
         )
     }
 

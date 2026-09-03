@@ -42,6 +42,41 @@ class ModelKeysTest {
         )
     }
 
+    /**
+     * The **constant names** are part of the file format too, and that is not obvious.
+     *
+     * Every backup written between `0.1.0` and `0.4.2` spells tile types and log kinds as these
+     * identifiers, because the container serialized the enums directly. The reader in
+     * `ExportRows.kt` therefore accepts them and always will, which makes a rename a silent
+     * format break: renaming `APP_LINK` would compile, pass every other test, and stop every
+     * pre-`0.5.0` backup from restoring its shortcut tiles.
+     *
+     * So both spellings are frozen. If this test is in your way, the answer is a new constant, not
+     * a renamed one.
+     */
+    @Test
+    fun theConstantNamesAreFrozenBecauseOldFilesSpellThemThatWay() {
+        assertEquals(
+            listOf(
+                "GUIDE",
+                "NOTE",
+                "CHECKLIST",
+                "TABLE",
+                "VIDEO",
+                "AUDIO",
+                "PHONE",
+                "WEB",
+                "APP_LINK",
+                "FOLDER",
+            ),
+            CardType.entries.map { it.name },
+        )
+        assertEquals(
+            listOf("CARD_OPENED", "CHECK_TOGGLED", "CALL_PREPARED", "MANUAL_NOTE"),
+            LogKind.entries.map { it.name },
+        )
+    }
+
     @Test
     fun anUnknownCardTypeIsNullRatherThanASubstitute() {
         assertNull(CardType.fromKey("hologram"))

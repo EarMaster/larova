@@ -125,12 +125,20 @@
     <string name="transfer_preview">%1$d riquadri, %2$d file, %3$s</string>
     <string name="transfer_replace">Sostituisci tutto</string>
     <string name="transfer_merge">Aggiungi a quello che c’è</string>
-    <string name="transfer_version_too_new">Questo file è stato creato con una versione più recente di Larova. Aggiorna l’app per aprirlo.</string>
+    <string name="transfer_version_too_new">Questo file è stato creato con la versione %1$d del formato di backup di Larova, e questa app legge fino alla versione %2$d. Aggiorna l’app e riprova ad aprirlo.</string>
     <string name="transfer_saved">Backup eseguito: %1$d riquadri e %2$d file.</string>
     <string name="transfer_restored">Ripristinati: %1$d riquadri e %2$d file.</string>
     <string name="transfer_backup_failed">Il backup non è stato scritto. Prova a salvarlo altrove.</string>
-    <string name="transfer_damaged">Questo file è incompleto — forse non è stato inviato per intero. Non è stato cambiato niente.</string>
-    <string name="transfer_unreadable">Questo non è un backup di Larova.</string>
+    <string name="transfer_damaged">Questo file è incompleto — forse non è stato trasferito per intero. Non è stato modificato nulla. Fattelo inviare di nuovo, se possibile da un archivio online invece che da una chat.</string>
+    <string name="transfer_unreadable">Questo non è un backup di Larova. Un backup di Larova è un unico file il cui nome finisce con .larova — cerca quello, oppure crea un nuovo backup sull’altro telefono.</string>
+    <string name="transfer_cannot_open">Larova non ha potuto aprire questo file. Se è in un archivio online, scaricalo prima su questo telefono e poi riselezionalo.</string>
+    <string name="transfer_media_missing">Alcune immagini e registrazioni non erano nel file e non è stato possibile riportarle. Le caselle che le usavano ci sono, senza di esse.</string>
+    <string name="transfer_replace_warning">Sostituire cancella prima ciò che è su questo telefono. Non si può annullare.</string>
+    <string name="transfer_cancel">Annulla</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Una casella richiede un Larova più recente ed è stata tralasciata. È ancora nel tuo file.</item>
+        <item quantity="other">%1$d caselle richiedono un Larova più recente e sono state tralasciate. Sono ancora nel tuo file.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Impostazioni</string>

@@ -59,8 +59,10 @@ enum class CardType(val key: String) {
     companion object {
         /**
          * Null for anything unrecognised, so an import written by a newer version skips that one
-         * tile instead of failing. An unknown type is never mapped onto a known one: a tile that
-         * quietly became something else is worse than a tile that is missing.
+         * tile instead of failing — which the export container makes true by writing this key as a
+         * plain string, so an unfamiliar one costs one tile rather than the whole file. An unknown
+         * type is never mapped onto a known one: a tile that quietly became something else is
+         * worse than a tile that is missing.
          */
         fun fromKey(key: String?): CardType? = entries.firstOrNull { it.key == key }
     }

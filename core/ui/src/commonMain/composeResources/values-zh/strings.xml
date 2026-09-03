@@ -126,12 +126,20 @@
     <string name="transfer_preview">%1$d 张卡片，%2$d 个文件，%3$s</string>
     <string name="transfer_replace">全部替换</string>
     <string name="transfer_merge">加到现有内容里</string>
-    <string name="transfer_version_too_new">这个文件是用更新版本的 Larova 做的。请先更新应用再打开。</string>
+    <string name="transfer_version_too_new">此文件由 Larova 备份格式的第 %1$d 版写入，而本应用最多读取第 %2$d 版。请更新应用后重新打开。</string>
     <string name="transfer_saved">已备份：%1$d 张卡片和 %2$d 个文件。</string>
     <string name="transfer_restored">已恢复：%1$d 张卡片和 %2$d 个文件。</string>
     <string name="transfer_backup_failed">备份没能写入。换个地方保存试试。</string>
-    <string name="transfer_damaged">这个文件不完整 —— 可能没有发送完整。什么都没有改动。</string>
-    <string name="transfer_unreadable">这不是 Larova 的备份。</string>
+    <string name="transfer_damaged">此文件不完整——可能没有传完。没有改动任何内容。请再要一份，尽量从云存储复制，而不是通过聊天软件发送。</string>
+    <string name="transfer_unreadable">这不是 Larova 备份。Larova 备份是一个以 .larova 结尾的文件——请找那个文件，或者在另一部手机上重新备份。</string>
+    <string name="transfer_cannot_open">Larova 无法打开该文件。如果它在云端，请先下载到这部手机，然后重新选择。</string>
+    <string name="transfer_media_missing">有些图片和录音不在文件里，无法恢复。用到它们的磁贴还在，只是没有内容。</string>
+    <string name="transfer_replace_warning">替换会先删除这部手机上的内容，无法撤销。</string>
+    <string name="transfer_cancel">取消</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">有 1 个磁贴需要更新版本的 Larova，已跳过。你的文件里仍然保留着它。</item>
+        <item quantity="other">有 %1$d 个磁贴需要更新版本的 Larova，已跳过。你的文件里仍然保留着它们。</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">设置</string>

@@ -131,12 +131,20 @@
     <string name="transfer_preview">%1$d tuiles, %2$d fichiers, %3$s</string>
     <string name="transfer_replace">Tout remplacer</string>
     <string name="transfer_merge">Ajouter à ce qui est là</string>
-    <string name="transfer_version_too_new">Ce fichier a été créé avec une version plus récente de Larova. Mettez l’appli à jour pour l’ouvrir.</string>
+    <string name="transfer_version_too_new">Ce fichier a été créé avec la version %1$d du format de sauvegarde de Larova, et cette app lit jusqu’à la version %2$d. Mettez l’app à jour, puis rouvrez-le.</string>
     <string name="transfer_saved">Sauvegardé : %1$d tuiles et %2$d fichiers.</string>
     <string name="transfer_restored">Restauré : %1$d tuiles et %2$d fichiers.</string>
     <string name="transfer_backup_failed">La sauvegarde n’a pas pu être écrite. Essayez un autre emplacement.</string>
-    <string name="transfer_damaged">Ce fichier est incomplet — il n’a peut-être pas été envoyé en entier. Rien n’a été modifié.</string>
-    <string name="transfer_unreadable">Ceci n’est pas une sauvegarde Larova.</string>
+    <string name="transfer_damaged">Ce fichier est incomplet — il n’a peut-être pas été transféré en entier. Rien n’a été modifié. Demandez-le à nouveau, et si possible copiez-le depuis un stockage en ligne plutôt que par messagerie.</string>
+    <string name="transfer_unreadable">Ce n’est pas une sauvegarde Larova. Une sauvegarde Larova est un fichier unique dont le nom finit par .larova — cherchez celui-là, ou créez une nouvelle sauvegarde sur l’autre téléphone.</string>
+    <string name="transfer_cannot_open">Larova n’a pas pu ouvrir ce fichier. S’il est dans un stockage en ligne, téléchargez-le d’abord sur ce téléphone, puis sélectionnez-le à nouveau.</string>
+    <string name="transfer_media_missing">Certaines images et enregistrements n’étaient pas dans le fichier et n’ont pu être restaurés. Les tuiles qui les utilisaient sont là, sans eux.</string>
+    <string name="transfer_replace_warning">Remplacer supprime d’abord ce qui est sur ce téléphone. C’est irréversible.</string>
+    <string name="transfer_cancel">Annuler</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Une tuile nécessite un Larova plus récent et a été laissée de côté. Elle est toujours dans votre fichier.</item>
+        <item quantity="other">%1$d tuiles nécessitent un Larova plus récent et ont été laissées de côté. Elles sont toujours dans votre fichier.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Réglages</string>

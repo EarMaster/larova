@@ -27,11 +27,31 @@ import kotlinx.coroutines.launch
  */
 sealed interface TransferOutcome {
     data class BackedUp(val cards: Int, val media: Int) : TransferOutcome
-    data class Restored(val cards: Int, val media: Int) : TransferOutcome
+    /**
+     * [skippedCards] is how many tiles came from a newer Larova than this one and had to be left
+     * out. Not a failure — the tiles are still in the file — so it reads as a second line under
+     * the success text rather than an error.
+     *
+     * [mediaMissing] is set when fewer pictures and recordings arrived than the manifest promised,
+     * which used to show only as a smaller number with nothing saying why.
+     */
+    data class Restored(
+        val cards: Int,
+        val media: Int,
+        val skippedCards: Int = 0,
+        val mediaMissing: Boolean = false,
+    ) : TransferOutcome
     data object BackupFailed : TransferOutcome
     data class FileTooNew(val schemaVersion: Int) : TransferOutcome
     data object FileDamaged : TransferOutcome
     data object FileUnreadable : TransferOutcome
+
+    /**
+     * The file could not be opened at all — a cloud file the provider has not downloaded, or a
+     * permission that lapsed between the picker and the read. Separate from [FileUnreadable]
+     * because "this is not a Larova backup" is the wrong thing to say about a backup that is fine.
+     */
+    data object FileCannotOpen : TransferOutcome
 }
 
 data class TransferUiState(
@@ -103,6 +123,9 @@ class TransferViewModel(
 
                 ReadPackagePreview.Result.Unreadable ->
                     TransferUiState(outcome = TransferOutcome.FileUnreadable)
+
+                ReadPackagePreview.Result.CouldNotOpen ->
+                    TransferUiState(outcome = TransferOutcome.FileCannotOpen)
             }
             _state.value = next
         }
@@ -118,15 +141,24 @@ class TransferViewModel(
 
     fun onConfirmImport(mode: ImportMode) {
         val source = _state.value.pendingSource ?: return
+        // Read before the preview is cleared, or there is nothing left to compare the result with.
+        val promisedMedia = _state.value.preview?.counts?.media ?: 0
         _state.update { it.copy(isBusy = true, preview = null) }
         viewModelScope.launch {
             val outcome = when (val result = importPackage(source, mode)) {
-                is ImportPackage.Result.Imported ->
-                    TransferOutcome.Restored(cards = result.cards, media = result.media)
+                is ImportPackage.Result.Imported -> TransferOutcome.Restored(
+                    cards = result.cards,
+                    media = result.media,
+                    skippedCards = result.skippedCards,
+                    // The manifest counted the files the package meant to carry; `media` counts
+                    // the ones that actually arrived and were registered.
+                    mediaMissing = result.media < promisedMedia,
+                )
 
                 is ImportPackage.Result.TooNew -> TransferOutcome.FileTooNew(result.schemaVersion)
                 ImportPackage.Result.Damaged -> TransferOutcome.FileDamaged
                 ImportPackage.Result.Unreadable -> TransferOutcome.FileUnreadable
+                ImportPackage.Result.CouldNotOpen -> TransferOutcome.FileCannotOpen
             }
             _state.value = TransferUiState(outcome = outcome)
         }
