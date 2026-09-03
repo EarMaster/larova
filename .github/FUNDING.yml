@@ -1,0 +1,9 @@
+# The Sponsor button on the repository.
+#
+# Liberapay rather than GitHub Sponsors: it takes no cut, is a non-profit, and needs no US tax
+# paperwork from a German maintainer. The same link is appended to every GitHub Release by
+# release.yml, where it belongs to the unlocked sideload build.
+#
+# Deliberately nowhere near the app or the Play listing. Larova sells a one-time unlock through
+# Play, and an appeal to donate beside a paid product would be asking twice.
+liberapay: EarMaster
