@@ -1,0 +1,1 @@
+Per un riquadro che richiede la versione completa, ora vedi prima il riquadro e poi il prezzo. Ripristinare un backup non rifiuta più l’intero file per un solo riquadro sconosciuto, e dice cosa fare quando non è possibile. Sostituire tutto è più difficile da fare per sbaglio.

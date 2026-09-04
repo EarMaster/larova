@@ -1,0 +1,1 @@
+Bei einer Kachel, die die Vollversion braucht, sehen Sie jetzt zuerst die Kachel und erst dann den Preis. Beim Zurückholen einer Sicherung scheitert nicht mehr die ganze Datei an einer unbekannten Kachel, und wenn es nicht geht, steht dort, was zu tun ist. Alles ersetzen passiert nicht mehr versehentlich.

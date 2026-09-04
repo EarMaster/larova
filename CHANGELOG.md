@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-04
+
 ### Changed
 - The full-version section of the settings now looks like the backup and contribution sections
   around it: one card, with the icon, the status and the explanation inside it, and tapping the

@@ -1,0 +1,1 @@
+Choosing a tile that needs the full version now shows the tile first, so you can see what it asks for before the price. Restoring a backup no longer refuses the whole file over one unfamiliar tile, and says what to do when it cannot go ahead. Replacing everything is harder to do by accident.

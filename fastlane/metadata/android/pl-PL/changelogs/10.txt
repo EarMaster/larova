@@ -1,0 +1,1 @@
+Przy kafelku, który wymaga pełnej wersji, najpierw widzisz kafelek, a dopiero potem cenę. Przywracanie kopii nie odrzuca już całego pliku z powodu jednego nieznanego kafelka, a gdy się nie udaje, mówi, co zrobić. Zastąpienie wszystkiego trudniej teraz zrobić przez przypadek.
