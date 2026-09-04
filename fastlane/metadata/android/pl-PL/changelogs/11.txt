@@ -1,0 +1,1 @@
+Dotknięcie „Pełna wersja” w ustawieniach wreszcie odpowiada. Larova pokazuje, że pyta Google Play, a gdy dla tego telefonu nie ma zakupu — tłumaczy dlaczego: inne konto Google albo niedostępny sklep. I proponuje kupno na miejscu.

@@ -46,6 +46,7 @@ import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import app.larova.rememberSoundPicker
 import app.larova.feature.settings.SupportMessage
+import app.larova.feature.settings.UnlockCheck
 import app.larova.rememberSupportPurchase
 import app.larova.rememberUnlockPurchase
 import app.larova.rememberVideoPicker
@@ -63,6 +64,11 @@ fun LarovaNavHost(
     onLockParentView: () -> Unit,
     entitlement: Entitlement,
     onCheckPurchases: () -> Unit,
+    unlockCheck: UnlockCheck,
+    onDismissUnlockCheck: () -> Unit,
+    onUnlockPurchased: () -> Unit,
+    onUnlockPending: () -> Unit,
+    onUnlockUnavailable: () -> Unit,
     supportCount: Int,
     supportMessage: SupportMessage?,
     onSupported: () -> Unit,
@@ -341,6 +347,15 @@ fun LarovaNavHost(
             val support = rememberSupportPurchase { outcome ->
                 outcome.applyTo(onSupported = onSupported, onUnavailable = onSupportUnavailable)
             }
+            // The same sheet the locked tile opens, from the offer the full-version card puts up
+            // when it finds nothing. One product, so a purchase started here unlocks the tiles.
+            val buyUnlock = rememberUnlockPurchase { outcome ->
+                outcome.applyUnlock(
+                    onPurchased = onUnlockPurchased,
+                    onPending = onUnlockPending,
+                    onUnavailable = onUnlockUnavailable,
+                )
+            }
             SettingsScreen(
                 appearance = appearance,
                 onAppearanceChange = onAppearanceChange,
@@ -354,6 +369,9 @@ fun LarovaNavHost(
                 // Null in a build with no store behind it: there is nothing to ask, and the status
                 // line says as much instead of offering a button that cannot help.
                 onCheckPurchases = onCheckPurchases.takeIf { BuildConfig.PAID_TIER },
+                unlockCheck = unlockCheck,
+                onDismissUnlockCheck = onDismissUnlockCheck,
+                onBuyUnlock = buyUnlock,
                 supportCount = supportCount,
                 onSupport = support,
                 supportMessage = supportMessage,
@@ -375,10 +393,27 @@ fun LarovaNavHost(
  * `Cancelled` is silent — somebody who backed out has already seen their own decision.
  */
 private fun EditCardViewModel.applyUnlockOutcome(outcome: PurchaseOutcome) {
-    when (outcome) {
+    outcome.applyUnlock(
+        onPurchased = ::onPurchased,
+        onPending = ::onPurchasePending,
+        onUnavailable = ::onPurchaseUnavailable,
+    )
+}
+
+/**
+ * The unlock's outcome, read once for both places that sell it — the locked tile's offer and the
+ * settings card's. Two copies of this `when` is how the two screens would come to disagree about
+ * what `AlreadyOwned` means.
+ */
+private fun PurchaseOutcome.applyUnlock(
+    onPurchased: () -> Unit,
+    onPending: () -> Unit,
+    onUnavailable: () -> Unit,
+) {
+    when (this) {
         is PurchaseOutcome.Purchased, PurchaseOutcome.AlreadyOwned -> onPurchased()
-        PurchaseOutcome.Pending -> onPurchasePending()
-        is PurchaseOutcome.Unavailable -> onPurchaseUnavailable()
+        PurchaseOutcome.Pending -> onPending()
+        is PurchaseOutcome.Unavailable -> onUnavailable()
         PurchaseOutcome.Cancelled -> Unit
     }
 }

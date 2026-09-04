@@ -10,16 +10,21 @@ import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.model.Entitlement
 import app.larova.feature.settings.SupportMessage
+import app.larova.feature.settings.UnlockCheck
+import app.larova.feature.settings.UnlockMessage
 import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.PruneLog
 import app.larova.core.domain.usecase.RecordSupport
 import app.larova.core.domain.usecase.RefreshEntitlement
+import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.PublishShortcuts
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -46,9 +51,10 @@ class AppViewModel(
     cleanUpMedia: CleanUpMedia,
     pruneLog: PruneLog,
     publishShortcuts: PublishShortcuts,
-    observeEntitlement: ObserveEntitlement,
+    private val observeEntitlement: ObserveEntitlement,
     observeSupportCount: ObserveSupportCount,
     private val refreshEntitlement: RefreshEntitlement,
+    private val unlockPrice: UnlockPrice,
     private val recordSupport: RecordSupport,
 ) : ViewModel() {
 
@@ -84,6 +90,17 @@ class AppViewModel(
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
             initialValue = 0,
         )
+
+    private val _unlockCheck = MutableStateFlow<UnlockCheck>(UnlockCheck.Idle)
+
+    /**
+     * What the settings screen's full-version card is doing, and what the last ask found.
+     *
+     * Beside the entitlement rather than derived from it, because the two say different things:
+     * the entitlement is what this installation owns, this is what happened when somebody asked.
+     * "Still nothing" is not visible in the first and is the whole point of the second.
+     */
+    val unlockCheck: StateFlow<UnlockCheck> = _unlockCheck.asStateFlow()
 
     private val _supportMessage = MutableStateFlow<SupportMessage?>(null)
 
@@ -124,7 +141,49 @@ class AppViewModel(
     }
 
     fun checkPurchasesAgain() {
-        viewModelScope.launch { refreshEntitlement() }
+        if (_unlockCheck.value is UnlockCheck.Checking) return
+        viewModelScope.launch {
+            _unlockCheck.value = UnlockCheck.Checking
+            refreshEntitlement()
+            // Read back from the repository rather than from [entitlement]: that flow is shared
+            // and only conflates through a collector, so a receipt written a millisecond ago may
+            // not have reached its value yet. Asking again costs one verify and cannot be stale.
+            _unlockCheck.value = if (observeEntitlement().first().unlocked) {
+                // Nothing to say: the card behind this now reads "Unlocked", which is the answer.
+                UnlockCheck.Idle
+            } else {
+                UnlockCheck.NotFound(price = unlockPrice())
+            }
+        }
+    }
+
+    /** Closes the offer. Not the same as buying: the card goes back to saying what it said. */
+    fun dismissUnlockCheck() {
+        _unlockCheck.value = UnlockCheck.Idle
+    }
+
+    /**
+     * The purchase went through, so the offer has nothing left to offer.
+     *
+     * Nothing is refreshed here — the repository wrote the verified receipt before returning, and
+     * the entitlement flow carries it to the card on its own.
+     */
+    fun onUnlockPurchased() {
+        _unlockCheck.value = UnlockCheck.Idle
+    }
+
+    fun onUnlockPending() = messageOnOffer(UnlockMessage.PENDING)
+
+    fun onUnlockUnavailable() = messageOnOffer(UnlockMessage.UNAVAILABLE)
+
+    /**
+     * Only onto an offer that is still open. A message with no dialog to sit in would be a state
+     * nothing can show and nothing would ever clear.
+     */
+    private fun messageOnOffer(message: UnlockMessage) {
+        _unlockCheck.update { current ->
+            if (current is UnlockCheck.NotFound) current.copy(message = message) else current
+        }
     }
 
     init {

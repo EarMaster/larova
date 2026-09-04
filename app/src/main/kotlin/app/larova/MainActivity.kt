@@ -72,6 +72,7 @@ private fun LarovaApp(openCardId: String? = null) {
     val viewMode by viewModel.viewMode.collectAsStateWithLifecycle()
 
     val entitlement by viewModel.entitlement.collectAsStateWithLifecycle()
+    val unlockCheck by viewModel.unlockCheck.collectAsStateWithLifecycle()
     val supportCount by viewModel.supportCount.collectAsStateWithLifecycle()
     val supportMessage by viewModel.supportMessage.collectAsStateWithLifecycle()
 
@@ -83,6 +84,11 @@ private fun LarovaApp(openCardId: String? = null) {
             onLockParentView = viewModel::leaveParentView,
             entitlement = entitlement,
             onCheckPurchases = viewModel::checkPurchasesAgain,
+            unlockCheck = unlockCheck,
+            onDismissUnlockCheck = viewModel::dismissUnlockCheck,
+            onUnlockPurchased = viewModel::onUnlockPurchased,
+            onUnlockPending = viewModel::onUnlockPending,
+            onUnlockUnavailable = viewModel::onUnlockUnavailable,
             supportCount = supportCount,
             supportMessage = supportMessage,
             onSupported = viewModel::onSupported,

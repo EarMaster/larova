@@ -160,6 +160,8 @@
     <string name="settings_unlock_none">未解锁</string>
     <string name="settings_unlock_build">此构建没有付费版本，因此所有卡片类型都可用。</string>
     <string name="settings_unlock_hint">Larova 每次启动都会询问 Google Play。点按可再次询问 — 例如在另一部手机上购买之后，或本机启动时处于离线状态。</string>
+    <string name="settings_unlock_checking">正在询问 Google Play…</string>
+    <string name="settings_unlock_missing">Google Play 没有找到这台手机的完整版。可能是用另一个 Google 账号购买的，或者刚才无法连接到商店。</string>
     <string name="settings_version">版本 %1$s</string>
     <string name="settings_support">支持开发</string>
     <string name="settings_support_hint">Larova 由一个人制作，背后没有公司。这有助于补偿投入的时间；不会解锁任何内容。</string>
@@ -200,6 +202,7 @@
     <string name="purchase_buy">解锁</string>
     <string name="purchase_unavailable">无法连接商店。请在手机联网后重试。</string>
     <string name="purchase_pending">付款已开始。完成后磁贴会自动解锁。</string>
+    <string name="purchase_later">暂不</string>
     <string name="edit_title">标题</string>
     <string name="edit_subtitle">第二行（可选）</string>
     <string name="edit_colour">颜色</string>

@@ -165,6 +165,8 @@
     <string name="settings_unlock_none">Не разблокирована</string>
     <string name="settings_unlock_build">В этой сборке нет платной версии, поэтому доступны все виды плиток.</string>
     <string name="settings_unlock_hint">Larova обращается к Google Play при каждом запуске. Нажмите, чтобы спросить снова — после покупки на другом телефоне или запуска, когда этот телефон был не в сети.</string>
+    <string name="settings_unlock_checking">Запрос в Google Play…</string>
+    <string name="settings_unlock_missing">В Google Play нет полной версии для этого телефона. Возможно, она куплена с другого аккаунта Google или магазин сейчас недоступен.</string>
     <string name="settings_version">Версия %1$s</string>
     <string name="settings_support">Поддержать разработку</string>
     <string name="settings_support_hint">Larova делает один человек, без компании за спиной. Это помогает оплатить время; ничего не разблокируется.</string>
@@ -205,6 +207,7 @@
     <string name="purchase_buy">Разблокировать</string>
     <string name="purchase_unavailable">Не удаётся связаться с магазином. Попробуйте снова, когда телефон будет в сети.</string>
     <string name="purchase_pending">Оплата начата. Плитки разблокируются, как только она пройдёт.</string>
+    <string name="purchase_later">Не сейчас</string>
     <string name="edit_title">Название</string>
     <string name="edit_subtitle">Вторая строка (необязательно)</string>
     <string name="edit_colour">Цвет</string>

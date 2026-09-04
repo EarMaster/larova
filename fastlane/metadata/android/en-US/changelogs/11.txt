@@ -1,0 +1,1 @@
+Tapping “The full version” in the settings now answers you. Larova says while it is asking Google Play, and if the store has no purchase for this phone it explains why — another Google account, or the store out of reach — and offers to buy it right there.

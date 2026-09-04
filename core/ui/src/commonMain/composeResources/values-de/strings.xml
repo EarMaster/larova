@@ -168,6 +168,8 @@
     <string name="settings_unlock_none">Nicht freigeschaltet</string>
     <string name="settings_unlock_build">Dieser Build hat keine Bezahlversion, alle Kachelarten sind verfügbar.</string>
     <string name="settings_unlock_hint">Larova fragt Google Play bei jedem Start. Zum erneuten Prüfen tippen — etwa nach einem Kauf auf einem anderen Telefon oder einem Start, bei dem dieses Telefon offline war.</string>
+    <string name="settings_unlock_checking">Google Play wird gefragt …</string>
+    <string name="settings_unlock_missing">Google Play kennt für dieses Telefon keine Vollversion. Vielleicht wurde sie mit einem anderen Google-Konto gekauft, oder der Store war gerade nicht erreichbar.</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_support">Die Entwicklung unterstützen</string>
     <string name="settings_support_hint">Larova wird von einer einzigen Person gemacht, ohne Firma dahinter. Das hier hilft, die Zeit zu bezahlen; es schaltet nichts frei.</string>
@@ -208,6 +210,7 @@
     <string name="purchase_buy">Freischalten</string>
     <string name="purchase_unavailable">Der Store ist nicht erreichbar. Versuchen Sie es erneut, wenn dieses Telefon online ist.</string>
     <string name="purchase_pending">Zahlung gestartet. Die Kacheln werden freigeschaltet, sobald sie durch ist.</string>
+    <string name="purchase_later">Jetzt nicht</string>
     <string name="edit_title">Titel</string>
     <string name="edit_subtitle">Zweite Zeile (optional)</string>
     <string name="edit_colour">Farbe</string>

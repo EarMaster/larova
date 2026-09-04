@@ -1,0 +1,1 @@
+Tocar «La versión completa» en los ajustes ahora responde. Larova avisa mientras consulta Google Play y, si la tienda no tiene ninguna compra para este teléfono, explica por qué — otra cuenta de Google o tienda inaccesible — y ofrece comprarla ahí mismo.
