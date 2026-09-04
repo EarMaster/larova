@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-09-04
+
 ### Fixed
 - Tapping the full version in the settings now answers you. While Larova asks Google Play the
   card says so, and if the store has no purchase for this phone you get told why — a different

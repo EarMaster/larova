@@ -1,0 +1,1 @@
+Ein Tippen auf „Die Vollversion“ in den Einstellungen antwortet jetzt. Larova zeigt, dass es gerade Google Play fragt, und wenn dort kein Kauf für dieses Telefon vorliegt, steht auch warum — anderes Google-Konto oder Store nicht erreichbar — samt Kaufmöglichkeit.
