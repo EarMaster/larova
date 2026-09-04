@@ -125,12 +125,20 @@
     <string name="transfer_preview">%1$d tarjetas, %2$d archivos, %3$s</string>
     <string name="transfer_replace">Sustituir todo</string>
     <string name="transfer_merge">Añadir a lo que hay</string>
-    <string name="transfer_version_too_new">Este archivo se creó con una versión más nueva de Larova. Actualiza la app para abrirlo.</string>
+    <string name="transfer_version_too_new">Este archivo se creó con la versión %1$d del formato de copia de Larova, y esta app lee hasta la versión %2$d. Actualiza la app y vuelve a abrirlo.</string>
     <string name="transfer_saved">Copia hecha: %1$d tarjetas y %2$d archivos.</string>
     <string name="transfer_restored">Restaurado: %1$d tarjetas y %2$d archivos.</string>
     <string name="transfer_backup_failed">No se pudo escribir la copia. Prueba a guardarla en otro sitio.</string>
-    <string name="transfer_damaged">Este archivo está incompleto — puede que no se enviara entero. No se ha cambiado nada.</string>
-    <string name="transfer_unreadable">Esto no es una copia de Larova.</string>
+    <string name="transfer_damaged">Este archivo está incompleto — puede que no se haya enviado entero. No se ha cambiado nada. Pide que te lo manden otra vez, mejor desde un almacenamiento en la nube que por mensajería.</string>
+    <string name="transfer_unreadable">Esta no es una copia de Larova. Una copia de Larova es un solo archivo cuyo nombre termina en .larova — busca ese, o haz una copia nueva en el otro teléfono.</string>
+    <string name="transfer_cannot_open">Larova no pudo abrir ese archivo. Si está en la nube, descárgalo primero a este teléfono y vuelve a elegirlo.</string>
+    <string name="transfer_media_missing">Algunas imágenes y grabaciones no estaban en el archivo y no se pudieron recuperar. Las fichas que las usaban están aquí, sin ellas.</string>
+    <string name="transfer_replace_warning">Reemplazar borra primero lo que hay en este teléfono. No se puede deshacer.</string>
+    <string name="transfer_cancel">Cancelar</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Una ficha necesita un Larova más nuevo y se ha omitido. Sigue estando en tu archivo.</item>
+        <item quantity="other">%1$d fichas necesitan un Larova más nuevo y se han omitido. Siguen estando en tu archivo.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Ajustes</string>
@@ -149,9 +157,8 @@
     <string name="settings_unlock">La versión completa</string>
     <string name="settings_unlock_owned">Desbloqueada</string>
     <string name="settings_unlock_none">No desbloqueada</string>
-    <string name="settings_unlock_build">Desbloqueada — esta versión no tiene versión de pago</string>
-    <string name="settings_unlock_check">Volver a comprobar</string>
-    <string name="settings_unlock_hint">Larova consulta Google Play cada vez que se abre. Usa esto si compraste la versión completa en otro teléfono o si este teléfono estaba sin conexión.</string>
+    <string name="settings_unlock_build">Esta compilación no tiene versión de pago, así que todos los tipos de tarjeta están disponibles.</string>
+    <string name="settings_unlock_hint">Larova consulta a Google Play en cada inicio. Toca para volver a preguntar — después de comprar en otro teléfono, o de un inicio con este teléfono sin conexión.</string>
     <string name="settings_version">Versión %1$s</string>
     <string name="settings_support">Apoyar el desarrollo</string>
     <string name="settings_support_hint">Larova la hace una sola persona, sin ninguna empresa detrás. Esto ayuda a pagar el tiempo; no desbloquea nada.</string>
@@ -183,9 +190,11 @@
     <string name="edit_edit_tile">Editar tarjeta</string>
     <string name="edit_choose_type">¿Qué va en esta tarjeta?</string>
     <string name="edit_type_locked">Requiere la versión completa</string>
+    <string name="purchase_show">Bloqueado — toca para desbloquear</string>
     <string name="purchase_title">La versión completa</string>
     <string name="purchase_reason">Las fichas %1$s forman parte de la versión completa.</string>
-    <string name="purchase_body">Un solo pago, sin suscripción, y el desbloqueo pertenece a la cuenta de Google que lo compra. Todo lo demás en Larova sigue siendo gratuito, y las fichas que alguien te envía funcionan igualmente. Larova la hace una sola persona; comprar la versión completa es lo que permite seguir.</string>
+    <string name="purchase_body">Un solo pago, sin suscripción. Todo lo demás en Larova sigue siendo gratis. Los contenidos creados siempre se pueden compartir — sin ninguna compra adicional.</string>
+    <string name="purchase_body_support">Larova la hace una sola persona — comprar la versión completa es lo que mantiene vivo el desarrollo.</string>
     <string name="purchase_buy_price">Desbloquear por %1$s</string>
     <string name="purchase_buy">Desbloquear</string>
     <string name="purchase_unavailable">No se puede acceder a la tienda. Inténtalo de nuevo cuando este teléfono esté en línea.</string>

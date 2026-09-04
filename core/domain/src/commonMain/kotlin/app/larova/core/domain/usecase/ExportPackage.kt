@@ -3,13 +3,14 @@ package app.larova.core.domain.usecase
 import app.larova.core.domain.export.ExportCodec
 import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportManifest
+import app.larova.core.domain.export.PackageIo
+import app.larova.core.domain.export.toExport
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PreferencesRepository
-import app.larova.core.domain.export.PackageIo
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlinx.coroutines.flow.first
@@ -50,11 +51,13 @@ class ExportPackage(
         // retention that bounds the screen: a backup is not the place a pruned event comes back.
         val entries = log.observeRecent(LOG_EXPORT_LIMIT).first()
 
+        // Mapped at the boundary rather than handed the domain models: the file has its own row
+        // types so that adding a field to Card cannot silently change what a backup contains.
         val content = ExportContent(
-            boards = allBoards,
-            cards = allCards,
-            media = presentMedia,
-            log = entries,
+            boards = allBoards.map { it.toExport() },
+            cards = allCards.map { it.toExport() },
+            media = presentMedia.map { it.toExport() },
+            log = entries.map { it.toExport() },
         )
         val contentJson = ExportCodec.json.encodeToString(content)
 
@@ -127,6 +130,9 @@ class ReadPackagePreview(private val io: PackageIo) {
 
         /** Not a Larova package, or damaged beyond the manifest. */
         data object Unreadable : Result
+
+        /** The file could not be opened at all. See `ImportPackage.Result.CouldNotOpen`. */
+        data object CouldNotOpen : Result
     }
 
     suspend operator fun invoke(source: String): Result {
@@ -138,7 +144,8 @@ class ReadPackagePreview(private val io: PackageIo) {
 
         val found = manifest
         return when {
-            !opened || found == null -> Result.Unreadable
+            !opened -> Result.CouldNotOpen
+            found == null -> Result.Unreadable
             !found.isReadable -> Result.TooNew(found)
             else -> Result.Readable(found)
         }

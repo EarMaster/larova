@@ -46,7 +46,7 @@ class SettingsContentTest {
         show(isParentView = false, entitlement = Entitlement.NONE)
 
         assertTrue(compose.countOf("The full version") == 0)
-        assertTrue(compose.countOf("Check again") == 0)
+        assertTrue(compose.countOf(ASK_AGAIN) == 0)
     }
 
     @Test
@@ -55,7 +55,8 @@ class SettingsContentTest {
 
         compose.onNodeWithText("The full version").assertIsDisplayed()
         compose.onNodeWithText("Not unlocked").assertIsDisplayed()
-        compose.onNodeWithText("Check again").assertIsDisplayed()
+        // The card is the target, so the invitation is a sentence rather than a button label.
+        assertTrue(compose.countOf(ASK_AGAIN) == 1)
     }
 
     @Test
@@ -64,19 +65,25 @@ class SettingsContentTest {
 
         compose.onNodeWithText("Unlocked").assertIsDisplayed()
         // Still offered: a refund or a second phone are both reasons to ask again.
-        compose.onNodeWithText("Check again").assertIsDisplayed()
+        assertTrue(compose.countOf(ASK_AGAIN) == 1)
     }
 
     /**
-     * A build with no store behind it says why everything is available, and offers no button.
+     * A build with no store behind it says why everything is available, and offers no retry.
      * Somebody who compiled Larova themselves would otherwise wonder what they had unlocked.
+     *
+     * The status still reads "Unlocked" — it is the same line the paid case shows, because it is
+     * the same fact. What differs is the sentence under it.
      */
     @Test
     fun aBuildWithNoPaidTierExplainsItselfAndOffersNoCheck() {
         show(isParentView = true, entitlement = Entitlement.BUILD, onCheckPurchases = null)
 
-        compose.onNodeWithText("Unlocked — this build has no paid version").assertIsDisplayed()
-        assertTrue(compose.countOf("Check again") == 0)
+        compose.onNodeWithText("Unlocked").assertIsDisplayed()
+        compose.onNodeWithText(
+            "This build has no paid version, so every kind of tile is available.",
+        ).assertIsDisplayed()
+        assertTrue(compose.countOf(ASK_AGAIN) == 0)
     }
 
     @Test
@@ -128,7 +135,17 @@ class SettingsContentTest {
 
     /** No `assertDoesNotExist` here: counting reads better when the point is "none of these". */
     private fun androidx.compose.ui.test.junit4.AndroidComposeTestRule<*, *>.countOf(text: String) =
-        onAllNodesWithText(text).fetchSemanticsNodes().size
+        onAllNodesWithText(text, substring = true).fetchSemanticsNodes().size
+
+    private companion object {
+        /**
+         * The opening words of `settings_unlock_hint`, which is what the retry looks like now
+         * that the whole card is the target and there is no "Check again" button to find.
+         *
+         * Matched as a substring, so rewording the rest of the sentence does not break this.
+         */
+        const val ASK_AGAIN = "Larova asks Google Play at every start."
+    }
 
     private fun show(
         isParentView: Boolean,

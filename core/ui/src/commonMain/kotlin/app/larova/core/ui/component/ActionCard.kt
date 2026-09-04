@@ -36,6 +36,13 @@ import app.larova.core.ui.theme.resolve
  * The icon chip carries a tile colour rather than a theme colour, which is what keeps these
  * recognisable as Larova and not as Material — `sand` by default, the same desaturated stand-in
  * that new tiles get.
+ *
+ * **This is the shape a block on the settings screen takes.** Backup, the full version and the
+ * contribution are all one of these, and anything added there should be too: an icon chip, a
+ * title, and the sentence that explains it, inside the target that performs it. A section built
+ * out of loose `Text`s and a `TextButton` looked like a different app on the same screen, and it
+ * is also the arrangement that fails every rule in the paragraph above — the sentence outside the
+ * target, the button a thumb has to find. Reach for this before inventing a layout.
  */
 @Composable
 fun ActionCard(
@@ -46,6 +53,14 @@ fun ActionCard(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     token: TileColor = TileColor.SAND,
+    /**
+     * The state of the thing, above the sentence that explains it: "Not unlocked", "Unlocked".
+     *
+     * A separate line rather than the first words of [description], because it is the one thing
+     * on the card somebody scans for and a paragraph is where it would go to hide. Most cards
+     * have no state to report and leave this null.
+     */
+    status: String? = null,
 ) {
     val colors = token.resolve(LocalAppMode.current)
 
@@ -85,6 +100,13 @@ fun ActionCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                status?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,

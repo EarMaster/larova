@@ -40,16 +40,19 @@ class ExportManifestTest {
     )
 
     @Test
-    fun theFirstSchemaVersionIsOne() {
-        // The anchor every later migration is measured from. It is in the file from the first
-        // export precisely so that this number never has to be guessed.
-        assertEquals(1, ExportManifest.CURRENT_SCHEMA_VERSION)
-        assertEquals(1, manifest().schemaVersion)
+    fun aVersionOneFileStillReads() {
+        // Schema 1 is the anchor every later migration is measured from, and it is in the file
+        // from the very first export precisely so this number never has to be guessed. Version 2
+        // spells tile types as their frozen keys; a v1 file spells them as Kotlin constant names
+        // and must keep importing forever - see LegacyPackageFixture.
+        assertEquals(2, ExportManifest.CURRENT_SCHEMA_VERSION)
+        assertEquals(2, manifest().schemaVersion)
+        assertTrue(manifest(schemaVersion = 1).isReadable)
     }
 
     @Test
     fun aNewerFileIsDeclinedRatherThanGuessedAt() {
-        assertFalse(manifest(schemaVersion = 2).isReadable)
+        assertFalse(manifest(schemaVersion = 3).isReadable)
         assertTrue(manifest().isReadable)
         assertTrue(manifest(schemaVersion = 0).isReadable)
     }
@@ -72,7 +75,13 @@ class ExportManifestTest {
         }
         // Both of these carry a default, and a default that is not written is a field a later
         // version cannot find. That is what ExportCodec exists to prevent.
-        assertTrue(encoded.contains("\"schemaVersion\": 1"), encoded)
+        // Against the constant rather than a literal: what this line is for is that a defaulted
+        // field is written at all, not which version it happens to be. A bump should not have to
+        // come back here.
+        assertTrue(
+            encoded.contains("\"schemaVersion\": ${ExportManifest.CURRENT_SCHEMA_VERSION}"),
+            encoded,
+        )
         assertTrue(encoded.contains("\"encryption\": \"none\""), encoded)
         assertTrue(encoded.contains("\"exportedAt\": \"2026-08-23T18:12:00Z\""), encoded)
     }

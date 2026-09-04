@@ -132,12 +132,20 @@
     <string name="transfer_preview">%1$d kafelków, %2$d plików, %3$s</string>
     <string name="transfer_replace">Zastąp wszystko</string>
     <string name="transfer_merge">Dołóż do tego, co jest</string>
-    <string name="transfer_version_too_new">Ten plik powstał w nowszej wersji Larovy. Zaktualizuj aplikację, żeby go otworzyć.</string>
+    <string name="transfer_version_too_new">Ten plik powstał w wersji %1$d formatu kopii Larovy, a ta aplikacja czyta do wersji %2$d. Zaktualizuj aplikację i otwórz go ponownie.</string>
     <string name="transfer_saved">Kopia zrobiona: %1$d kafelków i %2$d plików.</string>
     <string name="transfer_restored">Przywrócono: %1$d kafelków i %2$d plików.</string>
     <string name="transfer_backup_failed">Nie udało się zapisać kopii. Spróbuj w innym miejscu.</string>
-    <string name="transfer_damaged">Ten plik jest niekompletny — mógł nie dojść w całości. Nic nie zostało zmienione.</string>
-    <string name="transfer_unreadable">To nie jest kopia Larovy.</string>
+    <string name="transfer_damaged">Ten plik jest niepełny — mógł nie przesłać się do końca. Nic nie zostało zmienione. Poproś o niego ponownie, najlepiej kopiując go z dysku w chmurze, a nie przez komunikator.</string>
+    <string name="transfer_unreadable">To nie jest kopia Larovy. Kopia Larovy to jeden plik, którego nazwa kończy się na .larova — poszukaj takiego albo zrób nową kopię na tym drugim telefonie.</string>
+    <string name="transfer_cannot_open">Larova nie mogła otworzyć tego pliku. Jeśli jest w chmurze, najpierw pobierz go na ten telefon, a potem wybierz ponownie.</string>
+    <string name="transfer_media_missing">Części zdjęć i nagrań nie było w pliku i nie dało się ich przywrócić. Kafelki, które ich używały, są na miejscu — bez nich.</string>
+    <string name="transfer_replace_warning">Zastąpienie najpierw usuwa to, co jest na tym telefonie. Tego nie można cofnąć.</string>
+    <string name="transfer_cancel">Anuluj</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Jeden kafelek wymaga nowszej Larovy i został pominięty. W Twoim pliku nadal jest.</item>
+        <item quantity="other">%1$d kafelków wymaga nowszej Larovy i zostało pominiętych. W Twoim pliku nadal są.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Ustawienia</string>
@@ -156,9 +164,8 @@
     <string name="settings_unlock">Pełna wersja</string>
     <string name="settings_unlock_owned">Odblokowana</string>
     <string name="settings_unlock_none">Nieodblokowana</string>
-    <string name="settings_unlock_build">Odblokowana — ta wersja nie ma wersji płatnej</string>
-    <string name="settings_unlock_check">Sprawdź ponownie</string>
-    <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Użyj tego, jeśli kupiłeś pełną wersję na innym telefonie lub ten telefon był offline.</string>
+    <string name="settings_unlock_build">Ta kompilacja nie ma wersji płatnej, więc dostępne są wszystkie rodzaje kafelków.</string>
+    <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Dotknij, aby zapytać ponownie — po zakupie na innym telefonie lub po uruchomieniu, gdy ten telefon był offline.</string>
     <string name="settings_version">Wersja %1$s</string>
     <string name="settings_support">Wsparcie rozwoju</string>
     <string name="settings_support_hint">Larovę tworzy jedna osoba, bez firmy za plecami. To pomaga opłacić ten czas; nic nie odblokowuje.</string>
@@ -190,9 +197,11 @@
     <string name="edit_edit_tile">Edytuj kafelek</string>
     <string name="edit_choose_type">Co ma być na tym kafelku?</string>
     <string name="edit_type_locked">Wymaga pełnej wersji</string>
+    <string name="purchase_show">Zablokowane — dotknij, aby odblokować</string>
     <string name="purchase_title">Pełna wersja</string>
     <string name="purchase_reason">Kafelki %1$s należą do pełnej wersji.</string>
-    <string name="purchase_body">Jedna płatność, bez abonamentu, a odblokowanie należy do konta Google, które je kupuje. Cała reszta w Larovie pozostaje bezpłatna, a kafelki, które ktoś Ci prześle, działają tak czy inaczej. Larovę tworzy jedna osoba; zakup pełnej wersji pozwala ją rozwijać.</string>
+    <string name="purchase_body">Jedna płatność, bez subskrypcji. Wszystko inne w Larovie pozostaje bezpłatne. Utworzone treści można zawsze udostępniać — bez dodatkowego zakupu.</string>
+    <string name="purchase_body_support">Larovę tworzy jedna osoba — zakup pełnej wersji utrzymuje rozwój przy życiu.</string>
     <string name="purchase_buy_price">Odblokuj za %1$s</string>
     <string name="purchase_buy">Odblokuj</string>
     <string name="purchase_unavailable">Nie można połączyć się ze sklepem. Spróbuj ponownie, gdy telefon będzie online.</string>

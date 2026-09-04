@@ -1,6 +1,8 @@
 package app.larova.screenshot
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import app.larova.core.domain.export.ExportCounts
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.model.AppearanceSetting
@@ -302,28 +304,52 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
     }
 
     /**
-     * A paid tile type chosen in a build that has not bought it.
+     * A paid tile type chosen in a build that has not bought it: the resting state.
      *
-     * The fields are built as usual and then covered by the offer, so the picture is the whole
-     * point of the interaction: you can see what buying would get you. The type picker stays
-     * outside the cover, which is what makes choosing something else the way out.
+     * This is the picture that matters, and it is the reason the offer folds at all. The fields are
+     * built as usual and stay legible behind a light wash, with one lock button over them, so
+     * somebody can see what an Audio tile actually asks for before deciding whether it is worth
+     * paying for. This golden used to show six lines of sales copy in front of the very fields they
+     * were selling. The type picker stays outside the cover either way, which is what makes
+     * choosing something else the way out.
      */
     @Test
     fun choosing_a_tile_type_that_costs_money() {
-        capture("screens/edit_locked") {
-            EditCardScreen(
-                state = EditUiState(
-                    isNew = true,
-                    type = CardType.AUDIO,
-                    lockedTypes = PAID_TILE_TYPES,
-                    offerPrice = "€4.99",
-                ),
-                // A non-null onBuyUnlock, because the default fixture leaves it null and the
-                // button would then be captured disabled — which is not what anybody sees.
-                callbacks = noOpEditCallbacks().copy(onBuyUnlock = {}),
-                onBack = {},
-            )
-        }
+        capture("screens/edit_locked") { lockedAudioTile() }
+    }
+
+    /**
+     * The same screen after the lock button is tapped.
+     *
+     * Driven through the button rather than set up by a flag, because the fold is state inside the
+     * screen with no way in from outside — deliberately: nothing but a tap should open the offer.
+     *
+     * Worth its own picture because it is the only place the two body paragraphs, the price and the
+     * full scrim are rendered together, and the most likely thing here to overflow at a large font
+     * scale.
+     */
+    @Test
+    fun the_full_version_offer_once_it_is_opened() {
+        show { lockedAudioTile() }
+        compose.onNodeWithText(FOLD_BUTTON).performClick()
+        captureRoot("screens/edit_locked_offer_$variant")
+    }
+
+    /** A new Audio tile in a build that has not paid for one. Both stages start here. */
+    @Composable
+    private fun lockedAudioTile() {
+        EditCardScreen(
+            state = EditUiState(
+                isNew = true,
+                type = CardType.AUDIO,
+                lockedTypes = PAID_TILE_TYPES,
+                offerPrice = "€4.99",
+            ),
+            // A non-null onBuyUnlock, because the default fixture leaves it null and the button
+            // would then be captured disabled — which is not what anybody sees.
+            callbacks = noOpEditCallbacks().copy(onBuyUnlock = {}),
+            onBack = {},
+        )
     }
 
     /** The picker, browsing: sixty-eight suggestions first, the other two hundred behind search. */
@@ -370,6 +396,16 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
     }
 
     private companion object {
+        /**
+         * `purchase_show`, spelled out.
+         *
+         * These tests render in English, and matching on the text is how the rest of the suite
+         * finds its nodes. It does mean editing that string means editing this line — which is
+         * the cheap half of the trade: the alternative is a tag in production code that exists
+         * only for a screenshot.
+         */
+        const val FOLD_BUTTON = "Locked — tap to unlock"
+
         /** A hash the preview never checks, only long enough to be one. */
         const val SHA256_HEX_LENGTH = 64
     }

@@ -123,12 +123,20 @@
     <string name="transfer_preview">%1$d tiles, %2$d files, %3$s</string>
     <string name="transfer_replace">Replace everything</string>
     <string name="transfer_merge">Add to what is here</string>
-    <string name="transfer_version_too_new">This file was made with a newer version of Larova. Update the app to open it.</string>
+    <string name="transfer_version_too_new">This file was made with Larova version %1$d of the backup format, and this app reads up to version %2$d. Update the app, then open it again.</string>
     <string name="transfer_saved">Backed up: %1$d tiles and %2$d files.</string>
     <string name="transfer_restored">Restored: %1$d tiles and %2$d files.</string>
     <string name="transfer_backup_failed">The backup could not be written. Try a different place to save it.</string>
-    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed.</string>
-    <string name="transfer_unreadable">This is not a Larova backup.</string>
+    <string name="transfer_damaged">This file is incomplete — it may not have been sent in full. Nothing has been changed. Ask for it again, and copy it from cloud storage rather than through a messenger if you can.</string>
+    <string name="transfer_unreadable">This is not a Larova backup. A Larova backup is one file whose name ends in .larova — look for that one, or make a new backup on the other phone.</string>
+    <string name="transfer_cannot_open">Larova could not open that file. If it is in cloud storage, download it to this phone first, then choose it again.</string>
+    <string name="transfer_media_missing">Some pictures and recordings were not in the file and could not be brought back. The tiles that used them are here, without them.</string>
+    <string name="transfer_replace_warning">Replacing removes what is on this phone first. That cannot be undone.</string>
+    <string name="transfer_cancel">Cancel</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">One tile needs a newer Larova and was left out. Your file still has it.</item>
+        <item quantity="other">%1$d tiles need a newer Larova and were left out. Your file still has them.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Settings</string>
@@ -147,9 +155,8 @@
     <string name="settings_unlock">The full version</string>
     <string name="settings_unlock_owned">Unlocked</string>
     <string name="settings_unlock_none">Not unlocked</string>
-    <string name="settings_unlock_build">Unlocked — this build has no paid version</string>
-    <string name="settings_unlock_check">Check again</string>
-    <string name="settings_unlock_hint">Larova asks Google Play every time it starts. Use this if you bought the full version on another phone, or if this phone was offline.</string>
+    <string name="settings_unlock_build">This build has no paid version, so every kind of tile is available.</string>
+    <string name="settings_unlock_hint">Larova asks Google Play at every start. Tap to ask again — after buying on another phone, or after a start while this phone was offline.</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_support">Support the development</string>
     <string name="settings_support_hint">Larova is made by one person, with no company behind it. This is a way to help pay for the time; it unlocks nothing.</string>
@@ -190,10 +197,15 @@
       unrelated things both called "unlock" in one string file is how the wrong one gets shown.
     -->
     <string name="edit_type_locked">Needs the full version</string>
+    <!-- The button the offer folds down to. It sits over the fields of a locked tile type,
+         which stay readable behind it: the point is to be able to see what a Video tile
+         asks for before deciding whether it is worth paying for. -->
+    <string name="purchase_show">Locked — tap to unlock</string>
     <string name="purchase_title">The full version</string>
     <!-- %1$s is the name of a tile type, as it appears on the type picker. -->
     <string name="purchase_reason">%1$s tiles are part of the full version.</string>
-    <string name="purchase_body">One payment, no subscription, and the unlock belongs to the Google account that buys it. Everything else in Larova stays free, and tiles somebody sends you keep working either way. Larova is made by one person; buying the full version is what keeps it being made.</string>
+    <string name="purchase_body">One payment, no subscription. Everything else in Larova stays free. Anything you create can always be shared — no second purchase needed.</string>
+    <string name="purchase_body_support">Larova is made by one person — buying the full version is what keeps the development alive.</string>
     <!-- %1$s is the price, formatted by Google Play in the buyer's own currency. -->
     <string name="purchase_buy_price">Unlock for %1$s</string>
     <string name="purchase_buy">Unlock</string>

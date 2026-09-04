@@ -458,6 +458,13 @@ written in English. `README.md` links straight at the English fastlane copies.
   contrast, colour never the sole carrier of meaning, full TalkBack labelling.
 - Project language is English throughout: code, comments, commit messages,
   documentation.
+- A block on the settings screen is an `ActionCard`: icon chip, title, optional
+  status line, and the sentence that explains it, all inside the target that
+  performs it. Backup, the full version and the contribution are all one. Adding
+  a section built from loose `Text`s and a `TextButton` makes that screen look
+  like two apps at once, and it puts the explanation outside the touch target —
+  which is the accessibility rule above, not a matter of taste. Give each card a
+  different `TileColor` so the blocks read as separate things.
 - Keep `CHANGELOG.md` current: an entry under `## [Unreleased]` for any
   user-facing change, in the same commit that makes it, not as a follow-up. CI,
   tooling and docs-only changes do not belong there.

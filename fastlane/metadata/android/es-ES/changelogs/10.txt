@@ -1,0 +1,1 @@
+En una tarjeta que necesita la versión completa, ahora ves primero la tarjeta y después el precio. Restaurar una copia ya no rechaza todo el archivo por una sola tarjeta desconocida, y dice qué hacer cuando no se puede. Sustituir todo es más difícil de hacer sin querer.

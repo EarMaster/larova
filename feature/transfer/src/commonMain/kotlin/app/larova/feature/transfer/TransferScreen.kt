@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +16,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.export.ImportMode
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.ui.component.ActionCard
@@ -25,20 +27,26 @@ import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.transfer_backup
 import app.larova.core.ui.resources.transfer_backup_failed
 import app.larova.core.ui.resources.transfer_backup_hint
+import app.larova.core.ui.resources.transfer_cancel
+import app.larova.core.ui.resources.transfer_cannot_open
 import app.larova.core.ui.resources.transfer_damaged
 import app.larova.core.ui.resources.transfer_last_backup
+import app.larova.core.ui.resources.transfer_media_missing
 import app.larova.core.ui.resources.transfer_merge
 import app.larova.core.ui.resources.transfer_preview
 import app.larova.core.ui.resources.transfer_replace
+import app.larova.core.ui.resources.transfer_replace_warning
 import app.larova.core.ui.resources.transfer_restore
 import app.larova.core.ui.resources.transfer_restore_hint
 import app.larova.core.ui.resources.transfer_restored
+import app.larova.core.ui.resources.transfer_restored_skipped
 import app.larova.core.ui.resources.transfer_saved
 import app.larova.core.ui.resources.transfer_title
 import app.larova.core.ui.resources.transfer_unreadable
 import app.larova.core.ui.resources.transfer_version_too_new
 import app.larova.core.ui.theme.Dimens
 import kotlin.time.Instant
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -117,6 +125,23 @@ fun TransferScreen(
                     },
                     modifier = Modifier.padding(vertical = 4.dp),
                 )
+                // Second line rather than folded into the sentence above: the caveat is quieter
+                // than the result, and "your file still has them" is the part that matters. Not
+                // error-coloured — nothing failed.
+                if (outcome is TransferOutcome.Restored) {
+                    if (outcome.skippedCards > 0) {
+                        Caveat(
+                            text = pluralStringResource(
+                                Res.plurals.transfer_restored_skipped,
+                                outcome.skippedCards,
+                                outcome.skippedCards,
+                            ),
+                        )
+                    }
+                    if (outcome.mediaMissing) {
+                        Caveat(text = stringResource(Res.string.transfer_media_missing))
+                    }
+                }
             }
 
             LastBackupNote(backup = state.lastBackup, formatDate = formatDate)
@@ -179,8 +204,9 @@ private fun LastBackupNote(
 
 /**
  * The one dialog in the app that offers something irreversible, so it says what is in the file
- * first and names both choices in the user's own terms — "replace everything" and "add to what is
- * here" — rather than asking them to understand the word merge.
+ * first, then what replacing it would remove, and names both choices in the user's own terms —
+ * "replace everything" and "add to what is here" — rather than asking them to understand the word
+ * merge. Cancel is a button, not only a tap outside.
  */
 @Composable
 private fun ImportChoiceDialog(
@@ -193,18 +219,72 @@ private fun ImportChoiceDialog(
     AlertDialog(
         onDismissRequest = onCancel,
         title = { Text(label ?: stringResource(Res.string.transfer_restore)) },
-        text = { Text(summary) },
-        confirmButton = {
-            TextButton(onClick = onMerge) { Text(stringResource(Res.string.transfer_merge)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onReplace) {
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                // What is in the file...
+                Text(summary)
+                // ...and then what replacing it would cost, which the summary never said. The
+                // dialog used to describe only the package, so the irreversible option arrived
+                // with nothing explaining that it deletes first.
                 Text(
-                    text = stringResource(Res.string.transfer_replace),
-                    color = MaterialTheme.colorScheme.error,
+                    text = stringResource(Res.string.transfer_replace_warning),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
+        // All three in one vertical stack, and Cancel is a real button rather than a tap outside.
+        //
+        // Everything goes in the confirm slot with no dismiss button, because Material lays the
+        // two slots side by side: with Cancel in the dismiss slot it landed on the same row as
+        // "replace everything", which reads as an accident. It also used to give the destructive
+        // choice the favoured position while the additive one was the "confirm" — the wrong way
+        // round for the only irreversible thing the app can do.
+        confirmButton = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                TextButton(
+                    onClick = onMerge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.transfer_merge))
+                }
+                TextButton(
+                    onClick = onReplace,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(
+                        text = stringResource(Res.string.transfer_replace),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                TextButton(
+                    onClick = onCancel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.transfer_cancel))
+                }
+            }
+        },
+    )
+}
+
+/** A quieter line under the outcome: true, worth reading, and not a failure. */
+@Composable
+private fun Caveat(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(bottom = 4.dp),
     )
 }
 
@@ -216,7 +296,14 @@ private fun TransferOutcome.message(): String = when (this) {
     is TransferOutcome.BackedUp -> stringResource(Res.string.transfer_saved, cards, media)
     is TransferOutcome.Restored -> stringResource(Res.string.transfer_restored, cards, media)
     TransferOutcome.BackupFailed -> stringResource(Res.string.transfer_backup_failed)
-    is TransferOutcome.FileTooNew -> stringResource(Res.string.transfer_version_too_new)
+    // Both numbers: the one the file carries, and the one this build reads up to. The manifest
+    // has always carried the first and the screen has always thrown it away.
+    is TransferOutcome.FileTooNew -> stringResource(
+        Res.string.transfer_version_too_new,
+        schemaVersion,
+        ExportManifest.CURRENT_SCHEMA_VERSION,
+    )
     TransferOutcome.FileDamaged -> stringResource(Res.string.transfer_damaged)
     TransferOutcome.FileUnreadable -> stringResource(Res.string.transfer_unreadable)
+    TransferOutcome.FileCannotOpen -> stringResource(Res.string.transfer_cannot_open)
 }

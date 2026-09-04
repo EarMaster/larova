@@ -131,12 +131,20 @@
     <string name="transfer_preview">%1$d карточек, %2$d файлов, %3$s</string>
     <string name="transfer_replace">Заменить всё</string>
     <string name="transfer_merge">Добавить к тому, что есть</string>
-    <string name="transfer_version_too_new">Этот файл создан более новой версией Larova. Обновите приложение, чтобы открыть его.</string>
+    <string name="transfer_version_too_new">Этот файл создан в версии %1$d формата резервных копий Larova, а это приложение читает до версии %2$d. Обновите приложение и откройте файл снова.</string>
     <string name="transfer_saved">Копия сделана: %1$d карточек и %2$d файлов.</string>
     <string name="transfer_restored">Восстановлено: %1$d карточек и %2$d файлов.</string>
     <string name="transfer_backup_failed">Копию не удалось записать. Попробуйте сохранить в другом месте.</string>
-    <string name="transfer_damaged">Этот файл неполный — возможно, он был отправлен не целиком. Ничего не изменено.</string>
-    <string name="transfer_unreadable">Это не резервная копия Larova.</string>
+    <string name="transfer_damaged">Этот файл неполный — возможно, он передался не целиком. Ничего не изменено. Попросите прислать его снова, и лучше скопируйте из облачного хранилища, а не через мессенджер.</string>
+    <string name="transfer_unreadable">Это не резервная копия Larova. Копия Larova — это один файл, имя которого заканчивается на .larova. Найдите именно его или сделайте новую копию на другом телефоне.</string>
+    <string name="transfer_cannot_open">Larova не смогла открыть этот файл. Если он в облаке, сначала скачайте его на этот телефон, а затем выберите снова.</string>
+    <string name="transfer_media_missing">Некоторых изображений и записей в файле не было, поэтому вернуть их не удалось. Плитки, которые их использовали, на месте — но без них.</string>
+    <string name="transfer_replace_warning">Замена сначала удаляет то, что есть на этом телефоне. Отменить это нельзя.</string>
+    <string name="transfer_cancel">Отмена</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">Одна плитка требует более новой Larova, поэтому её пропустили. В вашем файле она осталась.</item>
+        <item quantity="other">%1$d плиток требуют более новой Larova, поэтому их пропустили. В вашем файле они остались.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Настройки</string>
@@ -155,9 +163,8 @@
     <string name="settings_unlock">Полная версия</string>
     <string name="settings_unlock_owned">Разблокирована</string>
     <string name="settings_unlock_none">Не разблокирована</string>
-    <string name="settings_unlock_build">Разблокирована — в этой сборке нет платной версии</string>
-    <string name="settings_unlock_check">Проверить снова</string>
-    <string name="settings_unlock_hint">Larova спрашивает Google Play при каждом запуске. Воспользуйтесь этим, если вы купили полную версию на другом телефоне или этот телефон был offline.</string>
+    <string name="settings_unlock_build">В этой сборке нет платной версии, поэтому доступны все виды плиток.</string>
+    <string name="settings_unlock_hint">Larova обращается к Google Play при каждом запуске. Нажмите, чтобы спросить снова — после покупки на другом телефоне или запуска, когда этот телефон был не в сети.</string>
     <string name="settings_version">Версия %1$s</string>
     <string name="settings_support">Поддержать разработку</string>
     <string name="settings_support_hint">Larova делает один человек, без компании за спиной. Это помогает оплатить время; ничего не разблокируется.</string>
@@ -189,9 +196,11 @@
     <string name="edit_edit_tile">Изменить карточку</string>
     <string name="edit_choose_type">Что будет на этой карточке?</string>
     <string name="edit_type_locked">Нужна полная версия</string>
+    <string name="purchase_show">Заблокировано — нажмите, чтобы разблокировать</string>
     <string name="purchase_title">Полная версия</string>
     <string name="purchase_reason">Плитки «%1$s» входят в полную версию.</string>
-    <string name="purchase_body">Одна оплата, без подписки, и разблокировка принадлежит аккаунту Google, который её купил. Всё остальное в Larova остаётся бесплатным, а плитки, которые вам пришлют, работают в любом случае. Larova делает один человек; покупка полной версии позволяет продолжать.</string>
+    <string name="purchase_body">Одна оплата, без подписки. Всё остальное в Larova остаётся бесплатным. Созданным содержимым всегда можно поделиться — дополнительная покупка не нужна.</string>
+    <string name="purchase_body_support">Larova создаёт один человек — покупка полной версии поддерживает разработку.</string>
     <string name="purchase_buy_price">Разблокировать за %1$s</string>
     <string name="purchase_buy">Разблокировать</string>
     <string name="purchase_unavailable">Не удаётся связаться с магазином. Попробуйте снова, когда телефон будет в сети.</string>

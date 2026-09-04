@@ -140,12 +140,20 @@
     <string name="transfer_preview">%1$d بطاقة، %2$d ملف، %3$s</string>
     <string name="transfer_replace">استبدال كل شيء</string>
     <string name="transfer_merge">الإضافة إلى الموجود</string>
-    <string name="transfer_version_too_new">أُنشئ هذا الملف بإصدار أحدث من Larova. حدّث التطبيق لفتحه.</string>
+    <string name="transfer_version_too_new">أُنشئ هذا الملف بالإصدار %1$d من صيغة النسخ الاحتياطي في لاروفا، وهذا التطبيق يقرأ حتى الإصدار %2$d. حدّث التطبيق ثم افتحه من جديد.</string>
     <string name="transfer_saved">تم النسخ: %1$d بطاقة و%2$d ملف.</string>
     <string name="transfer_restored">تمت الاستعادة: %1$d بطاقة و%2$d ملف.</string>
     <string name="transfer_backup_failed">تعذّرت كتابة النسخة الاحتياطية. جرّب مكاناً آخر للحفظ.</string>
-    <string name="transfer_damaged">هذا الملف ناقص — ربما لم يُرسل كاملاً. لم يتغيّر شيء.</string>
-    <string name="transfer_unreadable">هذه ليست نسخة احتياطية من Larova.</string>
+    <string name="transfer_damaged">هذا الملف غير مكتمل — ربما لم يُرسل بالكامل. لم يتغيّر شيء. اطلبه مرة أخرى، وانسخه من مساحة تخزين سحابية بدلاً من تطبيق محادثة إن أمكن.</string>
+    <string name="transfer_unreadable">هذه ليست نسخة احتياطية من لاروفا. نسخة لاروفا ملف واحد ينتهي اسمه بـ .larova — ابحث عنه، أو أنشئ نسخة جديدة على الهاتف الآخر.</string>
+    <string name="transfer_cannot_open">لم تستطع لاروفا فتح هذا الملف. إن كان في تخزين سحابي، نزّله إلى هذا الهاتف أولاً ثم اختره مرة أخرى.</string>
+    <string name="transfer_media_missing">بعض الصور والتسجيلات لم تكن في الملف فلم يتيسّر إرجاعها. البطاقات التي كانت تستخدمها موجودة، لكن بدونها.</string>
+    <string name="transfer_replace_warning">الاستبدال يحذف أولاً ما هو على هذا الهاتف. ولا يمكن التراجع عن ذلك.</string>
+    <string name="transfer_cancel">إلغاء</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">بطاقة واحدة تحتاج إصداراً أحدث من لاروفا فتُركت. وهي ما زالت في ملفك.</item>
+        <item quantity="other">%1$d بطاقات تحتاج إصداراً أحدث من لاروفا فتُركت. وهي ما زالت في ملفك.</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">الإعدادات</string>
@@ -164,9 +172,8 @@
     <string name="settings_unlock">النسخة الكاملة</string>
     <string name="settings_unlock_owned">مفتوحة</string>
     <string name="settings_unlock_none">غير مفتوحة</string>
-    <string name="settings_unlock_build">مفتوحة — هذه النسخة لا تتضمّن إصداراً مدفوعاً</string>
-    <string name="settings_unlock_check">تحقّق مرة أخرى</string>
-    <string name="settings_unlock_hint">تسأل لاروفا متجر Google Play عند كل تشغيل. استخدم هذا إن اشتريت النسخة الكاملة على هاتف آخر أو كان هذا الهاتف غير متصل.</string>
+    <string name="settings_unlock_build">هذه النسخة المُجمَّعة لا تتضمّن إصداراً مدفوعاً، لذا فكل أنواع البطاقات متاحة.</string>
+    <string name="settings_unlock_hint">يسأل لاروفا متجر Google Play عند كل تشغيل. اضغط للسؤال مرة أخرى — بعد الشراء على هاتف آخر، أو بعد تشغيل كان هذا الهاتف فيه دون اتصال.</string>
     <string name="settings_version">الإصدار %1$s</string>
     <string name="settings_support">دعم التطوير</string>
     <string name="settings_support_hint">يصنع لاروفا شخص واحد، ولا شركة خلفه. هذا يساعد في تعويض الوقت؛ ولا يفتح شيئاً.</string>
@@ -198,9 +205,11 @@
     <string name="edit_edit_tile">تعديل البطاقة</string>
     <string name="edit_choose_type">ماذا يوضع على هذه البطاقة؟</string>
     <string name="edit_type_locked">يتطلب النسخة الكاملة</string>
+    <string name="purchase_show">مقفل — اضغط لفتح القفل</string>
     <string name="purchase_title">النسخة الكاملة</string>
     <string name="purchase_reason">بطاقات %1$s جزء من النسخة الكاملة.</string>
-    <string name="purchase_body">دفعة واحدة، بلا اشتراك، والفتح يتبع حساب Google الذي يشتريه. يبقى كل ما عداها في لاروفا مجانياً، والبطاقات التي يرسلها إليك أحد تعمل في الحالتين. يصنع لاروفا شخص واحد؛ وشراء النسخة الكاملة هو ما يُبقيها مستمرة.</string>
+    <string name="purchase_body">دفعة واحدة، بدون اشتراك. كل شيء آخر في لاروفا يبقى مجانياً. ويمكن دائماً مشاركة ما تنشئه — دون أي عملية شراء إضافية.</string>
+    <string name="purchase_body_support">لاروفا يصنعها شخص واحد — وشراء النسخة الكاملة هو ما يُبقي التطوير مستمراً.</string>
     <string name="purchase_buy_price">افتحها مقابل %1$s</string>
     <string name="purchase_buy">افتحها</string>
     <string name="purchase_unavailable">تعذّر الوصول إلى المتجر. حاول مرة أخرى عندما يكون الهاتف متصلاً.</string>

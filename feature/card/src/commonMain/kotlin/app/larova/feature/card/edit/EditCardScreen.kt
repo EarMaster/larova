@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,12 +41,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.KeyboardType
@@ -121,10 +125,12 @@ import app.larova.core.ui.resources.edit_web_address
 import app.larova.core.ui.resources.edit_web_address_invalid
 import app.larova.core.ui.resources.edit_web_label
 import app.larova.core.ui.resources.purchase_body
+import app.larova.core.ui.resources.purchase_body_support
 import app.larova.core.ui.resources.purchase_buy
 import app.larova.core.ui.resources.purchase_buy_price
 import app.larova.core.ui.resources.purchase_pending
 import app.larova.core.ui.resources.purchase_reason
+import app.larova.core.ui.resources.purchase_show
 import app.larova.core.ui.resources.purchase_title
 import app.larova.core.ui.resources.purchase_unavailable
 import app.larova.core.ui.resources.tile_app
@@ -177,6 +183,12 @@ fun EditCardScreen(
         // A purchase that completes elsewhere empties `lockedTypes` and the cover simply lifts.
         val offerCovers = state.type in state.lockedTypes
 
+        // Folded by default, and folded again for the next type: `remember(state.type)`, so
+        // reading the offer for Video and then choosing Audio does not land on an open card
+        // somebody has to fold away before they can see the second form.
+        var offerOpen by remember(state.type) { mutableStateOf(false) }
+        val lockedFormDescription = stringResource(Res.string.edit_type_locked)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -196,18 +208,44 @@ fun EditCardScreen(
                 }
             }
 
-            // The form and the offer that covers it, in one Box.
+            // Folded, the offer is this button and nothing else.
             //
-            // The type picker above stays outside and stays live, so somebody looking at a locked
-            // type can simply choose a different one. For an existing tile there is no picker, and
-            // the way out is Back — which is correct, since the type of a saved tile never changes.
+            // In the flow rather than laid over the Box, because centring it there put it on top
+            // of the Title field and read as a broken layout. Here it sits where a heading would,
+            // directly under the chip that was just tapped, and the form below it stays whole.
+            if (offerCovers && !offerOpen) {
+                Button(
+                    onClick = { offerOpen = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    // No description on the icon: the label says it, and a screen reader should
+                    // not read "lock" twice — the same reason the locked chips leave theirs null.
+                    Icon(imageVector = Lock, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(Res.string.purchase_show))
+                }
+            }
+
+            // The form, and — once the button above is tapped — the offer that covers it.
+            //
+            // The type picker stays outside and stays live, so somebody looking at a locked type
+            // can simply choose a different one. For an existing tile there is no picker, and the
+            // way out is Back — which is correct, since the type of a saved tile never changes.
             Box {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    // Hidden from TalkBack while covered. A screen reader that walked into fields
-                    // nobody can fill would be worse than no fields at all, and this is the idiom
-                    // GuideView and TableView already use for content the eye reads as one thing.
-                    modifier = if (offerCovers) Modifier.clearAndSetSemantics { } else Modifier,
+                    // Dimmed rather than scrimmed. A wash of `surface` over a `background` page is
+                    // all but invisible in light mode, so the form looked live while swallowing
+                    // every tap; fading the content itself is how every disabled control on the
+                    // platform reads, and it keeps the labels legible — which is the entire point
+                    // of folding the offer away.
+                    modifier = if (offerCovers) {
+                        Modifier.alpha(COVERED_FORM_ALPHA)
+                    } else {
+                        Modifier
+                    },
                 ) {
                     OutlinedTextField(
                         value = state.title,
@@ -286,12 +324,28 @@ fun EditCardScreen(
                     }
                 }
 
-                if (offerCovers) {
+                if (offerCovers && offerOpen) {
                     UnlockOverlay(
                         type = state.type,
                         price = state.offerPrice,
                         message = state.offerMessage,
                         onBuy = callbacks.onBuyUnlock,
+                    )
+                } else if (offerCovers) {
+                    // Invisible, and only there to eat the taps that would focus a field nobody
+                    // can fill. Scrolling still reaches the column, which a long form needs.
+                    //
+                    // TalkBack gets the same deal the eye does: the fields stay readable, because
+                    // judging whether a Video tile is worth paying for means knowing what it asks
+                    // for, and this node is what says they are not yours yet.
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .pointerInput(Unit) { detectTapGestures { } }
+                            .semantics {
+                                disabled()
+                                contentDescription = lockedFormDescription
+                            },
                     )
                 }
             }
@@ -1005,20 +1059,21 @@ private fun LineList(
 }
 
 /**
- * The offer, laid over the fields of a tile type nobody has paid for.
+ * The offer itself, once the lock button above the form has been tapped.
  *
- * A cover rather than a dialog, because the point is that the form underneath stays visible: what
- * is being sold is easier to judge when you can see the thing you would be buying. The scrim is
- * deliberately not opaque.
+ * Not the resting state, and that is the whole design. The card covered the form it was
+ * advertising — six lines of sales copy in front of the very fields they were selling — so the
+ * price arrived before there was anything to weigh it against. Now the form is what you see
+ * first, dimmed, and this arrives when somebody asks for it.
  *
  * Taps are swallowed, scrolling is not. A long form — a table, a guide with several steps — has to
  * remain readable end to end, and that is doubly true at the 200 % font scale this app promises, so
  * `detectTapGestures` consumes the presses that would focus a field while vertical drags still
  * reach the scrolling column above.
  *
- * There is no dismiss button. For a new tile the type picker is still live above the cover, so
- * choosing something else is the way out; for a saved tile the way out is Back, because the type of
- * a tile that already exists never changes anyway.
+ * There is no fold-away button and no dismiss. For a new tile the type picker is still live above
+ * the cover, so choosing something else is the way out; for a saved tile the way out is Back,
+ * because the type of a tile that already exists never changes anyway.
  */
 @Composable
 private fun BoxScope.UnlockOverlay(
@@ -1058,8 +1113,14 @@ private fun BoxScope.UnlockOverlay(
                 text = stringResource(Res.string.purchase_reason, stringResource(type.label)),
                 style = MaterialTheme.typography.bodyLarge,
             )
+            // Two paragraphs, because they answer different questions: what the payment is, then
+            // who it goes to. One block ran them together and read like a page of terms.
             Text(
                 text = stringResource(Res.string.purchase_body),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = stringResource(Res.string.purchase_body_support),
                 style = MaterialTheme.typography.bodyMedium,
             )
             message?.let {
@@ -1194,6 +1255,15 @@ private val CardType.label: StringResource
  * steps — the very thing it replaces. The point is to see what you would be buying.
  */
 private const val SCRIM_ALPHA = 0.72f
+
+/**
+ * How far the form fades while it is not paid for.
+ *
+ * High enough that every field, label and colour swatch stays legible — that is the whole reason
+ * the offer folds away — and low enough that it does not look like it is waiting for typing that
+ * will not be accepted.
+ */
+private const val COVERED_FORM_ALPHA = 0.6f
 
 private const val MIN_NOTE_LINES = 6
 

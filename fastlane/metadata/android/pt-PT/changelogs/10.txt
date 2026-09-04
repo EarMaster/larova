@@ -1,0 +1,1 @@
+Num mosaico que precisa da versão completa, vê agora primeiro o mosaico e só depois o preço. Restaurar uma cópia já não recusa o ficheiro todo por causa de um único mosaico desconhecido, e diz o que fazer quando não é possível. Substituir tudo é mais difícil de fazer sem querer.

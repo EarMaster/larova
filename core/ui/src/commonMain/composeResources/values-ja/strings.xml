@@ -123,12 +123,20 @@
     <string name="transfer_preview">カード %1$d 件、ファイル %2$d 件、%3$s</string>
     <string name="transfer_replace">すべて置き換える</string>
     <string name="transfer_merge">いまあるものに追加する</string>
-    <string name="transfer_version_too_new">このファイルは新しいバージョンのLarovaで作られています。開くにはアプリを更新してください。</string>
+    <string name="transfer_version_too_new">このファイルは Larova のバックアップ形式バージョン %1$d で作られており、このアプリはバージョン %2$d までを読めます。アプリを更新してから開き直してください。</string>
     <string name="transfer_saved">バックアップしました：カード %1$d 件、ファイル %2$d 件。</string>
     <string name="transfer_restored">復元しました：カード %1$d 件、ファイル %2$d 件。</string>
     <string name="transfer_backup_failed">バックアップを書き込めませんでした。別の場所に保存してみてください。</string>
-    <string name="transfer_damaged">このファイルは不完全です。途中までしか送られていないかもしれません。何も変更されていません。</string>
-    <string name="transfer_unreadable">これはLarovaのバックアップではありません。</string>
+    <string name="transfer_damaged">このファイルは不完全です。途中までしか送られていないのかもしれません。何も変更していません。もう一度送ってもらい、できればメッセージアプリではなくクラウドからコピーしてください。</string>
+    <string name="transfer_unreadable">これは Larova のバックアップではありません。Larova のバックアップは名前が .larova で終わる 1 つのファイルです。それを探すか、もう一方の端末で新しくバックアップを作ってください。</string>
+    <string name="transfer_cannot_open">Larova はそのファイルを開けませんでした。クラウドにある場合は、まずこの端末にダウンロードしてから選び直してください。</string>
+    <string name="transfer_media_missing">一部の写真や録音がファイルに含まれておらず、戻せませんでした。それを使っていたタイルはありますが、中身はありません。</string>
+    <string name="transfer_replace_warning">置き換えると、この端末にあるものが先に削除されます。取り消せません。</string>
+    <string name="transfer_cancel">キャンセル</string>
+    <plurals name="transfer_restored_skipped">
+        <item quantity="one">1 つのタイルは新しい Larova が必要なため、取り込みませんでした。ファイルには残っています。</item>
+        <item quantity="other">%1$d 個のタイルは新しい Larova が必要なため、取り込みませんでした。ファイルには残っています。</item>
+    </plurals>
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">設定</string>
@@ -147,9 +155,8 @@
     <string name="settings_unlock">フル版</string>
     <string name="settings_unlock_owned">解除済み</string>
     <string name="settings_unlock_none">未解除</string>
-    <string name="settings_unlock_build">解除済み — このビルドに有料版はありません</string>
-    <string name="settings_unlock_check">もう一度確認</string>
-    <string name="settings_unlock_hint">Larova は起動するたびに Google Play に問い合わせます。フル版を別の端末で購入した場合や、この端末がオフラインだった場合にお使いください。</string>
+    <string name="settings_unlock_build">このビルドには有料版がないため、すべての種類のカードを使えます。</string>
+    <string name="settings_unlock_hint">Larova は起動ごとに Google Play に確認します。もう一度確認するにはタップしてください — 別の端末で購入した後や、この端末がオフラインのまま起動した後などに。</string>
     <string name="settings_version">バージョン %1$s</string>
     <string name="settings_support">開発を支援する</string>
     <string name="settings_support_hint">Larova は一人で作っていて、後ろに会社はありません。これは費やした時間を支える助けになります。何も解除されません。</string>
@@ -181,9 +188,11 @@
     <string name="edit_edit_tile">カードを編集</string>
     <string name="edit_choose_type">このカードには何を入れますか？</string>
     <string name="edit_type_locked">フル版が必要です</string>
+    <string name="purchase_show">ロック中 — タップして解除</string>
     <string name="purchase_title">フル版</string>
     <string name="purchase_reason">%1$s のタイルはフル版に含まれます。</string>
-    <string name="purchase_body">支払いは一度きりで、定期購入はありません。解除は購入した Google アカウントに紐づきます。Larova のほかの機能はこれまでどおり無料で、誰かから届いたタイルもそのまま使えます。Larova は一人で作っています。フル版の購入が、それを続ける支えになります。</string>
+    <string name="purchase_body">一度の支払いで、サブスクではありません。Larova のそれ以外はすべて無料のままです。作った内容はいつでも共有できます — 追加の購入は必要ありません。</string>
+    <string name="purchase_body_support">Larova は一人で作っています — フル版の購入が、開発を続ける支えになります。</string>
     <string name="purchase_buy_price">%1$s で解除</string>
     <string name="purchase_buy">解除する</string>
     <string name="purchase_unavailable">ストアに接続できません。この端末がオンラインになってからもう一度お試しください。</string>

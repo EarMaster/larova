@@ -1,0 +1,1 @@
+Pour une tuile qui demande la version complète, vous voyez maintenant la tuile d’abord, et le prix ensuite. Restaurer une sauvegarde ne refuse plus tout le fichier à cause d’une seule tuile inconnue, et dit quoi faire quand ce n’est pas possible. Remplacer tout est plus difficile à faire par erreur.

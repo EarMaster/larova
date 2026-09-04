@@ -12,6 +12,35 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-04
+
+### Changed
+- The full-version section of the settings now looks like the backup and contribution sections
+  around it: one card, with the icon, the status and the explanation inside it, and tapping the
+  card is what asks Google Play again. It used to be loose text with a small link under it, which
+  read like part of a different screen.
+- Choosing a tile type that needs the full version now shows you the tile first. The fields are
+  laid out as usual, greyed but readable, with one "Locked — tap to unlock" button above them, so
+  you can see what a Video or Sound tile actually asks for before deciding whether it is worth
+  paying for. The offer with the price arrives when you tap that button. It used to appear straight
+  away, on top of the very fields it was describing.
+- The text about the full version is shorter and says the part that matters: one payment, no
+  subscription, everything else stays free, and anything you make can always be shared without a
+  second purchase.
+
+### Fixed
+- Restoring a backup that contains a kind of tile this version does not know now brings back
+  everything else and says how many it had to leave out — and that they are still in your file, so
+  updating Larova and restoring again gets them. Before, one unfamiliar tile made the whole file
+  refuse to open, and it said "this is not a Larova backup" about a perfectly good one.
+- The messages when a restore cannot go ahead now say what to do about it. A file that could not be
+  opened at all — one still sitting in cloud storage, most often — no longer claims not to be a
+  Larova backup, and the others suggest a next step instead of stopping at the bad news.
+- Replacing everything when you restore is harder to do by accident: the dialog now says that it
+  removes what is on the phone first and cannot be undone, the two choices no longer sit in the
+  order that favoured the destructive one, and there is a Cancel button rather than only tapping
+  outside.
+
 ## [0.4.2] - 2026-09-03
 
 ### Added
