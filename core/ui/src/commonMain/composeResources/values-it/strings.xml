@@ -159,6 +159,8 @@
     <string name="settings_unlock_none">Non sbloccata</string>
     <string name="settings_unlock_build">Questa build non ha una versione a pagamento: tutti i tipi di riquadro sono disponibili.</string>
     <string name="settings_unlock_hint">Larova interroga Google Play a ogni avvio. Tocca per richiedere di nuovo — dopo un acquisto su un altro telefono, o un avvio con questo telefono offline.</string>
+    <string name="settings_unlock_checking">Richiesta a Google Play…</string>
+    <string name="settings_unlock_missing">Google Play non trova nessuna versione completa per questo telefono. Potrebbe essere stata acquistata con un altro account Google, oppure lo store non era raggiungibile in questo momento.</string>
     <string name="settings_version">Versione %1$s</string>
     <string name="settings_support">Sostenere lo sviluppo</string>
     <string name="settings_support_hint">Larova è fatta da una sola persona, senza un’azienda dietro. Questo aiuta a pagare il tempo; non sblocca nulla.</string>
@@ -199,6 +201,7 @@
     <string name="purchase_buy">Sblocca</string>
     <string name="purchase_unavailable">Impossibile raggiungere lo store. Riprova quando questo telefono è online.</string>
     <string name="purchase_pending">Pagamento avviato. Le caselle si sbloccano appena va a buon fine.</string>
+    <string name="purchase_later">Non ora</string>
     <string name="edit_title">Titolo</string>
     <string name="edit_subtitle">Seconda riga (facoltativa)</string>
     <string name="edit_colour">Colore</string>

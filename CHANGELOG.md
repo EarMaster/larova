@@ -12,6 +12,12 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Fixed
+- Tapping the full version in the settings now answers you. While Larova asks Google Play the
+  card says so, and if the store has no purchase for this phone you get told why — a different
+  Google account, or a store that could not be reached — with the option to buy the full version
+  right there. It used to check silently and leave the card looking exactly as it had before.
+
 ## [0.5.0] - 2026-09-04
 
 ### Changed

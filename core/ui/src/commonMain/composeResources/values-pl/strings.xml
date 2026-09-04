@@ -166,6 +166,8 @@
     <string name="settings_unlock_none">Nieodblokowana</string>
     <string name="settings_unlock_build">Ta kompilacja nie ma wersji płatnej, więc dostępne są wszystkie rodzaje kafelków.</string>
     <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Dotknij, aby zapytać ponownie — po zakupie na innym telefonie lub po uruchomieniu, gdy ten telefon był offline.</string>
+    <string name="settings_unlock_checking">Pytanie do Google Play…</string>
+    <string name="settings_unlock_missing">Google Play nie ma pełnej wersji dla tego telefonu. Mogła zostać kupiona na innym koncie Google albo sklep był w tej chwili nieosiągalny.</string>
     <string name="settings_version">Wersja %1$s</string>
     <string name="settings_support">Wsparcie rozwoju</string>
     <string name="settings_support_hint">Larovę tworzy jedna osoba, bez firmy za plecami. To pomaga opłacić ten czas; nic nie odblokowuje.</string>
@@ -206,6 +208,7 @@
     <string name="purchase_buy">Odblokuj</string>
     <string name="purchase_unavailable">Nie można połączyć się ze sklepem. Spróbuj ponownie, gdy telefon będzie online.</string>
     <string name="purchase_pending">Płatność rozpoczęta. Kafelki odblokują się, gdy tylko przejdzie.</string>
+    <string name="purchase_later">Nie teraz</string>
     <string name="edit_title">Tytuł</string>
     <string name="edit_subtitle">Druga linia (opcjonalnie)</string>
     <string name="edit_colour">Kolor</string>

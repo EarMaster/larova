@@ -21,6 +21,7 @@ import app.larova.feature.home.HomeUiState
 import app.larova.feature.settings.LogScreen
 import app.larova.feature.settings.PinSetupScreen
 import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.UnlockCheck
 import app.larova.feature.settings.UnlockScreen
 import app.larova.feature.transfer.TransferScreen
 import app.larova.feature.transfer.TransferUiState
@@ -125,6 +126,9 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 // Hidden in the caregiver view, so the value cannot show up in the picture.
                 entitlement = Entitlement.NONE,
                 onCheckPurchases = {},
+                unlockCheck = UnlockCheck.Idle,
+                onDismissUnlockCheck = {},
+                onBuyUnlock = {},
                 supportCount = 0,
                 onSupport = null,
                 supportMessage = null,
@@ -149,6 +153,9 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 // status, the explanation and the button together.
                 entitlement = Entitlement.NONE,
                 onCheckPurchases = {},
+                unlockCheck = UnlockCheck.Idle,
+                onDismissUnlockCheck = {},
+                onBuyUnlock = {},
                 // Twice already: the count is the interesting state, not the empty one.
                 supportCount = 2,
                 onSupport = {},

@@ -251,7 +251,12 @@ val appModule = module {
     factory { ReadPackagePreview(get()) }
     factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel {
+        AppViewModel(
+            get(), get(), get(), get(), get(), get(),
+            get(), get(), get(), get(), get(),
+        )
+    }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }

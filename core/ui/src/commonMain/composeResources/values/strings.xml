@@ -157,6 +157,10 @@
     <string name="settings_unlock_none">Not unlocked</string>
     <string name="settings_unlock_build">This build has no paid version, so every kind of tile is available.</string>
     <string name="settings_unlock_hint">Larova asks Google Play at every start. Tap to ask again — after buying on another phone, or after a start while this phone was offline.</string>
+    <!-- The status line while Google Play is being asked, in place of "Unlocked" / "Not unlocked". -->
+    <string name="settings_unlock_checking">Asking Google Play…</string>
+    <!-- Shown when the tap found nothing: the first line of the offer that follows it. -->
+    <string name="settings_unlock_missing">Google Play has no full version for this phone. It may have been bought with a different Google account, or the store could not be reached just now.</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_support">Support the development</string>
     <string name="settings_support_hint">Larova is made by one person, with no company behind it. This is a way to help pay for the time; it unlocks nothing.</string>
@@ -211,6 +215,8 @@
     <string name="purchase_buy">Unlock</string>
     <string name="purchase_unavailable">The store cannot be reached. Try again when this phone is online.</string>
     <string name="purchase_pending">Payment started. The tiles unlock as soon as it goes through.</string>
+    <!-- Leaves the offer without buying. Not "Cancel": nothing was started that could be cancelled. -->
+    <string name="purchase_later">Not now</string>
     <string name="edit_title">Title</string>
     <string name="edit_subtitle">Second line (optional)</string>
     <string name="edit_colour">Colour</string>

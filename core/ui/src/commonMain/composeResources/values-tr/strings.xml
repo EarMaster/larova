@@ -161,6 +161,8 @@
     <string name="settings_unlock_none">Açılmadı</string>
     <string name="settings_unlock_build">Bu derlemede ücretli sürüm yok, bu yüzden her tür kart kullanılabilir.</string>
     <string name="settings_unlock_hint">Larova her açılışta Google Play’e sorar. Yeniden sormak için dokunun — başka bir telefonda satın aldıktan sonra ya da bu telefon çevrimdışıyken açıldıysa.</string>
+    <string name="settings_unlock_checking">Google Play’e soruluyor…</string>
+    <string name="settings_unlock_missing">Google Play bu telefon için bir tam sürüm bulamadı. Başka bir Google hesabıyla satın alınmış olabilir ya da mağazaya şu anda ulaşılamıyor.</string>
     <string name="settings_version">Sürüm %1$s</string>
     <string name="settings_support">Geliştirmeyi destekle</string>
     <string name="settings_support_hint">Larova’yı tek bir kişi yapıyor, arkasında bir şirket yok. Bu, o zamanın karşılığına yardım eder; hiçbir şey açmaz.</string>
@@ -201,6 +203,7 @@
     <string name="purchase_buy">Aç</string>
     <string name="purchase_unavailable">Mağazaya ulaşılamıyor. Bu telefon çevrimiçi olduğunda tekrar deneyin.</string>
     <string name="purchase_pending">Ödeme başlatıldı. Ödeme tamamlanınca kartlar açılır.</string>
+    <string name="purchase_later">Şimdi değil</string>
     <string name="edit_title">Başlık</string>
     <string name="edit_subtitle">İkinci satır (isteğe bağlı)</string>
     <string name="edit_colour">Renk</string>

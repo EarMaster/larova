@@ -14,13 +14,16 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +39,14 @@ import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.Transfer
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
+import app.larova.core.ui.resources.purchase_body
+import app.larova.core.ui.resources.purchase_body_support
+import app.larova.core.ui.resources.purchase_buy
+import app.larova.core.ui.resources.purchase_buy_price
+import app.larova.core.ui.resources.purchase_later
+import app.larova.core.ui.resources.purchase_pending
+import app.larova.core.ui.resources.purchase_title
+import app.larova.core.ui.resources.purchase_unavailable
 import app.larova.core.ui.resources.settings_appearance
 import app.larova.core.ui.resources.settings_appearance_dark
 import app.larova.core.ui.resources.settings_appearance_dark_hint
@@ -54,7 +65,9 @@ import app.larova.core.ui.resources.settings_title
 import app.larova.core.ui.resources.settings_transfer_hint
 import app.larova.core.ui.resources.settings_unlock
 import app.larova.core.ui.resources.settings_unlock_build
+import app.larova.core.ui.resources.settings_unlock_checking
 import app.larova.core.ui.resources.settings_unlock_hint
+import app.larova.core.ui.resources.settings_unlock_missing
 import app.larova.core.ui.resources.settings_unlock_none
 import app.larova.core.ui.resources.settings_unlock_owned
 import app.larova.core.ui.resources.settings_version
@@ -98,6 +111,18 @@ fun SettingsScreen(
      * ask and the status line says so instead.
      */
     onCheckPurchases: (() -> Unit)?,
+    /**
+     * How the last look at the store went: what the card says while it is asking, and — when the
+     * answer was nothing — the offer that follows.
+     */
+    unlockCheck: UnlockCheck,
+    /** Closes that offer without buying. */
+    onDismissUnlockCheck: () -> Unit,
+    /**
+     * Opens Play's sheet for the full version, from the offer above. Null in a build with nothing
+     * for sale, where nothing is locked and the offer is unreachable anyway.
+     */
+    onBuyUnlock: (() -> Unit)?,
     supportCount: Int,
     /** Opens Play's sheet for the contribution. Null in a build with no store behind it. */
     onSupport: (() -> Unit)?,
@@ -155,12 +180,19 @@ fun SettingsScreen(
                     // "Unlocked" contradicts the only line anybody reads.
                     icon = if (entitlement == Entitlement.NONE) Lock else TileSymbol.KEY.image,
                     title = stringResource(Res.string.settings_unlock),
-                    status = when (entitlement) {
-                        Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
-                        Entitlement.PLAY,
-                        Entitlement.KEY,
-                        Entitlement.BUILD,
-                        -> stringResource(Res.string.settings_unlock_owned)
+                    // While the store is being asked, the status says so. That wait is the whole
+                    // reason the card looked broken: the question goes to another app, which may
+                    // have to be woken up to answer it, and nothing here moved meanwhile.
+                    status = if (unlockCheck is UnlockCheck.Checking) {
+                        stringResource(Res.string.settings_unlock_checking)
+                    } else {
+                        when (entitlement) {
+                            Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
+                            Entitlement.PLAY,
+                            Entitlement.KEY,
+                            Entitlement.BUILD,
+                            -> stringResource(Res.string.settings_unlock_owned)
+                        }
                     },
                     // Keyed on the store rather than on the entitlement: with nothing to ask,
                     // the honest sentence is why everything is available, not how to restore it.
@@ -171,12 +203,27 @@ fun SettingsScreen(
                         stringResource(Res.string.settings_unlock_build)
                     },
                     onClick = onCheckPurchases ?: {},
-                    enabled = onCheckPurchases != null,
+                    // Not while it is already asking: a second tap would start a second question,
+                    // and the card going quiet under the finger is the other half of saying that
+                    // the first one is still open.
+                    enabled = onCheckPurchases != null && unlockCheck !is UnlockCheck.Checking,
                     // Sky: not sand, which is the backup card, and not rose, which is the
                     // contribution. Three blocks, three colours, so they read as three things.
                     token = TileColor.SKY,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
+
+                // The answer to that tap, when the answer is nothing. Not a line on the card:
+                // "still not unlocked" under a card that already reads "Not unlocked" is not an
+                // answer anybody would notice, and the useful next step — buying it — has
+                // nowhere to go there.
+                if (unlockCheck is UnlockCheck.NotFound) {
+                    UnlockNotFoundDialog(
+                        found = unlockCheck,
+                        onBuy = onBuyUnlock,
+                        onDismiss = onDismissUnlockCheck,
+                    )
+                }
 
                 // Below the unlock, and visually a sibling of the backup card rather than of it:
                 // this buys nothing and must not read as a second paid tier.
@@ -219,6 +266,90 @@ fun SettingsScreen(
             )
         }
     }
+}
+
+/**
+ * What a tap on the full-version card found, when it found nothing.
+ *
+ * The same offer the locked tile types make, in the one place somebody goes looking for it
+ * deliberately rather than running into it. Why nothing was unlocked comes first — the two
+ * reasons that actually happen, a different Google account and a store that could not be reached
+ * — and only then what buying would be: somebody who came here to restore a purchase is not
+ * asking to be sold one.
+ *
+ * The text scrolls. Three paragraphs at the 200 % font scale this app promises are taller than a
+ * dialog, and Material does not scroll that slot on its own.
+ */
+@Composable
+private fun UnlockNotFoundDialog(
+    found: UnlockCheck.NotFound,
+    onBuy: (() -> Unit)?,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        // The same padlock the locked tiles carry, so the two read as one thing. No description:
+        // the title beside it says what it is.
+        icon = { Icon(imageVector = Lock, contentDescription = null) },
+        title = { Text(stringResource(Res.string.purchase_title)) },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.settings_unlock_missing),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                // Two paragraphs, because they answer different questions: what the payment is,
+                // then who it goes to. The same pair the locked tile shows, in the same order.
+                Text(
+                    text = stringResource(Res.string.purchase_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(Res.string.purchase_body_support),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                found.message?.let {
+                    Text(
+                        text = when (it) {
+                            UnlockMessage.PENDING -> stringResource(Res.string.purchase_pending)
+                            UnlockMessage.UNAVAILABLE ->
+                                stringResource(Res.string.purchase_unavailable)
+                        },
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onBuy?.invoke() },
+                // Disabled rather than absent, for the same reason as on the locked tile: a button
+                // that silently does nothing is worse than one that says it cannot.
+                enabled = onBuy != null,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(
+                    // Play's own price when the store answered, the plain label when it did not.
+                    // Never a number written here: only Play prices for a country.
+                    text = found.price
+                        ?.let { stringResource(Res.string.purchase_buy_price, it) }
+                        ?: stringResource(Res.string.purchase_buy),
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.purchase_later))
+            }
+        },
+    )
 }
 
 /** What the contribution card says under its title, which changes as things happen. */

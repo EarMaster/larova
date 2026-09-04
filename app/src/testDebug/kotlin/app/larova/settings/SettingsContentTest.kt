@@ -11,6 +11,7 @@ import app.larova.core.domain.model.Entitlement
 import app.larova.core.ui.theme.LarovaTheme
 import app.larova.feature.settings.SettingsScreen
 import app.larova.feature.settings.SupportMessage
+import app.larova.feature.settings.UnlockCheck
 import kotlin.test.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -86,6 +87,51 @@ class SettingsContentTest {
         assertTrue(compose.countOf(ASK_AGAIN) == 0)
     }
 
+    /**
+     * The tap's own answer, which is the thing that used to be missing: the check ran in the
+     * background and a card that already read "Not unlocked" went on reading "Not unlocked".
+     */
+    @Test
+    fun findingNothingSaysSoAndOffersToBuy() {
+        show(
+            isParentView = true,
+            entitlement = Entitlement.NONE,
+            unlockCheck = UnlockCheck.NotFound(price = "\u20ac3.99"),
+        )
+
+        compose.onNodeWithText("Google Play has no full version", substring = true)
+            .assertIsDisplayed()
+        // Play's own price, never a number written in the app.
+        compose.onNodeWithText("Unlock for \u20ac3.99").assertIsDisplayed()
+        compose.onNodeWithText("Not now").assertIsDisplayed()
+    }
+
+    /** A phone that could not reach the store gets the offer anyway, without a number on it. */
+    @Test
+    fun theOfferStandsWithoutAPrice() {
+        show(
+            isParentView = true,
+            entitlement = Entitlement.NONE,
+            unlockCheck = UnlockCheck.NotFound(),
+        )
+
+        compose.onNodeWithText("Unlock").assertIsDisplayed()
+        assertTrue(compose.countOf("Unlock for") == 0)
+    }
+
+    /** While the store is being asked, the card says so rather than sitting there unchanged. */
+    @Test
+    fun theWaitIsShownOnTheCard() {
+        show(
+            isParentView = true,
+            entitlement = Entitlement.NONE,
+            unlockCheck = UnlockCheck.Checking,
+        )
+
+        compose.onNodeWithText("Asking Google Play\u2026").assertIsDisplayed()
+        assertTrue(compose.countOf("Not unlocked") == 0)
+    }
+
     @Test
     fun theContributionIsParentViewWorkToo() {
         show(isParentView = false, entitlement = Entitlement.PLAY)
@@ -151,6 +197,7 @@ class SettingsContentTest {
         isParentView: Boolean,
         entitlement: Entitlement,
         onCheckPurchases: (() -> Unit)? = {},
+        unlockCheck: UnlockCheck = UnlockCheck.Idle,
         supportCount: Int = 0,
         onSupport: (() -> Unit)? = {},
         supportMessage: SupportMessage? = null,
@@ -168,6 +215,9 @@ class SettingsContentTest {
                     onBack = {},
                     entitlement = entitlement,
                     onCheckPurchases = onCheckPurchases,
+                    unlockCheck = unlockCheck,
+                    onDismissUnlockCheck = {},
+                    onBuyUnlock = {},
                     supportCount = supportCount,
                     onSupport = onSupport,
                     supportMessage = supportMessage,
