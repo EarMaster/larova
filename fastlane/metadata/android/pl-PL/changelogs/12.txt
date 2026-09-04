@@ -1,0 +1,1 @@
+Ta wersja zmienia tylko kompilację tworzoną samodzielnie z kodu źródłowego. W aplikacji z Google Play nic się nie zmienia.

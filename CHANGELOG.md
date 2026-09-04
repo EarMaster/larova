@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-09-04
+
 ### Fixed
 - The version built from source — the APK on the GitHub release page — now says where to help
   pay for the development, and tapping the full-version card opens that page in the browser.
