@@ -163,7 +163,7 @@
     <string name="settings_unlock">La version complète</string>
     <string name="settings_unlock_owned">Débloquée</string>
     <string name="settings_unlock_none">Non débloquée</string>
-    <string name="settings_unlock_build">Cette version compilée n’a pas d’édition payante : tous les types de tuiles sont disponibles.</string>
+    <string name="settings_unlock_build">Cette version n’a pas d’édition payante — tous les types de tuiles sont débloqués.\n\nSi vous souhaitez tout de même soutenir le développeur : 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova interroge Google Play à chaque démarrage. Appuyez pour redemander — après un achat sur un autre téléphone, ou un démarrage pendant lequel ce téléphone était hors ligne.</string>
     <string name="settings_unlock_checking">Interrogation de Google Play…</string>
     <string name="settings_unlock_missing">Google Play ne trouve aucune version complète pour ce téléphone. Elle a peut-être été achetée avec un autre compte Google, ou la boutique n’était pas joignable à l’instant.</string>

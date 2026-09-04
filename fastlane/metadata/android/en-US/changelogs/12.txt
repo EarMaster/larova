@@ -1,0 +1,1 @@
+This release only changes the version that people build from the source code themselves. Nothing changes in the app from Google Play.

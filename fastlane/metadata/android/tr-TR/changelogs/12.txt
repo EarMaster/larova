@@ -1,0 +1,1 @@
+Bu sürüm yalnızca kaynak koddan kendiniz derlediğiniz yapıyı değiştirir. Google Play’deki uygulamada bir şey değişmiyor.

@@ -1,0 +1,1 @@
+Diese Version ändert nur den Build, den man selbst aus dem Quellcode erstellt. In der App aus Google Play ändert sich nichts.

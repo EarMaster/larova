@@ -5,11 +5,13 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
 import app.larova.core.ui.theme.LarovaTheme
 import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.SUPPORT_URL
 import app.larova.feature.settings.SupportMessage
 import app.larova.feature.settings.UnlockCheck
 import kotlin.test.assertTrue
@@ -75,6 +77,10 @@ class SettingsContentTest {
      *
      * The status still reads "Unlocked" — it is the same line the paid case shows, because it is
      * the same fact. What differs is the sentence under it.
+     *
+     * Asserted as one exact string rather than two substrings, so it also proves the `\n\n` in
+     * the resource arrives as a blank line: a Compose build that passed the escape through
+     * verbatim would fail here rather than shipping a visible backslash-n to whoever sideloads.
      */
     @Test
     fun aBuildWithNoPaidTierExplainsItselfAndOffersNoCheck() {
@@ -82,9 +88,31 @@ class SettingsContentTest {
 
         compose.onNodeWithText("Unlocked").assertIsDisplayed()
         compose.onNodeWithText(
-            "This build has no paid version, so every kind of tile is available.",
+            "This build has no paid version — every kind of tile is unlocked.\n\n" +
+                "If you would still like to support the developer: \uD83D\uDC9D $SUPPORT_URL",
         ).assertIsDisplayed()
         assertTrue(compose.countOf(ASK_AGAIN) == 0)
+    }
+
+    /**
+     * And the address is reachable, not just printed.
+     *
+     * This is the bug: the card was disabled in a build with nothing to sell, so the one place
+     * Larova names its support page was the one place a tap did nothing.
+     */
+    @Test
+    fun theSupportPageIsReachableInABuildWithNoStore() {
+        var opened = false
+        show(
+            isParentView = true,
+            entitlement = Entitlement.BUILD,
+            onCheckPurchases = null,
+            onOpenSupportPage = { opened = true },
+        )
+
+        compose.onNodeWithText("The full version").performClick()
+
+        assertTrue(opened)
     }
 
     /**
@@ -197,6 +225,7 @@ class SettingsContentTest {
         isParentView: Boolean,
         entitlement: Entitlement,
         onCheckPurchases: (() -> Unit)? = {},
+        onOpenSupportPage: () -> Unit = {},
         unlockCheck: UnlockCheck = UnlockCheck.Idle,
         supportCount: Int = 0,
         onSupport: (() -> Unit)? = {},
@@ -218,6 +247,7 @@ class SettingsContentTest {
                     unlockCheck = unlockCheck,
                     onDismissUnlockCheck = {},
                     onBuyUnlock = {},
+                    onOpenSupportPage = onOpenSupportPage,
                     supportCount = supportCount,
                     onSupport = onSupport,
                     supportMessage = supportMessage,

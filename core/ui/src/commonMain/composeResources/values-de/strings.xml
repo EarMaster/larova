@@ -166,7 +166,7 @@
     <string name="settings_unlock">Die Vollversion</string>
     <string name="settings_unlock_owned">Freigeschaltet</string>
     <string name="settings_unlock_none">Nicht freigeschaltet</string>
-    <string name="settings_unlock_build">Dieser Build hat keine Bezahlversion, alle Kachelarten sind verfügbar.</string>
+    <string name="settings_unlock_build">Dieser Build hat keine Bezahlversion — alle Kachelarten sind freigeschaltet.\n\nFalls Sie den Entwickler dennoch unterstützen möchten: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova fragt Google Play bei jedem Start. Zum erneuten Prüfen tippen — etwa nach einem Kauf auf einem anderen Telefon oder einem Start, bei dem dieses Telefon offline war.</string>
     <string name="settings_unlock_checking">Google Play wird gefragt …</string>
     <string name="settings_unlock_missing">Google Play kennt für dieses Telefon keine Vollversion. Vielleicht wurde sie mit einem anderen Google-Konto gekauft, oder der Store war gerade nicht erreichbar.</string>

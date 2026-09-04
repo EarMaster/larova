@@ -158,7 +158,7 @@
     <string name="settings_unlock">完整版</string>
     <string name="settings_unlock_owned">已解锁</string>
     <string name="settings_unlock_none">未解锁</string>
-    <string name="settings_unlock_build">此构建没有付费版本，因此所有卡片类型都可用。</string>
+    <string name="settings_unlock_build">此版本没有付费版本 — 所有卡片类型均已解锁。\n\n如果您仍想支持开发者：💝 %1$s</string>
     <string name="settings_unlock_hint">Larova 每次启动都会询问 Google Play。点按可再次询问 — 例如在另一部手机上购买之后，或本机启动时处于离线状态。</string>
     <string name="settings_unlock_checking">正在询问 Google Play…</string>
     <string name="settings_unlock_missing">Google Play 没有找到这台手机的完整版。可能是用另一个 Google 账号购买的，或者刚才无法连接到商店。</string>

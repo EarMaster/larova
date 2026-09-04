@@ -158,7 +158,7 @@
     <string name="settings_unlock">A versão completa</string>
     <string name="settings_unlock_owned">Desbloqueada</string>
     <string name="settings_unlock_none">Não desbloqueada</string>
-    <string name="settings_unlock_build">Esta compilação não tem versão paga, pelo que todos os tipos de mosaico estão disponíveis.</string>
+    <string name="settings_unlock_build">Esta versão não tem versão paga — todos os tipos de mosaico estão desbloqueados.\n\nSe ainda assim quiser apoiar o programador: 💝 %1$s</string>
     <string name="settings_unlock_hint">A Larova consulta a Google Play em cada início. Toque para perguntar novamente — após uma compra noutro telefone, ou um início com este telefone offline.</string>
     <string name="settings_unlock_checking">A perguntar ao Google Play…</string>
     <string name="settings_unlock_missing">O Google Play não encontra nenhuma versão completa para este telemóvel. Pode ter sido comprada com outra conta Google, ou a loja não estava acessível neste momento.</string>

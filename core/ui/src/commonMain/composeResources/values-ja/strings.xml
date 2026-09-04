@@ -155,7 +155,7 @@
     <string name="settings_unlock">フル版</string>
     <string name="settings_unlock_owned">解除済み</string>
     <string name="settings_unlock_none">未解除</string>
-    <string name="settings_unlock_build">このビルドには有料版がないため、すべての種類のカードを使えます。</string>
+    <string name="settings_unlock_build">このビルドに有料版はありません。すべての種類のカードが使えます。\n\nそれでも開発者を支援したい場合は: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova は起動ごとに Google Play に確認します。もう一度確認するにはタップしてください — 別の端末で購入した後や、この端末がオフラインのまま起動した後などに。</string>
     <string name="settings_unlock_checking">Google Play に確認しています…</string>
     <string name="settings_unlock_missing">この端末の完全版は Google Play に見つかりませんでした。別の Google アカウントで購入されたか、ストアに接続できなかった可能性があります。</string>

@@ -45,6 +45,7 @@ import app.larova.rememberMicrophoneRequest
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import app.larova.rememberSoundPicker
+import app.larova.feature.settings.SUPPORT_URL
 import app.larova.feature.settings.SupportMessage
 import app.larova.feature.settings.UnlockCheck
 import app.larova.rememberSupportPurchase
@@ -372,6 +373,10 @@ fun LarovaNavHost(
                 unlockCheck = unlockCheck,
                 onDismissUnlockCheck = onDismissUnlockCheck,
                 onBuyUnlock = buyUnlock,
+                // The browser, through the same external action a Website tile uses. No internet
+                // permission is involved: the URL is handed to whatever app owns http, and this
+                // one never resolves it.
+                onOpenSupportPage = { onOpenUrl(SUPPORT_URL) },
                 supportCount = supportCount,
                 onSupport = support,
                 supportMessage = supportMessage,

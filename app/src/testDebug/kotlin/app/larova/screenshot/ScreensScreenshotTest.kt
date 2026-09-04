@@ -129,6 +129,7 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 unlockCheck = UnlockCheck.Idle,
                 onDismissUnlockCheck = {},
                 onBuyUnlock = {},
+                onOpenSupportPage = {},
                 supportCount = 0,
                 onSupport = null,
                 supportMessage = null,
@@ -156,6 +157,7 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 unlockCheck = UnlockCheck.Idle,
                 onDismissUnlockCheck = {},
                 onBuyUnlock = {},
+                onOpenSupportPage = {},
                 // Twice already: the count is the interesting state, not the empty one.
                 supportCount = 2,
                 onSupport = {},

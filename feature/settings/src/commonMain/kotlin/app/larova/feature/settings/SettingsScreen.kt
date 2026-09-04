@@ -84,6 +84,19 @@ import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
+ * Where a build with nothing to sell points instead.
+ *
+ * Liberapay rather than GitHub Sponsors, for the reasons in `.github/FUNDING.yml`: no cut, a
+ * non-profit, and no US tax paperwork for a German maintainer. The same address the GitHub Release
+ * notes carry, and it appears **only** in a build with no paid tier — in a Play build the card
+ * above asks Play again instead, because an appeal to donate beside a paid product is asking twice.
+ *
+ * Here rather than in `:app` because this is the screen that writes it out: the string shows the
+ * address and the card opens it, and two copies of a URL is one copy too many.
+ */
+const val SUPPORT_URL: String = "https://liberapay.com/EarMaster"
+
+/**
  * Settings.
  *
  * Appearance, the way in and out of parent view, and — once you are in it — the parent-view work
@@ -123,6 +136,11 @@ fun SettingsScreen(
      * for sale, where nothing is locked and the offer is unreachable anyway.
      */
     onBuyUnlock: (() -> Unit)?,
+    /**
+     * Hands [SUPPORT_URL] to the browser. Reached by tapping the full-version card in a build with
+     * no store behind it, which is the only build that shows the address at all.
+     */
+    onOpenSupportPage: () -> Unit,
     supportCount: Int,
     /** Opens Play's sheet for the contribution. Null in a build with no store behind it. */
     onSupport: (() -> Unit)?,
@@ -200,13 +218,17 @@ fun SettingsScreen(
                     description = if (onCheckPurchases != null) {
                         stringResource(Res.string.settings_unlock_hint)
                     } else {
-                        stringResource(Res.string.settings_unlock_build)
+                        stringResource(Res.string.settings_unlock_build, SUPPORT_URL)
                     },
-                    onClick = onCheckPurchases ?: {},
+                    // Two builds, two honest actions for one card. With a store behind it the tap
+                    // asks Play again; with nothing for sale there is nothing to ask, and the card
+                    // is the only place the support address appears — so the tap opens it. It used
+                    // to be disabled there, which left an address on screen and no way to reach it.
+                    onClick = onCheckPurchases ?: onOpenSupportPage,
                     // Not while it is already asking: a second tap would start a second question,
                     // and the card going quiet under the finger is the other half of saying that
                     // the first one is still open.
-                    enabled = onCheckPurchases != null && unlockCheck !is UnlockCheck.Checking,
+                    enabled = unlockCheck !is UnlockCheck.Checking,
                     // Sky: not sand, which is the backup card, and not rose, which is the
                     // contribution. Three blocks, three colours, so they read as three things.
                     token = TileColor.SKY,

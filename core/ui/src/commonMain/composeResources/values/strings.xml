@@ -155,7 +155,11 @@
     <string name="settings_unlock">The full version</string>
     <string name="settings_unlock_owned">Unlocked</string>
     <string name="settings_unlock_none">Not unlocked</string>
-    <string name="settings_unlock_build">This build has no paid version, so every kind of tile is available.</string>
+    <!-- A build with nothing for sale, which is the APK on the GitHub Release. Two paragraphs:
+         why everything is available, then the one way left to help pay for it. %1$s is the
+         support page, passed in from SUPPORT_URL so the address lives in exactly one place —
+         never write it out here. Tapping the card opens it in the browser. -->
+    <string name="settings_unlock_build">This build has no paid version — every kind of tile is unlocked.\n\nIf you would still like to support the developer: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova asks Google Play at every start. Tap to ask again — after buying on another phone, or after a start while this phone was offline.</string>
     <!-- The status line while Google Play is being asked, in place of "Unlocked" / "Not unlocked". -->
     <string name="settings_unlock_checking">Asking Google Play…</string>
