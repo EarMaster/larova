@@ -159,7 +159,7 @@
     <string name="settings_unlock">Tam sürüm</string>
     <string name="settings_unlock_owned">Açıldı</string>
     <string name="settings_unlock_none">Açılmadı</string>
-    <string name="settings_unlock_build">Bu derlemede ücretli sürüm yok, bu yüzden her tür kart kullanılabilir.</string>
+    <string name="settings_unlock_build">Bu derlemede ücretli sürüm yok — tüm kart türleri açık.\n\nYine de geliştiriciyi desteklemek isterseniz: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova her açılışta Google Play’e sorar. Yeniden sormak için dokunun — başka bir telefonda satın aldıktan sonra ya da bu telefon çevrimdışıyken açıldıysa.</string>
     <string name="settings_unlock_checking">Google Play’e soruluyor…</string>
     <string name="settings_unlock_missing">Google Play bu telefon için bir tam sürüm bulamadı. Başka bir Google hesabıyla satın alınmış olabilir ya da mağazaya şu anda ulaşılamıyor.</string>

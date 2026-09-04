@@ -157,7 +157,7 @@
     <string name="settings_unlock">पूर्ण संस्करण</string>
     <string name="settings_unlock_owned">अनलॉक है</string>
     <string name="settings_unlock_none">अनलॉक नहीं है</string>
-    <string name="settings_unlock_build">इस बिल्ड में कोई सशुल्क संस्करण नहीं है, इसलिए हर तरह की कार्ड उपलब्ध है।</string>
+    <string name="settings_unlock_build">इस बिल्ड में कोई सशुल्क संस्करण नहीं है — सभी प्रकार की टाइलें उपलब्ध हैं।\n\nफिर भी डेवलपर की मदद करना चाहें तो: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova हर बार शुरू होने पर Google Play से पूछता है। दोबारा पूछने के लिए टैप करें — किसी दूसरे फ़ोन पर ख़रीदने के बाद, या ऐसे स्टार्ट के बाद जब यह फ़ोन ऑफ़लाइन था।</string>
     <string name="settings_unlock_checking">Google Play से पूछा जा रहा है…</string>
     <string name="settings_unlock_missing">Google Play को इस फ़ोन के लिए कोई पूर्ण संस्करण नहीं मिला। हो सकता है कि उसे किसी दूसरे Google खाते से खरीदा गया हो, या अभी स्टोर तक पहुँच न बनी हो।</string>

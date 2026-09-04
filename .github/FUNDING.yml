@@ -4,6 +4,11 @@
 # paperwork from a German maintainer. The same link is appended to every GitHub Release by
 # release.yml, where it belongs to the unlocked sideload build.
 #
-# Deliberately nowhere near the app or the Play listing. Larova sells a one-time unlock through
-# Play, and an appeal to donate beside a paid product would be asking twice.
+# Deliberately nowhere near the Play listing, and inside the app only where nothing is for sale:
+# the full-version card of a `-Plarova.paidTier=false` build shows this address and opens it when
+# tapped (`SUPPORT_URL` in `:feature:settings`). A Play build never names it. Larova sells a
+# one-time unlock there, and an appeal to donate beside a paid product would be asking twice —
+# which is also why the release-note footer in release.yml exists and the fastlane metadata has no
+# equivalent. Changing the address means changing it in three places: here, that footer, and
+# `SUPPORT_URL`.
 liberapay: EarMaster

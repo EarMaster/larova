@@ -172,7 +172,7 @@
     <string name="settings_unlock">النسخة الكاملة</string>
     <string name="settings_unlock_owned">مفتوحة</string>
     <string name="settings_unlock_none">غير مفتوحة</string>
-    <string name="settings_unlock_build">هذه النسخة المُجمَّعة لا تتضمّن إصداراً مدفوعاً، لذا فكل أنواع البطاقات متاحة.</string>
+    <string name="settings_unlock_build">لا تحتوي هذه النسخة على إصدار مدفوع — جميع أنواع البطاقات متاحة.\n\nإذا رغبت مع ذلك في دعم المطوِّر: 💝 %1$s</string>
     <string name="settings_unlock_hint">يسأل لاروفا متجر Google Play عند كل تشغيل. اضغط للسؤال مرة أخرى — بعد الشراء على هاتف آخر، أو بعد تشغيل كان هذا الهاتف فيه دون اتصال.</string>
     <string name="settings_unlock_checking">يتم سؤال Google Play…</string>
     <string name="settings_unlock_missing">لا يجد Google Play نسخة كاملة لهذا الهاتف. ربما اشتُريت بحساب Google آخر، أو تعذّر الوصول إلى المتجر الآن.</string>

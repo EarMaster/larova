@@ -164,7 +164,7 @@
     <string name="settings_unlock">Pełna wersja</string>
     <string name="settings_unlock_owned">Odblokowana</string>
     <string name="settings_unlock_none">Nieodblokowana</string>
-    <string name="settings_unlock_build">Ta kompilacja nie ma wersji płatnej, więc dostępne są wszystkie rodzaje kafelków.</string>
+    <string name="settings_unlock_build">Ta wersja nie ma wersji płatnej — wszystkie rodzaje kafelków są odblokowane.\n\nJeśli mimo to chcesz wesprzeć twórcę: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova pyta Google Play przy każdym uruchomieniu. Dotknij, aby zapytać ponownie — po zakupie na innym telefonie lub po uruchomieniu, gdy ten telefon był offline.</string>
     <string name="settings_unlock_checking">Pytanie do Google Play…</string>
     <string name="settings_unlock_missing">Google Play nie ma pełnej wersji dla tego telefonu. Mogła zostać kupiona na innym koncie Google albo sklep był w tej chwili nieosiągalny.</string>

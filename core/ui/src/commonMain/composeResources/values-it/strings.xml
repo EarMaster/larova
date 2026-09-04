@@ -157,7 +157,7 @@
     <string name="settings_unlock">La versione completa</string>
     <string name="settings_unlock_owned">Sbloccata</string>
     <string name="settings_unlock_none">Non sbloccata</string>
-    <string name="settings_unlock_build">Questa build non ha una versione a pagamento: tutti i tipi di riquadro sono disponibili.</string>
+    <string name="settings_unlock_build">Questa build non ha una versione a pagamento: tutti i tipi di riquadro sono sbloccati.\n\nSe vuoi comunque sostenere lo sviluppatore: 💝 %1$s</string>
     <string name="settings_unlock_hint">Larova interroga Google Play a ogni avvio. Tocca per richiedere di nuovo — dopo un acquisto su un altro telefono, o un avvio con questo telefono offline.</string>
     <string name="settings_unlock_checking">Richiesta a Google Play…</string>
     <string name="settings_unlock_missing">Google Play non trova nessuna versione completa per questo telefono. Potrebbe essere stata acquistata con un altro account Google, oppure lo store non era raggiungibile in questo momento.</string>

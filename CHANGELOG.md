@@ -12,6 +12,13 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Fixed
+- The version built from source — the APK on the GitHub release page — now says where to help
+  pay for the development, and tapping the full-version card opens that page in the browser.
+  It named no address at all, and the card it should have been on did nothing when tapped.
+  Nothing changes in the version from Google Play: there the same card asks Play again, and
+  asking for a donation beside something you can buy would be asking twice.
+
 ## [0.5.1] - 2026-09-04
 
 ### Fixed
