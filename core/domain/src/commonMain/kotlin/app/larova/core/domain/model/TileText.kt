@@ -105,3 +105,71 @@ private const val CELL_SEPARATOR = " | "
 
 /** Roughly 120 KB of UTF-16, comfortably inside what a Binder transaction will carry. */
 private const val MAX_HANDOFF_CHARS = 60_000
+
+/**
+ * The words on a tile that a translation replaces, in a fixed order.
+ *
+ * A flat list, because a translation editor needs one field per phrase and nothing else: no colour,
+ * no symbol, no pictures, no phone numbers. Pairing it with [withTextFields] is what lets one small
+ * screen translate all ten tile types without a second copy of the editor — and what makes the
+ * "same kind of tile" invariant structural rather than checked, since putting words back can only
+ * ever produce the payload it started from.
+ *
+ * The order matches [plainTextOf] after the title and second line, so somebody translating with the
+ * hand-off gets their answer back in the order the fields are in.
+ */
+fun textFieldsOf(payload: CardPayload): List<String> = when (payload) {
+    is CardPayload.Guide -> payload.steps.map { it.text }
+    is CardPayload.Note -> listOf(payload.text)
+    is CardPayload.Checklist -> payload.items.map { it.text }
+    // Headings first, then the rows read across. Empty cells are fields too: a translation with
+    // fewer of them would be a table with a different shape.
+    is CardPayload.Table -> payload.columns + payload.rows.flatten()
+    is CardPayload.Video -> listOf(payload.caption.orEmpty())
+    is CardPayload.Audio -> listOf(payload.caption.orEmpty())
+    // Names and how they are related. Never the numbers — a translated phone number is a phone
+    // number that no longer rings.
+    is CardPayload.Phone -> payload.people.flatMap { listOf(it.displayName, it.relation.orEmpty()) }
+    is CardPayload.Web -> listOf(payload.label.orEmpty(), payload.caption.orEmpty())
+    is CardPayload.AppLink -> listOf(payload.label, payload.caption.orEmpty())
+    is CardPayload.Folder -> emptyList()
+}
+
+/**
+ * The same tile with those words replaced, and nothing else touched.
+ *
+ * Everything [textFieldsOf] left out is copied straight from [payload] — the pictures a guide
+ * points at, the numbers on a call tile, the address behind a website, the folder's board. So a
+ * variant is always the same kind of tile with the same structure as the original, whatever
+ * somebody typed into the fields.
+ *
+ * A [values] list of the wrong length is answered with the payload unchanged rather than with a
+ * half-applied one. It cannot happen from the editor, which builds the list from this same
+ * function; it could from a future caller, and a partly-translated tile is the thing this design
+ * exists to prevent.
+ */
+@Suppress("CyclomaticComplexMethod")
+fun withTextFields(payload: CardPayload, values: List<String>): CardPayload {
+    if (values.size != textFieldsOf(payload).size) return payload
+    val next = values.iterator()
+    return when (payload) {
+        is CardPayload.Guide -> payload.copy(steps = payload.steps.map { it.copy(text = next.next()) })
+        is CardPayload.Note -> payload.copy(text = next.next())
+        is CardPayload.Checklist ->
+            payload.copy(items = payload.items.map { it.copy(text = next.next()) })
+        is CardPayload.Table -> payload.copy(
+            columns = payload.columns.map { next.next() },
+            rows = payload.rows.map { row -> row.map { next.next() } },
+        )
+        is CardPayload.Video -> payload.copy(caption = next.next())
+        is CardPayload.Audio -> payload.copy(caption = next.next())
+        is CardPayload.Phone -> payload.copy(
+            contacts = payload.people.map {
+                it.copy(displayName = next.next(), relation = next.next())
+            },
+        )
+        is CardPayload.Web -> payload.copy(label = next.next(), caption = next.next())
+        is CardPayload.AppLink -> payload.copy(label = next.next(), caption = next.next())
+        is CardPayload.Folder -> payload
+    }
+}

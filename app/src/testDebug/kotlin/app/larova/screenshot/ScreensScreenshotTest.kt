@@ -18,6 +18,8 @@ import app.larova.feature.help.HelpScreen
 import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeUiState
+import app.larova.feature.settings.ContentLanguageChoice
+import app.larova.feature.settings.ContentLanguageSetting
 import app.larova.feature.settings.LogScreen
 import app.larova.feature.settings.PinSetupScreen
 import app.larova.feature.settings.SettingsScreen
@@ -131,6 +133,8 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onBuyUnlock = {},
                 onOpenSupportPage = {},
                 onOpenLanguageSettings = {},
+                contentLanguage = null,
+                onContentLanguageChange = {},
                 supportCount = 0,
                 onSupport = null,
                 supportMessage = null,
@@ -160,6 +164,16 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onBuyUnlock = {},
                 onOpenSupportPage = {},
                 onOpenLanguageSettings = {},
+                // Two languages on this phone, so the card has something to say. The rest of the
+                // screen is unchanged, which is what keeps every other golden here stable.
+                contentLanguage = ContentLanguageSetting(
+                    chosen = null,
+                    languages = listOf(
+                        ContentLanguageChoice("tr", "Türkçe"),
+                        ContentLanguageChoice("uk", "Українська"),
+                    ),
+                ),
+                onContentLanguageChange = {},
                 // Twice already: the count is the interesting state, not the empty one.
                 supportCount = 2,
                 onSupport = {},

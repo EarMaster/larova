@@ -54,10 +54,17 @@ import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveLastBackup
+import app.larova.core.domain.app.AppLanguage
 import app.larova.core.domain.app.Translators
 import app.larova.core.domain.usecase.CanTranslate
+import app.larova.core.domain.usecase.ContentLanguage
+import app.larova.core.domain.usecase.DeleteCardText
+import app.larova.core.domain.usecase.ObserveAllCardText
+import app.larova.core.domain.usecase.ObserveCardText
+import app.larova.core.domain.usecase.SaveCardText
 import app.larova.core.domain.usecase.ObserveLockedTypes
 import app.larova.core.domain.usecase.Translations
+import app.larova.core.platform.AndroidAppLanguage
 import app.larova.core.platform.AndroidTranslators
 import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.RecordLastBackup
@@ -107,6 +114,8 @@ import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.EditTranslationViewModel
+import app.larova.feature.card.edit.TranslationTarget
 import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
@@ -144,6 +153,7 @@ val appModule = module {
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
     single<Translators> { AndroidTranslators(androidContext()) }
+    single<AppLanguage> { AndroidAppLanguage(androidContext()) }
     single<Shortcuts> { AndroidShortcuts(androidContext()) }
     single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
     // A singleton because a microphone is: two recorders on one device is not an error the framework
@@ -231,7 +241,12 @@ val appModule = module {
     factory { IsAppInstalled(get()) }
     factory { Apps(get(), get()) }
     factory { CanTranslate(get()) }
-    factory { Translations(get()) }
+    factory { ObserveCardText(get()) }
+    factory { ObserveAllCardText(get()) }
+    factory { ContentLanguage(get(), get()) }
+    factory { SaveCardText(get(), get()) }
+    factory { DeleteCardText(get()) }
+    factory { Translations(get(), get(), get(), get()) }
     factory { AddImage(get(), get()) }
     factory { AddMediaFile(get(), get()) }
     factory { LoadImage(get(), get()) }
@@ -265,12 +280,12 @@ val appModule = module {
     viewModel {
         AppViewModel(
             get(), get(), get(), get(), get(), get(),
-            get(), get(), get(), get(), get(),
+            get(), get(), get(), get(), get(), get(),
         )
     }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
-    viewModel { HomeViewModel(get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     // The board comes from the route: the start screen when it is empty, a folder otherwise.
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
     viewModel { HelpViewModel(get(), get()) }
@@ -281,12 +296,20 @@ val appModule = module {
         CardViewModel(parameters.get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
-        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get(), get(), get())
+        EditCardViewModel(
+            parameters.get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        )
+    }
+    viewModel { parameters ->
+        EditTranslationViewModel(parameters.get(), get(), get(), get(), get())
     }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */
 fun cardViewModelParameters(cardId: String) = parametersOf(cardId)
+
+fun editTranslationViewModelParameters(cardId: String, lang: String) =
+    parametersOf(TranslationTarget(cardId = cardId, lang = lang))
 
 /**
  * An empty card id is a new tile; the editor treats it as such rather than looking one up. An empty

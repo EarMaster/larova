@@ -358,4 +358,20 @@
     <string name="cd_table_cell">%1$s, %2$s</string>
 
     <string name="cd_translate">Перекласти цю плитку</string>
+    <string name="translate_original">Як написано</string>
+    <string name="translate_stale">Цю плитку змінили після того, як зробили цей переклад.</string>
+    <string name="cd_translate_language">Показати цю плитку мовою %1$s</string>
+    <string name="settings_content_language">Мова плиток</string>
+    <string name="settings_content_language_hint">Якою мовою показувати плитки, якщо плитка має кілька. Це налаштування телефона, а не однієї плитки.</string>
+    <string name="translate_follow_app">Як мова застосунку</string>
+    <string name="edit_languages">Інші мови</string>
+    <string name="edit_languages_hint">Додайте цю плитку іншою мовою — для того, хто не читає тією, якою її написано. Оригінал не змінюється.</string>
+    <string name="edit_no_languages">Інших мов поки немає.</string>
+    <string name="edit_add_language">Додати мову</string>
+    <string name="edit_language_pick">Яка мова?</string>
+    <string name="edit_language_remove">Вилучити цю мову</string>
+    <string name="edit_language_stale">Плитку змінили після того, як це було написано.</string>
+    <string name="edit_translation_title">Мовою %1$s</string>
+    <string name="edit_translation_hint">Початковий текст скопійовано сюди. Перекладіть його самі — Larova нічого не перекладає й ніколи не читає те, що ви вставляєте.</string>
+    <string name="edit_translation_field">Рядок %1$d</string>
 </resources>

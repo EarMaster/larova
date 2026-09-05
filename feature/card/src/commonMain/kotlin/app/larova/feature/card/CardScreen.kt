@@ -1,11 +1,20 @@
 package app.larova.feature.card
 
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,19 +23,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.ui.component.ContentWidth
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.MoreVertical
 import app.larova.core.ui.icon.TileSymbol
-import app.larova.core.ui.icon.image
 import app.larova.core.ui.icon.Translate
+import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.arrange_title
 import app.larova.core.ui.resources.cd_edit_tile
 import app.larova.core.ui.resources.cd_menu
 import app.larova.core.ui.resources.cd_translate
+import app.larova.core.ui.resources.cd_translate_language
 import app.larova.core.ui.resources.home_add_tile
+import app.larova.core.ui.resources.translate_original
+import app.larova.core.ui.resources.translate_stale
+import app.larova.core.ui.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -51,6 +67,11 @@ fun CardScreen(
     onOpenUrl: (String) -> Unit,
     onOpenApp: (String) -> Unit,
     onTranslate: (String) -> Unit,
+    /**
+     * Chooses which language tiles are shown in, on this phone. Only reachable from a tile that has
+     * more than one, which is the only place somebody has a reason to think about it.
+     */
+    onContentLanguageChange: (String?) -> Unit,
     onEdit: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
@@ -111,17 +132,90 @@ fun CardScreen(
             }
         },
     ) { insets ->
-        CardContent(
-            state = state,
-            onToggleItem = onToggleItem,
-            onPrepareCall = onPrepareCall,
-            onOpenUrl = onOpenUrl,
-            onOpenApp = onOpenApp,
-            onOpenTile = onOpenTile,
-            onBack = onBack,
-            loadPicture = loadPicture,
-            modifier = Modifier.padding(insets),
-        )
+        Column(modifier = Modifier.padding(insets)) {
+            // Only when there is a choice. Most tiles in most installations have one language, and
+            // a row offering one option is furniture on a screen that is read in a hurry.
+            if (state.languages.size > 1) {
+                LanguageBar(
+                    languages = state.languages,
+                    shown = state.shownLanguage,
+                    isStale = state.isStaleTranslation,
+                    onSelect = onContentLanguageChange,
+                )
+            }
+            CardContent(
+                state = state,
+                onToggleItem = onToggleItem,
+                onPrepareCall = onPrepareCall,
+                onOpenUrl = onOpenUrl,
+                onOpenApp = onOpenApp,
+                onOpenTile = onOpenTile,
+                onBack = onBack,
+                loadPicture = loadPicture,
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+/**
+ * Which language this tile is being read in.
+ *
+ * Above the content rather than in the bar, because unlike the translate hand-off this is about
+ * what is on the screen already — and because it is the one control here a caregiver is meant to
+ * find without being told. Chips rather than a menu for the same reason: the languages a tile has
+ * are worth seeing at a glance, and there are never many.
+ *
+ * Choosing one sets the language for **every** tile on this phone, not just this one. The setting
+ * is about the person holding it, not about this guide; `settings_content_language_hint` says so
+ * where there is room to say it.
+ */
+@Composable
+private fun LanguageBar(
+    languages: List<TileLanguage>,
+    shown: String?,
+    isStale: Boolean,
+    onSelect: (String?) -> Unit,
+) {
+    val asWritten = stringResource(Res.string.translate_original)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.ScreenMargin, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            for (language in languages) {
+                val label = language.name.ifBlank { asWritten }
+                // Resolved out here: `semantics` is not a composable scope, and a chip that
+                // announces only "Türkçe" leaves a screen-reader user to infer what it does.
+                val description = stringResource(Res.string.cd_translate_language, label)
+                FilterChip(
+                    selected = language.tag == shown,
+                    onClick = { onSelect(language.tag) },
+                    label = { Text(label) },
+                    modifier = Modifier
+                        .heightIn(min = 44.dp)
+                        .semantics { contentDescription = description },
+                )
+            }
+        }
+        if (isStale) {
+            // Neither amber nor alarm red: invariant 4 reserves the first for the active step and
+            // the second for the help bar, and this is a note rather than a warning. The text is
+            // shown and so is the translation — German that nobody in the room can read is not the
+            // safer option, it is just the quieter one.
+            Text(
+                text = stringResource(Res.string.translate_stale),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 

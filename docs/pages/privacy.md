@@ -75,6 +75,10 @@ tile that no longer works.
 
 If no translation app is installed, the button is not shown.
 
+A parent can also write a tile in a second language themselves, from the editor. That text is
+stored on the phone with the tile and travels in a backup like the rest of it. Nothing about it is
+sent anywhere, and Larova does not read or check what is typed in.
+
 ### The activity log
 
 Larova notes locally when a tile was opened and when a checklist item was ticked, so a parent can

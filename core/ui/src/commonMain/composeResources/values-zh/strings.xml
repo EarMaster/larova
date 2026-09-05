@@ -350,4 +350,20 @@
     <string name="cd_table_cell">%1$s，%2$s</string>
 
     <string name="cd_translate">翻译这张卡片</string>
+    <string name="translate_original">原文</string>
+    <string name="translate_stale">这张卡片在写下这段翻译之后被修改过。</string>
+    <string name="cd_translate_language">以 %1$s 显示这张卡片</string>
+    <string name="settings_content_language">卡片语言</string>
+    <string name="settings_content_language_hint">当一张卡片有多种语言时，以哪种语言显示。这是这台手机的设置，不是单张卡片的设置。</string>
+    <string name="translate_follow_app">跟随应用语言</string>
+    <string name="edit_languages">其他语言</string>
+    <string name="edit_languages_hint">为读不懂原文的照护者，用另一种语言添加这张卡片。原文永远不会改变。</string>
+    <string name="edit_no_languages">还没有其他语言。</string>
+    <string name="edit_add_language">添加语言</string>
+    <string name="edit_language_pick">哪种语言？</string>
+    <string name="edit_language_remove">移除这种语言</string>
+    <string name="edit_language_stale">写下这段文字之后，卡片被修改过。</string>
+    <string name="edit_translation_title">以 %1$s</string>
+    <string name="edit_translation_hint">原文已复制到这里。请你自己改写成另一种语言 — Larova 不做任何翻译，也从不读取你粘贴的内容。</string>
+    <string name="edit_translation_field">第 %1$d 行</string>
 </resources>

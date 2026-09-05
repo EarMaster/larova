@@ -369,4 +369,20 @@
     <string name="cd_table_cell">%1$s، %2$s</string>
 
     <string name="cd_translate">ترجمة هذه البطاقة</string>
+    <string name="translate_original">كما كُتب</string>
+    <string name="translate_stale">تم تغيير هذه البطاقة بعد كتابة هذه الترجمة.</string>
+    <string name="cd_translate_language">عرض هذه البطاقة بـ %1$s</string>
+    <string name="settings_content_language">لغة البطاقات</string>
+    <string name="settings_content_language_hint">اللغة التي تُعرض بها البطاقات عندما تتوفّر لبطاقة أكثر من لغة. هذا إعداد لهذا الهاتف، وليس لبطاقة واحدة.</string>
+    <string name="translate_follow_app">حسب لغة التطبيق</string>
+    <string name="edit_languages">لغات أخرى</string>
+    <string name="edit_languages_hint">أضِف هذه البطاقة بلغة أخرى، لمن لا يقرأ اللغة التي كُتبت بها. النص الأصلي لا يتغيّر أبدًا.</string>
+    <string name="edit_no_languages">لا توجد لغات أخرى بعد.</string>
+    <string name="edit_add_language">إضافة لغة</string>
+    <string name="edit_language_pick">أي لغة؟</string>
+    <string name="edit_language_remove">إزالة هذه اللغة</string>
+    <string name="edit_language_stale">تم تغيير البطاقة بعد كتابة هذا النص.</string>
+    <string name="edit_translation_title">بـ %1$s</string>
+    <string name="edit_translation_hint">تم نسخ النص الأصلي هنا. غيّره بنفسك إلى اللغة الأخرى — لا يترجم Larova شيئًا ولا يقرأ أبدًا ما تلصقه.</string>
+    <string name="edit_translation_field">السطر %1$d</string>
 </resources>

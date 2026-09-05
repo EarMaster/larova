@@ -27,6 +27,17 @@ data class CardRoute(val cardId: String)
 @Serializable
 data class CardEditRoute(val cardId: String = "", val boardId: String = "")
 
+/**
+ * One tile in one other language.
+ *
+ * Both halves come from the tile it was opened from and neither means anything alone. A separate
+ * destination rather than a mode on [CardEditRoute]: a translation edits words and nothing else,
+ * and folding it into a form with two dozen fields would mean a mode changing what every one of
+ * them means.
+ */
+@Serializable
+data class CardTranslationRoute(val cardId: String, val lang: String)
+
 /** [boardId] is the folder being rearranged. Empty is the start screen. */
 @Serializable
 data class ArrangeRoute(val boardId: String = "")

@@ -54,4 +54,6 @@ internal fun noOpEditCallbacks() = EditCardCallbacks(
     onStopRecording = {},
     onSave = {},
     onDelete = {},
+    onAddLanguage = {},
+    onEditLanguage = {},
 )

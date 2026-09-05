@@ -149,6 +149,19 @@ interface PreferencesRepository {
 
     /** One more. Never resets — nothing anybody paid for should quietly become zero. */
     suspend fun addSupport()
+
+    /**
+     * Which language tiles are shown in when a tile has more than one, or null to follow the app's
+     * own language — which is the default and where most installations will stay.
+     *
+     * A setting for the phone, not for a tile: it is the person holding it who cannot read German,
+     * not this particular guide. Here rather than in the database for the same reason as the PIN
+     * and the appearance — it is not content, and it has no business travelling in a backup handed
+     * to a grandparent whose phone is in another language entirely.
+     */
+    fun observeContentLanguage(): Flow<String?>
+
+    suspend fun setContentLanguage(tag: String?)
 }
 
 /**

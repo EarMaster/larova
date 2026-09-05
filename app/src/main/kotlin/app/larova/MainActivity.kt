@@ -73,6 +73,7 @@ private fun LarovaApp(openCardId: String? = null) {
 
     val entitlement by viewModel.entitlement.collectAsStateWithLifecycle()
     val unlockCheck by viewModel.unlockCheck.collectAsStateWithLifecycle()
+    val contentLanguage by viewModel.contentLanguage.collectAsStateWithLifecycle()
     val supportCount by viewModel.supportCount.collectAsStateWithLifecycle()
     val supportMessage by viewModel.supportMessage.collectAsStateWithLifecycle()
 
@@ -98,6 +99,8 @@ private fun LarovaApp(openCardId: String? = null) {
             // settings row absent rather than present and inert.
             onOpenLanguageSettings = actions::openAppLanguageSettings
                 .takeIf { actions.canOpenAppLanguageSettings },
+            contentLanguage = contentLanguage,
+            onContentLanguageChange = viewModel::onContentLanguageChange,
             onOpenUrl = actions::openUrl,
             onTranslate = actions::translate,
             onOpenApp = actions::openApp,

@@ -352,4 +352,20 @@
     <string name="cd_table_cell">%1$s, %2$s</string>
 
     <string name="cd_translate">Bu kartı çevir</string>
+    <string name="translate_original">Yazıldığı gibi</string>
+    <string name="translate_stale">Bu kart, bu çeviri yazıldıktan sonra değiştirildi.</string>
+    <string name="cd_translate_language">Bu kartı %1$s dilinde göster</string>
+    <string name="settings_content_language">Kartların dili</string>
+    <string name="settings_content_language_hint">Bir kartın birden fazla dili varsa hangisinde gösterileceği. Bu, tek bir kart için değil, bu telefon için bir ayardır.</string>
+    <string name="translate_follow_app">Uygulamanın diliyle aynı</string>
+    <string name="edit_languages">Diğer diller</string>
+    <string name="edit_languages_hint">Bu kartı, yazıldığı dili okumayan bir bakıcı için başka bir dilde ekleyin. Aslı hiç değişmez.</string>
+    <string name="edit_no_languages">Henüz başka dil yok.</string>
+    <string name="edit_add_language">Dil ekle</string>
+    <string name="edit_language_pick">Hangi dil?</string>
+    <string name="edit_language_remove">Bu dili kaldır</string>
+    <string name="edit_language_stale">Bu yazıldıktan sonra kart değiştirildi.</string>
+    <string name="edit_translation_title">%1$s dilinde</string>
+    <string name="edit_translation_hint">Özgün metin buraya kopyalandı. Diğer dile kendiniz çevirin — Larova hiçbir şey çevirmez ve yapıştırdığınızı hiç okumaz.</string>
+    <string name="edit_translation_field">Satır %1$d</string>
 </resources>

@@ -9,6 +9,8 @@ import app.larova.core.domain.session.ViewModeSession
 import app.larova.core.domain.usecase.CleanUpMedia
 import app.larova.core.domain.usecase.LockParentView
 import app.larova.core.domain.model.Entitlement
+import app.larova.feature.settings.ContentLanguageChoice
+import app.larova.feature.settings.ContentLanguageSetting
 import app.larova.feature.settings.SupportMessage
 import app.larova.feature.settings.UnlockCheck
 import app.larova.feature.settings.UnlockMessage
@@ -17,12 +19,14 @@ import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.PruneLog
 import app.larova.core.domain.usecase.RecordSupport
 import app.larova.core.domain.usecase.RefreshEntitlement
+import app.larova.core.domain.usecase.Translations
 import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.PublishShortcuts
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
@@ -55,6 +59,7 @@ class AppViewModel(
     observeSupportCount: ObserveSupportCount,
     private val refreshEntitlement: RefreshEntitlement,
     private val unlockPrice: UnlockPrice,
+    private val translations: Translations,
     private val recordSupport: RecordSupport,
 ) : ViewModel() {
 
@@ -90,6 +95,29 @@ class AppViewModel(
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
             initialValue = 0,
         )
+
+    /**
+     * Which language tiles are read in, and what there is to choose from — or null when nothing on
+     * this phone is translated, in which case the settings screen draws no card for it.
+     *
+     * Built from the variants themselves rather than from a list of supported languages: the only
+     * languages worth offering are the ones some tile is actually written in, and that set changes
+     * as a parent adds them.
+     */
+    val contentLanguage: StateFlow<ContentLanguageSetting?> =
+        combine(translations.allTexts(), translations.chosenLanguage()) { texts, chosen ->
+            val languages = texts.map { it.lang }.distinct().sorted()
+                .map { ContentLanguageChoice(tag = it, name = translations.nameOf(it)) }
+            if (languages.isEmpty()) null else ContentLanguageSetting(chosen, languages)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+            initialValue = null,
+        )
+
+    fun onContentLanguageChange(tag: String?) {
+        viewModelScope.launch { translations.choose(tag) }
+    }
 
     private val _unlockCheck = MutableStateFlow<UnlockCheck>(UnlockCheck.Idle)
 

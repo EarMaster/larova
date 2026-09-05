@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.domain.model.CardPayloadCodec
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.plainTextOf
+import app.larova.core.domain.model.resolveCardText
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.RecordEvent
@@ -18,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -59,11 +63,31 @@ data class CardUiState(
      */
     val translationText: String = "",
     /**
+     * Every language this tile exists in: the tile's own text first, then its variants.
+     *
+     * One entry means no control — most tiles in most installations have exactly one, and a chip
+     * row offering a single choice is furniture.
+     */
+    val languages: List<TileLanguage> = emptyList(),
+    /** Which of them is on screen. Null is the tile's own text. */
+    val shownLanguage: String? = null,
+    /** The tile was edited after this translation was written. Shown regardless, and said. */
+    val isStaleTranslation: Boolean = false,
+    /**
      * Where the video or recording on this tile actually is. Null when the row is there and the file
      * is not, which the screen says in words rather than handing a player a path to nowhere.
      */
     val mediaPath: String? = null,
 )
+
+/**
+ * One language a tile can be read in.
+ *
+ * [name] is the language's own name for itself — "Türkçe", not "Turkish" — because a caregiver
+ * looking for their language is the one person who cannot be assumed to read the app's. It comes
+ * from the platform's locale data rather than from `strings.xml`; see `AppLanguage.nameOf`.
+ */
+data class TileLanguage(val tag: String?, val name: String)
 
 /**
  * Suppressed rather than bundled, and rather than raising the threshold — which is what
@@ -149,12 +173,21 @@ class CardViewModel(
             _state.value = if (tile == null) {
                 CardUiState(isLoading = false, missing = true)
             } else {
+                val variants = translations.textsFor(tile.card.id).first()
+                val shown = resolveCardText(tile.card, variants, translations.language().first())
+                // The resolved text takes the state's existing field names, so not one of the ten
+                // renderers below has to know that translation exists. A variant is the same three
+                // things a tile is — title, second line, payload — which is the whole reason for
+                // storing it that way.
                 CardUiState(
-                    title = tile.card.title,
+                    title = shown.title,
                     colorToken = tile.card.colorToken,
-                    payload = tile.payload,
+                    payload = CardPayloadCodec.decodeOrNull(shown.payload) ?: tile.payload,
                     isLoading = false,
                     folderBoardId = (tile.payload as? CardPayload.Folder)?.boardId?.toString(),
+                    languages = languagesOf(tile.card.locale, variants),
+                    shownLanguage = shown.lang,
+                    isStaleTranslation = shown.possiblyOutOfDate,
                 )
             }
             watchFolder(tile?.payload as? CardPayload.Folder)
@@ -172,9 +205,40 @@ class CardViewModel(
      * than in the state class because the whole `Card` is in reach here and only here — the screen
      * never sees the tile's second line, and does not need to.
      */
+    /**
+     * The tile's own text first, then one entry per variant, in a stable order.
+     *
+     * The original's entry is labelled with the language it was written in when somebody has said
+     * what that is, and with a string when nobody has. Nothing guesses: a tile whose language was
+     * never recorded says "as written" rather than naming a language it might not be in.
+     */
+    private fun languagesOf(sourceLocale: String?, variants: List<CardText>): List<TileLanguage> {
+        if (variants.isEmpty()) return emptyList()
+        val original = TileLanguage(
+            tag = null,
+            name = sourceLocale?.let { translations.nameOf(it) } ?: "",
+        )
+        return listOf(original) + variants.map { TileLanguage(it.lang, translations.nameOf(it.lang)) }
+    }
+
+    /** Chooses which language every tile is shown in, on this phone. Not just this one. */
+    fun onContentLanguageChange(tag: String?) {
+        viewModelScope.launch {
+            translations.choose(tag)
+            reload()
+        }
+    }
+
     private suspend fun checkTranslate(tile: Tile?) {
         if (tile == null) return
-        val text = plainTextOf(tile.card.title, tile.card.subtitle, tile.payload)
+        // The *resolved* text, not the original: the hand-off translates what you are looking at,
+        // which is the only rule with no surprises in it.
+        val current = _state.value
+        val text = plainTextOf(
+            title = current.title.ifBlank { tile.card.title },
+            subtitle = tile.card.subtitle,
+            payload = current.payload ?: tile.payload,
+        )
         val available = translations.isAvailable()
         _state.update { it.copy(canTranslate = available, translationText = text) }
     }

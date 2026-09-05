@@ -145,6 +145,7 @@ abstract class StoreAssetTest : ScreenshotTest() {
             onOpenUrl = {},
             onOpenApp = {},
             onTranslate = {},
+            onContentLanguageChange = {},
             onEdit = {},
             onBack = {},
             onHelp = {},
