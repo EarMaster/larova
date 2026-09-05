@@ -1,0 +1,1 @@
+Settings are now sorted under headings — parent view, language, appearance, data and About Larova — so things are easier to find. The full version has moved to the bottom, beside the version number, and the app's own language setting is now called “App language”.

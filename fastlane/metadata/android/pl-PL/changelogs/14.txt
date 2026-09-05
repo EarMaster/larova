@@ -1,0 +1,1 @@
+Ustawienia są teraz pogrupowane pod nagłówkami — widok rodzica, język, wygląd, dane i „O Larovie” — więc łatwiej znaleźć to, czego szukasz. Pełna wersja przeniosła się na dół, obok numeru wersji, a ustawienie języka nazywa się teraz „Język aplikacji”.

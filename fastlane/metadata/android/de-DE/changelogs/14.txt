@@ -1,0 +1,1 @@
+Die Einstellungen sind jetzt nach Überschriften geordnet — Elternansicht, Sprache, Darstellung, Daten und Über Larova —, damit sich alles leichter finden lässt. Die Vollversion steht nun unten bei der Versionsnummer, und die Spracheinstellung heißt „Sprache der App“.

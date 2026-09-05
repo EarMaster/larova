@@ -1,0 +1,1 @@
+Les réglages sont maintenant classés sous des titres — vue parent, langue, apparence, données et À propos de Larova — pour s'y retrouver plus vite. La version complète est passée en bas, près du numéro de version, et le réglage de langue s'appelle « Langue de l'application ».

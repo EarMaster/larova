@@ -1,0 +1,1 @@
+Le impostazioni sono ora raggruppate sotto dei titoli — vista genitore, lingua, aspetto, dati e Informazioni su Larova — così si trova prima quello che serve. La versione completa è in fondo, accanto al numero di versione, e l'impostazione della lingua ora si chiama «Lingua dell'app».

@@ -1,0 +1,1 @@
+As definições estão agora agrupadas por títulos — vista dos pais, idioma, aspeto, dados e Acerca do Larova — para encontrar mais depressa o que procura. A versão completa passou para baixo, junto ao número da versão, e a definição de idioma chama-se agora «Idioma da app».
