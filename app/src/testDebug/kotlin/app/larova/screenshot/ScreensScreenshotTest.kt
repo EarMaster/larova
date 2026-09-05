@@ -130,6 +130,7 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onDismissUnlockCheck = {},
                 onBuyUnlock = {},
                 onOpenSupportPage = {},
+                onOpenLanguageSettings = {},
                 supportCount = 0,
                 onSupport = null,
                 supportMessage = null,
@@ -158,6 +159,7 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                 onDismissUnlockCheck = {},
                 onBuyUnlock = {},
                 onOpenSupportPage = {},
+                onOpenLanguageSettings = {},
                 // Twice already: the count is the interesting state, not the empty one.
                 supportCount = 2,
                 onSupport = {},

@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.sanitizePhoneNumber
 
@@ -37,6 +39,25 @@ class AndroidExternalActions(private val context: Context) : ExternalActions {
         // will be showing that instead of a button, so there is nothing to report here.
         val intent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return
         launch(intent)
+    }
+
+    /**
+     * `ACTION_APP_LOCALE_SETTINGS` arrived in Android 13. The constant itself is a compile-time
+     * string and is safe to name at any minSdk; what does not exist below 13 is the screen.
+     */
+    override val canOpenAppLanguageSettings: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    override fun openAppLanguageSettings() {
+        if (!canOpenAppLanguageSettings) return
+        // `package:` rather than an extra: this is the documented way to name which app's languages
+        // the screen should show, and without it the intent opens the phone's whole language list.
+        launch(
+            Intent(
+                Settings.ACTION_APP_LOCALE_SETTINGS,
+                Uri.fromParts("package", context.packageName, null),
+            ),
+        )
     }
 
     private fun launch(intent: Intent) {

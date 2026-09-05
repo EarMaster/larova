@@ -37,6 +37,7 @@ import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.Lock
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.Transfer
+import app.larova.core.ui.icon.Translate
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.purchase_body
@@ -56,6 +57,8 @@ import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
 import app.larova.core.ui.resources.settings_appearance_system_hint
+import app.larova.core.ui.resources.settings_language
+import app.larova.core.ui.resources.settings_language_hint
 import app.larova.core.ui.resources.settings_support
 import app.larova.core.ui.resources.settings_support_count
 import app.larova.core.ui.resources.settings_support_hint
@@ -141,6 +144,11 @@ fun SettingsScreen(
      * no store behind it, which is the only build that shows the address at all.
      */
     onOpenSupportPage: () -> Unit,
+    /**
+     * Opens Android's own language screen for Larova. Null on a phone with no such screen — below
+     * Android 13 the app's language is the phone's, and there is nothing to send anybody to.
+     */
+    onOpenLanguageSettings: (() -> Unit)?,
     supportCount: Int,
     /** Opens Play's sheet for the contribution. Null in a build with no store behind it. */
     onSupport: (() -> Unit)?,
@@ -170,6 +178,23 @@ fun SettingsScreen(
                 onLock = onLock,
                 onChangePin = onChangePin,
             )
+
+            // Not behind parent view, and that is the whole point of it: the person who needs
+            // another language is the caregiver holding the phone, and they cannot be asked for a
+            // PIN to read the app in a language they understand. It is also why this is a handover
+            // rather than a picker — Android's own screen does the list, the search and the
+            // restart, and knows about `locales_config.xml` without being told twice.
+            if (onOpenLanguageSettings != null) {
+                ActionCard(
+                    icon = Translate,
+                    title = stringResource(Res.string.settings_language),
+                    description = stringResource(Res.string.settings_language_hint),
+                    onClick = onOpenLanguageSettings,
+                    // Sage: not sand, sky or rose, which are the three cards below it.
+                    token = TileColor.SAGE,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+            }
 
             // Backup used to live behind the start screen's overflow menu, which is the last place
             // somebody looks for it — a menu is where things go when nobody has decided where they

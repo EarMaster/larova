@@ -75,6 +75,8 @@ fun LarovaNavHost(
     onSupported: () -> Unit,
     onSupportUnavailable: () -> Unit,
     onPrepareCall: (String) -> Unit,
+    /** Null on a phone with no per-app language screen; the settings row is then absent. */
+    onOpenLanguageSettings: (() -> Unit)?,
     onOpenUrl: (String) -> Unit,
     onOpenApp: (String) -> Unit,
     openCardId: String? = null,
@@ -377,6 +379,7 @@ fun LarovaNavHost(
                 // permission is involved: the URL is handed to whatever app owns http, and this
                 // one never resolves it.
                 onOpenSupportPage = { onOpenUrl(SUPPORT_URL) },
+                onOpenLanguageSettings = onOpenLanguageSettings,
                 supportCount = supportCount,
                 onSupport = support,
                 supportMessage = supportMessage,

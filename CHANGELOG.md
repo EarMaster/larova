@@ -12,6 +12,12 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+### Added
+- A Language row in the settings, for the person holding the phone. It opens Android’s own
+  language screen for Larova, where you can set the app to a different language from the rest
+  of the phone — so a caregiver can read the buttons in their own language without changing
+  anything else. Needs Android 13 or newer; on older phones the row is not shown.
+
 ## [0.5.2] - 2026-09-04
 
 ### Fixed

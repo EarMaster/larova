@@ -94,6 +94,10 @@ private fun LarovaApp(openCardId: String? = null) {
             onSupported = viewModel::onSupported,
             onSupportUnavailable = viewModel::onSupportUnavailable,
             onPrepareCall = actions::prepareCall,
+            // Null below Android 13, where there is no screen to open — which is what makes the
+            // settings row absent rather than present and inert.
+            onOpenLanguageSettings = actions::openAppLanguageSettings
+                .takeIf { actions.canOpenAppLanguageSettings },
             onOpenUrl = actions::openUrl,
             onOpenApp = actions::openApp,
             openCardId = openCardId,
