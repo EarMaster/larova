@@ -1,0 +1,1 @@
+Larova sort de sa phase bêta. Voici la première version complète : une grille de fiches que vous écrivez vous-même — guides, notes, listes, contacts et plus — que la personne qui garde votre enfant lit en deux touches. Toujours sans compte, sans autorisation Internet ; rien ne quitte le téléphone.
