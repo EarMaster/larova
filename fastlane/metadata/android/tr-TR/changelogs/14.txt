@@ -1,0 +1,1 @@
+Ayarlar artık başlıklar altında gruplandı — ebeveyn görünümü, dil, görünüm, veriler ve Larova hakkında — böylece aradığınızı daha çabuk buluyorsunuz. Tam sürüm en alta, sürüm numarasının yanına taşındı; dil ayarının adı da artık “Uygulama dili”.

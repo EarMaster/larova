@@ -142,6 +142,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">सेटिंग</string>
+    <string name="settings_section_view">अभिभावक दृश्य</string>
+    <string name="settings_section_language">भाषा</string>
+    <string name="settings_section_data">डेटा</string>
+    <string name="settings_section_about">Larova के बारे में</string>
     <string name="settings_appearance">दिखावट</string>
     <string name="settings_appearance_system">फ़ोन के अनुसार</string>
     <string name="settings_appearance_system_hint">हल्का या गहरा — जो फ़ोन इस समय इस्तेमाल कर रहा है।</string>
@@ -151,7 +155,7 @@
     <string name="settings_appearance_dark_hint">गहरी पृष्ठभूमि पर हल्का लेख।</string>
     <string name="settings_appearance_night">रात</string>
     <string name="settings_appearance_night_hint">गर्म और बहुत मद्धम, अँधेरे कमरे में ज़ोर से पढ़ने के लिए।</string>
-    <string name="settings_language">भाषा</string>
+    <string name="settings_language">ऐप की भाषा</string>
     <string name="settings_language_hint">Larova बाकी फ़ोन से अलग भाषा में चल सकता है।</string>
     <string name="settings_transfer_hint">सब कुछ एक फ़ाइल में सहेजें, या कोई बैकअप वापस लाएँ।</string>
     <string name="settings_unlock">पूर्ण संस्करण</string>

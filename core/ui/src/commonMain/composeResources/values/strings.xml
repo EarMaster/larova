@@ -140,6 +140,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Settings</string>
+    <string name="settings_section_view">Parent view</string>
+    <string name="settings_section_language">Language</string>
+    <string name="settings_section_data">Data</string>
+    <string name="settings_section_about">About Larova</string>
     <string name="settings_appearance">Appearance</string>
     <string name="settings_appearance_system">Follow the phone</string>
     <string name="settings_appearance_system_hint">Light or dark, whichever the phone is using.</string>
@@ -149,7 +153,7 @@
     <string name="settings_appearance_dark_hint">Light text on a dark background.</string>
     <string name="settings_appearance_night">Night</string>
     <string name="settings_appearance_night_hint">Warm and very dim, for reading aloud in a dark room.</string>
-    <string name="settings_language">Language</string>
+    <string name="settings_language">App language</string>
     <string name="settings_language_hint">Larova can use a different language from the rest of the phone.</string>
     <string name="settings_transfer_hint">Save everything to one file, or bring a backup back.</string>
     <string name="settings_unlock">The full version</string>

@@ -2,11 +2,10 @@ package app.larova.feature.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.AppearanceSetting
@@ -65,6 +66,10 @@ import app.larova.core.ui.resources.settings_content_language
 import app.larova.core.ui.resources.settings_content_language_hint
 import app.larova.core.ui.resources.settings_language
 import app.larova.core.ui.resources.settings_language_hint
+import app.larova.core.ui.resources.settings_section_about
+import app.larova.core.ui.resources.settings_section_data
+import app.larova.core.ui.resources.settings_section_language
+import app.larova.core.ui.resources.settings_section_view
 import app.larova.core.ui.resources.settings_support
 import app.larova.core.ui.resources.settings_support_count
 import app.larova.core.ui.resources.settings_support_hint
@@ -109,11 +114,13 @@ const val SUPPORT_URL: String = "https://liberapay.com/EarMaster"
 /**
  * Settings.
  *
- * Appearance, the way in and out of parent view, and — once you are in it — the parent-view work
- * that is not editing a tile. Appearance comes first among the preferences because night mode is
- * not a preference in the usual sense: it exists for the leading use case, reading a guide aloud
- * in a darkened bedroom, and it is the one setting a caregiver might reasonably reach for
- * themselves.
+ * Five labelled groups, in the order somebody needs them: the way in and out of parent view, then
+ * language, then appearance — all three of which a caregiver may use — then the parent-view work
+ * that is not editing a tile, and last what Larova *is* rather than what it does.
+ *
+ * That last group is where the full version sits. It used to sit among the settings halfway up the
+ * screen, which read it as one; it is not a setting, it is a fact about this installation, and it
+ * belongs beside the version number for the same reason the version number is there at all.
  *
  * No help bar here. This is a screen somebody opened on purpose to change something, not one they
  * are on while a child is upset, and the red bar means "now" everywhere else in the product.
@@ -185,41 +192,31 @@ fun SettingsScreen(
                 .padding(horizontal = Dimens.ScreenMargin),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            // Above appearance, because it is the reason most people open this screen: they
-            // came here to change something and found they could not.
-            ViewModeSection(
-                isParentView = isParentView,
-                onUnlock = onUnlock,
-                onLock = onLock,
-                onChangePin = onChangePin,
-            )
-
-            // Not behind parent view, and that is the whole point of it: the person who needs
-            // another language is the caregiver holding the phone, and they cannot be asked for a
-            // PIN to read the app in a language they understand. It is also why this is a handover
-            // rather than a picker — Android's own screen does the list, the search and the
-            // restart, and knows about `locales_config.xml` without being told twice.
-            if (onOpenLanguageSettings != null) {
-                ActionCard(
-                    icon = Translate,
-                    title = stringResource(Res.string.settings_language),
-                    description = stringResource(Res.string.settings_language_hint),
-                    onClick = onOpenLanguageSettings,
-                    // Sage: not sand, sky or rose, which are the three cards below it.
-                    token = TileColor.SAGE,
-                    modifier = Modifier.padding(vertical = 8.dp),
+            // First, because it is the reason most people open this screen: they came here to
+            // change something and found they could not.
+            SettingsSection(title = stringResource(Res.string.settings_section_view)) {
+                ViewModeSection(
+                    isParentView = isParentView,
+                    onUnlock = onUnlock,
+                    onLock = onLock,
+                    onChangePin = onChangePin,
                 )
             }
 
-            // Beside the app's own language and in both views, for the same reason: it is the
-            // person holding the phone who needs it. It is also the way back — somebody who tapped
-            // a chip on one tile and now wants everything as written again needs somewhere
-            // findable to say so, which is the whole reason the setting is for the phone rather
-            // than for the tile.
-            if (contentLanguage != null) {
-                ContentLanguageCard(
-                    setting = contentLanguage,
-                    onChange = onContentLanguageChange,
+            LanguageSection(
+                onOpenLanguageSettings = onOpenLanguageSettings,
+                contentLanguage = contentLanguage,
+                onContentLanguageChange = onContentLanguageChange,
+            )
+
+            // Ahead of the parent-view work below it, because night mode is not a preference in
+            // the usual sense: it exists for the leading use case, reading a guide aloud in a
+            // darkened bedroom, and it is the one setting a caregiver might reasonably reach for
+            // themselves. Everything up to here is theirs; everything after it is not.
+            SettingsSection(title = stringResource(Res.string.settings_appearance)) {
+                AppearanceOptions(
+                    selected = appearance,
+                    onSelect = onAppearanceChange,
                 )
             }
 
@@ -228,118 +225,246 @@ fun SettingsScreen(
             // belong. It belongs here: it is parent-view work, and this is the screen parent view
             // is turned on from.
             if (isParentView) {
-                ActionCard(
-                    icon = Transfer,
-                    title = stringResource(Res.string.transfer_title),
-                    description = stringResource(Res.string.settings_transfer_hint),
-                    onClick = onOpenTransfer,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
-
-                // Parent view only: buying and checking a purchase is parent-view work, and a
-                // caregiver has no use for either.
-                //
-                // A card like the two around it, and tappable as a whole rather than carrying a
-                // button of its own. The status matters more than the tap: restoring already
-                // happens at every launch, so somebody who paid on another phone is usually
-                // unlocked before they think to look — what they lack is a way to *see* that.
-                // The retry is for the one case the automatic attempt cannot cover, a phone that
-                // was offline at start and is online now, and the description says so.
-                ActionCard(
-                    // A padlock while it is shut, a key once it is not. A lock beside the word
-                    // "Unlocked" contradicts the only line anybody reads.
-                    icon = if (entitlement == Entitlement.NONE) Lock else TileSymbol.KEY.image,
-                    title = stringResource(Res.string.settings_unlock),
-                    // While the store is being asked, the status says so. That wait is the whole
-                    // reason the card looked broken: the question goes to another app, which may
-                    // have to be woken up to answer it, and nothing here moved meanwhile.
-                    status = if (unlockCheck is UnlockCheck.Checking) {
-                        stringResource(Res.string.settings_unlock_checking)
-                    } else {
-                        when (entitlement) {
-                            Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
-                            Entitlement.PLAY,
-                            Entitlement.KEY,
-                            Entitlement.BUILD,
-                            -> stringResource(Res.string.settings_unlock_owned)
-                        }
-                    },
-                    // Keyed on the store rather than on the entitlement: with nothing to ask,
-                    // the honest sentence is why everything is available, not how to restore it.
-                    // Somebody who compiled Larova themselves would otherwise be left wondering.
-                    description = if (onCheckPurchases != null) {
-                        stringResource(Res.string.settings_unlock_hint)
-                    } else {
-                        stringResource(Res.string.settings_unlock_build, SUPPORT_URL)
-                    },
-                    // Two builds, two honest actions for one card. With a store behind it the tap
-                    // asks Play again; with nothing for sale there is nothing to ask, and the card
-                    // is the only place the support address appears — so the tap opens it. It used
-                    // to be disabled there, which left an address on screen and no way to reach it.
-                    onClick = onCheckPurchases ?: onOpenSupportPage,
-                    // Not while it is already asking: a second tap would start a second question,
-                    // and the card going quiet under the finger is the other half of saying that
-                    // the first one is still open.
-                    enabled = unlockCheck !is UnlockCheck.Checking,
-                    // Sky: not sand, which is the backup card, and not rose, which is the
-                    // contribution. Three blocks, three colours, so they read as three things.
-                    token = TileColor.SKY,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
-
-                // The answer to that tap, when the answer is nothing. Not a line on the card:
-                // "still not unlocked" under a card that already reads "Not unlocked" is not an
-                // answer anybody would notice, and the useful next step — buying it — has
-                // nowhere to go there.
-                if (unlockCheck is UnlockCheck.NotFound) {
-                    UnlockNotFoundDialog(
-                        found = unlockCheck,
-                        onBuy = onBuyUnlock,
-                        onDismiss = onDismissUnlockCheck,
-                    )
-                }
-
-                // Below the unlock, and visually a sibling of the backup card rather than of it:
-                // this buys nothing and must not read as a second paid tier.
-                if (onSupport != null) {
+                SettingsSection(title = stringResource(Res.string.settings_section_data)) {
                     ActionCard(
-                        icon = TileSymbol.HEART.image,
-                        title = stringResource(Res.string.settings_support),
-                        description = supportDescription(supportCount, supportMessage),
-                        onClick = onSupport,
-                        // Rose rather than sand: warm, and not the colour of anything functional.
-                        token = TileColor.ROSE,
+                        icon = Transfer,
+                        title = stringResource(Res.string.transfer_title),
+                        description = stringResource(Res.string.settings_transfer_hint),
+                        onClick = onOpenTransfer,
                         modifier = Modifier.padding(vertical = 8.dp),
                     )
                 }
             }
 
-            Text(
-                text = stringResource(Res.string.settings_appearance),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 12.dp),
-            )
-
-            AppearanceOptions(
-                selected = appearance,
-                onSelect = onAppearanceChange,
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Not hidden behind parent view. It is the first thing any support message needs and
-            // the last thing anybody would think to ask a caregiver to find.
-            Text(
-                text = stringResource(Res.string.settings_version, appVersion),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                textAlign = TextAlign.Center,
+            AboutSection(
+                isParentView = isParentView,
+                entitlement = entitlement,
+                onCheckPurchases = onCheckPurchases,
+                unlockCheck = unlockCheck,
+                onDismissUnlockCheck = onDismissUnlockCheck,
+                onBuyUnlock = onBuyUnlock,
+                onOpenSupportPage = onOpenSupportPage,
+                supportCount = supportCount,
+                onSupport = onSupport,
+                supportMessage = supportMessage,
+                appVersion = appVersion,
             )
         }
     }
+}
+
+/**
+ * A heading and the rows under it.
+ *
+ * Settings used to be one column of cards with a single heading two thirds of the way down, which
+ * made "Appearance" look like the only labelled thing rather than one group among several. A
+ * screen somebody scrolls looking for one setting needs the same landmarks a page of text does:
+ * the heading is what tells them the language card and the tile-language card are two halves of
+ * one answer, and that the version number is not a setting at all.
+ *
+ * `heading()` says the same thing to a screen reader, which can then jump between the groups
+ * instead of hearing every card in the screen out to find the one it wants.
+ *
+ * Every group on this screen goes through here, and a group with nothing in it is not drawn — see
+ * [LanguageSection], which does not exist on a phone with neither half to offer.
+ */
+@Composable
+private fun SettingsSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 4.dp)
+                .semantics { heading() },
+        )
+        content()
+    }
+}
+
+/**
+ * The app's language and the tiles' language, under one heading.
+ *
+ * Neither half is behind parent view, and that is the whole point of both: the person who needs
+ * another language is the caregiver holding the phone, and they cannot be asked for a PIN to read
+ * the app in a language they understand.
+ *
+ * Nothing is drawn at all when there is nothing to draw. Below Android 13 the app's language is
+ * the phone's, and an installation with nothing translated has no tile language to choose between
+ * — on such a phone the heading would stand over an empty space.
+ */
+@Composable
+private fun LanguageSection(
+    onOpenLanguageSettings: (() -> Unit)?,
+    contentLanguage: ContentLanguageSetting?,
+    onContentLanguageChange: (String?) -> Unit,
+) {
+    if (onOpenLanguageSettings == null && contentLanguage == null) return
+
+    SettingsSection(title = stringResource(Res.string.settings_section_language)) {
+        // A handover rather than a picker — Android's own screen does the list, the search and
+        // the restart, and knows about `locales_config.xml` without being told twice.
+        if (onOpenLanguageSettings != null) {
+            ActionCard(
+                icon = Translate,
+                title = stringResource(Res.string.settings_language),
+                description = stringResource(Res.string.settings_language_hint),
+                onClick = onOpenLanguageSettings,
+                // Sage: not sand, sky or rose, which are the cards further down.
+                token = TileColor.SAGE,
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
+        }
+
+        // Beside the app's own language, and for the same reason. It is also the way back —
+        // somebody who tapped a chip on one tile and now wants everything as written again needs
+        // somewhere findable to say so, which is the whole reason the setting is for the phone
+        // rather than for the tile.
+        if (contentLanguage != null) {
+            ContentLanguageCard(
+                setting = contentLanguage,
+                onChange = onContentLanguageChange,
+            )
+        }
+    }
+}
+
+/**
+ * What Larova is, rather than what it does.
+ *
+ * Last on the screen, and one group, because it is one subject: which Larova this is, what has
+ * been paid for it, and what to quote in a support message. The full version used to sit halfway
+ * up the screen among the settings, which read it as one — it is not. Nothing here changes how the
+ * app behaves.
+ *
+ * The version line is the only part a caregiver sees. Buying and checking a purchase is
+ * parent-view work, and a caregiver has no use for either.
+ */
+@Composable
+private fun AboutSection(
+    isParentView: Boolean,
+    entitlement: Entitlement,
+    onCheckPurchases: (() -> Unit)?,
+    unlockCheck: UnlockCheck,
+    onDismissUnlockCheck: () -> Unit,
+    onBuyUnlock: (() -> Unit)?,
+    onOpenSupportPage: () -> Unit,
+    supportCount: Int,
+    onSupport: (() -> Unit)?,
+    supportMessage: SupportMessage?,
+    appVersion: String,
+) {
+    SettingsSection(title = stringResource(Res.string.settings_section_about)) {
+        if (isParentView) {
+            UnlockCard(
+                entitlement = entitlement,
+                onCheckPurchases = onCheckPurchases,
+                unlockCheck = unlockCheck,
+                onOpenSupportPage = onOpenSupportPage,
+            )
+
+            // The answer to that tap, when the answer is nothing. Not a line on the card: "still
+            // not unlocked" under a card that already reads "Not unlocked" is not an answer
+            // anybody would notice, and the useful next step — buying it — has nowhere to go
+            // there.
+            if (unlockCheck is UnlockCheck.NotFound) {
+                UnlockNotFoundDialog(
+                    found = unlockCheck,
+                    onBuy = onBuyUnlock,
+                    onDismiss = onDismissUnlockCheck,
+                )
+            }
+
+            // Below the unlock, and visually a sibling of the backup card rather than of it: this
+            // buys nothing and must not read as a second paid tier.
+            if (onSupport != null) {
+                ActionCard(
+                    icon = TileSymbol.HEART.image,
+                    title = stringResource(Res.string.settings_support),
+                    description = supportDescription(supportCount, supportMessage),
+                    onClick = onSupport,
+                    // Rose rather than sand: warm, and not the colour of anything functional.
+                    token = TileColor.ROSE,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+            }
+        }
+
+        // Not hidden behind parent view. It is the first thing any support message needs and the
+        // last thing anybody would think to ask a caregiver to find.
+        Text(
+            text = stringResource(Res.string.settings_version, appVersion),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 24.dp),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/**
+ * Whether the full version is unlocked on this phone, and the way to ask again.
+ *
+ * A card, and tappable as a whole rather than carrying a button of its own. The status matters
+ * more than the tap: restoring already happens at every launch, so somebody who paid on another
+ * phone is usually unlocked before they think to look — what they lack is a way to *see* that.
+ * The retry is for the one case the automatic attempt cannot cover, a phone that was offline at
+ * start and is online now, and the description says so.
+ */
+@Composable
+private fun UnlockCard(
+    entitlement: Entitlement,
+    onCheckPurchases: (() -> Unit)?,
+    unlockCheck: UnlockCheck,
+    onOpenSupportPage: () -> Unit,
+) {
+    ActionCard(
+        // A padlock while it is shut, a key once it is not. A lock beside the word "Unlocked"
+        // contradicts the only line anybody reads.
+        icon = if (entitlement == Entitlement.NONE) Lock else TileSymbol.KEY.image,
+        title = stringResource(Res.string.settings_unlock),
+        // While the store is being asked, the status says so. That wait is the whole reason the
+        // card looked broken: the question goes to another app, which may have to be woken up to
+        // answer it, and nothing here moved meanwhile.
+        status = if (unlockCheck is UnlockCheck.Checking) {
+            stringResource(Res.string.settings_unlock_checking)
+        } else {
+            when (entitlement) {
+                Entitlement.NONE -> stringResource(Res.string.settings_unlock_none)
+                Entitlement.PLAY,
+                Entitlement.KEY,
+                Entitlement.BUILD,
+                -> stringResource(Res.string.settings_unlock_owned)
+            }
+        },
+        // Keyed on the store rather than on the entitlement: with nothing to ask, the honest
+        // sentence is why everything is available, not how to restore it. Somebody who compiled
+        // Larova themselves would otherwise be left wondering.
+        description = if (onCheckPurchases != null) {
+            stringResource(Res.string.settings_unlock_hint)
+        } else {
+            stringResource(Res.string.settings_unlock_build, SUPPORT_URL)
+        },
+        // Two builds, two honest actions for one card. With a store behind it the tap asks Play
+        // again; with nothing for sale there is nothing to ask, and the card is the only place the
+        // support address appears — so the tap opens it. It used to be disabled there, which left
+        // an address on screen and no way to reach it.
+        onClick = onCheckPurchases ?: onOpenSupportPage,
+        // Not while it is already asking: a second tap would start a second question, and the card
+        // going quiet under the finger is the other half of saying that the first one is still
+        // open.
+        enabled = unlockCheck !is UnlockCheck.Checking,
+        // Sky: not sand, which is the backup card, and not rose, which is the contribution. Three
+        // blocks, three colours, so they read as three things.
+        token = TileColor.SKY,
+        modifier = Modifier.padding(vertical = 8.dp),
+    )
 }
 
 /**

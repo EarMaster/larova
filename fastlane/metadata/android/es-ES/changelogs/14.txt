@@ -1,0 +1,1 @@
+Los ajustes ahora están agrupados bajo títulos — vista de padres, idioma, apariencia, datos y Acerca de Larova — para encontrar antes lo que busca. La versión completa está abajo, junto al número de versión, y el ajuste de idioma ahora se llama «Idioma de la app».

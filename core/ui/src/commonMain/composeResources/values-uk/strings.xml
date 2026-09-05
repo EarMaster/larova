@@ -148,6 +148,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Налаштування</string>
+    <string name="settings_section_view">Батьківський режим</string>
+    <string name="settings_section_language">Мова</string>
+    <string name="settings_section_data">Дані</string>
+    <string name="settings_section_about">Про Larova</string>
     <string name="settings_appearance">Вигляд</string>
     <string name="settings_appearance_system">Як на телефоні</string>
     <string name="settings_appearance_system_hint">Світлий або темний — так, як зараз на телефоні.</string>
@@ -157,7 +161,7 @@
     <string name="settings_appearance_dark_hint">Світлий текст на темному тлі.</string>
     <string name="settings_appearance_night">Нічний</string>
     <string name="settings_appearance_night_hint">Теплий і дуже приглушений, щоб читати вголос у темній кімнаті.</string>
-    <string name="settings_language">Мова</string>
+    <string name="settings_language">Мова застосунку</string>
     <string name="settings_language_hint">Larova може працювати іншою мовою, ніж решта телефона.</string>
     <string name="settings_transfer_hint">Зберегти все в один файл або повернути копію.</string>
     <string name="settings_unlock">Повна версія</string>

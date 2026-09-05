@@ -143,6 +143,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">设置</string>
+    <string name="settings_section_view">家长模式</string>
+    <string name="settings_section_language">语言</string>
+    <string name="settings_section_data">数据</string>
+    <string name="settings_section_about">关于 Larova</string>
     <string name="settings_appearance">外观</string>
     <string name="settings_appearance_system">跟随手机</string>
     <string name="settings_appearance_system_hint">跟着手机走，浅色或深色。</string>
@@ -152,7 +156,7 @@
     <string name="settings_appearance_dark_hint">深色背景上的浅色文字。</string>
     <string name="settings_appearance_night">夜间</string>
     <string name="settings_appearance_night_hint">暖色而且很暗，适合在黑暗的房间里朗读。</string>
-    <string name="settings_language">语言</string>
+    <string name="settings_language">应用语言</string>
     <string name="settings_language_hint">Larova 可以使用和手机其他部分不同的语言。</string>
     <string name="settings_transfer_hint">把所有内容存成一个文件，或者恢复一份备份。</string>
     <string name="settings_unlock">完整版</string>

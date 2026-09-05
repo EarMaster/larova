@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
@@ -43,7 +44,7 @@ class SettingsContentTest {
 
         // Not behind parent view: it is the first thing a support message needs, and a caregiver
         // is the person most likely to be asked for it over the phone.
-        compose.onNodeWithText("Version 9.9.9").assertIsDisplayed()
+        compose.scrolledTo("Version 9.9.9").assertIsDisplayed()
     }
 
     @Test
@@ -58,8 +59,8 @@ class SettingsContentTest {
     fun parentViewOffersToCheckAgainWhenNothingIsBought() {
         show(isParentView = true, entitlement = Entitlement.NONE)
 
-        compose.onNodeWithText("The full version").assertIsDisplayed()
-        compose.onNodeWithText("Not unlocked").assertIsDisplayed()
+        compose.scrolledTo("The full version").assertIsDisplayed()
+        compose.scrolledTo("Not unlocked").assertIsDisplayed()
         // The card is the target, so the invitation is a sentence rather than a button label.
         assertTrue(compose.countOf(ASK_AGAIN) == 1)
     }
@@ -68,7 +69,7 @@ class SettingsContentTest {
     fun parentViewSaysSoOnceItIsBought() {
         show(isParentView = true, entitlement = Entitlement.PLAY)
 
-        compose.onNodeWithText("Unlocked").assertIsDisplayed()
+        compose.scrolledTo("Unlocked").assertIsDisplayed()
         // Still offered: a refund or a second phone are both reasons to ask again.
         assertTrue(compose.countOf(ASK_AGAIN) == 1)
     }
@@ -88,8 +89,8 @@ class SettingsContentTest {
     fun aBuildWithNoPaidTierExplainsItselfAndOffersNoCheck() {
         show(isParentView = true, entitlement = Entitlement.BUILD, onCheckPurchases = null)
 
-        compose.onNodeWithText("Unlocked").assertIsDisplayed()
-        compose.onNodeWithText(
+        compose.scrolledTo("Unlocked").assertIsDisplayed()
+        compose.scrolledTo(
             "This build has no paid version — every kind of tile is unlocked.\n\n" +
                 "If you would still like to support the developer: \uD83D\uDC9D $SUPPORT_URL",
         ).assertIsDisplayed()
@@ -112,7 +113,7 @@ class SettingsContentTest {
             onOpenSupportPage = { opened = true },
         )
 
-        compose.onNodeWithText("The full version").performClick()
+        compose.scrolledTo("The full version").performClick()
 
         assertTrue(opened)
     }
@@ -158,7 +159,7 @@ class SettingsContentTest {
             unlockCheck = UnlockCheck.Checking,
         )
 
-        compose.onNodeWithText("Asking Google Play\u2026").assertIsDisplayed()
+        compose.scrolledTo("Asking Google Play\u2026").assertIsDisplayed()
         assertTrue(compose.countOf("Not unlocked") == 0)
     }
 
@@ -173,7 +174,7 @@ class SettingsContentTest {
     fun theContributionExplainsItselfBeforeAnybodyHasGiven() {
         show(isParentView = true, entitlement = Entitlement.PLAY, supportCount = 0)
 
-        compose.onNodeWithText("Support the development").assertIsDisplayed()
+        compose.scrolledTo("Support the development").assertIsDisplayed()
         assertTrue(compose.countOf("Supported once") == 0)
     }
 
@@ -181,13 +182,13 @@ class SettingsContentTest {
     @Test
     fun theCountIsShownOnceSomebodyHasGiven() {
         show(isParentView = true, entitlement = Entitlement.PLAY, supportCount = 1)
-        compose.onNodeWithText("Supported once").assertIsDisplayed()
+        compose.scrolledTo("Supported once").assertIsDisplayed()
     }
 
     @Test
     fun theCountIsPluralisedBeyondOne() {
         show(isParentView = true, entitlement = Entitlement.PLAY, supportCount = 3)
-        compose.onNodeWithText("Supported 3 times").assertIsDisplayed()
+        compose.scrolledTo("Supported 3 times").assertIsDisplayed()
     }
 
     @Test
@@ -197,7 +198,7 @@ class SettingsContentTest {
             supportCount = 2, supportMessage = SupportMessage.THANKS,
         )
 
-        compose.onNodeWithText("Thank you.").assertIsDisplayed()
+        compose.scrolledTo("Thank you.").assertIsDisplayed()
         assertTrue(compose.countOf("Supported 2 times") == 0)
     }
 
@@ -208,6 +209,21 @@ class SettingsContentTest {
 
         assertTrue(compose.countOf("Support the development") == 0)
     }
+
+    /**
+     * The node with this text, scrolled into view first.
+     *
+     * The about group — the full version, the contribution and the version line — sits at
+     * the foot of a scrolling screen, so "is it displayed" is only a fair question once the screen
+     * has been scrolled the way a person would scroll it. A node already on screen is unmoved by
+     * this, so it costs nothing to ask for it either way.
+     *
+     * Only for nodes inside the screen's own scrolling column: a dialog has no scrollable parent,
+     * and `performScrollTo` on one throws rather than doing nothing.
+     */
+    private fun androidx.compose.ui.test.junit4.AndroidComposeTestRule<*, *>.scrolledTo(
+        text: String,
+    ) = onNodeWithText(text).performScrollTo()
 
     /** No `assertDoesNotExist` here: counting reads better when the point is "none of these". */
     private fun androidx.compose.ui.test.junit4.AndroidComposeTestRule<*, *>.countOf(text: String) =

@@ -144,6 +144,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Ayarlar</string>
+    <string name="settings_section_view">Ebeveyn görünümü</string>
+    <string name="settings_section_language">Dil</string>
+    <string name="settings_section_data">Veriler</string>
+    <string name="settings_section_about">Larova hakkında</string>
     <string name="settings_appearance">Görünüm</string>
     <string name="settings_appearance_system">Telefonu izle</string>
     <string name="settings_appearance_system_hint">Telefon hangisini kullanıyorsa: açık ya da koyu.</string>
@@ -153,7 +157,7 @@
     <string name="settings_appearance_dark_hint">Koyu zemin üzerinde açık yazı.</string>
     <string name="settings_appearance_night">Gece</string>
     <string name="settings_appearance_night_hint">Sıcak ve çok soluk; karanlık bir odada sesli okumak için.</string>
-    <string name="settings_language">Dil</string>
+    <string name="settings_language">Uygulama dili</string>
     <string name="settings_language_hint">Larova, telefonun geri kalanından farklı bir dil kullanabilir.</string>
     <string name="settings_transfer_hint">Her şeyi tek bir dosyaya kaydedin ya da bir yedeği geri getirin.</string>
     <string name="settings_unlock">Tam sürüm</string>

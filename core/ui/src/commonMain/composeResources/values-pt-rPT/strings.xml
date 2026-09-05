@@ -143,6 +143,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Definições</string>
+    <string name="settings_section_view">Vista dos pais</string>
+    <string name="settings_section_language">Idioma</string>
+    <string name="settings_section_data">Dados</string>
+    <string name="settings_section_about">Acerca do Larova</string>
     <string name="settings_appearance">Aspeto</string>
     <string name="settings_appearance_system">Seguir o telemóvel</string>
     <string name="settings_appearance_system_hint">Claro ou escuro, conforme o que o telemóvel estiver a usar.</string>
@@ -152,7 +156,7 @@
     <string name="settings_appearance_dark_hint">Texto claro sobre um fundo escuro.</string>
     <string name="settings_appearance_night">Noite</string>
     <string name="settings_appearance_night_hint">Quente e muito ténue, para ler em voz alta num quarto às escuras.</string>
-    <string name="settings_language">Idioma</string>
+    <string name="settings_language">Idioma da app</string>
     <string name="settings_language_hint">A Larova pode usar um idioma diferente do resto do telemóvel.</string>
     <string name="settings_transfer_hint">Guarde tudo num ficheiro, ou traga uma cópia de volta.</string>
     <string name="settings_unlock">A versão completa</string>

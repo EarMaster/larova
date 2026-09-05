@@ -142,6 +142,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Impostazioni</string>
+    <string name="settings_section_view">Vista genitore</string>
+    <string name="settings_section_language">Lingua</string>
+    <string name="settings_section_data">Dati</string>
+    <string name="settings_section_about">Informazioni su Larova</string>
     <string name="settings_appearance">Aspetto</string>
     <string name="settings_appearance_system">Segui il telefono</string>
     <string name="settings_appearance_system_hint">Chiaro o scuro, come il telefono in quel momento.</string>
@@ -151,7 +155,7 @@
     <string name="settings_appearance_dark_hint">Testo chiaro su uno sfondo scuro.</string>
     <string name="settings_appearance_night">Notte</string>
     <string name="settings_appearance_night_hint">Caldo e molto attenuato, per leggere ad alta voce in una stanza buia.</string>
-    <string name="settings_language">Lingua</string>
+    <string name="settings_language">Lingua dell'app</string>
     <string name="settings_language_hint">Larova può usare una lingua diversa dal resto del telefono.</string>
     <string name="settings_transfer_hint">Salva tutto in un file, oppure recupera un backup.</string>
     <string name="settings_unlock">La versione completa</string>
