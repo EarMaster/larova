@@ -73,6 +73,7 @@ private fun LarovaApp(openCardId: String? = null) {
 
     val entitlement by viewModel.entitlement.collectAsStateWithLifecycle()
     val unlockCheck by viewModel.unlockCheck.collectAsStateWithLifecycle()
+    val contentLanguage by viewModel.contentLanguage.collectAsStateWithLifecycle()
     val supportCount by viewModel.supportCount.collectAsStateWithLifecycle()
     val supportMessage by viewModel.supportMessage.collectAsStateWithLifecycle()
 
@@ -94,7 +95,14 @@ private fun LarovaApp(openCardId: String? = null) {
             onSupported = viewModel::onSupported,
             onSupportUnavailable = viewModel::onSupportUnavailable,
             onPrepareCall = actions::prepareCall,
+            // Null below Android 13, where there is no screen to open — which is what makes the
+            // settings row absent rather than present and inert.
+            onOpenLanguageSettings = actions::openAppLanguageSettings
+                .takeIf { actions.canOpenAppLanguageSettings },
+            contentLanguage = contentLanguage,
+            onContentLanguageChange = viewModel::onContentLanguageChange,
             onOpenUrl = actions::openUrl,
+            onTranslate = actions::translate,
             onOpenApp = actions::openApp,
             openCardId = openCardId,
         )

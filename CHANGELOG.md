@@ -12,6 +12,30 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-05
+
+### Added
+- Tiles can be written in more than one language. In parent view a tile now has an "Other
+  languages" section: pick a language and Larova copies the tile’s words into a form for you to
+  change — the title, the steps, the items, one box each. The original is never touched, and the
+  Translate button is there to get a starting point from a translation app. Larova translates
+  nothing itself and never reads what you paste.
+- A tile that has more than one language shows them as buttons at the top; tapping one switches
+  every tile on the phone to that language, so a caregiver sets it once. A tile that has not been
+  translated is shown exactly as written — never hidden, never greyed out. If you change a tile
+  after translating it, the translation says so rather than pretending to be current.
+- A "Tile language" setting to put that choice back, or change it without opening a tile.
+- Tiles can now be translated. A tile opened by somebody who does not read the language it was
+  written in has a globe in the top bar: tapping it hands the words on that tile to a translation
+  app already on the phone. Larova itself translates nothing and sends nothing anywhere — it
+  passes the words to an app you chose, the same way tapping a contact passes a number to the
+  phone app. Phone numbers, web addresses and app names are left out, because a translated one
+  would stop working. If there is no translation app on the phone, the globe is not shown.
+- A Language row in the settings, for the person holding the phone. It opens Android’s own
+  language screen for Larova, where you can set the app to a different language from the rest
+  of the phone — so a caregiver can read the buttons in their own language without changing
+  anything else. Needs Android 13 or newer; on older phones the row is not shown.
+
 ## [0.5.2] - 2026-09-04
 
 ### Fixed

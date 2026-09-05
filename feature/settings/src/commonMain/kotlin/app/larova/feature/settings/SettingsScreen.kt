@@ -25,6 +25,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -37,6 +41,7 @@ import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.Lock
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.Transfer
+import app.larova.core.ui.icon.Translate
 import app.larova.core.ui.icon.image
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.purchase_body
@@ -56,6 +61,10 @@ import app.larova.core.ui.resources.settings_appearance_night
 import app.larova.core.ui.resources.settings_appearance_night_hint
 import app.larova.core.ui.resources.settings_appearance_system
 import app.larova.core.ui.resources.settings_appearance_system_hint
+import app.larova.core.ui.resources.settings_content_language
+import app.larova.core.ui.resources.settings_content_language_hint
+import app.larova.core.ui.resources.settings_language
+import app.larova.core.ui.resources.settings_language_hint
 import app.larova.core.ui.resources.settings_support
 import app.larova.core.ui.resources.settings_support_count
 import app.larova.core.ui.resources.settings_support_hint
@@ -72,6 +81,7 @@ import app.larova.core.ui.resources.settings_unlock_none
 import app.larova.core.ui.resources.settings_unlock_owned
 import app.larova.core.ui.resources.settings_version
 import app.larova.core.ui.resources.transfer_title
+import app.larova.core.ui.resources.translate_follow_app
 import app.larova.core.ui.resources.view_leave
 import app.larova.core.ui.resources.view_locked_note
 import app.larova.core.ui.resources.view_parent_active
@@ -141,6 +151,19 @@ fun SettingsScreen(
      * no store behind it, which is the only build that shows the address at all.
      */
     onOpenSupportPage: () -> Unit,
+    /**
+     * Opens Android's own language screen for Larova. Null on a phone with no such screen — below
+     * Android 13 the app's language is the phone's, and there is nothing to send anybody to.
+     */
+    onOpenLanguageSettings: (() -> Unit)?,
+    /**
+     * Which language tiles are shown in, and every language any tile on this phone has.
+     *
+     * Absent when nothing is translated, which is most installations: a setting for a thing that
+     * does not exist yet is a question nobody asked.
+     */
+    contentLanguage: ContentLanguageSetting?,
+    onContentLanguageChange: (String?) -> Unit,
     supportCount: Int,
     /** Opens Play's sheet for the contribution. Null in a build with no store behind it. */
     onSupport: (() -> Unit)?,
@@ -170,6 +193,35 @@ fun SettingsScreen(
                 onLock = onLock,
                 onChangePin = onChangePin,
             )
+
+            // Not behind parent view, and that is the whole point of it: the person who needs
+            // another language is the caregiver holding the phone, and they cannot be asked for a
+            // PIN to read the app in a language they understand. It is also why this is a handover
+            // rather than a picker — Android's own screen does the list, the search and the
+            // restart, and knows about `locales_config.xml` without being told twice.
+            if (onOpenLanguageSettings != null) {
+                ActionCard(
+                    icon = Translate,
+                    title = stringResource(Res.string.settings_language),
+                    description = stringResource(Res.string.settings_language_hint),
+                    onClick = onOpenLanguageSettings,
+                    // Sage: not sand, sky or rose, which are the three cards below it.
+                    token = TileColor.SAGE,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+            }
+
+            // Beside the app's own language and in both views, for the same reason: it is the
+            // person holding the phone who needs it. It is also the way back — somebody who tapped
+            // a chip on one tile and now wants everything as written again needs somewhere
+            // findable to say so, which is the whole reason the setting is for the phone rather
+            // than for the tile.
+            if (contentLanguage != null) {
+                ContentLanguageCard(
+                    setting = contentLanguage,
+                    onChange = onContentLanguageChange,
+                )
+            }
 
             // Backup used to live behind the start screen's overflow menu, which is the last place
             // somebody looks for it — a menu is where things go when nobody has decided where they
@@ -372,6 +424,106 @@ private fun UnlockNotFoundDialog(
             }
         },
     )
+}
+
+/**
+ * Which language tiles are read in, and what there is to choose from.
+ *
+ * [languages] holds every language any tile on this phone has, as tag and endonym. It is empty when
+ * nothing is translated, and the card is then not drawn at all.
+ */
+data class ContentLanguageSetting(
+    /** Null follows the app's own language, which is where every installation starts. */
+    val chosen: String?,
+    val languages: List<ContentLanguageChoice>,
+)
+
+/** [name] is the language's own name for itself; see `AppLanguage.nameOf`. */
+data class ContentLanguageChoice(val tag: String, val name: String)
+
+/**
+ * The card, and the list it opens.
+ *
+ * A dialog rather than a screen: there are as many entries as a family has languages, which is two
+ * or three, and a screen for three radio buttons is a place to get lost on the way back from.
+ */
+@Composable
+private fun ContentLanguageCard(
+    setting: ContentLanguageSetting,
+    onChange: (String?) -> Unit,
+) {
+    var choosing by remember { mutableStateOf(false) }
+    val followApp = stringResource(Res.string.translate_follow_app)
+
+    ActionCard(
+        icon = Translate,
+        title = stringResource(Res.string.settings_content_language),
+        status = setting.languages.firstOrNull { it.tag == setting.chosen }?.name ?: followApp,
+        description = stringResource(Res.string.settings_content_language_hint),
+        onClick = { choosing = true },
+        // Lilac: the fifth card on this screen and the fifth colour, so none of them reads as a
+        // pair with another.
+        token = TileColor.LILAC,
+        modifier = Modifier.padding(vertical = 8.dp),
+    )
+
+    if (choosing) {
+        AlertDialog(
+            onDismissRequest = { choosing = false },
+            title = { Text(stringResource(Res.string.settings_content_language)) },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    // "Follow the app language" first and always present: it is the default, and
+                    // the one entry somebody looking for the way back is looking for.
+                    LanguageChoiceRow(
+                        label = followApp,
+                        selected = setting.chosen == null,
+                        onSelect = {
+                            onChange(null)
+                            choosing = false
+                        },
+                    )
+                    for (language in setting.languages) {
+                        LanguageChoiceRow(
+                            label = language.name,
+                            selected = setting.chosen == language.tag,
+                            onSelect = {
+                                onChange(language.tag)
+                                choosing = false
+                            },
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { choosing = false },
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.purchase_later))
+                }
+            },
+        )
+    }
+}
+
+/** One language in the list. The whole row is the target, as the appearance options are. */
+@Composable
+private fun LanguageChoiceRow(label: String, selected: Boolean, onSelect: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = Dimens.MinTouchTarget)
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(start = 8.dp),
+        )
+    }
 }
 
 /** What the contribution card says under its title, which changes as things happen. */

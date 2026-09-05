@@ -1,0 +1,1 @@
+Kacheln lassen sich jetzt in mehreren Sprachen schreiben; oben auf der Kachel wählt die Betreuungsperson die Sprache. Larova übersetzt nichts selbst: Es kopiert die Wörter in ein Formular zum Ändern und kann sie an eine Übersetzungs-App auf dem Telefon übergeben. Neu sind auch die Spracheinstellungen.

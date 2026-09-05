@@ -346,4 +346,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s、%2$s</string>
 
+    <string name="cd_translate">このカードを翻訳</string>
+    <string name="translate_original">書かれたまま</string>
+    <string name="translate_stale">この翻訳を書いたあとに、このカードは変更されています。</string>
+    <string name="cd_translate_language">このカードを %1$s で表示</string>
+    <string name="settings_content_language">カードの言語</string>
+    <string name="settings_content_language_hint">カードに複数の言語があるとき、どの言語で表示するか。これは1枚のカードではなく、この端末の設定です。</string>
+    <string name="translate_follow_app">アプリの言語に合わせる</string>
+    <string name="edit_languages">ほかの言語</string>
+    <string name="edit_languages_hint">書かれた言語を読めない介助者のために、このカードを別の言語で追加します。元の文は変わりません。</string>
+    <string name="edit_no_languages">ほかの言語はまだありません。</string>
+    <string name="edit_add_language">言語を追加</string>
+    <string name="edit_language_pick">どの言語ですか？</string>
+    <string name="edit_language_remove">この言語を削除</string>
+    <string name="edit_language_stale">これを書いたあとにカードが変更されています。</string>
+    <string name="edit_translation_title">%1$s で</string>
+    <string name="edit_translation_hint">元の文をここにコピーしました。ほかの言語へはご自分で書き換えてください。Larova は翻訳を行わず、貼り付けた内容を読むこともありません。</string>
+    <string name="edit_translation_field">%1$d 行目</string>
 </resources>

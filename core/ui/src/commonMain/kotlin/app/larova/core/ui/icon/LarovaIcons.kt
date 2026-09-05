@@ -256,6 +256,52 @@ val Lock: ImageVector by lazy {
     }
 }
 
+/**
+ * A globe, for the language row in settings and for handing a tile to a translation app.
+ *
+ * Deliberately a globe and not the two-letter glyph other apps use: a person looking for their own
+ * language is the one person who cannot be assumed to read the two letters, whatever alphabet they
+ * are set in. Three strokes rather than a filled shape, so it sits at the same weight as the rest
+ * of this file at 24dp.
+ *
+ * Not mirrored. A sphere has no direction to reverse, and `autoMirror` on something symmetrical is
+ * how a mirrored clock face ends up shipping.
+ *
+ * Drawn here rather than added to `core/ui/icons/` — a file name in that folder becomes a frozen
+ * tile-symbol key, and this is a control, not something a parent can put on a tile.
+ */
+val Translate: ImageVector by lazy {
+    uiIcon("Translate") {
+        // The sphere, as two half-arcs the way `knob` draws its circle.
+        path(
+            stroke = SolidColor(Color.Black),
+            strokeLineWidth = STROKE,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+        ) {
+            moveTo(12f, 3f)
+            arcToRelative(9f, 9f, 0f, true, true, 0f, 18f)
+            arcToRelative(9f, 9f, 0f, true, true, 0f, -18f)
+            close()
+        }
+        // The equator, and a meridian narrow enough that the two read as a sphere rather than as
+        // a target. The meridian is the stroke that does the work: a circle with one line across
+        // it is a "no entry" sign.
+        line(3f, 12f, 21f, 12f)
+        path(
+            stroke = SolidColor(Color.Black),
+            strokeLineWidth = STROKE,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+        ) {
+            moveTo(12f, 3f)
+            arcToRelative(4.5f, 9f, 0f, true, true, 0f, 18f)
+            arcToRelative(4.5f, 9f, 0f, true, true, 0f, -18f)
+            close()
+        }
+    }
+}
+
 /** Every icon above is drawn in the same 24×24 viewport at the same weight. */
 private const val STROKE = 2f
 

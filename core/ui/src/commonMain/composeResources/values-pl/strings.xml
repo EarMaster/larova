@@ -358,4 +358,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Przetłumacz ten kafelek</string>
+    <string name="translate_original">Tak jak napisano</string>
+    <string name="translate_stale">Ten kafelek zmieniono po napisaniu tego tłumaczenia.</string>
+    <string name="cd_translate_language">Pokaż ten kafelek w języku %1$s</string>
+    <string name="settings_content_language">Język kafelków</string>
+    <string name="settings_content_language_hint">W jakim języku pokazywane są kafelki, gdy kafelek ma ich kilka. To ustawienie tego telefonu, nie jednego kafelka.</string>
+    <string name="translate_follow_app">Zgodnie z językiem aplikacji</string>
+    <string name="edit_languages">Inne języki</string>
+    <string name="edit_languages_hint">Dodaj ten kafelek w innym języku — dla opiekuna, który nie czyta tego, w którym go napisano. Oryginał się nie zmienia.</string>
+    <string name="edit_no_languages">Na razie brak innych języków.</string>
+    <string name="edit_add_language">Dodaj język</string>
+    <string name="edit_language_pick">Który język?</string>
+    <string name="edit_language_remove">Usuń ten język</string>
+    <string name="edit_language_stale">Kafelek zmieniono po napisaniu tego tekstu.</string>
+    <string name="edit_translation_title">W języku %1$s</string>
+    <string name="edit_translation_hint">Oryginalny tekst został tu skopiowany. Zmień go samodzielnie na inny język — Larova niczego nie tłumaczy i nigdy nie czyta tego, co wklejasz.</string>
+    <string name="edit_translation_field">Wiersz %1$d</string>
 </resources>

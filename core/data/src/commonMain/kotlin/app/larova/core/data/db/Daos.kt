@@ -51,7 +51,14 @@ interface CardDao {
     @Query(
         """
         SELECT * FROM cards
-        WHERE title LIKE '%' || :query || '%' OR subtitle LIKE '%' || :query || '%'
+        WHERE title LIKE '%' || :query || '%'
+           OR subtitle LIKE '%' || :query || '%'
+           OR EXISTS (
+                SELECT 1 FROM card_text
+                WHERE card_text.cardId = cards.id
+                  AND (card_text.title LIKE '%' || :query || '%'
+                    OR card_text.subtitle LIKE '%' || :query || '%')
+              )
         ORDER BY title
         LIMIT 100
         """,
@@ -113,4 +120,38 @@ interface LogDao {
 
     @Delete
     suspend fun delete(entry: LogEntryEntity)
+}
+
+/**
+ * A tile's text in other languages.
+ *
+ * Every read is by card or is everything, and "everything" is not laziness: a family with sixty
+ * tiles in two languages has sixty rows, resolving one is a map lookup, and the alternative is a
+ * query per tile while the start screen is drawing.
+ */
+@Dao
+interface CardTextDao {
+
+    @Query("SELECT * FROM card_text WHERE cardId = :cardId ORDER BY lang")
+    fun observeForCard(cardId: String): Flow<List<CardTextEntity>>
+
+    @Query("SELECT * FROM card_text ORDER BY cardId, lang")
+    fun observeAll(): Flow<List<CardTextEntity>>
+
+    @Query("SELECT * FROM card_text ORDER BY cardId, lang")
+    suspend fun all(): List<CardTextEntity>
+
+    @Upsert
+    suspend fun upsert(text: CardTextEntity)
+
+    @Query("DELETE FROM card_text WHERE cardId = :cardId AND lang = :lang")
+    suspend fun delete(cardId: String, lang: String)
+
+    /**
+     * The database cascades this when the tile goes. It exists for the import that clears an
+     * installation, where every delete is written out rather than relied upon — see
+     * `ImportPackage.clearEverything`.
+     */
+    @Query("DELETE FROM card_text WHERE cardId = :cardId")
+    suspend fun deleteForCard(cardId: String)
 }

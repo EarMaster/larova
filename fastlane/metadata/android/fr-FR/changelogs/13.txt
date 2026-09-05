@@ -1,0 +1,1 @@
+Les tuiles peuvent désormais être écrites en plusieurs langues, et la personne qui garde l’enfant choisit laquelle en haut de la tuile. Larova ne traduit rien : il copie les mots dans un formulaire à modifier, et peut les passer à une application de traduction. Un réglage Langue a été ajouté.

@@ -308,7 +308,12 @@ Break one of these and it cannot be repaired later, because users own the data.
   there is no Drive SDK, no OAuth and no cloud integration on our side.
 - **Media picking** uses `PickVisualMedia`, so no `READ_MEDIA_*` permission.
 - **The app-shortcut picker** needs the `<queries>` manifest entry for
-  `MAIN`/`LAUNCHER`. `QUERY_ALL_PACKAGES` is deliberately not used.
+  `MAIN`/`LAUNCHER`, and **translating a tile** needs two more, for
+  `ACTION_TRANSLATE` and for `ACTION_PROCESS_TEXT` with `text/plain` — the
+  second must mirror the launched intent's MIME type or the query comes back
+  empty on Android 11+ and the control silently never appears.
+  `QUERY_ALL_PACKAGES` is deliberately not used. A `<queries>` entry adds no
+  `uses-permission` line, so `ci.yml`'s permission assertion is untouched.
 - Full permission list: `RECORD_AUDIO` for recording a voice onto a tile, plus
   `USE_BIOMETRIC`/`USE_FINGERPRINT` from `androidx.biometric` for the parent-view
   unlock. `POST_NOTIFICATIONS` only if reminders ship, and `CAMERA` only if a

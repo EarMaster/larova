@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.sanitizePhoneNumber
 
@@ -14,6 +16,11 @@ import app.larova.core.domain.model.sanitizePhoneNumber
  *
  * A missing handler is not an error worth crashing on: a tablet with no dialler and no browser is
  * a perfectly ordinary device for this app to be installed on.
+ *
+ * [translate] is the one method here that looks before it launches, and the reason is worth stating
+ * rather than reading as an inconsistency: it has *two* intents to choose between, and a
+ * `try`/`catch` around `startActivity` cannot choose — it can only find out afterwards that the
+ * first one failed. [openApp] already asks the same kind of question for the same kind of reason.
  */
 class AndroidExternalActions(private val context: Context) : ExternalActions {
 
@@ -36,6 +43,34 @@ class AndroidExternalActions(private val context: Context) : ExternalActions {
         // ordinary things to happen to a tile made months ago. The screen has already asked and
         // will be showing that instead of a button, so there is nothing to report here.
         val intent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return
+        launch(intent)
+    }
+
+    /**
+     * `ACTION_APP_LOCALE_SETTINGS` arrived in Android 13. The constant itself is a compile-time
+     * string and is safe to name at any minSdk; what does not exist below 13 is the screen.
+     */
+    override val canOpenAppLanguageSettings: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    override fun openAppLanguageSettings() {
+        if (!canOpenAppLanguageSettings) return
+        // `package:` rather than an extra: this is the documented way to name which app's languages
+        // the screen should show, and without it the intent opens the phone's whole language list.
+        launch(
+            Intent(
+                Settings.ACTION_APP_LOCALE_SETTINGS,
+                Uri.fromParts("package", context.packageName, null),
+            ),
+        )
+    }
+
+    override fun translate(text: String) {
+        if (text.isBlank()) return
+        val intent = TranslateIntents.firstResolvable(
+            context.packageManager,
+            TranslateIntents.candidates(text),
+        ) ?: return
         launch(intent)
     }
 

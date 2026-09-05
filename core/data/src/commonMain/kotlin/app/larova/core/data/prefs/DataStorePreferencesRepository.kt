@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import app.larova.core.domain.model.AppearanceSetting
+import app.larova.core.domain.model.canonicalLanguageTag
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.repository.PreferencesRepository
 import kotlin.time.Instant
@@ -71,6 +72,14 @@ class DataStorePreferencesRepository(
         dataStore.edit { it[SUPPORT_COUNT] = (it[SUPPORT_COUNT] ?: 0) + 1 }
     }
 
+    /** Absent and empty both mean "follow the app", so clearing it is a write of the empty string. */
+    override fun observeContentLanguage(): Flow<String?> =
+        dataStore.data.map { canonicalLanguageTag(it[CONTENT_LANGUAGE]) }
+
+    override suspend fun setContentLanguage(tag: String?) {
+        dataStore.edit { it[CONTENT_LANGUAGE] = canonicalLanguageTag(tag).orEmpty() }
+    }
+
     private companion object {
         /** The stored key, not the enum name. Renaming the enum must not reset anyone's setting. */
         val APPEARANCE = stringPreferencesKey("appearance")
@@ -78,6 +87,7 @@ class DataStorePreferencesRepository(
         val LAST_BACKUP_CARDS = intPreferencesKey("lastBackupCards")
         val LAST_BACKUP_MEDIA = intPreferencesKey("lastBackupMedia")
         val SUPPORT_COUNT = intPreferencesKey("supportCount")
+        val CONTENT_LANGUAGE = stringPreferencesKey("contentLanguage")
     }
 }
 

@@ -10,8 +10,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
 import app.larova.core.ui.theme.LarovaTheme
-import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.ContentLanguageChoice
+import app.larova.feature.settings.ContentLanguageSetting
 import app.larova.feature.settings.SUPPORT_URL
+import app.larova.feature.settings.SettingsScreen
 import app.larova.feature.settings.SupportMessage
 import app.larova.feature.settings.UnlockCheck
 import kotlin.test.assertTrue
@@ -226,6 +228,8 @@ class SettingsContentTest {
         entitlement: Entitlement,
         onCheckPurchases: (() -> Unit)? = {},
         onOpenSupportPage: () -> Unit = {},
+        onOpenLanguageSettings: (() -> Unit)? = {},
+        contentLanguage: ContentLanguageSetting? = null,
         unlockCheck: UnlockCheck = UnlockCheck.Idle,
         supportCount: Int = 0,
         onSupport: (() -> Unit)? = {},
@@ -248,6 +252,9 @@ class SettingsContentTest {
                     onDismissUnlockCheck = {},
                     onBuyUnlock = {},
                     onOpenSupportPage = onOpenSupportPage,
+                    onOpenLanguageSettings = onOpenLanguageSettings,
+                    contentLanguage = contentLanguage,
+                    onContentLanguageChange = {},
                     supportCount = supportCount,
                     onSupport = onSupport,
                     supportMessage = supportMessage,

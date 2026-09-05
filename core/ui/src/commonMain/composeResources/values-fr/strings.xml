@@ -355,4 +355,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Traduire cette tuile</string>
+    <string name="translate_original">Tel qu’écrit</string>
+    <string name="translate_stale">Cette tuile a été modifiée après la rédaction de cette traduction.</string>
+    <string name="cd_translate_language">Afficher cette tuile en %1$s</string>
+    <string name="settings_content_language">Langue des tuiles</string>
+    <string name="settings_content_language_hint">La langue dans laquelle les tuiles s’affichent, quand une tuile en a plusieurs. Ce réglage vaut pour ce téléphone, pas pour une tuile.</string>
+    <string name="translate_follow_app">Suivre la langue de l’application</string>
+    <string name="edit_languages">Autres langues</string>
+    <string name="edit_languages_hint">Ajoutez cette tuile dans une autre langue, pour une personne qui ne lit pas celle dans laquelle elle a été écrite. L’original ne change jamais.</string>
+    <string name="edit_no_languages">Pas encore d’autres langues.</string>
+    <string name="edit_add_language">Ajouter une langue</string>
+    <string name="edit_language_pick">Quelle langue ?</string>
+    <string name="edit_language_remove">Supprimer cette langue</string>
+    <string name="edit_language_stale">La tuile a été modifiée après la rédaction de ce texte.</string>
+    <string name="edit_translation_title">En %1$s</string>
+    <string name="edit_translation_hint">Le texte d’origine a été copié ici. Traduisez-le vous-même — Larova ne traduit rien et ne lit jamais ce que vous collez.</string>
+    <string name="edit_translation_field">Ligne %1$d</string>
 </resources>

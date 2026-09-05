@@ -34,8 +34,23 @@ data class Card(
     val visibleToCaregiver: Boolean = true,
     val type: CardType,
     val payload: String,
-    /** Reserved for a per-card second language. Unused in v1, written to exports from the start. */
+    /**
+     * The language the text on this tile is written in, or null for "nobody has said".
+     *
+     * Null on every tile made before there was anywhere to say it, and null is honest: a parent
+     * whose phone is in German may well have written a tile in Turkish for a Turkish-speaking
+     * carer, and a guess written here would make `resolveCardText` resolve against something the
+     * app invented. Nothing infers it.
+     */
     val locale: String? = null,
+    /**
+     * When a **person last edited** this tile — not when the row was last written.
+     *
+     * The distinction is load-bearing. `ToggleChecklistItem` deliberately leaves this alone,
+     * because a caregiver ticking a box is reading the tile rather than editing it, and because
+     * `resolveCardText` reads this to decide whether a translation predates the text it translates.
+     * A tick that moved it would mean every translation of a checklist went stale every morning.
+     */
     val updatedAt: Instant,
 )
 

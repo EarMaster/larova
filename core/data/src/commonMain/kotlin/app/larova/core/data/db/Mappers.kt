@@ -2,6 +2,8 @@ package app.larova.core.data.db
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
+import app.larova.core.domain.model.canonicalLanguageTag
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.LogKind
@@ -78,6 +80,35 @@ internal fun Card.toEntity() = CardEntity(
     type = type.key,
     payload = payload,
     locale = locale,
+    updatedAtEpochMillis = updatedAt.toEpochMilliseconds(),
+)
+
+/**
+ * Declines a row whose card id is not a UUID and one whose language is not a language tag, on the
+ * same terms as every other mapper here. The tag comes back canonical, so a row written into the
+ * database by hand as `PT-pt` reads as `pt-PT` rather than as a second Portuguese.
+ */
+@OptIn(ExperimentalUuidApi::class)
+internal fun CardTextEntity.toDomainOrNull(): CardText? {
+    val card = parseUuidOrNull(cardId) ?: return null
+    val tag = canonicalLanguageTag(lang) ?: return null
+    return CardText(
+        cardId = card,
+        lang = tag,
+        title = title,
+        subtitle = subtitle,
+        payload = payload,
+        updatedAt = Instant.fromEpochMilliseconds(updatedAtEpochMillis),
+    )
+}
+
+@OptIn(ExperimentalUuidApi::class)
+internal fun CardText.toEntity() = CardTextEntity(
+    cardId = cardId.toString(),
+    lang = lang,
+    title = title,
+    subtitle = subtitle,
+    payload = payload,
     updatedAtEpochMillis = updatedAt.toEpochMilliseconds(),
 )
 

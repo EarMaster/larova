@@ -8,6 +8,7 @@ import app.larova.core.domain.export.toExport
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PreferencesRepository
@@ -26,9 +27,17 @@ import kotlinx.coroutines.flow.first
  * count. It has already been lost; writing its name into a backup would only move the problem to
  * whoever restores it.
  */
+/**
+ * Suppressed rather than bundled. Five of the seven are the repositories a package is written from,
+ * and this is the one place each of them is read in full — a holder object wrapping them to satisfy
+ * a counter would hide exactly that, which is the thing the counter exists to make visible. The
+ * same argument `EditCardViewModel` makes, and the same conclusion: never raise the threshold.
+ */
+@Suppress("LongParameterList")
 class ExportPackage(
     private val boards: BoardRepository,
     private val cards: CardRepository,
+    private val cardText: CardTextRepository,
     private val media: MediaRepository,
     private val log: LogRepository,
     private val io: PackageIo,
@@ -50,6 +59,11 @@ class ExportPackage(
         // The log is part of what a family typed, so it goes into the backup. Bounded by the same
         // retention that bounds the screen: a backup is not the place a pruned event comes back.
         val entries = log.observeRecent(LOG_EXPORT_LIMIT).first()
+        // Only variants whose tile is in the package. A row pointing at a tile that is not in the
+        // file is not a translation of anything, and writing one out would hand whoever restores
+        // it a problem this side already knew about.
+        val cardIds = allCards.map { it.id }.toSet()
+        val variants = cardText.all().filter { it.cardId in cardIds }
 
         // Mapped at the boundary rather than handed the domain models: the file has its own row
         // types so that adding a field to Card cannot silently change what a backup contains.
@@ -58,6 +72,7 @@ class ExportPackage(
             cards = allCards.map { it.toExport() },
             media = presentMedia.map { it.toExport() },
             log = entries.map { it.toExport() },
+            cardText = variants.map { it.toExport() },
         )
         val contentJson = ExportCodec.json.encodeToString(content)
 

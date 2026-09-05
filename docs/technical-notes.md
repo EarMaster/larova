@@ -71,7 +71,7 @@ data class Card(
     val visibleToCaregiver: Boolean,
     val type: CardType,
     val payload: String,          // JSON
-    val locale: String?,          // reserved for per-card second language (v2)
+    val locale: String?,          // the language the text is written in; null = nobody has said
     val updatedAt: Instant,
 )
 
@@ -97,6 +97,20 @@ sealed interface CardPayload {
 
 @Serializable
 data class Step(val text: String, val mediaId: Uuid?, val audioId: Uuid?)
+
+/**
+ * One tile's text in another language. Whole-tile: title, second line and payload together, so
+ * there is no state in which half a tile is translated. `(cardId, lang)` is the key and there is
+ * deliberately no id — a variant has no identity apart from the tile and the language.
+ */
+data class CardText(
+    val cardId: Uuid,
+    val lang: String,             // canonical BCP-47: de, pt-PT, zh-Hans
+    val title: String,
+    val subtitle: String?,
+    val payload: String,          // JSON, always the same CardType as the card's own
+    val updatedAt: Instant,
+)
 
 data class MediaAsset(
     val id: Uuid,
@@ -130,7 +144,7 @@ Imported images are downscaled to a maximum long edge of 2048px and stored as JP
 ```
 larova-2026-08-21.larova            (ZIP container)
 ├── manifest.json                   schema version, timestamp, checksum, encryption
-├── content.json                    boards, cards, payloads, log
+├── content.json                    boards, cards, payloads, log, cardText
 └── media/
     ├── 3f2a….jpg
     └── 91cd….m4a
@@ -138,7 +152,7 @@ larova-2026-08-21.larova            (ZIP container)
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "appVersion": "1.0.0",
   "exportedAt": "2026-08-21T18:12:00Z",
   "label": "Larova for Jonas",
@@ -151,6 +165,14 @@ larova-2026-08-21.larova            (ZIP container)
 Optional encryption: AES-256-GCM, key derived from the password with Argon2id. `manifest.json` stays in the clear so the preview works; `content.json` and `media/` are encrypted.
 
 `schemaVersion` is the migration anchor. Import checks it first and declines newer versions politely.
+
+**Schema 3 added the `cardText` block** — whole-tile text variants, one row per tile and language. Unlike `log`, which was declared empty from the first release and so cost no bump when it was filled, this field was not there before, and that is what made the bump mandatory rather than tidy: `ExportCodec` sets `ignoreUnknownKeys`, so without it a 0.5.x build would import a v3 package, pass the hash check, restore every tile, report success — and drop every translation in the file without a word. Raising the number turns that into a refusal the person can act on. Reading forward is unaffected: a v1 or v2 file has no `cardText` key and the field defaults to empty.
+
+A variant row is dropped, silently, in three cases: its language is not a language tag, its title is blank, or — at import time — the tile it names is not in the file or is a different kind of tile. The first two are the codec's business and are counted in `skippedCardText`; the last is the import's, and is not counted, because a translation dropped with its tile is the same event as the skipped tile that `skippedCards` already reports. Neither number is shown: the only sentence worth putting on that screen is about tiles.
+
+Which text a caregiver is shown is `resolveCardText` in `:core:domain` — exact tag, then primary subtag with a tie-break that depends on neither row order nor timestamps, then the tile's own text. **Nothing filters.** A tile with no translation for the language somebody asked for shows what the parent wrote; hiding it would be indistinguishable from the tile never having existed, and the tile that vanished would be as likely to be the one about choking as any other. A variant written before the tile was last edited is shown too, and marked.
+
+**The database is at version 2**, and the one migration so far is additive: it creates `card_text` and touches nothing else. `1.json` and `2.json` are both committed under `core/data/schemas/` and `1.json` is never edited — it is the only record of what version 1 shipped as, and the input `MigrationTest` builds its before-database from. The migration's SQL is transcribed verbatim from the generated `2.json` rather than written by hand, because Room validates the migrated schema against that file on the next open and a difference of one word is a crash at startup on a phone whose data is otherwise fine. `fallbackToDestructiveMigration` is not used anywhere and will not be.
 
 **Rows carry frozen keys, and two spellings are accepted.** A tile type is written as its `CardType.key` — `"type": "guide"`, `"type": "appLink"` — matching the database column and the `CardPayload` discriminator. A log kind is written as its `LogKind.key`. Schema **1** (`0.1.0` to `0.4.2`) wrote the *Kotlin constant names* instead (`"GUIDE"`, `"CARD_OPENED"`), because `content.json` was serialized straight from the domain models and inherited their enum casing. The reader accepts both spellings and always will, so every v1 file still imports; `LegacyPackageFixture` is a real v1 `content.json` and the tests around it are what keep that true. Both spellings are therefore frozen — `ModelKeysTest` pins the keys *and* the constant names, so renaming `APP_LINK` is a failing test rather than a silently broken reader.
 
@@ -196,6 +218,10 @@ The entitlement is **cache-positive and never downgrades**. A failed store query
   </intent>
 </queries>
 ```
+
+**Translating a tile.** Same shape, one layer along: `Intent.ACTION_TRANSLATE` with the words on the tile in `EXTRA_TEXT`, falling back to `ACTION_PROCESS_TEXT` (read-only, `text/plain`) on a phone whose translator only registers for the older action. `TranslateIntents` builds both and picks the first one anything answers, so no `Build.VERSION` check is involved — what matters is what is installed, not what the SDK level allows. Both actions need their own `<queries>` entries, and the `PROCESS_TEXT` one has to carry `<data android:mimeType="text/plain" />` because the launched intent does: a declaration that does not mirror the intent returns nothing on Android 11 and later, and the control then never appears at all.
+
+What is handed over is `plainTextOf`, in `:core:domain` — the title, the second line and the words in the payload, never the phone numbers, addresses or package names. Larova translates nothing itself and cannot: there is no internet permission, and every on-device translation library within reach downloads its models over the network. See `docs/localization.md` §1.
 
 The `QUERY_ALL_PACKAGES` permission is deliberately **not** used — it requires justification on Play and is unnecessary here.
 

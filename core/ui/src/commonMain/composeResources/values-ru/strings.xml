@@ -357,4 +357,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Перевести эту плитку</string>
+    <string name="translate_original">Как написано</string>
+    <string name="translate_stale">Эту плитку изменили после того, как был сделан этот перевод.</string>
+    <string name="cd_translate_language">Показать эту плитку на языке %1$s</string>
+    <string name="settings_content_language">Язык плиток</string>
+    <string name="settings_content_language_hint">На каком языке показывать плитки, если у плитки их несколько. Это настройка телефона, а не одной плитки.</string>
+    <string name="translate_follow_app">Как язык приложения</string>
+    <string name="edit_languages">Другие языки</string>
+    <string name="edit_languages_hint">Добавьте эту плитку на другом языке — для того, кто не читает на том, на котором она написана. Оригинал не меняется.</string>
+    <string name="edit_no_languages">Других языков пока нет.</string>
+    <string name="edit_add_language">Добавить язык</string>
+    <string name="edit_language_pick">Какой язык?</string>
+    <string name="edit_language_remove">Удалить этот язык</string>
+    <string name="edit_language_stale">Плитку изменили после того, как это было написано.</string>
+    <string name="edit_translation_title">На языке %1$s</string>
+    <string name="edit_translation_hint">Исходный текст скопирован сюда. Переведите его сами — Larova ничего не переводит и никогда не читает то, что вы вставляете.</string>
+    <string name="edit_translation_field">Строка %1$d</string>
 </resources>

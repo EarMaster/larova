@@ -31,6 +31,10 @@ class LegacyPackageTest {
         assertEquals(LEGACY_CARD_TITLES, decoded.cards.map { it.title })
         assertEquals(0, decoded.skippedCards, "nothing in a v1 file is unknown to this build")
         assertEquals(0, decoded.skippedLogEntries)
+        // A v1 file has no cardText key at all. Absent has to read as "no translations" rather
+        // than as a damaged file — the field was declared with a default for exactly this.
+        assertEquals(emptyList(), decoded.cardText)
+        assertEquals(0, decoded.skippedCardText)
         assertEquals(2, decoded.boards.size)
         assertEquals(1, decoded.media.size)
     }

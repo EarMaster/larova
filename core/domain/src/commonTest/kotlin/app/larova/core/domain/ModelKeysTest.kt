@@ -2,16 +2,19 @@ package app.larova.core.domain
 
 import app.larova.core.domain.export.ExportBoard
 import app.larova.core.domain.export.ExportCard
+import app.larova.core.domain.export.ExportCardText
 import app.larova.core.domain.export.toDomain
 import app.larova.core.domain.export.toDomainOrNull
 import app.larova.core.domain.export.toExport
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.LogKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Instant
@@ -138,6 +141,55 @@ class ModelKeysTest {
         assertTrue(encoded.contains("\"id\":\"11111111-2222-4333-8444-555555555555\""), encoded)
         assertTrue(encoded.contains("\"updatedAt\":\"2026-08-23T18:12:00Z\""), encoded)
         assertEquals(card, json.decodeFromString<ExportCard>(encoded).toDomainOrNull())
+    }
+
+    /**
+     * A translation is written with its tile and its language, and with **no id of its own**.
+     *
+     * The absent id is the assertion that matters. `(cardId, lang)` is the key, in the file as in
+     * the database, and a surrogate identifier appearing here later would let one package carry two
+     * rows claiming the same tile and the same language with nothing to say which wins.
+     */
+    @Test
+    fun aTranslationIsWrittenWithItsTileAndItsLanguage() {
+        val text = CardText(
+            cardId = Uuid.parse("11111111-2222-4333-8444-555555555555"),
+            lang = "tr",
+            title = "Yatma vakti",
+            subtitle = "Her akşam",
+            payload = """{"type":"guide","steps":[]}""",
+            updatedAt = Instant.parse("2026-08-23T18:12:00Z"),
+        )
+
+        val encoded = json.encodeToString(text.toExport())
+
+        assertTrue(encoded.contains("\"cardId\":\"11111111-2222-4333-8444-555555555555\""), encoded)
+        assertTrue(encoded.contains("\"lang\":\"tr\""), encoded)
+        assertTrue(encoded.contains("\"updatedAt\":\"2026-08-23T18:12:00Z\""), encoded)
+        assertFalse(encoded.contains("\"id\""), encoded)
+        assertEquals(text, json.decodeFromString<ExportCardText>(encoded).toDomainOrNull())
+    }
+
+    /** A tag written in any shape reads back as one, so two spellings are never two languages. */
+    @Test
+    fun aLanguageTagIsReadBackCanonical() {
+        val encoded = """{"cardId":"11111111-2222-4333-8444-555555555555","lang":"PT-pt",""" +
+            """"title":"Hora de dormir","payload":"{}","updatedAt":"2026-08-23T18:12:00Z"}"""
+
+        assertEquals("pt-PT", json.decodeFromString<ExportCardText>(encoded).toDomainOrNull()?.lang)
+    }
+
+    /** A row the decode cannot make sense of costs that row, never the file. */
+    @Test
+    fun aTranslationWithNoLanguageOrNoTitleIsDeclined() {
+        val base = """{"cardId":"11111111-2222-4333-8444-555555555555",""" +
+            """"payload":"{}","updatedAt":"2026-08-23T18:12:00Z""""
+
+        val noLanguage = """$base,"lang":"not a tag!","title":"Hora"}"""
+        val noTitle = """$base,"lang":"pt","title":"  "}"""
+
+        assertNull(json.decodeFromString<ExportCardText>(noLanguage).toDomainOrNull())
+        assertNull(json.decodeFromString<ExportCardText>(noTitle).toDomainOrNull())
     }
 
     @Test

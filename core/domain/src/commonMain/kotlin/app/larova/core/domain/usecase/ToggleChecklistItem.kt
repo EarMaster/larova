@@ -3,7 +3,6 @@ package app.larova.core.domain.usecase
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.repository.CardRepository
-import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -31,11 +30,14 @@ class ToggleChecklistItem(private val cards: CardRepository) {
         val item = items[itemIndex]
         items[itemIndex] = item.copy(done = !item.done)
 
+        // `updatedAt` is deliberately left where it was. It means "when a person last edited this
+        // tile", and ticking off "teeth brushed" is reading the tile, not editing it — which is the
+        // same sentence this class opens with, now that something depends on it. What depends on it
+        // is `resolveCardText`: a translation counts as possibly out of date when the tile was
+        // edited after it was written, and a tick moving that timestamp would mean every
+        // translation of a checklist went stale every morning, for good.
         cards.upsert(
-            card.copy(
-                payload = CardPayloadCodec.encode(payload.copy(items = items)),
-                updatedAt = Clock.System.now(),
-            ),
+            card.copy(payload = CardPayloadCodec.encode(payload.copy(items = items))),
         )
         return true
     }

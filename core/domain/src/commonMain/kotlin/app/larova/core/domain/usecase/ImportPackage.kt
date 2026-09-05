@@ -7,7 +7,12 @@ import app.larova.core.domain.export.ImportMode
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.BoardRepository
+import app.larova.core.domain.model.CardPayloadCodec
+import app.larova.core.domain.model.CardText
+import app.larova.core.domain.model.CardType
+import app.larova.core.domain.model.cardType
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.export.PackageIo
@@ -35,9 +40,17 @@ import kotlinx.coroutines.flow.first
  * existing one and its tiles are appended after what is already there.
  */
 @OptIn(ExperimentalUuidApi::class)
+/**
+ * Suppressed for the same reason as [ExportPackage] one file over: five of the seven are the
+ * repositories a package is read into, and bundling them to satisfy a counter would hide which of
+ * them this use case can write to — which, for the one operation in the app that can destroy
+ * content, is the last thing to make harder to see.
+ */
+@Suppress("LongParameterList")
 class ImportPackage(
     private val boards: BoardRepository,
     private val cards: CardRepository,
+    private val cardText: CardTextRepository,
     private val media: MediaRepository,
     private val log: LogRepository,
     private val io: PackageIo,
@@ -154,6 +167,8 @@ class ImportPackage(
             )
         }
 
+        restoreCardText(content)
+
         val restored = restoreMedia(source, content.media, mediaNames)
         restoreLog(content.log)
 
@@ -163,6 +178,44 @@ class ImportPackage(
             media = restored,
             skippedCards = content.skippedCards,
         )
+    }
+
+    /**
+     * The translations, after the tiles they belong to and before anything else.
+     *
+     * After, because the foreign key means a variant written ahead of its tile aborts the write —
+     * in the middle of the one operation in this app that can destroy content. Variants need no
+     * remapping: `remapRoot` rewrites board ids, and a variant names only a card.
+     *
+     * Two rows are dropped rather than written, both silently and both on purpose:
+     *
+     * - one whose tile is not in the file. That happens when the tile was written by a newer
+     *   Larova and skipped as an unknown type, and it happens in a file somebody edited by hand.
+     *   Either way the row has nothing to attach to, and the person has already been told how many
+     *   tiles were skipped — "and four translations of them" describes the inside of something
+     *   they already know they did not get.
+     * - one whose payload is a different tile type from its tile's. That is the half-translated
+     *   tile this whole design exists to make impossible, and a file can come from anywhere, so
+     *   the editor refusing it is not enough.
+     */
+    private suspend fun restoreCardText(content: DecodedContent) {
+        val types = content.cards.associate { it.id to it.type }
+        for (variant in content.cardText.filter { it.belongsToATileOfItsOwnKind(types) }) {
+            cardText.upsert(variant)
+        }
+    }
+
+    /**
+     * Whether this variant has a tile in the file, and translates the kind of tile it says it does.
+     *
+     * Both halves are refusals, and both are silent. A variant naming no tile has nothing to attach
+     * to — and attaching it anyway would be a foreign-key violation partway through a restore. A
+     * variant whose payload is a different kind of tile is the half-translated tile the whole design
+     * exists to prevent; it would survive every decode and fail on the screen of whoever opened it.
+     */
+    private fun CardText.belongsToATileOfItsOwnKind(types: Map<Uuid, CardType>): Boolean {
+        val type = types[cardId] ?: return false
+        return CardPayloadCodec.decodeOrNull(payload)?.cardType == type
     }
 
     /**
@@ -214,6 +267,10 @@ class ImportPackage(
         // deleting them explicitly is what makes this function readable as what it is: the one
         // place in the app that throws content away.
         for (card in cards.observeAllCards().first()) {
+            // Also cascaded by the database, and also written out for the same reason as the line
+            // below it — and because a fake that was more forgiving than SQLite would otherwise let
+            // a test pass on a wipe that left translations behind.
+            cardText.deleteForCard(card.id)
             cards.delete(card.id)
         }
         for (asset in media.observeAll().first()) {

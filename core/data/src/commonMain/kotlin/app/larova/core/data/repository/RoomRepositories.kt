@@ -2,6 +2,7 @@ package app.larova.core.data.repository
 
 import app.larova.core.data.db.BoardDao
 import app.larova.core.data.db.CardDao
+import app.larova.core.data.db.CardTextDao
 import app.larova.core.data.db.LogDao
 import app.larova.core.data.db.MediaDao
 import app.larova.core.data.db.toDomainOrNull
@@ -9,11 +10,13 @@ import app.larova.core.data.db.toEntity
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
 import app.larova.core.domain.model.CardPayloadCodec
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.model.referencedMediaIds
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import kotlin.time.Clock
@@ -80,9 +83,27 @@ class RoomCardRepository(private val dao: CardDao) : CardRepository {
 }
 
 @OptIn(ExperimentalUuidApi::class)
+class RoomCardTextRepository(private val dao: CardTextDao) : CardTextRepository {
+
+    override fun observeAll(): Flow<List<CardText>> =
+        dao.observeAll().map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
+
+    override fun observeForCard(cardId: Uuid): Flow<List<CardText>> =
+        dao.observeForCard(cardId.toString()).map { rows -> rows.mapNotNull { it.toDomainOrNull() } }
+
+    override suspend fun all(): List<CardText> = dao.all().mapNotNull { it.toDomainOrNull() }
+
+    override suspend fun upsert(text: CardText) = dao.upsert(text.toEntity())
+
+    override suspend fun delete(cardId: Uuid, lang: String) = dao.delete(cardId.toString(), lang)
+
+    override suspend fun deleteForCard(cardId: Uuid) = dao.deleteForCard(cardId.toString())
+}
+
 class RoomMediaRepository(
     private val mediaDao: MediaDao,
     private val cardDao: CardDao,
+    private val cardTextDao: CardTextDao,
 ) : MediaRepository {
 
     override fun observeAll(): Flow<List<MediaAsset>> =
@@ -104,12 +125,17 @@ class RoomMediaRepository(
      * the same list.
      */
     override suspend fun deleteOrphans(): Int {
-        val cards = cardDao.all()
-        val undecodable = cards.any { CardPayloadCodec.decodeOrNull(it.payload) == null }
+        // Translations too, and this is not a detail: a translated guide may point at a different
+        // picture — a sign photographed in the caregiver's own language — and a sweep that read
+        // only the original's payload would find that file unreferenced and delete it. Silently,
+        // permanently, and on the first sweep after somebody adds their first translation. A
+        // picture can be taken again; the voice on it cannot.
+        val payloads = cardDao.all().map { it.payload } + cardTextDao.all().map { it.payload }
+        val undecodable = payloads.any { CardPayloadCodec.decodeOrNull(it) == null }
         if (undecodable) return 0
 
-        val referenced: Set<Uuid> = cards
-            .mapNotNull { CardPayloadCodec.decodeOrNull(it.payload) }
+        val referenced: Set<Uuid> = payloads
+            .mapNotNull { CardPayloadCodec.decodeOrNull(it) }
             .flatMapTo(mutableSetOf()) { it.referencedMediaIds }
 
         val orphans = mediaDao.all().filter { row ->

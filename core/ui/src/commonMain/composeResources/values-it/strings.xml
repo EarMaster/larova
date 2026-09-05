@@ -349,4 +349,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Traduci questo riquadro</string>
+    <string name="translate_original">Come scritto</string>
+    <string name="translate_stale">Questo riquadro è stato modificato dopo la stesura di questa traduzione.</string>
+    <string name="cd_translate_language">Mostra questo riquadro in %1$s</string>
+    <string name="settings_content_language">Lingua dei riquadri</string>
+    <string name="settings_content_language_hint">In quale lingua vengono mostrati i riquadri, quando un riquadro ne ha più di una. Vale per questo telefono, non per un singolo riquadro.</string>
+    <string name="translate_follow_app">Segui la lingua dell’app</string>
+    <string name="edit_languages">Altre lingue</string>
+    <string name="edit_languages_hint">Aggiungi questo riquadro in un’altra lingua, per chi non legge quella in cui è stato scritto. L’originale non cambia mai.</string>
+    <string name="edit_no_languages">Ancora nessun’altra lingua.</string>
+    <string name="edit_add_language">Aggiungi una lingua</string>
+    <string name="edit_language_pick">Quale lingua?</string>
+    <string name="edit_language_remove">Rimuovi questa lingua</string>
+    <string name="edit_language_stale">Il riquadro è stato modificato dopo la stesura di questo testo.</string>
+    <string name="edit_translation_title">In %1$s</string>
+    <string name="edit_translation_hint">Il testo originale è stato copiato qui. Cambialo tu nell’altra lingua: Larova non traduce nulla e non legge mai ciò che incolli.</string>
+    <string name="edit_translation_field">Riga %1$d</string>
 </resources>

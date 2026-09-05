@@ -63,6 +63,41 @@ data class CardEntity(
     val updatedAtEpochMillis: Long,
 )
 
+/**
+ * One tile's text in another language.
+ *
+ * `(cardId, lang)` is the whole key: a variant is one card's text in one language and has no
+ * identity of its own. A surrogate id would allow two rows claiming the same tile and the same
+ * language, in the database and in a backup file, with nothing to say which of them wins.
+ *
+ * The payload is the same JSON shape as `CardEntity.payload` and always the same tile type. Nothing
+ * in this table is a fragment: title, second line and payload travel together, so there is no state
+ * in which half a tile is in one language and half in another.
+ *
+ * No index of its own. `cardId` is the leftmost column of the primary key, which is what the
+ * cascade and the search subquery both look things up by.
+ */
+@Entity(
+    tableName = "card_text",
+    primaryKeys = ["cardId", "lang"],
+    foreignKeys = [
+        ForeignKey(
+            entity = CardEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["cardId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
+data class CardTextEntity(
+    val cardId: String,
+    val lang: String,
+    val title: String,
+    val subtitle: String?,
+    val payload: String,
+    val updatedAtEpochMillis: Long,
+)
+
 @Entity(tableName = "media", indices = [Index(value = ["sha256"])])
 data class MediaAssetEntity(
     @PrimaryKey val id: String,

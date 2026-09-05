@@ -1,15 +1,16 @@
 package app.larova.screenshot
 
 import app.larova.core.domain.model.CardPayload
-import app.larova.core.domain.model.PhoneEntry
-import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.LogKind
+import app.larova.core.domain.model.PhoneEntry
 import app.larova.core.domain.model.Step
+import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.usecase.HelpContact
 import app.larova.core.domain.usecase.LogLine
 import app.larova.feature.card.CardUiState
 import app.larova.feature.card.FolderTile
+import app.larova.feature.card.TileLanguage
 import app.larova.feature.home.HomeTile
 import app.larova.feature.home.TileSubtitle
 import kotlin.time.Instant
@@ -136,6 +137,43 @@ internal object Fixtures {
                 "Water with meals. Juice only if he has eaten something first.",
         ),
     )
+
+    /**
+     * The same note, on a phone that has a translation app on it.
+     *
+     * The flattened text is what the ViewModel would have built from the title and the payload.
+     * It never reaches the screen — only the hand-off — so it is here to make the control real
+     * rather than to be read.
+     */
+    val noteTranslatable = note.copy(
+        canTranslate = true,
+        translationText = "Food and drink\n\nNo nuts and no cow milk.",
+    )
+
+    /**
+     * The same note as a family would see it in Turkish, with the original one chip away.
+     *
+     * The chips carry endonyms — the original's chip says "Deutsch" because that is what German
+     * calls itself, not because a label in `strings.xml` says so. This is the fixture that shows
+     * the row at all: every other card golden leaves `languages` empty, which is what keeps them
+     * unchanged by this feature.
+     */
+    val noteTranslated = note.copy(
+        title = "Yemek ve içmek",
+        payload = CardPayload.Note(
+            text = "Fındık yok, inek sütü yok — buzdolabı kapağındaki yulaf sütü onun.\n\n" +
+                "Yavaş yer. Bu normaldir, acele ettirmeyin.\n\n" +
+                "Yemekle birlikte su. Meyve suyu, ancak bir şeyler yediyse.",
+        ),
+        languages = listOf(
+            TileLanguage(tag = null, name = "Deutsch"),
+            TileLanguage(tag = "tr", name = "Türkçe"),
+        ),
+        shownLanguage = "tr",
+    )
+
+    /** And the same again, after somebody edited the original it was translated from. */
+    val noteTranslatedStale = noteTranslated.copy(isStaleTranslation = true)
 
     val checklist = CardUiState(
         title = "Bag for nursery",

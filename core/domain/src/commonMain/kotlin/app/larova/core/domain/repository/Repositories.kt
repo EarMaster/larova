@@ -3,6 +3,7 @@ package app.larova.core.domain.repository
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.Entitlement
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.model.LogEntry
@@ -60,6 +61,40 @@ interface CardRepository {
     suspend fun delete(id: Uuid)
 }
 
+/**
+ * A tile's text in languages other than the one it was written in.
+ *
+ * Whole-tile rows, never a per-field map: a row carries title, second line and payload together, so
+ * there is no state in which half a tile is in one language. Which one to show is `resolveCardText`
+ * and nothing else.
+ */
+@OptIn(ExperimentalUuidApi::class)
+interface CardTextRepository {
+
+    /**
+     * Every variant there is.
+     *
+     * Everything at once rather than a query per tile: a family with sixty tiles in two languages
+     * has sixty rows, and the start screen resolves a whole board while it is drawing.
+     */
+    fun observeAll(): Flow<List<CardText>>
+
+    fun observeForCard(cardId: Uuid): Flow<List<CardText>>
+
+    /** Everything, for an export. */
+    suspend fun all(): List<CardText>
+
+    suspend fun upsert(text: CardText)
+
+    suspend fun delete(cardId: Uuid, lang: String)
+
+    /**
+     * Every variant of one tile. The database cascades this when the tile goes; this exists for the
+     * import that clears an installation, where the deletes are written out rather than relied on.
+     */
+    suspend fun deleteForCard(cardId: Uuid)
+}
+
 @OptIn(ExperimentalUuidApi::class)
 interface MediaRepository {
     fun observeAll(): Flow<List<MediaAsset>>
@@ -114,6 +149,19 @@ interface PreferencesRepository {
 
     /** One more. Never resets — nothing anybody paid for should quietly become zero. */
     suspend fun addSupport()
+
+    /**
+     * Which language tiles are shown in when a tile has more than one, or null to follow the app's
+     * own language — which is the default and where most installations will stay.
+     *
+     * A setting for the phone, not for a tile: it is the person holding it who cannot read German,
+     * not this particular guide. Here rather than in the database for the same reason as the PIN
+     * and the appearance — it is not content, and it has no business travelling in a backup handed
+     * to a grandparent whose phone is in another language entirely.
+     */
+    fun observeContentLanguage(): Flow<String?>
+
+    suspend fun setContentLanguage(tag: String?)
 }
 
 /**

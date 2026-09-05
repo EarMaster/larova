@@ -349,4 +349,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Traducir este mosaico</string>
+    <string name="translate_original">Tal como se escribió</string>
+    <string name="translate_stale">Este mosaico se cambió después de escribir esta traducción.</string>
+    <string name="cd_translate_language">Mostrar este mosaico en %1$s</string>
+    <string name="settings_content_language">Idioma de los mosaicos</string>
+    <string name="settings_content_language_hint">En qué idioma se muestran los mosaicos cuando uno tiene varios. Es un ajuste para este teléfono, no para un mosaico.</string>
+    <string name="translate_follow_app">Seguir el idioma de la aplicación</string>
+    <string name="edit_languages">Otros idiomas</string>
+    <string name="edit_languages_hint">Añade este mosaico en otro idioma, para quien no lea aquel en el que se escribió. El original no cambia nunca.</string>
+    <string name="edit_no_languages">Todavía no hay otros idiomas.</string>
+    <string name="edit_add_language">Añadir un idioma</string>
+    <string name="edit_language_pick">¿Qué idioma?</string>
+    <string name="edit_language_remove">Quitar este idioma</string>
+    <string name="edit_language_stale">El mosaico se cambió después de escribir esto.</string>
+    <string name="edit_translation_title">En %1$s</string>
+    <string name="edit_translation_hint">El texto original se ha copiado aquí. Cámbialo tú al otro idioma: Larova no traduce nada y nunca lee lo que pegas.</string>
+    <string name="edit_translation_field">Línea %1$d</string>
 </resources>

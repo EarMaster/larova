@@ -1,8 +1,19 @@
 package app.larova.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -11,15 +22,23 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import app.larova.BuildConfig
 import app.larova.core.billing.PurchaseOutcome
+import app.larova.core.domain.app.AppLanguage
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
+import app.larova.core.ui.resources.Res
+import app.larova.core.ui.resources.edit_cancel
+import app.larova.core.ui.resources.edit_language_pick
+import app.larova.core.ui.theme.Dimens
 import app.larova.di.arrangeViewModelParameters
 import app.larova.di.cardViewModelParameters
 import app.larova.di.editCardViewModelParameters
+import app.larova.di.editTranslationViewModelParameters
 import app.larova.feature.card.CardScreen
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardScreen
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.EditTranslationScreen
+import app.larova.feature.card.edit.EditTranslationViewModel
 import app.larova.feature.card.edit.SymbolPickerScreen
 import app.larova.feature.card.edit.callbacks
 import app.larova.feature.help.HelpScreen
@@ -28,11 +47,15 @@ import app.larova.feature.home.ArrangeTilesScreen
 import app.larova.feature.home.ArrangeTilesViewModel
 import app.larova.feature.home.HomeScreen
 import app.larova.feature.home.HomeViewModel
+import app.larova.feature.settings.ContentLanguageSetting
 import app.larova.feature.settings.LogScreen
 import app.larova.feature.settings.LogViewModel
 import app.larova.feature.settings.PinSetupScreen
 import app.larova.feature.settings.PinSetupViewModel
+import app.larova.feature.settings.SUPPORT_URL
 import app.larova.feature.settings.SettingsScreen
+import app.larova.feature.settings.SupportMessage
+import app.larova.feature.settings.UnlockCheck
 import app.larova.feature.settings.UnlockScreen
 import app.larova.feature.settings.UnlockViewModel
 import app.larova.feature.transfer.TransferScreen
@@ -45,12 +68,11 @@ import app.larova.rememberMicrophoneRequest
 import app.larova.rememberPicturePicker
 import app.larova.rememberRestorePicker
 import app.larova.rememberSoundPicker
-import app.larova.feature.settings.SUPPORT_URL
-import app.larova.feature.settings.SupportMessage
-import app.larova.feature.settings.UnlockCheck
 import app.larova.rememberSupportPurchase
 import app.larova.rememberUnlockPurchase
 import app.larova.rememberVideoPicker
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -75,12 +97,21 @@ fun LarovaNavHost(
     onSupported: () -> Unit,
     onSupportUnavailable: () -> Unit,
     onPrepareCall: (String) -> Unit,
+    /** Null on a phone with no per-app language screen; the settings row is then absent. */
+    onOpenLanguageSettings: (() -> Unit)?,
+    contentLanguage: ContentLanguageSetting?,
+    onContentLanguageChange: (String?) -> Unit,
     onOpenUrl: (String) -> Unit,
+    onTranslate: (String) -> Unit,
     onOpenApp: (String) -> Unit,
     openCardId: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
+    // The endonym for a tag, resolved once for the graph. From the platform rather than from
+    // strings.xml: a language names itself the same way whatever the app is set to.
+    val appLanguage = koinInject<AppLanguage>()
+    val languageNameOf: (String) -> String = { appLanguage.nameOf(it) }
     val openHelp: () -> Unit = { navController.navigate(HelpRoute) }
     val goBack: () -> Unit = { navController.popBackStack() }
 
@@ -139,6 +170,11 @@ fun LarovaNavHost(
                 },
                 onOpenUrl = onOpenUrl,
                 onOpenApp = onOpenApp,
+                // Straight through, unlike onPrepareCall: there is nothing for the ViewModel to
+                // record here. Handing words to another app is not something that happened to the
+                // tile, and a log line about it would be a line about the caregiver instead.
+                onTranslate = onTranslate,
+                onContentLanguageChange = viewModel::onContentLanguageChange,
                 onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
                 onBack = goBack,
                 onHelp = openHelp,
@@ -192,6 +228,10 @@ fun LarovaNavHost(
             // what keeps :core:billing out of every feature module. A cancelled purchase is left
             // alone on purpose: somebody who backed out has already seen their own decision.
             val buyUnlock = rememberUnlockPurchase(viewModel::applyUnlockOutcome)
+            // Which languages there are to add. The fourteen the app itself speaks, minus the ones
+            // this tile already has — offering a language twice would produce a second row under
+            // the same key and quietly replace the first.
+            var choosingLanguage by remember { mutableStateOf(false) }
 
             EditCardScreen(
                 state = state,
@@ -209,7 +249,47 @@ fun LarovaNavHost(
                     openSoundPicker = pickSound,
                     requestMicrophone = requestMicrophone,
                     buyUnlock = buyUnlock,
+                    addLanguage = { choosingLanguage = true },
+                    editLanguage = { lang ->
+                        navController.navigate(CardTranslationRoute(route.cardId, lang))
+                    },
                 ),
+                onBack = goBack,
+            )
+
+            if (choosingLanguage) {
+                LanguagePickerDialog(
+                    taken = state.languages.map { it.tag }.toSet(),
+                    nameOf = languageNameOf,
+                    onPick = { lang ->
+                        choosingLanguage = false
+                        navController.navigate(CardTranslationRoute(route.cardId, lang))
+                    },
+                    onDismiss = { choosingLanguage = false },
+                )
+            }
+        }
+
+        composable<CardTranslationRoute> { entry ->
+            val route = entry.toRoute<CardTranslationRoute>()
+            val viewModel = koinViewModel<EditTranslationViewModel>(
+                key = "translation-" + route.cardId + "-" + route.lang,
+                parameters = { editTranslationViewModelParameters(route.cardId, route.lang) },
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(state.saved) {
+                if (state.saved) navController.popBackStack()
+            }
+
+            EditTranslationScreen(
+                state = state,
+                onTitleChange = viewModel::onTitleChange,
+                onSubtitleChange = viewModel::onSubtitleChange,
+                onFieldChange = viewModel::onFieldChange,
+                onTranslate = onTranslate,
+                onSave = viewModel::onSave,
+                onDelete = viewModel::onDelete,
                 onBack = goBack,
             )
         }
@@ -377,6 +457,9 @@ fun LarovaNavHost(
                 // permission is involved: the URL is handed to whatever app owns http, and this
                 // one never resolves it.
                 onOpenSupportPage = { onOpenUrl(SUPPORT_URL) },
+                onOpenLanguageSettings = onOpenLanguageSettings,
+                contentLanguage = contentLanguage,
+                onContentLanguageChange = onContentLanguageChange,
                 supportCount = supportCount,
                 onSupport = support,
                 supportMessage = supportMessage,
@@ -438,3 +521,63 @@ private fun PurchaseOutcome.applyTo(onSupported: () -> Unit, onUnavailable: () -
         PurchaseOutcome.AlreadyOwned, is PurchaseOutcome.Unavailable -> onUnavailable()
     }
 }
+
+/**
+ * Which language to write a tile in.
+ *
+ * The fourteen the app itself speaks, minus the ones this tile already has. Offering one twice
+ * would produce a second row under the same `(cardId, lang)` key and quietly replace the first —
+ * and a parent who tapped "Turkish" expecting a blank form would find their own earlier work.
+ *
+ * The list is the app's own locales rather than every language the phone knows: these are the ones
+ * a caregiver is likely to need, and a list of two hundred is a list nobody reads. Each is named in
+ * its own language, from the platform, so a Turkish reader sees "Türkçe" whatever the app is set to.
+ */
+@Composable
+private fun LanguagePickerDialog(
+    taken: Set<String>,
+    nameOf: (String) -> String,
+    onPick: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val offered = APP_LANGUAGES.filterNot { it in taken }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.edit_language_pick)) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                for (tag in offered) {
+                    TextButton(
+                        onClick = { onPick(tag) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = Dimens.MinTouchTarget),
+                    ) {
+                        Text(text = nameOf(tag), modifier = Modifier.fillMaxWidth())
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_cancel))
+            }
+        },
+    )
+}
+
+/**
+ * The languages Larova itself speaks, as BCP-47 tags.
+ *
+ * The same fourteen as `locales_config.xml` and the `values-*` folders, and deliberately a separate
+ * list rather than one derived from them: Compose resources cannot be enumerated at runtime, and a
+ * list derived from the phone's installed locales would offer two hundred entries. If a fifteenth
+ * language is ever added, `docs/localization.md` §6 is where the other places to touch are listed —
+ * add it here too.
+ */
+private val APP_LANGUAGES = listOf(
+    "en", "de", "fr", "it", "es", "pt-PT", "uk", "pl", "ru", "tr", "ar", "hi", "zh", "ja",
+)

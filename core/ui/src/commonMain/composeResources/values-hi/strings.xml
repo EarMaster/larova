@@ -349,4 +349,21 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">इस टाइल का अनुवाद करें</string>
+    <string name="translate_original">जैसा लिखा गया</string>
+    <string name="translate_stale">यह अनुवाद लिखे जाने के बाद इस टाइल को बदला गया था।</string>
+    <string name="cd_translate_language">इस टाइल को %1$s में दिखाएँ</string>
+    <string name="settings_content_language">टाइलों की भाषा</string>
+    <string name="settings_content_language_hint">जब किसी टाइल की एक से ज़्यादा भाषाएँ हों तो वह किस भाषा में दिखे। यह इस फ़ोन की सेटिंग है, किसी एक टाइल की नहीं।</string>
+    <string name="translate_follow_app">ऐप की भाषा के अनुसार</string>
+    <string name="edit_languages">अन्य भाषाएँ</string>
+    <string name="edit_languages_hint">इस टाइल को किसी दूसरी भाषा में जोड़ें, उस देखभालकर्ता के लिए जो मूल भाषा नहीं पढ़ता। मूल पाठ कभी नहीं बदलता।</string>
+    <string name="edit_no_languages">अभी कोई दूसरी भाषा नहीं है।</string>
+    <string name="edit_add_language">भाषा जोड़ें</string>
+    <string name="edit_language_pick">कौन-सी भाषा?</string>
+    <string name="edit_language_remove">यह भाषा हटाएँ</string>
+    <string name="edit_language_stale">यह लिखे जाने के बाद टाइल बदली गई थी।</string>
+    <string name="edit_translation_title">%1$s में</string>
+    <string name="edit_translation_hint">मूल पाठ यहाँ कॉपी कर दिया गया है। इसे दूसरी भाषा में आप स्वयं बदलें — Larova कुछ भी अनुवाद नहीं करता और आप जो चिपकाते हैं उसे कभी नहीं पढ़ता।</string>
+    <string name="edit_translation_field">पंक्ति %1$d</string>
 </resources>

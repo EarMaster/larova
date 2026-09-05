@@ -368,4 +368,35 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <!-- ===== Translation. Larova translates nothing itself and has no permission with which to:
+         the words on a tile are handed to a translation app the person already has, and nothing
+         comes back. What counts as "the words on a tile" is `plainTextOf` — never the numbers,
+         addresses or package names on it.
+
+         One string, and it is a content description: the control is a globe in the app bar, and
+         the promise about what leaves the phone lives in the privacy policy rather than on a
+         screen somebody is reading in a hurry. ===== -->
+    <string name="cd_translate">Translate this tile</string>
+    <!-- Which language a tile is read in. The language names themselves never appear here: they
+         come from the platform as endonyms ("Türkçe", not "Turkish"), because a caregiver looking
+         for their own language is the one person who cannot be assumed to read the app's. -->
+    <string name="translate_original">As written</string>
+    <string name="translate_stale">This tile was changed after this translation was written.</string>
+    <string name="cd_translate_language">Show this tile in %1$s</string>
+    <string name="settings_content_language">Tile language</string>
+    <string name="settings_content_language_hint">Which language tiles are shown in, when a tile has more than one. This is a setting for this phone, not for one tile.</string>
+    <string name="translate_follow_app">Follow the app language</string>
+    <!-- Writing one tile in another language. The screen holds words and nothing
+         else: no colour, no symbol, no pictures, no numbers, no addresses. What
+         a translator gives back is pasted in by the person, box by box. -->
+    <string name="edit_languages">Other languages</string>
+    <string name="edit_languages_hint">Add this tile in another language, for a caregiver who does not read the one it was written in. The original never changes.</string>
+    <string name="edit_no_languages">No other languages yet.</string>
+    <string name="edit_add_language">Add a language</string>
+    <string name="edit_language_pick">Which language?</string>
+    <string name="edit_language_remove">Remove this language</string>
+    <string name="edit_language_stale">The tile was changed after this was written.</string>
+    <string name="edit_translation_title">In %1$s</string>
+    <string name="edit_translation_hint">The original text has been copied here. Change it into the other language yourself — Larova translates nothing, and never reads what you paste.</string>
+    <string name="edit_translation_field">Line %1$d</string>
 </resources>

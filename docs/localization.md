@@ -1,6 +1,6 @@
 # Localization
 
-Fourteen languages at launch. The app is translated; user content is not.
+Fourteen languages at launch. The app is translated; Larova never translates what a parent wrote.
 
 ---
 
@@ -8,7 +8,30 @@ Fourteen languages at launch. The app is translated; user content is not.
 
 **The app is translated.** Buttons, labels, settings, templates.
 
-**User content is not.** What a parent writes stays exactly as written, in whatever language they wrote it. There is no translation feature, and therefore no reason for content to ever leave the device.
+**Larova never translates user content.** What a parent writes stays exactly as written, in whatever language they wrote it. The app has no internet permission and never will, and every on-device translation library within reach downloads its models over the network — so there is no version of this where Larova does the translating.
+
+**What it does instead is hand over.** A tile screen offers to pass the words on that tile to a translation app the person already has, the same way a call tile passes a number to the dialler and a website tile passes an address to the browser. The words go to an app they chose, under that app's permissions and that app's policy; nothing comes back, and nothing is stored. `plainTextOf` decides what "the words on a tile" means, and it deliberately excludes the numbers, addresses and package names — none of which are translatable, and all of which would break the tile if a translator's version of them were pasted back.
+
+This is a change of position, made knowingly. The earlier wording here was *"there is no translation feature, and therefore no reason for content to ever leave the device"*, and the second half of that sentence stopped being true the moment the first half did. What has not changed is the part invariant 6 rests on: **Larova itself still sends nothing anywhere.** A handover is the person's own act, on their own tap, into an app of their own choosing.
+
+**A parent may also write a tile twice.** A tile can carry its own text in other languages —
+title, second line and payload together, never a field at a time, so there is no state in which
+half a tile is in one language. Which one a caregiver sees follows the app's language and can be
+changed from the tile itself; the choice is remembered for the phone, not for the tile, because it
+is the person holding it who cannot read German. A tile with no translation for that language shows
+what the parent wrote, and **nothing is ever hidden for want of a translation** — a tile that
+vanished would be indistinguishable from one that never existed, and it would be as likely to be
+the one about choking as any other.
+
+Larova still writes none of it. The editor copies the original into the new language for the parent
+to change, offers the same hand-off to get a starting point, and never reads the clipboard or
+splits an answer up: `docs/concept.md` §2.2 and invariant 7 apply to a translation exactly as they
+apply to everything else a family types.
+
+A translation written before the tile was last edited is marked — quietly on the tile, where the
+caregiver can do nothing about it, and plainly in the editor, where it can be fixed.
+
+See `docs/pages/privacy.md`, "Translation", for the same fact in the words a parent reads.
 
 ## 2. Why fourteen
 

@@ -6,25 +6,26 @@ import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.media.isLargeMedia
 import app.larova.core.domain.model.CardPayload
-import app.larova.core.domain.model.PhoneEntry
-import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.MAX_TABLE_COLUMNS
+import app.larova.core.domain.model.PhoneEntry
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.model.isOpenableUrl
-import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.parseUuidOrNull
+import app.larova.core.domain.model.phoneOf
+import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.Folders
 import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ObserveLockedTypes
-import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.SaveCard
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.TileEditing
+import app.larova.core.domain.usecase.Translations
+import app.larova.core.domain.usecase.UnlockPrice
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.theme.TileColor
 import app.larova.feature.card.toImageBitmapOrNull
@@ -33,6 +34,7 @@ import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -116,6 +118,14 @@ data class EditUiState(
      * repository could not be photographed locked and unlocked.
      */
     val lockedTypes: Set<CardType> = emptySet(),
+    /**
+     * The languages this tile already exists in, besides the one it was written in.
+     *
+     * Empty on a new tile and on the great majority of saved ones. The section that shows them is
+     * drawn regardless once the tile exists, because "no other languages yet" is how somebody finds
+     * out they can add one.
+     */
+    val languages: List<VariantSummary> = emptyList(),
     /**
      * The price, as Google Play writes it for this buyer's country. Null while it is being fetched
      * and null for good on a phone that cannot reach the store — the offer is still shown, with a
@@ -204,6 +214,16 @@ fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
 )
 
 /**
+ * One language a tile already has, for the list in the editor.
+ *
+ * [isStale] means the tile was edited after this translation was written — shown here loudly,
+ * because this is the screen where it can actually be fixed. On the tile itself it is one quiet
+ * line: the caregiver reading it cannot do anything about it, and the text is still the only text
+ * in the room that they can read.
+ */
+data class VariantSummary(val tag: String, val name: String, val isStale: Boolean)
+
+/**
  * Where the editor was opened, as one parameter.
  *
  * Both halves come from the navigation route and neither means anything without the other: an empty
@@ -236,6 +256,7 @@ class EditCardViewModel(
     private val recording: Recording,
     private val folders: Folders,
     private val apps: Apps,
+    private val translations: Translations,
     lockedTypes: ObserveLockedTypes,
     private val unlockPrice: UnlockPrice,
 ) : ViewModel() {
@@ -260,6 +281,28 @@ class EditCardViewModel(
 
     init {
         if (!cardId.isNullOrEmpty()) load(cardId)
+        // Collected rather than read once, so a language added on the screen this one opens is
+        // listed the moment it is saved and the parent comes back.
+        if (!cardId.isNullOrEmpty()) {
+            parseUuidOrNull(cardId)?.let { id ->
+                viewModelScope.launch {
+                    // The tile's own `updatedAt` is the anchor staleness is measured from, read
+                    // once here: it is what a person last edited, and a tick on a checklist
+                    // deliberately does not move it.
+                    val editedAt = tile.observe(cardId)?.card?.updatedAt
+                    translations.textsFor(id).collect { texts ->
+                        val summaries = texts.map { text ->
+                            VariantSummary(
+                                tag = text.lang,
+                                name = translations.nameOf(text.lang),
+                                isStale = editedAt != null && text.updatedAt < editedAt,
+                            )
+                        }
+                        _state.update { it.copy(languages = summaries) }
+                    }
+                }
+            }
+        }
         // Collected rather than read once: a purchase can complete while this screen is open, and
         // the lock has to come off the chips without the parent having to back out and return.
         viewModelScope.launch {

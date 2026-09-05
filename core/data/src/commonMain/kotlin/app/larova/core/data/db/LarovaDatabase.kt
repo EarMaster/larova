@@ -20,6 +20,7 @@ import androidx.room.RoomDatabaseConstructor
     entities = [
         BoardEntity::class,
         CardEntity::class,
+        CardTextEntity::class,
         MediaAssetEntity::class,
         LogEntryEntity::class,
     ],
@@ -31,6 +32,7 @@ abstract class LarovaDatabase : RoomDatabase() {
 
     abstract val boardDao: BoardDao
     abstract val cardDao: CardDao
+    abstract val cardTextDao: CardTextDao
     abstract val mediaDao: MediaDao
     abstract val logDao: LogDao
 
@@ -39,8 +41,13 @@ abstract class LarovaDatabase : RoomDatabase() {
          * Raise this only with a migration beside it, and only after checking that an export from
          * the previous version still imports. Never with `fallbackToDestructiveMigration`: the
          * content is not ours to throw away.
+         *
+         * 2 added `card_text`, one tile's text in another language. Additive: nothing in `cards`
+         * is touched, so there is no path through the migration that can lose a tile. See
+         * `Migrations.kt`, and `MigrationTest` for the proof that the schema Room validates
+         * against is the one the migration builds.
          */
-        const val VERSION = 1
+        const val VERSION = 2
     }
 }
 

@@ -67,6 +67,7 @@ import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_column
 import app.larova.core.ui.resources.edit_add_contact
 import app.larova.core.ui.resources.edit_add_item
+import app.larova.core.ui.resources.edit_add_language
 import app.larova.core.ui.resources.edit_add_picture
 import app.larova.core.ui.resources.edit_add_row
 import app.larova.core.ui.resources.edit_add_step
@@ -95,6 +96,9 @@ import app.larova.core.ui.resources.edit_edit_tile
 import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
+import app.larova.core.ui.resources.edit_language_stale
+import app.larova.core.ui.resources.edit_languages
+import app.larova.core.ui.resources.edit_languages_hint
 import app.larova.core.ui.resources.edit_link_caption
 import app.larova.core.ui.resources.edit_media_caption
 import app.larova.core.ui.resources.edit_media_chosen
@@ -102,6 +106,7 @@ import app.larova.core.ui.resources.edit_media_large
 import app.larova.core.ui.resources.edit_media_none_chosen
 import app.larova.core.ui.resources.edit_media_required
 import app.larova.core.ui.resources.edit_new_tile
+import app.larova.core.ui.resources.edit_no_languages
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_record
@@ -269,7 +274,16 @@ fun EditCardScreen(
 
                     TypeFields(state = state, callbacks = callbacks)
 
-                    Section(title = stringResource(Res.string.edit_colour)) {
+                    // Only once the tile exists: a translation is a copy of the original, and there
+                // is nothing to copy until there is something saved to copy from.
+                LanguageSection(
+                    isNew = state.isNew,
+                    languages = state.languages,
+                    onEdit = callbacks.onEditLanguage,
+                    onAdd = callbacks.onAddLanguage,
+                )
+
+                Section(title = stringResource(Res.string.edit_colour)) {
                         ColorTokenPicker(
                             selectedToken = state.colorToken,
                             onSelect = callbacks.onColorChange,
@@ -1204,6 +1218,86 @@ private fun TypePicker(
     }
 }
 
+/**
+ * The languages a tile already has, and the way to add one.
+ *
+ * A list rather than a form: adding a language opens a screen of its own, because translating a
+ * guide with eight steps is not something to do inside a section of another form. Removing one
+ * happens there too — the same place it is edited, so nothing is deleted from a list by mistake.
+ */
+/**
+ * The languages section, or nothing at all on a tile that has not been saved yet.
+ *
+ * The emptiness check lives here rather than in the form above it for the form's sake: that
+ * function is already a long `when` over ten tile types, and one more branch in it is one more
+ * thing to hold in your head while reading the part that matters.
+ */
+@Composable
+private fun LanguageSection(
+    isNew: Boolean,
+    languages: List<VariantSummary>,
+    onEdit: (String) -> Unit,
+    onAdd: () -> Unit,
+) {
+    // Only once the tile exists: a translation starts as a copy of the original, and there is
+    // nothing to copy until there is something saved to copy from.
+    if (isNew) return
+    Section(title = stringResource(Res.string.edit_languages)) {
+        LanguageList(languages = languages, onEdit = onEdit, onAdd = onAdd)
+    }
+}
+
+@Composable
+private fun LanguageList(
+    languages: List<VariantSummary>,
+    onEdit: (String) -> Unit,
+    onAdd: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = stringResource(Res.string.edit_languages_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        if (languages.isEmpty()) {
+            Text(
+                text = stringResource(Res.string.edit_no_languages),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        for (language in languages) {
+            OutlinedButton(
+                onClick = { onEdit(language.tag) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(language.name)
+                    if (language.isStale) {
+                        // Said plainly here, where it can be acted on. Not amber and not red:
+                        // invariant 4 keeps both for the active step and the help bar.
+                        Text(
+                            text = stringResource(Res.string.edit_language_stale),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
+
+        OutlinedButton(
+            onClick = onAdd,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(stringResource(Res.string.edit_add_language))
+        }
+    }
+}
+
 /** One switch and its label, with the whole row as the target. */
 @Composable
 private fun SwitchRow(
@@ -1325,6 +1419,10 @@ data class EditCardCallbacks(
     val onStopRecording: () -> Unit,
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
+    /** Opens the language chooser. The screen it leads to is where a translation is written. */
+    val onAddLanguage: () -> Unit,
+    /** Opens one language this tile already has, to change or remove it. */
+    val onEditLanguage: (String) -> Unit,
 )
 
 /**
@@ -1340,6 +1438,8 @@ fun EditCardViewModel.callbacks(
     openVideoPicker: () -> Unit = {},
     openSoundPicker: () -> Unit = {},
     requestMicrophone: () -> Unit = {},
+    addLanguage: () -> Unit = {},
+    editLanguage: (String) -> Unit = {},
     // Null by default so the previews and the screenshot fixtures need not know about the store.
     buyUnlock: (() -> Unit)? = null,
 ) = EditCardCallbacks(
@@ -1392,4 +1492,6 @@ fun EditCardViewModel.callbacks(
     onStopRecording = ::onStopRecording,
     onSave = ::onSave,
     onDelete = ::onDelete,
+    onAddLanguage = addLanguage,
+    onEditLanguage = editLanguage,
 )

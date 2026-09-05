@@ -18,12 +18,14 @@ import androidx.datastore.preferences.core.Preferences
 import app.larova.core.data.prefs.createPreferencesDataStore
 import app.larova.core.data.repository.RoomBoardRepository
 import app.larova.core.data.repository.RoomCardRepository
+import app.larova.core.data.repository.RoomCardTextRepository
 import app.larova.core.data.repository.RoomLogRepository
 import app.larova.core.data.repository.RoomMediaRepository
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.EntitlementCache
 import app.larova.core.domain.repository.EntitlementRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PinRepository
@@ -52,7 +54,18 @@ import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveLastBackup
+import app.larova.core.domain.app.AppLanguage
+import app.larova.core.domain.app.Translators
+import app.larova.core.domain.usecase.CanTranslate
+import app.larova.core.domain.usecase.ContentLanguage
+import app.larova.core.domain.usecase.DeleteCardText
+import app.larova.core.domain.usecase.ObserveAllCardText
+import app.larova.core.domain.usecase.ObserveCardText
+import app.larova.core.domain.usecase.SaveCardText
 import app.larova.core.domain.usecase.ObserveLockedTypes
+import app.larova.core.domain.usecase.Translations
+import app.larova.core.platform.AndroidAppLanguage
+import app.larova.core.platform.AndroidTranslators
 import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
@@ -101,6 +114,8 @@ import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardViewModel
+import app.larova.feature.card.edit.EditTranslationViewModel
+import app.larova.feature.card.edit.TranslationTarget
 import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
@@ -137,6 +152,8 @@ val appModule = module {
     single<MediaFiles> { AndroidMediaFiles(get()) }
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
+    single<Translators> { AndroidTranslators(androidContext()) }
+    single<AppLanguage> { AndroidAppLanguage(androidContext()) }
     single<Shortcuts> { AndroidShortcuts(androidContext()) }
     single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
     // A singleton because a microphone is: two recorders on one device is not an error the framework
@@ -151,12 +168,14 @@ val appModule = module {
     single<LarovaDatabase> { createLarovaDatabase(androidContext()) }
     single { get<LarovaDatabase>().boardDao }
     single { get<LarovaDatabase>().cardDao }
+    single { get<LarovaDatabase>().cardTextDao }
     single { get<LarovaDatabase>().mediaDao }
     single { get<LarovaDatabase>().logDao }
 
     single<BoardRepository> { RoomBoardRepository(get()) }
     single<CardRepository> { RoomCardRepository(get()) }
-    single<MediaRepository> { RoomMediaRepository(get(), get()) }
+    single<CardTextRepository> { RoomCardTextRepository(get()) }
+    single<MediaRepository> { RoomMediaRepository(get(), get(), get()) }
     single<LogRepository> { RoomLogRepository(get()) }
 
     // One DataStore for the file, shared by everything that reads it. Two instances over the
@@ -221,6 +240,13 @@ val appModule = module {
     factory { PickableApps(get()) }
     factory { IsAppInstalled(get()) }
     factory { Apps(get(), get()) }
+    factory { CanTranslate(get()) }
+    factory { ObserveCardText(get()) }
+    factory { ObserveAllCardText(get()) }
+    factory { ContentLanguage(get(), get()) }
+    factory { SaveCardText(get(), get()) }
+    factory { DeleteCardText(get()) }
+    factory { Translations(get(), get(), get(), get()) }
     factory { AddImage(get(), get()) }
     factory { AddMediaFile(get(), get()) }
     factory { LoadImage(get(), get()) }
@@ -245,21 +271,21 @@ val appModule = module {
     factory { RecordSupport(get()) }
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
-    factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ExportPackage(get(), get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
     factory { ObserveLastBackup(get()) }
     factory { RecordLastBackup(get()) }
     factory { ReadPackagePreview(get()) }
-    factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
+    factory { ImportPackage(get(), get(), get(), get(), get(), get(), get()) }
 
     viewModel {
         AppViewModel(
             get(), get(), get(), get(), get(), get(),
-            get(), get(), get(), get(), get(),
+            get(), get(), get(), get(), get(), get(),
         )
     }
     viewModel { UnlockViewModel(get(), get(), get()) }
     viewModel { PinSetupViewModel(get()) }
-    viewModel { HomeViewModel(get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     // The board comes from the route: the start screen when it is empty, a folder otherwise.
     viewModel { parameters -> ArrangeTilesViewModel(parameters.get(), get(), get(), get()) }
     viewModel { HelpViewModel(get(), get()) }
@@ -267,15 +293,23 @@ val appModule = module {
     viewModel { TransferViewModel(get(), get(), get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters ->
-        CardViewModel(parameters.get(), get(), get(), get(), get(), get())
+        CardViewModel(parameters.get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
-        EditCardViewModel(parameters.get(), get(), get(), get(), get(), get(), get(), get())
+        EditCardViewModel(
+            parameters.get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        )
+    }
+    viewModel { parameters ->
+        EditTranslationViewModel(parameters.get(), get(), get(), get(), get())
     }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */
 fun cardViewModelParameters(cardId: String) = parametersOf(cardId)
+
+fun editTranslationViewModelParameters(cardId: String, lang: String) =
+    parametersOf(TranslationTarget(cardId = cardId, lang = lang))
 
 /**
  * An empty card id is a new tile; the editor treats it as such rather than looking one up. An empty

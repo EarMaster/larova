@@ -356,4 +356,21 @@
     <string name="cd_step_picture">Bild zu Schritt %1$d</string>
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Diese Kachel übersetzen</string>
+    <string name="translate_original">Wie geschrieben</string>
+    <string name="translate_stale">Diese Kachel wurde geändert, nachdem diese Übersetzung geschrieben wurde.</string>
+    <string name="cd_translate_language">Diese Kachel auf %1$s anzeigen</string>
+    <string name="settings_content_language">Sprache der Kacheln</string>
+    <string name="settings_content_language_hint">In welcher Sprache Kacheln angezeigt werden, wenn eine Kachel mehrere hat. Das gilt für dieses Telefon, nicht für eine einzelne Kachel.</string>
+    <string name="translate_follow_app">Der App-Sprache folgen</string>
+    <string name="edit_languages">Weitere Sprachen</string>
+    <string name="edit_languages_hint">Fügen Sie diese Kachel in einer weiteren Sprache hinzu — für eine Betreuungsperson, die die ursprüngliche nicht liest. Das Original bleibt unverändert.</string>
+    <string name="edit_no_languages">Noch keine weiteren Sprachen.</string>
+    <string name="edit_add_language">Sprache hinzufügen</string>
+    <string name="edit_language_pick">Welche Sprache?</string>
+    <string name="edit_language_remove">Diese Sprache entfernen</string>
+    <string name="edit_language_stale">Die Kachel wurde geändert, nachdem dies geschrieben wurde.</string>
+    <string name="edit_translation_title">Auf %1$s</string>
+    <string name="edit_translation_hint">Der ursprüngliche Text wurde hierher kopiert. Ändern Sie ihn selbst in die andere Sprache — Larova übersetzt nichts und liest nie, was Sie einfügen.</string>
+    <string name="edit_translation_field">Zeile %1$d</string>
 </resources>
