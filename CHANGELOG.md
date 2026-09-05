@@ -17,6 +17,11 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-05
+
+### Changed
+- Larova is out of beta. This is the first full version — a grid of tiles a parent writes and whoever is looking after the child reads in two taps, in fourteen languages, with no account, no server and no internet permission. Nothing in the app changed with this release; the version number is the announcement.
+
 ## [0.6.1] - 2026-09-05
 
 ### Changed
