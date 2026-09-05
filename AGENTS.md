@@ -470,6 +470,15 @@ written in English. `README.md` links straight at the English fastlane copies.
   like two apps at once, and it puts the explanation outside the touch target —
   which is the accessibility rule above, not a matter of taste. Give each card a
   different `TileColor` so the blocks read as separate things.
+- Every group on a settings-shaped screen carries a heading, and nothing sits
+  outside one. One labelled group among unlabelled cards makes that group look
+  like the only organised thing on the screen; the heading is what says which
+  cards answer the same question, and `Modifier.semantics { heading() }` is what
+  lets TalkBack jump between the groups instead of reading every card out to
+  find one. A heading is never drawn over a group that is empty on this phone.
+  Order the groups by who needs them: what a caregiver may reach for first, then
+  parent-view work, then what the app *is* rather than what it does — the
+  version number and the full version are the last group, not settings.
 - Keep `CHANGELOG.md` current: an entry under `## [Unreleased]` for any
   user-facing change, in the same commit that makes it, not as a follow-up. CI,
   tooling and docs-only changes do not belong there.

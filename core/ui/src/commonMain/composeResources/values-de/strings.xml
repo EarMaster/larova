@@ -151,6 +151,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">Einstellungen</string>
+    <string name="settings_section_view">Elternansicht</string>
+    <string name="settings_section_language">Sprache</string>
+    <string name="settings_section_data">Daten</string>
+    <string name="settings_section_about">Über Larova</string>
     <string name="settings_appearance">Darstellung</string>
     <string name="settings_appearance_system">Wie das Telefon</string>
     <string name="settings_appearance_system_hint">Hell oder dunkel, je nachdem, was das Telefon gerade nutzt.</string>
@@ -160,7 +164,7 @@
     <string name="settings_appearance_dark_hint">Helle Schrift auf dunklem Grund.</string>
     <string name="settings_appearance_night">Nacht</string>
     <string name="settings_appearance_night_hint">Warm und sehr gedimmt, zum Vorlesen im dunklen Zimmer.</string>
-    <string name="settings_language">Sprache</string>
+    <string name="settings_language">Sprache der App</string>
     <string name="settings_language_hint">Larova kann eine andere Sprache verwenden als das übrige Telefon.</string>
     <string name="settings_transfer_hint">Alles in eine Datei sichern oder eine Sicherung zurückholen.</string>
     <string name="settings_unlock">Die Vollversion</string>

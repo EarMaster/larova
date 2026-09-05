@@ -140,6 +140,10 @@
 
     <!-- ===== Settings ===== -->
     <string name="settings_title">設定</string>
+    <string name="settings_section_view">保護者モード</string>
+    <string name="settings_section_language">言語</string>
+    <string name="settings_section_data">データ</string>
+    <string name="settings_section_about">Larova について</string>
     <string name="settings_appearance">外観</string>
     <string name="settings_appearance_system">スマホに合わせる</string>
     <string name="settings_appearance_system_hint">スマホに合わせてライトかダークになります。</string>
@@ -149,7 +153,7 @@
     <string name="settings_appearance_dark_hint">暗い背景に明るい文字。</string>
     <string name="settings_appearance_night">ナイト</string>
     <string name="settings_appearance_night_hint">暖かくとても暗い表示。暗い部屋で読み聞かせるときに。</string>
-    <string name="settings_language">言語</string>
+    <string name="settings_language">アプリの言語</string>
     <string name="settings_language_hint">Larovaはスマホ本体とは別の言語にできます。</string>
     <string name="settings_transfer_hint">すべてを1つのファイルに保存したり、バックアップを戻したりします。</string>
     <string name="settings_unlock">フル版</string>

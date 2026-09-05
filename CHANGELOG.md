@@ -17,6 +17,11 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Changed
+- The settings screen is now grouped under headings — parent view, language, appearance, data, and "About Larova" at the foot — instead of one long run of cards with a single heading part way down. Nothing was removed; it is the same screen with the places named.
+- The full version has moved to the bottom of that screen, beside the version number. It says what this copy of Larova is, not what you can change about it, and it was sitting among the settings as if it were one of them.
+- The app's own language setting is now called "App language", so it reads as one half of the language group rather than the whole of it. "Tile language" beside it is unchanged.
+
 ## [0.6.0] - 2026-09-05
 
 ### Added
