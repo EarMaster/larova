@@ -29,6 +29,18 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
         }
+        // The migration test, and only the migration test. It needs a real SQLite file and Room's
+        // own schema validator, neither of which exists in commonTest — and a migration is the one
+        // thing in this module that a fake cannot prove anything about.
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.androidx.sqlite.bundled)
+            // The JVM artifact explicitly: a host test runs on the desktop JVM, and the
+            // Android variant of sqlite-bundled carries native libraries for Android ABIs
+            // only, so the driver loads and then cannot find its own engine.
+            implementation("androidx.sqlite:sqlite-bundled-jvm:2.7.0")
+        }
     }
 }
 
@@ -36,6 +48,13 @@ kotlin {
 // story (docs/technical-notes.md §6): a migration nobody can reconstruct is a family's data lost.
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+// The migration test builds its "before" database from the committed schema JSON, so it has to be
+// told where that is. A system property rather than a working-directory guess: the test's working
+// directory is Gradle's business and has changed before.
+tasks.withType<Test>().configureEach {
+    systemProperty("larova.schemaDir", "$projectDir/schemas")
 }
 
 dependencies {

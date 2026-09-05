@@ -14,13 +14,16 @@ import kotlinx.coroutines.Dispatchers
  * one phone is not something an offline app can debug remotely.
  *
  * No `fallbackToDestructiveMigration` anywhere. If a migration is missing, failing loudly is the
- * correct outcome — the content is not ours to discard.
+ * correct outcome — the content is not ours to discard. Which migrations there are is
+ * `Migrations.kt`, applied through `withLarovaMigrations` rather than listed here, so that the
+ * second factory this project gains cannot be written without them.
  */
 fun createLarovaDatabase(context: Context): LarovaDatabase =
     Room.databaseBuilder<LarovaDatabase>(
         context = context.applicationContext,
         name = context.getDatabasePath(PlatformNames.DATABASE).absolutePath,
     )
+        .withLarovaMigrations()
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
