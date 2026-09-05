@@ -1,0 +1,1 @@
+Kartlar artık birden fazla dilde yazılabiliyor; bakıcı, kartın üstünden dili seçiyor. Larova hiçbir şeyi kendisi çevirmez: kelimeleri değiştirebileceğiniz bir forma kopyalar ve telefondaki bir çeviri uygulamasına verebilir. Ayarlara Dil satırı da eklendi.

@@ -1,0 +1,1 @@
+I riquadri possono ora essere scritti in più lingue e chi assiste sceglie quale in cima al riquadro. Larova non traduce nulla: copia le parole in un modulo da modificare e può passarle a un’app di traduzione sul telefono. Nelle impostazioni c’è anche una voce Lingua.

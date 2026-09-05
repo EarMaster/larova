@@ -1,0 +1,1 @@
+Kafelki można teraz napisać w kilku językach, a opiekun wybiera język u góry kafelka. Larova niczego nie tłumaczy: kopiuje słowa do formularza do zmiany i może przekazać je aplikacji tłumaczącej. W ustawieniach pojawił się też Język.

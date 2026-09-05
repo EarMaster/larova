@@ -12,6 +12,8 @@ docs-only changes do not belong here.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-05
+
 ### Added
 - Tiles can be written in more than one language. In parent view a tile now has an "Other
   languages" section: pick a language and Larova copies the tile’s words into a form for you to

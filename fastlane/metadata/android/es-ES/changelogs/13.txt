@@ -1,0 +1,1 @@
+Los mosaicos ya pueden escribirse en varios idiomas, y quien cuida elige cuál en la parte superior del mosaico. Larova no traduce nada: copia las palabras en un formulario para que las cambies y puede pasarlas a una aplicación de traducción. También hay un ajuste de Idioma.

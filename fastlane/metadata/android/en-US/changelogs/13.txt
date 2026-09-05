@@ -1,0 +1,1 @@
+Tiles can now be written in more than one language, and a caregiver picks which one at the top of the tile. Larova translates nothing itself: it copies the words into a form for you to change, and can hand them to a translation app on the phone. Settings has a Language row too.
