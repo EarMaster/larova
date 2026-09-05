@@ -51,7 +51,14 @@ interface CardDao {
     @Query(
         """
         SELECT * FROM cards
-        WHERE title LIKE '%' || :query || '%' OR subtitle LIKE '%' || :query || '%'
+        WHERE title LIKE '%' || :query || '%'
+           OR subtitle LIKE '%' || :query || '%'
+           OR EXISTS (
+                SELECT 1 FROM card_text
+                WHERE card_text.cardId = cards.id
+                  AND (card_text.title LIKE '%' || :query || '%'
+                    OR card_text.subtitle LIKE '%' || :query || '%')
+              )
         ORDER BY title
         LIMIT 100
         """,

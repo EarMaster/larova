@@ -18,12 +18,14 @@ import androidx.datastore.preferences.core.Preferences
 import app.larova.core.data.prefs.createPreferencesDataStore
 import app.larova.core.data.repository.RoomBoardRepository
 import app.larova.core.data.repository.RoomCardRepository
+import app.larova.core.data.repository.RoomCardTextRepository
 import app.larova.core.data.repository.RoomLogRepository
 import app.larova.core.data.repository.RoomMediaRepository
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.EntitlementCache
 import app.larova.core.domain.repository.EntitlementRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import app.larova.core.domain.repository.PinRepository
@@ -156,12 +158,14 @@ val appModule = module {
     single<LarovaDatabase> { createLarovaDatabase(androidContext()) }
     single { get<LarovaDatabase>().boardDao }
     single { get<LarovaDatabase>().cardDao }
+    single { get<LarovaDatabase>().cardTextDao }
     single { get<LarovaDatabase>().mediaDao }
     single { get<LarovaDatabase>().logDao }
 
     single<BoardRepository> { RoomBoardRepository(get()) }
     single<CardRepository> { RoomCardRepository(get()) }
-    single<MediaRepository> { RoomMediaRepository(get(), get()) }
+    single<CardTextRepository> { RoomCardTextRepository(get()) }
+    single<MediaRepository> { RoomMediaRepository(get(), get(), get()) }
     single<LogRepository> { RoomLogRepository(get()) }
 
     // One DataStore for the file, shared by everything that reads it. Two instances over the
