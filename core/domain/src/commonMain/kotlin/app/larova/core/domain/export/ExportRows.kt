@@ -2,6 +2,8 @@ package app.larova.core.domain.export
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
+import app.larova.core.domain.model.canonicalLanguageTag
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.LogKind
@@ -64,6 +66,28 @@ data class ExportCard(
     @Serializable(with = InstantSerializer::class) val updatedAt: Instant,
 )
 
+/**
+ * One tile's text in one language, as it is written to `content.json`.
+ *
+ * The only row type in this file with no `id`, and deliberately so: a variant has no identity of
+ * its own — it is one card's text in one language — and a surrogate identifier would let a single
+ * file carry two rows claiming the same tile and the same language with nothing to say which of
+ * them wins. `(cardId, lang)` is the key here exactly as it is in the database.
+ *
+ * [lang] is a plain `String` for the same reason [ExportCard.type] is: a tag this build has never
+ * seen costs one row rather than the file.
+ */
+@Serializable
+@OptIn(ExperimentalUuidApi::class)
+data class ExportCardText(
+    @Serializable(with = UuidSerializer::class) val cardId: Uuid,
+    val lang: String,
+    val title: String,
+    val subtitle: String? = null,
+    val payload: String,
+    @Serializable(with = InstantSerializer::class) val updatedAt: Instant,
+)
+
 @Serializable
 @OptIn(ExperimentalUuidApi::class)
 data class ExportMediaAsset(
@@ -116,6 +140,27 @@ internal fun ExportCard.toDomainOrNull(): Card? {
     )
 }
 
+/**
+ * Null for a language tag this build cannot make sense of, and for a variant with no title.
+ *
+ * A blank title would render an unreadable tile — `SaveCard` refuses one for the same reason — and
+ * a file can come from anywhere, so the refusal has to live here as well as in the editor. One row
+ * dropped, never the file.
+ */
+@OptIn(ExperimentalUuidApi::class)
+internal fun ExportCardText.toDomainOrNull(): CardText? {
+    val tag = canonicalLanguageTag(lang) ?: return null
+    if (title.isBlank()) return null
+    return CardText(
+        cardId = cardId,
+        lang = tag,
+        title = title,
+        subtitle = subtitle,
+        payload = payload,
+        updatedAt = updatedAt,
+    )
+}
+
 @OptIn(ExperimentalUuidApi::class)
 internal fun ExportMediaAsset.toDomain() = MediaAsset(
     id = id,
@@ -156,6 +201,16 @@ internal fun Card.toExport() = ExportCard(
     type = type.key,
     payload = payload,
     locale = locale,
+    updatedAt = updatedAt,
+)
+
+@OptIn(ExperimentalUuidApi::class)
+internal fun CardText.toExport() = ExportCardText(
+    cardId = cardId,
+    lang = lang,
+    title = title,
+    subtitle = subtitle,
+    payload = payload,
     updatedAt = updatedAt,
 )
 

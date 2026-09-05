@@ -50,8 +50,21 @@ data class ExportManifest(
          * either way. What it changes is what that build *says*: refused on the manifest with
          * "made with a newer version, update the app", instead of failing the decode after the
          * hash check and calling a healthy file incomplete.
+         *
+         * **3** — `content.json` gained a `cardText` block: whole-tile text variants, one row per
+         * tile and language, each carrying title, second line and payload together.
+         *
+         * Unlike `log`, this field was not declared from the first release, and that is what makes
+         * this bump mandatory rather than tidy. `ExportCodec.json` sets `ignoreUnknownKeys`, so
+         * **without it a 0.5.x build would import a v3 package, pass the hash check, restore every
+         * tile, report success — and drop every translation in the file without a word.** The
+         * person handed that backup would never be told. Raising the number turns that into
+         * `isReadable == false` and a sentence they can act on.
+         *
+         * Reading forward is untouched: a v1 or v2 file has no `cardText` key, the field defaults
+         * to empty, and `contentWrittenBeforeTranslationsExistedStillReads` pins it.
          */
-        const val CURRENT_SCHEMA_VERSION = 2
+        const val CURRENT_SCHEMA_VERSION = 3
 
         /** The container's extension. Also what a MIME registration would later claim. */
         const val FILE_EXTENSION = "larova"

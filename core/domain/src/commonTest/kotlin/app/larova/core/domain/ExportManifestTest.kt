@@ -30,6 +30,24 @@ class ExportManifestTest {
         assertEquals(emptyList(), content.log)
     }
 
+    /**
+     * The same shape of file, and the opposite conclusion, which is why both tests exist.
+     *
+     * `cardText` also defaults to empty, so a v1 or v2 `content.json` reads here without a
+     * complaint. But unlike `log` this field was *not* declared from the first release, so adding
+     * it **was** a format change and `schemaVersion` went to 3 with it. Without that bump a 0.5.x
+     * build would have imported a v3 package, passed the hash check, restored every tile, reported
+     * success — and silently dropped every translation in the file.
+     */
+    @Test
+    fun contentWrittenBeforeTranslationsExistedStillReads() {
+        val content = ExportCodec.json.decodeFromString<ExportContent>(
+            """{"boards":[],"cards":[],"media":[],"log":[]}""",
+        )
+
+        assertEquals(emptyList(), content.cardText)
+    }
+
     private fun manifest(schemaVersion: Int = ExportManifest.CURRENT_SCHEMA_VERSION) = ExportManifest(
         schemaVersion = schemaVersion,
         appVersion = "0.1.0",
@@ -40,19 +58,21 @@ class ExportManifestTest {
     )
 
     @Test
-    fun aVersionOneFileStillReads() {
+    fun everyOlderFileStillReads() {
         // Schema 1 is the anchor every later migration is measured from, and it is in the file
         // from the very first export precisely so this number never has to be guessed. Version 2
         // spells tile types as their frozen keys; a v1 file spells them as Kotlin constant names
-        // and must keep importing forever - see LegacyPackageFixture.
-        assertEquals(2, ExportManifest.CURRENT_SCHEMA_VERSION)
-        assertEquals(2, manifest().schemaVersion)
+        // and must keep importing forever - see LegacyPackageFixture. Version 3 added the
+        // cardText block, which an older file simply does not have.
+        assertEquals(3, ExportManifest.CURRENT_SCHEMA_VERSION)
+        assertEquals(3, manifest().schemaVersion)
         assertTrue(manifest(schemaVersion = 1).isReadable)
+        assertTrue(manifest(schemaVersion = 2).isReadable)
     }
 
     @Test
     fun aNewerFileIsDeclinedRatherThanGuessedAt() {
-        assertFalse(manifest(schemaVersion = 3).isReadable)
+        assertFalse(manifest(schemaVersion = 4).isReadable)
         assertTrue(manifest().isReadable)
         assertTrue(manifest(schemaVersion = 0).isReadable)
     }

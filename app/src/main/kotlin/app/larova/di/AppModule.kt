@@ -256,11 +256,11 @@ val appModule = module {
     factory { RecordSupport(get()) }
 
     // The version in the manifest is the app's own, read from the build rather than written twice.
-    factory { ExportPackage(get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
+    factory { ExportPackage(get(), get(), get(), get(), get(), get(), BuildConfig.VERSION_NAME) }
     factory { ObserveLastBackup(get()) }
     factory { RecordLastBackup(get()) }
     factory { ReadPackagePreview(get()) }
-    factory { ImportPackage(get(), get(), get(), get(), get(), get()) }
+    factory { ImportPackage(get(), get(), get(), get(), get(), get(), get()) }
 
     viewModel {
         AppViewModel(

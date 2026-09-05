@@ -2,10 +2,12 @@ package app.larova.core.domain
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
+import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.LogRepository
 import app.larova.core.domain.repository.MediaRepository
 import kotlin.time.Clock
@@ -46,6 +48,38 @@ class FakeBoardRepository(initial: List<Board> = emptyList()) : BoardRepository 
 
     override suspend fun delete(id: Uuid) {
         boards.value = boards.value.filterNot { it.id == id }
+    }
+}
+
+/**
+ * Variants, keyed the way the table is.
+ *
+ * The cascade is modelled rather than assumed: SQLite removes a tile's variants when the tile goes,
+ * and a fake that did not would let a test pass on a wipe that left translations behind.
+ */
+@OptIn(ExperimentalUuidApi::class)
+class FakeCardTextRepository(initial: List<CardText> = emptyList()) : CardTextRepository {
+
+    val texts = MutableStateFlow(initial)
+
+    override fun observeAll(): Flow<List<CardText>> = texts
+
+    override fun observeForCard(cardId: Uuid): Flow<List<CardText>> =
+        texts.map { list -> list.filter { it.cardId == cardId } }
+
+    override suspend fun all(): List<CardText> = texts.value
+
+    override suspend fun upsert(text: CardText) {
+        texts.value = texts.value.filterNot { it.cardId == text.cardId && it.lang == text.lang } +
+            text
+    }
+
+    override suspend fun delete(cardId: Uuid, lang: String) {
+        texts.value = texts.value.filterNot { it.cardId == cardId && it.lang == lang }
+    }
+
+    override suspend fun deleteForCard(cardId: Uuid) {
+        texts.value = texts.value.filterNot { it.cardId == cardId }
     }
 }
 

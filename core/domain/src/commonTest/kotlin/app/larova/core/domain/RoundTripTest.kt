@@ -1,12 +1,16 @@
 package app.larova.core.domain
 
+import app.larova.core.domain.export.ExportCardText
 import app.larova.core.domain.export.ExportCodec
+import app.larova.core.domain.export.ExportContent
 import app.larova.core.domain.export.ExportCounts
 import app.larova.core.domain.export.ExportManifest
 import app.larova.core.domain.export.ImportMode
 import app.larova.core.domain.export.PackageIo
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
+import app.larova.core.domain.model.resolveCardText
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
@@ -451,6 +455,135 @@ class RoundTripTest {
     }
 
     /**
+     * A translation comes back with its tile, and comes back attached to it.
+     *
+     * Not counted as a tile, which is the design stated as an assertion: the counts either side of
+     * a wipe are the same 8 they have always been, because a translation is a tile's text and not
+     * a tile.
+     */
+    @Test
+    fun aTranslationSurvivesTheRoundTrip() = runTest {
+        val world = World()
+        world.fill()
+        assertIs<ExportPackage.Result.Written>(world.export(destination))
+
+        world.wipe()
+        val result = world.import(destination, ImportMode.REPLACE)
+
+        assertIs<ImportPackage.Result.Imported>(result)
+        assertEquals(8, result.cards)
+
+        val bedtime = world.cards.observeAllCards().first().first { it.title == "Bedtime" }
+        val variants = world.cardText.all()
+        assertEquals(1, variants.size)
+        assertEquals(bedtime.id, variants.single().cardId)
+        assertEquals("tr", variants.single().lang)
+        assertEquals("Yatma vakti", variants.single().title)
+
+        // And it is the text a caregiver reading Turkish would be shown.
+        assertEquals("Yatma vakti", resolveCardText(bedtime, variants, "tr").title)
+    }
+
+    /** Replacing everything replaces the translations too, rather than leaving orphans behind. */
+    @Test
+    fun replacingThrowsAwayTheTranslationsToo() = runTest {
+        val shelf = mutableMapOf<String, MutableMap<String, String>>()
+        val theirs = World(shelf)
+        theirs.fill()
+        assertIs<ExportPackage.Result.Written>(theirs.export(destination))
+
+        val mine = World(shelf)
+        mine.fill()
+        val ownVariant = mine.cardText.all().single()
+
+        assertIs<ImportPackage.Result.Imported>(mine.import(destination, ImportMode.REPLACE))
+
+        val after = mine.cardText.all()
+        assertEquals(1, after.size)
+        // The one that is there came out of the file, not from before the replace.
+        assertTrue(after.none { it.cardId == ownVariant.cardId && it.updatedAt != ownVariant.updatedAt })
+    }
+
+    /** Importing the same package twice is the same rows: the key came with the file. */
+    @Test
+    fun mergingTwiceDoesNotDoubleTheTranslations() = runTest {
+        val shelf = mutableMapOf<String, MutableMap<String, String>>()
+        val theirs = World(shelf)
+        theirs.fill()
+        assertIs<ExportPackage.Result.Written>(theirs.export(destination))
+
+        val mine = World(shelf)
+        mine.import(destination, ImportMode.MERGE)
+        mine.import(destination, ImportMode.MERGE)
+
+        assertEquals(1, mine.cardText.all().size)
+    }
+
+    /**
+     * A translation whose payload this build cannot read is left where it is.
+     *
+     * The tile itself comes back untouched — an unreadable payload is copied through so a newer
+     * build can still render it — but its translation cannot be checked against the tile's type,
+     * and a variant that might be a different kind of tile is the half-translated tile this design
+     * exists to prevent. Refused, and still in the file for the version that understands it.
+     */
+    @Test
+    fun aTranslationThisBuildCannotCheckIsLeftInTheFile() = runTest {
+        val world = World()
+        world.fill()
+        assertIs<ExportPackage.Result.Written>(world.export(destination))
+
+        val future = world.cards.observeAllCards().first().first { it.title == "From the future" }
+        world.putVariantInFile(destination, future.id, "tr", future.payload)
+
+        world.wipe()
+        val result = world.import(destination, ImportMode.REPLACE)
+
+        assertIs<ImportPackage.Result.Imported>(result)
+        // The tile is back, payload and all.
+        assertEquals(8, result.cards)
+        // The Turkish Bedtime is back; the one on the unreadable tile is not.
+        assertEquals(listOf("Yatma vakti"), world.cardText.all().map { it.title })
+    }
+
+    /** And so is one naming a tile that is not in the file at all. */
+    @Test
+    fun aTranslationForATileThatIsNotInTheFileIsDropped() = runTest {
+        val world = World()
+        world.fill()
+        assertIs<ExportPackage.Result.Written>(world.export(destination))
+        world.putVariantInFile(destination, Uuid.random(), "tr", """{"type":"note"}""")
+
+        world.wipe()
+        assertIs<ImportPackage.Result.Imported>(world.import(destination, ImportMode.REPLACE))
+
+        assertEquals(listOf("Yatma vakti"), world.cardText.all().map { it.title })
+    }
+
+    /**
+     * A variant claiming to be a different kind of tile is refused.
+     *
+     * This is what "never a half-translated tile" means at the byte level. It would pass every
+     * decode and then fail on the screen of the person who opened it, and a file can come from
+     * anywhere — so the editor refusing it is not enough.
+     */
+    @Test
+    fun aTranslationWhosePayloadIsADifferentTileTypeIsRefused() = runTest {
+        val world = World()
+        world.fill()
+        assertIs<ExportPackage.Result.Written>(world.export(destination))
+
+        val bedtime = world.cards.observeAllCards().first().first { it.title == "Bedtime" }
+        world.putVariantInFile(destination, bedtime.id, "uk", """{"type":"note"}""")
+
+        world.wipe()
+        assertIs<ImportPackage.Result.Imported>(world.import(destination, ImportMode.REPLACE))
+
+        // The Turkish guide is back; the Ukrainian "note" on a guide tile is not.
+        assertEquals(listOf("Yatma vakti"), world.cardText.all().map { it.title })
+    }
+
+    /**
      * One installation: its repositories, its media directory, and the two use cases.
      *
      * [shelf] is the shared storage the package is written to. Two Worlds pointing at the same shelf
@@ -460,6 +593,7 @@ class RoundTripTest {
     private class World(shelf: MutableMap<String, MutableMap<String, String>> = mutableMapOf()) {
         val boards = FakeBoardRepository()
         val cards = FakeCardRepository()
+        val cardText = FakeCardTextRepository()
         val media = FakeMediaRepository()
         val log = FakeLogRepository()
         val mediaFiles = FakeMediaFiles()
@@ -468,10 +602,10 @@ class RoundTripTest {
         private val ensureRoot = EnsureRootBoard(boards)
 
         suspend fun export(destination: String, label: String? = null) =
-            ExportPackage(boards, cards, media, log, io, APP_VERSION)(destination, label)
+            ExportPackage(boards, cards, cardText, media, log, io, APP_VERSION)(destination, label)
 
         suspend fun import(source: String, mode: ImportMode) =
-            ImportPackage(boards, cards, media, log, io, ensureRoot)(source, mode)
+            ImportPackage(boards, cards, cardText, media, log, io, ensureRoot)(source, mode)
 
         suspend fun rootId(): Uuid = ensureRoot().id
 
@@ -485,7 +619,27 @@ class RoundTripTest {
             addPicture()
             addRecording()
             addTiles(rootId = root.id, folderId = folder.id)
+            addTranslation()
             addLog()
+        }
+
+        /**
+         * One tile in a second language. Deliberately not a second tile: the counts every test in
+         * this file asserts stay 2 boards, 8 cards and 2 media, because a translation is not a
+         * tile — which is the whole design, stated as an assertion nobody had to write.
+         */
+        private suspend fun addTranslation() {
+            val bedtime = cards.observeAllCards().first().first { it.title == "Bedtime" }
+            cardText.upsert(
+                CardText(
+                    cardId = bedtime.id,
+                    lang = "tr",
+                    title = "Yatma vakti",
+                    subtitle = "Her akşam",
+                    payload = bedtime.payload,
+                    updatedAt = bedtime.updatedAt,
+                ),
+            )
         }
 
         /**
@@ -703,9 +857,50 @@ class RoundTripTest {
         }
 
         /** What an uninstall leaves behind: nothing. */
+        /**
+         * Writes one more variant straight into the package on the shelf.
+         *
+         * Rewriting `content.json` by hand rather than through `ExportPackage`, because these are
+         * the rows an export written here would never produce: one naming a tile this build cannot
+         * read, one naming no tile at all, one whose payload is the wrong kind. A file arrives from
+         * somebody else's phone, or from a text editor, and the import has to hold either way. The
+         * hash is recomputed so the file stays well-formed and the refusal under test is the row's,
+         * not the checksum's.
+         */
+        suspend fun putVariantInFile(
+            destination: String,
+            cardId: Uuid,
+            lang: String,
+            payload: String,
+        ) {
+            val entries = store.packages.getValue(destination)
+            val content = ExportCodec.json.decodeFromString<ExportContent>(
+                entries.getValue(ExportManifest.CONTENT_ENTRY),
+            )
+            val amended = content.copy(
+                cardText = content.cardText + ExportCardText(
+                    cardId = cardId,
+                    lang = lang,
+                    title = "Sonradan eklendi",
+                    payload = payload,
+                    updatedAt = Clock.System.now(),
+                ),
+            )
+            val json = ExportCodec.json.encodeToString(amended)
+            entries[ExportManifest.CONTENT_ENTRY] = json
+
+            val manifest = ExportCodec.decodeManifestOrNull(
+                entries.getValue(ExportManifest.MANIFEST_ENTRY),
+            )!!
+            entries[ExportManifest.MANIFEST_ENTRY] = ExportCodec.encode(
+                manifest.copy(contentSha256 = io.digest.sha256(json)),
+            )
+        }
+
         fun wipe() {
             boards.boards.value = emptyList()
             cards.cards.value = emptyList()
+            cardText.texts.value = emptyList()
             media.assets.value = emptyList()
             log.entries.value = emptyList()
             mediaFiles.deleteAll()

@@ -2,6 +2,7 @@ package app.larova.core.domain.export
 
 import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
+import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.LogEntry
 import app.larova.core.domain.model.MediaAsset
 import kotlinx.serialization.SerializationException
@@ -58,13 +59,16 @@ object ExportCodec {
         }
         val cards = wire.cards.mapNotNull { it.toDomainOrNull() }
         val log = wire.log.mapNotNull { it.toDomainOrNull() }
+        val cardText = wire.cardText.mapNotNull { it.toDomainOrNull() }
         return DecodedContent(
             boards = wire.boards.map { it.toDomain() },
             cards = cards,
             media = wire.media.map { it.toDomain() },
             log = log,
+            cardText = cardText,
             skippedCards = wire.cards.size - cards.size,
             skippedLogEntries = wire.log.size - log.size,
+            skippedCardText = wire.cardText.size - cardText.size,
         )
     }
 }
@@ -79,12 +83,20 @@ object ExportCodec {
  * [skippedLogEntries] is counted because it is free and true, but nothing shows it. A log line is a
  * record of something that happened rather than something a family wrote, and the only sentence
  * worth putting on that screen is about tiles.
+ *
+ * [skippedCardText] is the same kind of number and is shown for the same reason: none. It counts
+ * only rows the *decode* declined — a language tag that is not one, a variant with no title. A
+ * variant dropped later because its tile was skipped is not counted here at all, because that is
+ * the same event as the skipped tile, which [skippedCards] already reports in a sentence somebody
+ * can act on.
  */
 data class DecodedContent(
     val boards: List<Board> = emptyList(),
     val cards: List<Card> = emptyList(),
     val media: List<MediaAsset> = emptyList(),
     val log: List<LogEntry> = emptyList(),
+    val cardText: List<CardText> = emptyList(),
     val skippedCards: Int = 0,
     val skippedLogEntries: Int = 0,
+    val skippedCardText: Int = 0,
 )
