@@ -129,6 +129,11 @@ Replace the line `## [Unreleased]` (at the top of the Unreleased section) with:
 
 This preserves an empty Unreleased section for future work and stamps the release with today's date.
 
+**Do not hard-wrap the bullets.** Each bullet is a single line in the file, however long. GitHub
+renders a release body with hard line breaks on, so every source newline becomes a `<br>`: a
+hand-wrapped bullet reads as a paragraph broken mid-sentence on a phone, which is where most people
+open a release. `CHANGELOG.md` is the one Markdown file in the repo with no column limit.
+
 ## Step 5 — Check the screenshot goldens
 
 A release commit is the last chance to catch a stale golden before CI fails on it. The screenshot
