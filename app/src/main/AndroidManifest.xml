@@ -80,6 +80,30 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+
+        <!--
+          What the Translate control on a tile needs to be able to see. Larova translates nothing
+          itself and has no permission with which to; it asks whether anything here will take the
+          words on a tile, and hands them over if so.
+
+          Two actions because phones differ, not because of the SDK level: ACTION_TRANSLATE is
+          tried first and is where a phone with a translation app lands, and PROCESS_TEXT is the
+          older route that Google Translate and others still register for. TranslateIntents builds
+          exactly these two, in this order.
+
+          The mimeType below has to match the launched intent exactly. Declaring the action alone
+          while launching one with a type set is the classic reason queryIntentActivities comes
+          back empty on Android 11 and later — and the control then never appears at all, which
+          looks like a feature that was never built rather than a declaration that is one line
+          short. QUERY_ALL_PACKAGES is deliberately not used here either.
+        -->
+        <intent>
+            <action android:name="android.intent.action.TRANSLATE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
     </queries>
 
     <application

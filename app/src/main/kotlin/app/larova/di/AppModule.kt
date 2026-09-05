@@ -52,7 +52,11 @@ import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ExportPackage
 import app.larova.core.domain.usecase.ObserveEntitlement
 import app.larova.core.domain.usecase.ObserveLastBackup
+import app.larova.core.domain.app.Translators
+import app.larova.core.domain.usecase.CanTranslate
 import app.larova.core.domain.usecase.ObserveLockedTypes
+import app.larova.core.domain.usecase.Translations
+import app.larova.core.platform.AndroidTranslators
 import app.larova.core.domain.usecase.ObserveSupportCount
 import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
@@ -137,6 +141,7 @@ val appModule = module {
     single<MediaFiles> { AndroidMediaFiles(get()) }
     single<ImageStore> { AndroidImageStore(androidContext(), get()) }
     single<InstalledApps> { AndroidInstalledApps(androidContext()) }
+    single<Translators> { AndroidTranslators(androidContext()) }
     single<Shortcuts> { AndroidShortcuts(androidContext()) }
     single<MediaIntake> { AndroidMediaIntake(androidContext(), get()) }
     // A singleton because a microphone is: two recorders on one device is not an error the framework
@@ -221,6 +226,8 @@ val appModule = module {
     factory { PickableApps(get()) }
     factory { IsAppInstalled(get()) }
     factory { Apps(get(), get()) }
+    factory { CanTranslate(get()) }
+    factory { Translations(get()) }
     factory { AddImage(get(), get()) }
     factory { AddMediaFile(get(), get()) }
     factory { LoadImage(get(), get()) }
@@ -267,7 +274,7 @@ val appModule = module {
     viewModel { TransferViewModel(get(), get(), get(), get(), get()) }
     // The card id comes from the navigation route, so it is passed in rather than injected.
     viewModel { parameters ->
-        CardViewModel(parameters.get(), get(), get(), get(), get(), get())
+        CardViewModel(parameters.get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
         EditCardViewModel(parameters.get(), get(), get(), get(), get(), get(), get(), get())

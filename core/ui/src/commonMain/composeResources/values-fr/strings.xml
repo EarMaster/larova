@@ -355,4 +355,5 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Traduire cette tuile</string>
 </resources>

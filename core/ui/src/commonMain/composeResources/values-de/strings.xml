@@ -356,4 +356,5 @@
     <string name="cd_step_picture">Bild zu Schritt %1$d</string>
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <string name="cd_translate">Diese Kachel übersetzen</string>
 </resources>

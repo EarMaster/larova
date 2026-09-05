@@ -30,6 +30,19 @@ interface ExternalActions {
     fun openApp(packageName: String)
 
     /**
+     * Hands [text] to whatever translation app is on this phone.
+     *
+     * Larova translates nothing itself: there is no internet permission here, and every on-device
+     * translation library within reach downloads its models over the network. The text goes to an
+     * app the person already chose, which does the work under its own permissions and its own
+     * policy. Nothing comes back — the person copies what they want out of it themselves.
+     *
+     * *What* text a tile amounts to is decided in `:core:domain` by `plainTextOf`, so the numbers
+     * and addresses on a tile are excluded there rather than here.
+     */
+    fun translate(text: String)
+
+    /**
      * Whether this phone has a per-app language screen to send somebody to.
      *
      * Android grew one in 13; below that the app's language is the phone's and there is nothing to

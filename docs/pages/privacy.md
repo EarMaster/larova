@@ -58,6 +58,23 @@ Larova never dials. Tapping a contact opens Android's own phone app with the num
 the person holding the phone decides whether to place the call. The app has no permission to dial
 on its own, and it never transmits a location.
 
+### Translation
+
+Larova never translates anything. It has no internet connection to do it with, and no translation
+software inside it.
+
+What it offers instead is a handover. On a tile there is a button that passes the words on that
+tile — the title, the steps, the notes — to a translation app already installed on the phone, the
+same way tapping a contact passes a number to the phone app. That app does the work under its own
+permissions and its own privacy policy, which is worth reading if the tile holds something private.
+Nothing comes back into Larova, and nothing about the handover is recorded.
+
+Phone numbers, web addresses and app names are deliberately left out of what is passed over. None
+of them mean anything different in another language, and a translated one pasted back would be a
+tile that no longer works.
+
+If no translation app is installed, the button is not shown.
+
 ### The activity log
 
 Larova notes locally when a tile was opened and when a checklist item was ticked, so a parent can

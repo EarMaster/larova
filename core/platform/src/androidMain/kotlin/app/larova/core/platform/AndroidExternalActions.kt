@@ -16,6 +16,11 @@ import app.larova.core.domain.model.sanitizePhoneNumber
  *
  * A missing handler is not an error worth crashing on: a tablet with no dialler and no browser is
  * a perfectly ordinary device for this app to be installed on.
+ *
+ * [translate] is the one method here that looks before it launches, and the reason is worth stating
+ * rather than reading as an inconsistency: it has *two* intents to choose between, and a
+ * `try`/`catch` around `startActivity` cannot choose — it can only find out afterwards that the
+ * first one failed. [openApp] already asks the same kind of question for the same kind of reason.
  */
 class AndroidExternalActions(private val context: Context) : ExternalActions {
 
@@ -58,6 +63,15 @@ class AndroidExternalActions(private val context: Context) : ExternalActions {
                 Uri.fromParts("package", context.packageName, null),
             ),
         )
+    }
+
+    override fun translate(text: String) {
+        if (text.isBlank()) return
+        val intent = TranslateIntents.firstResolvable(
+            context.packageManager,
+            TranslateIntents.candidates(text),
+        ) ?: return
+        launch(intent)
     }
 
     private fun launch(intent: Intent) {

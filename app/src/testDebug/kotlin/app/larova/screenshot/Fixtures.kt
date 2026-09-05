@@ -137,6 +137,18 @@ internal object Fixtures {
         ),
     )
 
+    /**
+     * The same note, on a phone that has a translation app on it.
+     *
+     * The flattened text is what the ViewModel would have built from the title and the payload.
+     * It never reaches the screen — only the hand-off — so it is here to make the control real
+     * rather than to be read.
+     */
+    val noteTranslatable = note.copy(
+        canTranslate = true,
+        translationText = "Food and drink\n\nNo nuts and no cow milk.",
+    )
+
     val checklist = CardUiState(
         title = "Bag for nursery",
         colorToken = "sky",

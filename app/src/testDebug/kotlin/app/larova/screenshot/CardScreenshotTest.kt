@@ -67,6 +67,17 @@ abstract class CardScreenshotTest : ScreenshotTest() {
     @Test
     fun missing() = card("missing", Fixtures.missing)
 
+    /**
+     * The same tile on a phone that has a translation app on it.
+     *
+     * One golden rather than one per type: the control is in the bar and does not change with the
+     * payload, and what is worth a picture is that it sits left of nothing in caregiver view and
+     * still leaves the title room. Every other card golden has `canTranslate` false, which is what
+     * keeps them all unchanged.
+     */
+    @Test
+    fun a_tile_on_a_phone_that_can_translate() = card("note_translate", Fixtures.noteTranslatable)
+
     private fun card(name: String, state: CardUiState) {
         capture("card/$name") { Card(state) }
     }
@@ -80,6 +91,7 @@ abstract class CardScreenshotTest : ScreenshotTest() {
             onPrepareCall = {},
             onOpenUrl = {},
             onOpenApp = {},
+            onTranslate = {},
             onEdit = {},
             onBack = {},
             onHelp = {},

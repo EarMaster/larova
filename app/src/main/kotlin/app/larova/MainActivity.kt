@@ -99,6 +99,7 @@ private fun LarovaApp(openCardId: String? = null) {
             onOpenLanguageSettings = actions::openAppLanguageSettings
                 .takeIf { actions.canOpenAppLanguageSettings },
             onOpenUrl = actions::openUrl,
+            onTranslate = actions::translate,
             onOpenApp = actions::openApp,
             openCardId = openCardId,
         )

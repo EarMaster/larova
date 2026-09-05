@@ -13,6 +13,12 @@ docs-only changes do not belong here.
 ## [Unreleased]
 
 ### Added
+- Tiles can now be translated. A tile opened by somebody who does not read the language it was
+  written in has a globe in the top bar: tapping it hands the words on that tile to a translation
+  app already on the phone. Larova itself translates nothing and sends nothing anywhere — it
+  passes the words to an app you chose, the same way tapping a contact passes a number to the
+  phone app. Phone numbers, web addresses and app names are left out, because a translated one
+  would stop working. If there is no translation app on the phone, the globe is not shown.
 - A Language row in the settings, for the person holding the phone. It opens Android’s own
   language screen for Larova, where you can set the app to a different language from the rest
   of the phone — so a caregiver can read the buttons in their own language without changing

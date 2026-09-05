@@ -1,6 +1,6 @@
 # Localization
 
-Fourteen languages at launch. The app is translated; user content is not.
+Fourteen languages at launch. The app is translated; Larova never translates what a parent wrote.
 
 ---
 
@@ -8,7 +8,13 @@ Fourteen languages at launch. The app is translated; user content is not.
 
 **The app is translated.** Buttons, labels, settings, templates.
 
-**User content is not.** What a parent writes stays exactly as written, in whatever language they wrote it. There is no translation feature, and therefore no reason for content to ever leave the device.
+**Larova never translates user content.** What a parent writes stays exactly as written, in whatever language they wrote it. The app has no internet permission and never will, and every on-device translation library within reach downloads its models over the network — so there is no version of this where Larova does the translating.
+
+**What it does instead is hand over.** A tile screen offers to pass the words on that tile to a translation app the person already has, the same way a call tile passes a number to the dialler and a website tile passes an address to the browser. The words go to an app they chose, under that app's permissions and that app's policy; nothing comes back, and nothing is stored. `plainTextOf` decides what "the words on a tile" means, and it deliberately excludes the numbers, addresses and package names — none of which are translatable, and all of which would break the tile if a translator's version of them were pasted back.
+
+This is a change of position, made knowingly. The earlier wording here was *"there is no translation feature, and therefore no reason for content to ever leave the device"*, and the second half of that sentence stopped being true the moment the first half did. What has not changed is the part invariant 6 rests on: **Larova itself still sends nothing anywhere.** A handover is the person's own act, on their own tap, into an app of their own choosing.
+
+See `docs/pages/privacy.md`, "Translation", for the same fact in the words a parent reads.
 
 ## 2. Why fourteen
 

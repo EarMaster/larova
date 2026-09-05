@@ -78,6 +78,7 @@ fun LarovaNavHost(
     /** Null on a phone with no per-app language screen; the settings row is then absent. */
     onOpenLanguageSettings: (() -> Unit)?,
     onOpenUrl: (String) -> Unit,
+    onTranslate: (String) -> Unit,
     onOpenApp: (String) -> Unit,
     openCardId: String? = null,
     modifier: Modifier = Modifier,
@@ -141,6 +142,10 @@ fun LarovaNavHost(
                 },
                 onOpenUrl = onOpenUrl,
                 onOpenApp = onOpenApp,
+                // Straight through, unlike onPrepareCall: there is nothing for the ViewModel to
+                // record here. Handing words to another app is not something that happened to the
+                // tile, and a log line about it would be a line about the caregiver instead.
+                onTranslate = onTranslate,
                 onEdit = { navController.navigate(CardEditRoute(route.cardId)) },
                 onBack = goBack,
                 onHelp = openHelp,

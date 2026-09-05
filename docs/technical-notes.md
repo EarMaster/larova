@@ -197,6 +197,10 @@ The entitlement is **cache-positive and never downgrades**. A failed store query
 </queries>
 ```
 
+**Translating a tile.** Same shape, one layer along: `Intent.ACTION_TRANSLATE` with the words on the tile in `EXTRA_TEXT`, falling back to `ACTION_PROCESS_TEXT` (read-only, `text/plain`) on a phone whose translator only registers for the older action. `TranslateIntents` builds both and picks the first one anything answers, so no `Build.VERSION` check is involved — what matters is what is installed, not what the SDK level allows. Both actions need their own `<queries>` entries, and the `PROCESS_TEXT` one has to carry `<data android:mimeType="text/plain" />` because the launched intent does: a declaration that does not mirror the intent returns nothing on Android 11 and later, and the control then never appears at all.
+
+What is handed over is `plainTextOf`, in `:core:domain` — the title, the second line and the words in the payload, never the phone numbers, addresses or package names. Larova translates nothing itself and cannot: there is no internet permission, and every on-device translation library within reach downloads its models over the network. See `docs/localization.md` §1.
+
 The `QUERY_ALL_PACKAGES` permission is deliberately **not** used — it requires justification on Play and is unnecessary here.
 
 **Picking media** through `PickVisualMedia` (photo picker). No `READ_MEDIA_*` permission required.

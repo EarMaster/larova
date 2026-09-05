@@ -20,10 +20,12 @@ import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.MoreVertical
 import app.larova.core.ui.icon.TileSymbol
 import app.larova.core.ui.icon.image
+import app.larova.core.ui.icon.Translate
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.arrange_title
 import app.larova.core.ui.resources.cd_edit_tile
 import app.larova.core.ui.resources.cd_menu
+import app.larova.core.ui.resources.cd_translate
 import app.larova.core.ui.resources.home_add_tile
 import org.jetbrains.compose.resources.stringResource
 
@@ -48,6 +50,7 @@ fun CardScreen(
     onPrepareCall: (String) -> Unit,
     onOpenUrl: (String) -> Unit,
     onOpenApp: (String) -> Unit,
+    onTranslate: (String) -> Unit,
     onEdit: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
@@ -68,6 +71,25 @@ fun CardScreen(
         // the frame needs to know to lay this out on a tablet.
         contentWidth = if (isFolder) ContentWidth.Grid else ContentWidth.Reading,
         actions = {
+            // Outside CardActions rather than inside it, and that is the whole point: CardActions
+            // returns early in caregiver view, and the person who cannot read the tile is exactly
+            // the person in caregiver view. The slot itself belongs to nobody.
+            //
+            // In the bar rather than above the content, because a guide is one step at a time in a
+            // weighted scroller — a strip in the content would cost the most height on the tile
+            // that has the least, and at the 200 % font scale this app promises that is the
+            // difference between a step fitting and not.
+            //
+            // First, so it does not move when parent view adds the edit button beside it, and so a
+            // right-to-left layout mirrors it along with everything else.
+            if (state.canTranslate && state.translationText.isNotBlank()) {
+                IconButton(onClick = { onTranslate(state.translationText) }) {
+                    Icon(
+                        imageVector = Translate,
+                        contentDescription = stringResource(Res.string.cd_translate),
+                    )
+                }
+            }
             CardActions(
                 state = state,
                 isParentView = isParentView,

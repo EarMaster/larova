@@ -368,4 +368,13 @@
          placeholders so the order stays the translator's to decide. -->
     <string name="cd_table_cell">%1$s, %2$s</string>
 
+    <!-- ===== Translation. Larova translates nothing itself and has no permission with which to:
+         the words on a tile are handed to a translation app the person already has, and nothing
+         comes back. What counts as "the words on a tile" is `plainTextOf` — never the numbers,
+         addresses or package names on it.
+
+         One string, and it is a content description: the control is a globe in the app bar, and
+         the promise about what leaves the phone lives in the privacy policy rather than on a
+         screen somebody is reading in a hurry. ===== -->
+    <string name="cd_translate">Translate this tile</string>
 </resources>
