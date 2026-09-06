@@ -15,7 +15,7 @@ description: An offline app you set up on your child's phone, so grandparents, a
 		</div>
 		<p class="button-note">
 			{% if site.playstore_link and site.playstore_link != '' %}
-				Android only. iOS is planned but not scheduled.
+				Free to install. Android only — iOS is planned but not scheduled.
 			{% else %}
 				Not released yet. The app is in development in the open — the concept, design system and plan are all in the repository.
 			{% endif %}
@@ -103,15 +103,20 @@ description: An offline app you set up on your child's phone, so grandparents, a
 			<p class="subtext">Everything inside a tile is written by you. Larova provides the shape; you provide the content.</p>
 			<ul class="tiles">
 				<li><strong>Guide</strong><span>Numbered steps, one per screen, each with text and optionally a picture or a recording.</span></li>
-				<li><strong>Video and audio</strong><span>From the gallery, or recorded on the spot in your own voice.</span></li>
-				<li><strong>Note</strong><span>Free text with headings and bullet points.</span></li>
-				<li><strong>Checklist</strong><span>Items to tick off, optionally resetting each morning.</span></li>
+				<li><strong>Checklist</strong><span>Things to tick off, optionally resetting each morning.</span></li>
+				<li><strong>Note</strong><span>Free text with headings and lists.</span></li>
 				<li><strong>Table</strong><span>Columns and rows you define yourself.</span></li>
-				<li><strong>Call</strong><span>A name, a number and a photo. One tap to dial.</span></li>
+				<li><strong>Call</strong><span>A name, a number and a relation. Tapping it opens the phone app with the number ready.</span></li>
 				<li><strong>Website</strong><span>A link that opens in the browser.</span></li>
-				<li><strong>App shortcut</strong><span>Opens another app already installed on the phone.</span></li>
+				<li class="paid"><strong>App <span class="lock">Full version</span></strong><span>Opens another app already installed on the phone.</span></li>
+				<li class="paid"><strong>Video <span class="lock">Full version</span></strong><span>A video from the ones already on the phone.</span></li>
+				<li class="paid"><strong>Sound <span class="lock">Full version</span></strong><span>A sound file, or one you record on the spot in your own voice.</span></li>
 				<li><strong>Folder</strong><span>Groups tiles together.</span></li>
 			</ul>
+			<div class="note">
+				<p><strong>Three of them need the full version.</strong> App, Video and Sound are unlocked by a single payment through Google Play — one payment, no subscription, and everything else in Larova stays free.</p>
+				<p>The lock is on <em>making</em> those three, never on reading them. A tile of a paid kind always opens, including one that reached the phone in someone else's backup, so nothing you write is ever locked away from the person you handed the phone to. A copy built from the source has no paid tier at all.</p>
+			</div>
 		</div>
 	</section>
 
@@ -143,6 +148,9 @@ description: An offline app you set up on your child's phone, so grandparents, a
 	<section class="bottom-cta">
 		<h2>Free software, <strong>and built in the open</strong></h2>
 		<div class="buttons">
+			{% if site.playstore_link and site.playstore_link != '' %}
+				<a href="{{ site.playstore_link }}">Get it on Google Play</a>
+			{% endif %}
 			<a class="secondary" href="{{ site.github_link }}">Read the source</a>
 		</div>
 	</section>

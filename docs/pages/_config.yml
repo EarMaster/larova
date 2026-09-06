@@ -37,8 +37,9 @@ social:
 
 github_link: https://github.com/EarMaster/larova
 releases_link: https://github.com/EarMaster/larova/releases
-# Filled in once the listing is live; the download button hides itself while it is blank.
-playstore_link:
+# The store URL is derived from the application ID, so it is stable and needs no lookup.
+# The download button hides itself while this is blank.
+playstore_link: https://play.google.com/store/apps/details?id=app.larova
 
 timezone: Etc/UTC
 permalink: pretty
