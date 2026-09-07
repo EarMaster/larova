@@ -94,6 +94,9 @@ class FakeCardRepository(initial: List<Card> = emptyList()) : CardRepository {
     override fun observeAllCards(): Flow<List<Card>> =
         cards.map { list -> list.sortedBy { it.sortIndex } }
 
+    override fun observeCard(id: Uuid): Flow<Card?> =
+        cards.map { list -> list.firstOrNull { it.id == id } }
+
     override fun search(query: String): Flow<List<Card>> =
         cards.map { list ->
             list.filter {

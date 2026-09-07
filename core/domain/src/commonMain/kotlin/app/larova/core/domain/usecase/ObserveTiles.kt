@@ -80,6 +80,19 @@ class ObserveTile(private val cards: CardRepository) {
         val uuid = parseUuidOrNull(id) ?: return null
         return cards.find(uuid)?.toTileOrNull()
     }
+
+    /**
+     * The same tile, for as long as it is being looked at.
+     *
+     * The suspending form above is for the screens that read a tile in order to do something with
+     * it once — the editor loads it into a form, the log names it. This one is for the screen that
+     * *is* the tile: it stays on the back stack while the editor is open on top of it, so anything
+     * read once there is what the tile said before the edit.
+     */
+    fun flow(id: String): Flow<Tile?> {
+        val uuid = parseUuidOrNull(id) ?: return flowOf(null)
+        return cards.observeCard(uuid).map { it?.toTileOrNull() }
+    }
 }
 
 internal fun Card.toTileOrNull(): Tile? =

@@ -68,6 +68,9 @@ interface CardDao {
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun find(id: String): CardEntity?
 
+    @Query("SELECT * FROM cards WHERE id = :id")
+    fun observeCard(id: String): Flow<CardEntity?>
+
     @Query("SELECT * FROM cards")
     suspend fun all(): List<CardEntity>
 
