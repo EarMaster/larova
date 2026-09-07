@@ -17,6 +17,8 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-09-07
+
 ### Changed
 - Saving a translation now closes the editor and shows the tile in the language you just wrote, instead of returning to the tile's own text. Seeing the words on the tile is the point of writing them.
 

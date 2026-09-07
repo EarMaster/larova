@@ -1,0 +1,1 @@
+As tabelas podem ser reordenadas: mova uma coluna ou uma linha um lugar para cima ou para baixo, em vez de reescrever a tabela para mudar a ordem. E ao guardar um mosaico escrito noutro idioma, o mosaico passa a ser mostrado nesse idioma.

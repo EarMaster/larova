@@ -1,0 +1,1 @@
+Tabellen lassen sich jetzt umsortieren: Spalten und Zeilen können Schritt für Schritt nach oben oder unten verschoben werden, statt die Tabelle für eine andere Reihenfolge neu zu tippen. Und wenn Sie eine Kachel in einer anderen Sprache gespeichert haben, wird die Kachel gleich in dieser Sprache angezeigt.

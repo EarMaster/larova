@@ -1,0 +1,1 @@
+Tablolar artık yeniden sıralanabiliyor: bir sütunu ya da satırı birer adım yukarı veya aşağı taşıyın; sırayı değiştirmek için tabloyu yeniden yazmanız gerekmiyor. Ayrıca başka bir dilde yazdığınız bir kartı kaydettiğinizde kart hemen o dilde gösteriliyor.

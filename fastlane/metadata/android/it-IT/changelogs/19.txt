@@ -1,0 +1,1 @@
+Le tabelle si possono riordinare: sposta una colonna o una riga di un posto verso l'alto o verso il basso, invece di riscrivere la tabella per cambiarne l'ordine. E quando salvi una scheda scritta in un'altra lingua, la scheda viene mostrata subito in quella lingua.
