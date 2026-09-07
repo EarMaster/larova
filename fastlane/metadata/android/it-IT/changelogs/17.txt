@@ -1,0 +1,1 @@
+Il menu del globo ora propone sempre anche la lingua in cui una scheda è scritta, non solo le sue traduzioni, e la modifica si apre nella lingua che stavi leggendo. Corretto: l'editor a volte non elencava nessuna traduzione. Dopo aver sbloccato la vista genitore si torna alle schede.

@@ -17,6 +17,8 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-07
+
 ### Changed
 - Unlocking parent view now returns you to your tiles instead of leaving you on the settings screen. Parent view is what you turn on to add or change a tile, and that starts on the grid.
 - The language a tile is written in is now always offered in its globe menu, listed separately from "Follow the app language". Following the app is an automatic mode; picking German is a choice, and on a German phone those looked like the same thing while behaving differently. A tile you have not named the language of is offered as "As written".

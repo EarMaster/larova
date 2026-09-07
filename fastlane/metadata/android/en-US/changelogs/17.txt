@@ -1,0 +1,1 @@
+The globe menu now always offers the language a tile is written in, not only its translations, and editing a tile opens in the language you were reading. Fixed the editor sometimes listing none of a tile's translations. Unlocking parent view now takes you back to your tiles.

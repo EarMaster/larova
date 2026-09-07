@@ -1,0 +1,1 @@
+Menu globusa zawsze proponuje teraz także język, w którym napisano kafelek, a nie tylko jego tłumaczenia, a edycja otwiera się w języku, który czytałeś. Poprawiono: edytor czasami nie pokazywał żadnego tłumaczenia. Po odblokowaniu widoku rodzica wracasz do swoich kafelków.

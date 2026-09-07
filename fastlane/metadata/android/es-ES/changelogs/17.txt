@@ -1,0 +1,1 @@
+El menú del globo ahora ofrece siempre el idioma en el que está escrita una tarjeta, no solo sus traducciones, y la edición se abre en el idioma que estabas leyendo. Corregido: el editor a veces no mostraba ninguna traducción. Al desbloquear la vista de padres vuelves a tus tarjetas.

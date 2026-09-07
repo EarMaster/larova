@@ -1,0 +1,1 @@
+Dünya simgesindeki menü artık kartın çevirilerinin yanı sıra yazıldığı dili de her zaman sunuyor ve düzenleme, okumakta olduğunuz dilde açılıyor. Düzeltildi: düzenleme ekranı bazen kartın hiçbir çevirisini listelemiyordu. Ebeveyn görünümünün kilidini açtığınızda kartlarınıza dönüyorsunuz.

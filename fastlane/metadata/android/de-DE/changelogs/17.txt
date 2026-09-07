@@ -1,0 +1,1 @@
+Das Globus-Menü bietet jetzt immer auch die Sprache an, in der eine Kachel geschrieben ist, nicht nur ihre Übersetzungen. Und beim Bearbeiten öffnet sich die Sprache, die Sie gerade gelesen haben. Behoben: Der Editor listete manchmal keine Übersetzungen einer Kachel auf. Nach dem Entsperren der Elternansicht geht es zurück zu den Kacheln.

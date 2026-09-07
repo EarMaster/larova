@@ -1,0 +1,1 @@
+Le menu du globe propose désormais toujours la langue dans laquelle une fiche est écrite, et pas seulement ses traductions. L'édition s'ouvre dans la langue que vous étiez en train de lire. Correction : l'éditeur n'affichait parfois aucune traduction. Après le déverrouillage de la vue parent, retour aux fiches.
