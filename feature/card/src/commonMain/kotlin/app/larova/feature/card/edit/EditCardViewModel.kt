@@ -724,23 +724,25 @@ class EditCardViewModel(
     }
 
     /**
-     * Saves, and leaves only when there is nothing left to be looking at.
+     * Saves, and leaves — showing the tile in whatever language was just written.
      *
-     * Saving the tile finishes the job and closes the editor, as it always has. Saving a
-     * translation goes back to the tile's own text instead, which is where the parent was before
-     * they picked a language — the two screens this used to be behaved that way, and being thrown
-     * out to the grid for writing one of a tile's several languages is a worse answer now that it
-     * is all one screen.
+     * Saving a translation used to return to the tile's own text inside the editor, which made
+     * sense while a translation was a different *form*: going back to the full editor was going
+     * back to where you came from. It is the same form now, so staying put after Save leaves
+     * somebody looking at a screen that has not visibly changed, wondering whether it worked.
+     *
+     * So it closes, and the tile behind it is set to the language just written. Seeing the words
+     * on the tile is the only confirmation worth giving, and it is what the parent was writing
+     * them for. The language is the phone's setting rather than this tile's — see
+     * `settings_content_language_hint` — so this is a real change and not a preview, which is
+     * correct: somebody who has just written the Turkish is the person who wants the Turkish.
      */
     fun onSave() {
         viewModelScope.launch {
             val language = _state.value.editingLanguage
             if (!persist()) return@launch
-            if (language == null) {
-                _state.update { it.copy(saved = true) }
-            } else {
-                showLanguage(null)
-            }
+            if (language != null) translations.choose(language)
+            _state.update { it.copy(saved = true) }
         }
     }
 

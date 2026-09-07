@@ -17,6 +17,9 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Changed
+- Saving a translation now closes the editor and shows the tile in the language you just wrote, instead of returning to the tile's own text. Seeing the words on the tile is the point of writing them.
+
 ### Added
 - Table columns and rows can be moved up or down one place at a time. Before this, the only way to change the order of a table was to retype it.
 
