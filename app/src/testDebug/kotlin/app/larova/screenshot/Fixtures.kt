@@ -151,12 +151,16 @@ internal object Fixtures {
     )
 
     /**
-     * The same note as a family would see it in Turkish, with the original one chip away.
+     * The same note as a family would see it in Turkish, with the original one tap away.
      *
-     * The chips carry endonyms — the original's chip says "Deutsch" because that is what German
-     * calls itself, not because a label in `strings.xml` says so. This is the fixture that shows
-     * the row at all: every other card golden leaves `languages` empty, which is what keeps them
-     * unchanged by this feature.
+     * The languages carry endonyms — "Deutsch" because that is what German calls itself, not
+     * because a label in `strings.xml` says so. The tile itself looks exactly like any other note:
+     * the choice lives in the globe in the bar, so what this golden is actually evidence of is that
+     * a translated tile costs the content no height at all.
+     *
+     * The original is listed by name because this tile has been told what language it was written
+     * in. A tile that has not been told offers its translations and "follow the app language", and
+     * nothing invents a name for it — see `Card.locale`.
      */
     val noteTranslated = note.copy(
         title = "Yemek ve içmek",
@@ -166,14 +170,11 @@ internal object Fixtures {
                 "Yemekle birlikte su. Meyve suyu, ancak bir şeyler yediyse.",
         ),
         languages = listOf(
-            TileLanguage(tag = null, name = "Deutsch"),
+            TileLanguage(tag = "de", name = "Deutsch"),
             TileLanguage(tag = "tr", name = "Türkçe"),
         ),
-        shownLanguage = "tr",
+        chosenLanguage = "tr",
     )
-
-    /** And the same again, after somebody edited the original it was translated from. */
-    val noteTranslatedStale = noteTranslated.copy(isStaleTranslation = true)
 
     val checklist = CardUiState(
         title = "Bag for nursery",

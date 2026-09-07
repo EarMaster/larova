@@ -63,9 +63,9 @@ on its own, and it never transmits a location.
 Larova never translates anything. It has no internet connection to do it with, and no translation
 software inside it.
 
-What it offers instead is a handover. On a tile there is a button that passes the words on that
-tile — the title, the steps, the notes — to a translation app already installed on the phone, the
-same way tapping a contact passes a number to the phone app. That app does the work under its own
+What it offers instead is a handover. On a tile there is a globe button whose menu passes the words
+on that tile — the title, the steps, the notes — to a translation app already installed on the
+phone, the same way tapping a contact passes a number to the phone app. That app does the work under its own
 permissions and its own privacy policy, which is worth reading if the tile holds something private.
 Nothing comes back into Larova, and nothing about the handover is recorded.
 
@@ -73,7 +73,9 @@ Phone numbers, web addresses and app names are deliberately left out of what is 
 of them mean anything different in another language, and a translated one pasted back would be a
 tile that no longer works.
 
-If no translation app is installed, the button is not shown.
+If no translation app is installed, the handover is not offered. The same globe also chooses which
+language to read a tile in, so on a tile written in more than one language the button is still
+there.
 
 A parent can also write a tile in a second language themselves, from the editor. That text is
 stored on the phone with the tile and travels in a backup like the rest of it. Nothing about it is

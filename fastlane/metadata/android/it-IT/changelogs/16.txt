@@ -1,0 +1,1 @@
+Il globo su una scheda ora apre un menu: scegli in quale lingua leggerla, oppure passa le sue parole a un'app di traduzione. L'editor funziona allo stesso modo. E una scheda si può scrivere in qualsiasi lingua conosciuta dal telefono, non solo nelle quattordici di Larova.

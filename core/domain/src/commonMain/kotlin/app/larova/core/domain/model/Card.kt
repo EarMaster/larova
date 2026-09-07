@@ -37,10 +37,15 @@ data class Card(
     /**
      * The language the text on this tile is written in, or null for "nobody has said".
      *
-     * Null on every tile made before there was anywhere to say it, and null is honest: a parent
-     * whose phone is in German may well have written a tile in Turkish for a Turkish-speaking
-     * carer, and a guess written here would make `resolveCardText` resolve against something the
-     * app invented. Nothing infers it.
+     * Asked in the editor's language menu and nowhere else. Null on every tile made before there
+     * was anywhere to say it, and null is honest: a parent whose phone is in German may well have
+     * written a tile in Turkish for a Turkish-speaking carer, and a guess written here would make
+     * `resolveCardText` resolve against something the app invented. Nothing infers it, and leaving
+     * it unanswered is a normal state rather than an incomplete one.
+     *
+     * What it buys once answered is `resolveCardText` step 1: the original becomes a language a
+     * caregiver can choose by name. Without it, a phone set to a language the tile has a
+     * translation for has no way back to what the parent actually wrote.
      */
     val locale: String? = null,
     /**

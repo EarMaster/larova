@@ -3,9 +3,11 @@ package app.larova.feature.card.edit
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.larova.core.domain.app.LanguageOption
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.media.isLargeMedia
 import app.larova.core.domain.model.CardPayload
+import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.MAX_TABLE_COLUMNS
@@ -14,7 +16,10 @@ import app.larova.core.domain.model.Step
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.phoneOf
+import app.larova.core.domain.model.plainTextOf
 import app.larova.core.domain.model.tableOf
+import app.larova.core.domain.model.textFieldsOf
+import app.larova.core.domain.model.withTextFields
 import app.larova.core.domain.usecase.Apps
 import app.larova.core.domain.usecase.CardDraft
 import app.larova.core.domain.usecase.Folders
@@ -22,6 +27,7 @@ import app.larova.core.domain.usecase.Media
 import app.larova.core.domain.usecase.ObserveLockedTypes
 import app.larova.core.domain.usecase.Recording
 import app.larova.core.domain.usecase.SaveCard
+import app.larova.core.domain.usecase.SaveCardText
 import app.larova.core.domain.usecase.Tile
 import app.larova.core.domain.usecase.TileEditing
 import app.larova.core.domain.usecase.Translations
@@ -121,11 +127,46 @@ data class EditUiState(
     /**
      * The languages this tile already exists in, besides the one it was written in.
      *
-     * Empty on a new tile and on the great majority of saved ones. The section that shows them is
-     * drawn regardless once the tile exists, because "no other languages yet" is how somebody finds
-     * out they can add one.
+     * Empty on a new tile and on the great majority of saved ones. They are listed in the globe
+     * menu rather than in the form, because choosing which language to write is the same shape of
+     * question as choosing which one to read, and the tile screen answers it in the same corner.
      */
     val languages: List<VariantSummary> = emptyList(),
+    /**
+     * What language the parent says this tile is written in, and what that language calls itself.
+     *
+     * Null until somebody answers, and nothing answers it for them: see `Card.locale`. Until it is
+     * answered the original is listed as "as written", and `resolveCardText` cannot offer a way
+     * back to it on a phone whose own language has a translation.
+     */
+    val locale: String? = null,
+    val localeName: String? = null,
+    /**
+     * Which language is being edited. Null is the tile itself.
+     *
+     * The editor switches in place rather than opening a second screen, so this is what decides
+     * whether the form is the whole tile or only its words. Colour, symbol and pictures belong to
+     * the tile and are not shown for a translation — a form that offered them would let a
+     * translation quietly become a different tile.
+     */
+    val editingLanguage: String? = null,
+    val editingLanguageName: String = "",
+    /**
+     * The words of the translation being edited, in the order they appear on the tile.
+     *
+     * A new language starts as a **copy of the original** rather than as blank boxes: somebody
+     * translating needs to see what they are translating. Nothing is auto-filled from anywhere else
+     * and nothing is parsed — Larova never reads the clipboard.
+     */
+    val translationFields: List<String> = emptyList(),
+    /** True once this language is stored, so a language being added offers nothing to remove. */
+    val translationExists: Boolean = false,
+    /** The words on screen, ready to hand to a translation app. Empty when nothing can take them. */
+    val handOffText: String = "",
+    /** Whether anything on this phone will take text to translate. */
+    val canTranslate: Boolean = false,
+    /** The language picker, when one is open. */
+    val picker: LanguagePickerState? = null,
     /**
      * The price, as Google Play writes it for this buyer's country. Null while it is being fetched
      * and null for good on a phone that cannot reach the store — the offer is still shown, with a
@@ -214,14 +255,29 @@ fun editableTypes(isNested: Boolean): List<CardType> = listOfNotNull(
 )
 
 /**
- * One language a tile already has, for the list in the editor.
+ * One language a tile already has, for the menu in the editor.
  *
- * [isStale] means the tile was edited after this translation was written — shown here loudly,
- * because this is the screen where it can actually be fixed. On the tile itself it is one quiet
- * line: the caregiver reading it cannot do anything about it, and the text is still the only text
- * in the room that they can read.
+ * [name] is the language's own name for itself, from the platform; see `AppLanguage.nameOf`.
  */
-data class VariantSummary(val tag: String, val name: String, val isStale: Boolean)
+data class VariantSummary(val tag: String, val name: String)
+
+/**
+ * The language picker, and which question it is asking.
+ *
+ * Two questions, one dialog, because they are answered from the same list: what language is this
+ * tile written in, and what language is being added. [forOriginal] is which — and it is the only
+ * difference, since a language is a language whichever of the two it answers.
+ *
+ * The lists are carried here rather than fetched by the dialog so the screen stays something a
+ * screenshot test can hand a fixture to. [all] is every language this phone can name, which is
+ * around two hundred; it is built when the picker opens and dropped when it closes, rather than
+ * held for every editor session that never opens one.
+ */
+data class LanguagePickerState(
+    val forOriginal: Boolean,
+    val shortlist: List<LanguageOption>,
+    val all: List<LanguageOption>,
+)
 
 /**
  * Where the editor was opened, as one parameter.
@@ -286,21 +342,16 @@ class EditCardViewModel(
         if (!cardId.isNullOrEmpty()) {
             parseUuidOrNull(cardId)?.let { id ->
                 viewModelScope.launch {
-                    // The tile's own `updatedAt` is the anchor staleness is measured from, read
-                    // once here: it is what a person last edited, and a tick on a checklist
-                    // deliberately does not move it.
-                    val editedAt = tile.observe(cardId)?.card?.updatedAt
                     translations.textsFor(id).collect { texts ->
-                        val summaries = texts.map { text ->
-                            VariantSummary(
-                                tag = text.lang,
-                                name = translations.nameOf(text.lang),
-                                isStale = editedAt != null && text.updatedAt < editedAt,
-                            )
+                        val summaries = texts.map {
+                            VariantSummary(tag = it.lang, name = translations.nameOf(it.lang))
                         }
                         _state.update { it.copy(languages = summaries) }
                     }
                 }
+            }
+            viewModelScope.launch {
+                _state.update { it.copy(canTranslate = translations.isAvailable()) }
             }
         }
         // Collected rather than read once: a purchase can complete while this screen is open, and
@@ -645,46 +696,268 @@ class EditCardViewModel(
     }
 
     fun onSave() {
+        viewModelScope.launch {
+            if (persist()) _state.update { it.copy(saved = true) }
+        }
+    }
+
+    /**
+     * Writes whatever is on screen — the tile, or the one language of it being edited.
+     *
+     * Split out from [onSave] because switching language has to do exactly this and then stay on
+     * the screen. Returns whether it got written: false means a refusal is already on screen and
+     * the caller must not carry on and lose what the refusal is about.
+     */
+    private suspend fun persist(): Boolean {
         val current = _state.value
+        return if (current.editingLanguage != null) {
+            persistTranslation(current, current.editingLanguage)
+        } else {
+            persistTile(current)
+        }
+    }
+
+    private suspend fun persistTile(current: EditUiState): Boolean {
         // Unreachable from the screen: the overlay covers Save along with the rest of the form.
         // Kept as a backstop so no future entry point can write a tile of a type nobody paid for,
         // and silent because there is no way to arrive here with something to explain.
-        if (current.type in current.lockedTypes) return
+        if (current.type in current.lockedTypes) return false
         val refusal = current.refusal()
         if (refusal != null) {
             _state.value = refusal
-            return
+            return false
         }
 
+        // The board a folder opens has to exist before the payload can point at it. Made here
+        // rather than when the type was picked, so a parent who changed their mind and left
+        // has left nothing behind.
+        val folderBoardId = folderBoardIdFor(current) ?: return false
+        val result = tile.save(
+            CardDraft(
+                id = parseUuidOrNull(cardId),
+                boardId = boardId,
+                title = current.title,
+                subtitle = current.subtitle,
+                colorToken = current.colorToken,
+                icon = current.symbolKey,
+                payload = current.copy(folderBoardId = folderBoardId).toPayload(),
+                locale = current.locale,
+            ),
+        )
+        // Whatever the save changed, a picture may now be on no step at all: taken off one, or
+        // picked and then replaced before saving.
+        if (result is SaveCard.Result.Saved) media.cleanUp()
+        return when (result) {
+            is SaveCard.Result.Saved -> true
+            SaveCard.Result.TitleMissing -> {
+                _state.update { it.copy(titleMissing = true) }
+                false
+            }
+            // No start screen to write to. Nothing the parent could do about that, and staying on
+            // the editor at least keeps what they typed.
+            SaveCard.Result.NoBoard -> false
+        }
+    }
+
+    /**
+     * Writes one language of the tile.
+     *
+     * The payload is built by putting the edited words back into **the original's** structure, so
+     * the variant is the same kind of tile with the same shape whatever was typed. A guide's
+     * pictures and a call tile's numbers cannot be lost by typing, because they are never among the
+     * boxes. The refusals inside `SaveCardText` are the second line of defence rather than the
+     * first.
+     */
+    private suspend fun persistTranslation(current: EditUiState, lang: String): Boolean {
+        if (current.title.isBlank()) {
+            _state.update { it.copy(titleMissing = true) }
+            return false
+        }
+        val id = parseUuidOrNull(cardId) ?: return false
+        val original = tile.observe(cardId.orEmpty()) ?: return false
+        val result = translations.save(
+            cardId = id,
+            lang = lang,
+            title = current.title,
+            subtitle = current.subtitle.takeIf { it.isNotBlank() },
+            payload = CardPayloadCodec.encode(withTextFields(original.payload, current.translationFields)),
+        )
+        if (result is SaveCardText.Result.TitleMissing) {
+            _state.update { it.copy(titleMissing = true) }
+            return false
+        }
+        // Anything else is nothing a person can act on and nothing they did: the tile went, or what
+        // this came from was already inconsistent. Treated as written, so the screen lets them out.
+        return true
+    }
+
+    /**
+     * Switches which language the editor is writing.
+     *
+     * **Saves first**, which is the whole rule. The alternative is a "discard your changes?"
+     * question on a screen a parent uses once, and the thing being discarded would be words they
+     * had just typed into a form that gave no sign it was about to be thrown away. A save that is
+     * refused — a title left blank — stops the switch and leaves the refusal on screen, so nothing
+     * is lost either way.
+     */
+    fun onEditLanguage(lang: String?) {
+        if (_state.value.editingLanguage == lang) return
         viewModelScope.launch {
-            // The board a folder opens has to exist before the payload can point at it. Made here
-            // rather than when the type was picked, so a parent who changed their mind and left
-            // has left nothing behind.
-            val folderBoardId = folderBoardIdFor(current) ?: return@launch
-            val result = tile.save(
-                CardDraft(
-                    id = parseUuidOrNull(cardId),
-                    boardId = boardId,
-                    title = current.title,
-                    subtitle = current.subtitle,
-                    colorToken = current.colorToken,
-                    icon = current.symbolKey,
-                    payload = current.copy(folderBoardId = folderBoardId).toPayload(),
+            if (!persist()) return@launch
+            showLanguage(lang)
+        }
+    }
+
+    /**
+     * Opens the picker on the tile's own language, or on a language to add.
+     *
+     * What is already on the tile is filtered out — except when the question is which language the
+     * tile is written in, where the point may well be to correct an answer already given.
+     *
+     * The tile's own language is filtered out of "add a language" as well as its translations: a
+     * variant in the language the tile is already in would shadow `resolveCardText` step 1 with a
+     * second copy of the same words.
+     */
+    fun onPickLanguage(forOriginal: Boolean) {
+        val current = _state.value
+        val taken = (current.languages.map { it.tag } + listOfNotNull(current.locale))
+            .map { it.primaryLanguageSubtag() }
+            .toSet()
+        val all = translations.available()
+            .filter { forOriginal || it.tag.primaryLanguageSubtag() !in taken }
+        _state.update {
+            it.copy(
+                picker = LanguagePickerState(
+                    forOriginal = forOriginal,
+                    shortlist = all.filter { option -> option.tag in APP_LANGUAGES },
+                    all = all,
                 ),
             )
-            // Whatever the save changed, a picture may now be on no step at all: taken off one, or
-            // picked and then replaced before saving.
-            if (result is SaveCard.Result.Saved) media.cleanUp()
-            _state.update { state ->
-                when (result) {
-                    is SaveCard.Result.Saved -> state.copy(saved = true)
-                    SaveCard.Result.TitleMissing -> state.copy(titleMissing = true)
-                    // No start screen to write to. Nothing the parent could do about that, and
-                    // staying on the editor at least keeps what they typed.
-                    SaveCard.Result.NoBoard -> state
-                }
-            }
         }
+    }
+
+    fun onDismissPicker() = _state.update { it.copy(picker = null) }
+
+    fun onLanguagePicked(tag: String) {
+        val picker = _state.value.picker ?: return
+        _state.update { it.copy(picker = null) }
+        if (picker.forOriginal) {
+            _state.update { it.copy(locale = tag, localeName = translations.nameOf(tag)) }
+            // While a translation is on screen, the tile is not what a save would write — so the
+            // answer goes straight through rather than waiting for a save that will not carry it.
+            if (_state.value.editingLanguage != null) {
+                viewModelScope.launch { writeLocaleOnly(tag) }
+            }
+        } else {
+            // Not written yet: the boxes are filled from the original and stored when the parent
+            // saves. Somebody who opens a language and changes their mind has added nothing.
+            onEditLanguage(tag)
+        }
+    }
+
+    /**
+     * Records the tile's own language without touching what is on screen.
+     *
+     * Reads the stored tile and writes it back with the one field changed, rather than building a
+     * draft from the state — the state is a translation at this point, and a draft made from it
+     * would overwrite the tile with the words of one of its variants.
+     */
+    private suspend fun writeLocaleOnly(tag: String) {
+        val stored = tile.observe(cardId.orEmpty()) ?: return
+        tile.save(
+            CardDraft(
+                id = stored.card.id,
+                title = stored.card.title,
+                subtitle = stored.card.subtitle,
+                colorToken = stored.card.colorToken,
+                icon = stored.card.icon,
+                payload = stored.payload,
+                visibleToCaregiver = stored.card.visibleToCaregiver,
+                locale = tag,
+            ),
+        )
+    }
+
+    /** Removes the language being edited, and goes back to the tile. */
+    fun onRemoveLanguage() {
+        val lang = _state.value.editingLanguage ?: return
+        val id = parseUuidOrNull(cardId) ?: return
+        viewModelScope.launch {
+            translations.remove(id, lang)
+            showLanguage(null)
+        }
+    }
+
+    /**
+     * Loads one language into the form.
+     *
+     * A language with nothing stored yet arrives as a copy of the original, which is what makes
+     * adding one and editing one the same code path — and what gives somebody translating the
+     * words they are translating rather than an empty form.
+     */
+    private suspend fun showLanguage(lang: String?) {
+        val stored = tile.observe(cardId.orEmpty()) ?: return
+        if (lang == null) {
+            _state.value = stored.toEditState().named().copy(
+                languages = _state.value.languages,
+                lockedTypes = _state.value.lockedTypes,
+                canTranslate = _state.value.canTranslate,
+            )
+            loadPictures()
+            loadFolderCount()
+            refreshHandOff()
+            return
+        }
+        val existing = translations.textsFor(stored.card.id).first().firstOrNull { it.lang == lang }
+        val payload = existing?.let { CardPayloadCodec.decodeOrNull(it.payload) } ?: stored.payload
+        _state.update {
+            it.copy(
+                editingLanguage = lang,
+                editingLanguageName = translations.nameOf(lang),
+                title = existing?.title ?: stored.card.title,
+                subtitle = existing?.subtitle ?: stored.card.subtitle.orEmpty(),
+                translationFields = textFieldsOf(payload),
+                translationExists = existing != null,
+                titleMissing = false,
+                isLoading = false,
+            )
+        }
+        refreshHandOff()
+    }
+
+    fun onTranslationFieldChange(index: Int, value: String) = _state.update { current ->
+        if (index !in current.translationFields.indices) {
+            current
+        } else {
+            current.copy(
+                translationFields = current.translationFields.toMutableList()
+                    .also { it[index] = value },
+            )
+        }
+    }
+
+    /**
+     * The words on screen, flattened for the hand-off.
+     *
+     * The words *on screen* rather than the tile's own, so that a parent translating into Turkish
+     * hands the original over and a parent fixing the Turkish hands the Turkish over. Recomputed
+     * when the language changes rather than on every keystroke: what a translator is given is what
+     * was last loaded, and a hand-off that changed under a half-typed word would be worse.
+     */
+    private suspend fun refreshHandOff() {
+        val current = _state.value
+        val stored = tile.observe(cardId.orEmpty())
+        val payload = if (current.editingLanguage == null) {
+            stored?.payload ?: return
+        } else {
+            withTextFields(stored?.payload ?: return, current.translationFields)
+        }
+        val text = plainTextOf(
+            title = current.title,
+            subtitle = current.subtitle.takeIf { it.isNotBlank() },
+            payload = payload,
+        )
+        _state.update { it.copy(handOffText = text) }
     }
 
     fun onDelete() {
@@ -706,10 +979,11 @@ class EditCardViewModel(
                 // new tile, so saving cannot resurrect it with half its content.
                 EditUiState(isNew = false, isLoading = false, deleted = true)
             } else {
-                existing.toEditState()
+                existing.toEditState().named()
             }
             loadPictures()
             loadFolderCount()
+            if (existing != null) refreshHandOff()
         }
     }
 
@@ -740,6 +1014,15 @@ class EditCardViewModel(
         _state.update { it.copy(folderBoardId = created) }
         return created
     }
+
+    /**
+     * Puts the endonym beside the stored tag.
+     *
+     * Separate from `toEditState` because that is a top-level mapper with no use case in reach, and
+     * naming a language is the platform's answer rather than the tile's — see `AppLanguage.nameOf`.
+     */
+    private fun EditUiState.named(): EditUiState =
+        copy(localeName = locale?.let { translations.nameOf(it) })
 
     /** What deleting this folder would take with it. Read once, when the editor opens. */
     private fun loadFolderCount() {
@@ -907,6 +1190,7 @@ private fun Tile.toEditState(): EditUiState {
         subtitle = card.subtitle.orEmpty(),
         colorToken = card.colorToken,
         symbolKey = card.icon,
+        locale = card.locale,
         isLoading = false,
     )
     return when (val payload = payload) {

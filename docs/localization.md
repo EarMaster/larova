@@ -17,19 +17,38 @@ This is a change of position, made knowingly. The earlier wording here was *"the
 **A parent may also write a tile twice.** A tile can carry its own text in other languages —
 title, second line and payload together, never a field at a time, so there is no state in which
 half a tile is in one language. Which one a caregiver sees follows the app's language and can be
-changed from the tile itself; the choice is remembered for the phone, not for the tile, because it
-is the person holding it who cannot read German. A tile with no translation for that language shows
-what the parent wrote, and **nothing is ever hidden for want of a translation** — a tile that
-vanished would be indistinguishable from one that never existed, and it would be as likely to be
-the one about choking as any other.
+changed from the tile itself, in the globe menu that also holds the hand-off; the choice is
+remembered for the phone, not for the tile, because it is the person holding it who cannot read
+German. A tile with no translation for that language shows what the parent wrote, and **nothing is
+ever hidden for want of a translation** — a tile that vanished would be indistinguishable from one
+that never existed, and it would be as likely to be the one about choking as any other.
+
+**A tile is not limited to the fourteen.** The app's own chrome is; what a parent writes on a tile
+is not, and never was — nothing in `Card.locale`, `CardText` or `resolveCardText` asks whether
+Larova has been translated into a language. A family with a Romanian carer needs a Romanian tile
+whether or not the buttons around it are Romanian, so the editor's picker offers the fourteen first
+and every language the phone can name behind a search.
+
+**What language a tile is written in is asked, never guessed.** `Card.locale` is the answer and the
+editor's globe menu is where it is given. Nothing infers it from the phone: a parent whose phone is
+in German may well have written a tile in Turkish for a Turkish-speaking carer, and a guess written
+there would make `resolveCardText` resolve against something the app invented. Unanswered is a
+normal state — every tile written before there was anywhere to say it is in it — and it costs one
+thing: without it, the tile screen can offer "follow the app language" and the translations, but
+cannot offer the original by name, so a phone set to a language the tile has a translation for has
+no way back to what the parent actually wrote.
 
 Larova still writes none of it. The editor copies the original into the new language for the parent
 to change, offers the same hand-off to get a starting point, and never reads the clipboard or
 splits an answer up: `docs/concept.md` §2.2 and invariant 7 apply to a translation exactly as they
 apply to everything else a family types.
 
-A translation written before the tile was last edited is marked — quietly on the tile, where the
-caregiver can do nothing about it, and plainly in the editor, where it can be fixed.
+Staleness is **not surfaced anywhere**. A translation written before the tile was last edited used
+to be marked on the tile and in the editor, and both notices are gone: the caregiver reading the
+tile cannot act on it and is being handed a sentence about bookkeeping while looking for how to do
+something, and the parent editing the translation is already looking at the words. The domain still
+knows — `ResolvedCardText.possiblyOutOfDate` is computed and tested — so a future screen that has
+something useful to do with it has it to hand.
 
 See `docs/pages/privacy.md`, "Translation", for the same fact in the words a parent reads.
 

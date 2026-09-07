@@ -54,6 +54,12 @@ internal fun noOpEditCallbacks() = EditCardCallbacks(
     onStopRecording = {},
     onSave = {},
     onDelete = {},
-    onAddLanguage = {},
     onEditLanguage = {},
+    onPickLanguage = {},
+    onLanguagePicked = {},
+    onDismissLanguagePicker = {},
+    onRemoveLanguage = {},
+    onTranslationFieldChange = { _, _ -> },
+    // Null, so a golden is never a picture of a phone that happens to have a translator on it.
+    onTranslate = null,
 )

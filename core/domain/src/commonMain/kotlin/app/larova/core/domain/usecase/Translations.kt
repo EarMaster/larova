@@ -1,6 +1,7 @@
 package app.larova.core.domain.usecase
 
 import app.larova.core.domain.app.AppLanguage
+import app.larova.core.domain.app.LanguageOption
 import app.larova.core.domain.app.Translators
 import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.canonicalLanguageTag
@@ -57,6 +58,9 @@ class ContentLanguage(
     fun chosen(): Flow<String?> = preferences.observeContentLanguage()
 
     fun nameOf(tag: String): String = appLanguage.nameOf(tag)
+
+    /** Every language a tile can be written in, which is not the fourteen the app is written in. */
+    fun available(): List<LanguageOption> = appLanguage.available()
 }
 
 /**
@@ -65,12 +69,18 @@ class ContentLanguage(
  * Grouped the way [Apps] is, and for the same reason: `CardViewModel` is one constructor parameter
  * from the count Detekt refuses, and one holder here is cheaper than a suppression at every screen
  * that grows a language control.
+ *
+ * Reading and writing both, since the editor learned to switch language in place: the screen that
+ * lists a tile's languages is now the screen that writes one, and splitting the two across two
+ * holders would put the same feature in two constructor slots.
  */
 class Translations(
     private val canTranslate: CanTranslate,
     private val cardText: ObserveCardText,
     private val allCardText: ObserveAllCardText,
     private val contentLanguage: ContentLanguage,
+    private val saveCardText: SaveCardText,
+    private val deleteCardText: DeleteCardText,
 ) {
 
     suspend fun isAvailable(): Boolean = canTranslate()
@@ -87,4 +97,18 @@ class Translations(
     suspend fun choose(tag: String?) = contentLanguage.set(tag)
 
     fun nameOf(tag: String): String = contentLanguage.nameOf(tag)
+
+    fun available(): List<LanguageOption> = contentLanguage.available()
+
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun save(
+        cardId: Uuid,
+        lang: String,
+        title: String,
+        subtitle: String?,
+        payload: String,
+    ): SaveCardText.Result = saveCardText(cardId, lang, title, subtitle, payload)
+
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun remove(cardId: Uuid, lang: String) = deleteCardText(cardId, lang)
 }

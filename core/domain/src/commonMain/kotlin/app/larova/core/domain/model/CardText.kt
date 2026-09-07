@@ -48,6 +48,15 @@ data class ResolvedCardText(
     /** The variant's tag, or null when this is the tile's own text. */
     val lang: String?,
     /** The tile was edited after this translation was written. Shown anyway — see below. */
+    /**
+     * The tile was edited after this variant was written.
+     *
+     * **Nothing shows this.** Both notices that did — one on the tile, one in the editor — were
+     * removed: the caregiver reading a tile cannot act on it, and the parent editing a translation
+     * is already looking at the words. It is computed and tested anyway, because it is a true fact
+     * about the data rather than a decision about a screen, and the next screen with something
+     * useful to do with it should not have to work it out again. See `docs/localization.md` §1.
+     */
     val possiblyOutOfDate: Boolean,
 )
 

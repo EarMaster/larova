@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,6 +62,7 @@ import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.BackArrow
 import app.larova.core.ui.icon.Lock
 import app.larova.core.ui.icon.Symbols
+import app.larova.core.ui.icon.Translate
 import app.larova.core.ui.icon.symbolImage
 import app.larova.core.ui.resources.Res
 import app.larova.core.ui.resources.cd_remove_line
@@ -67,7 +70,6 @@ import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_column
 import app.larova.core.ui.resources.edit_add_contact
 import app.larova.core.ui.resources.edit_add_item
-import app.larova.core.ui.resources.edit_add_language
 import app.larova.core.ui.resources.edit_add_picture
 import app.larova.core.ui.resources.edit_add_row
 import app.larova.core.ui.resources.edit_add_step
@@ -96,9 +98,7 @@ import app.larova.core.ui.resources.edit_edit_tile
 import app.larova.core.ui.resources.edit_folder_note
 import app.larova.core.ui.resources.edit_item_number
 import app.larova.core.ui.resources.edit_items
-import app.larova.core.ui.resources.edit_language_stale
-import app.larova.core.ui.resources.edit_languages
-import app.larova.core.ui.resources.edit_languages_hint
+import app.larova.core.ui.resources.edit_language_remove
 import app.larova.core.ui.resources.edit_link_caption
 import app.larova.core.ui.resources.edit_media_caption
 import app.larova.core.ui.resources.edit_media_chosen
@@ -106,7 +106,6 @@ import app.larova.core.ui.resources.edit_media_large
 import app.larova.core.ui.resources.edit_media_none_chosen
 import app.larova.core.ui.resources.edit_media_required
 import app.larova.core.ui.resources.edit_new_tile
-import app.larova.core.ui.resources.edit_no_languages
 import app.larova.core.ui.resources.edit_note_text
 import app.larova.core.ui.resources.edit_picture_failed
 import app.larova.core.ui.resources.edit_record
@@ -125,6 +124,9 @@ import app.larova.core.ui.resources.edit_symbol
 import app.larova.core.ui.resources.edit_symbol_change
 import app.larova.core.ui.resources.edit_title
 import app.larova.core.ui.resources.edit_title_required
+import app.larova.core.ui.resources.edit_translation_field
+import app.larova.core.ui.resources.edit_translation_hint
+import app.larova.core.ui.resources.edit_translation_title
 import app.larova.core.ui.resources.edit_type_locked
 import app.larova.core.ui.resources.edit_web_address
 import app.larova.core.ui.resources.edit_web_address_invalid
@@ -177,193 +179,56 @@ fun EditCardScreen(
     var confirmingDelete by remember { mutableStateOf(false) }
 
     LarovaScaffold(
-        title = stringResource(if (state.isNew) Res.string.edit_new_tile else Res.string.edit_edit_tile),
+        // The bar says which language is being written, because everything below it changes with
+        // that and a form of Turkish words under a heading reading "Edit tile" is a screen somebody
+        // can be halfway through before noticing.
+        title = when {
+            state.editingLanguage != null ->
+                stringResource(Res.string.edit_translation_title, state.editingLanguageName)
+
+            state.isNew -> stringResource(Res.string.edit_new_tile)
+            else -> stringResource(Res.string.edit_edit_tile)
+        },
         // No help bar. This is parent-view work, opened on purpose, and the red bar is for
         // the moment something is wrong while a child is here.
         onHelp = null,
-        onBack = onBack,
+        // Back out of a translation returns to the tile rather than leaving the editor. The globe
+        // is how somebody got here, and Back is what they will reach for to undo that — landing on
+        // the start screen instead would lose the place as well as the language.
+        onBack = if (state.editingLanguage != null) {
+            { callbacks.onEditLanguage(null) }
+        } else {
+            onBack
+        },
         modifier = modifier,
+        actions = {
+            EditLanguageMenu(state = state, callbacks = callbacks)
+        },
     ) { insets ->
-        // Whether the offer is covering the form: a function of the chosen type, not of a tap.
-        // A purchase that completes elsewhere empties `lockedTypes` and the cover simply lifts.
-        val offerCovers = state.type in state.lockedTypes
-
-        // Folded by default, and folded again for the next type: `remember(state.type)`, so
-        // reading the offer for Video and then choosing Audio does not land on an open card
-        // somebody has to fold away before they can see the second form.
-        var offerOpen by remember(state.type) { mutableStateOf(false) }
-        val lockedFormDescription = stringResource(Res.string.edit_type_locked)
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(insets)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = Dimens.ScreenMargin),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            if (state.isNew) {
-                Section(title = stringResource(Res.string.edit_choose_type)) {
-                    TypePicker(
-                        types = editableTypes(state.isNested),
-                        selected = state.type,
-                        locked = state.lockedTypes,
-                        onSelect = callbacks.onTypeChange,
-                    )
-                }
-            }
-
-            // Folded, the offer is this button and nothing else.
-            //
-            // In the flow rather than laid over the Box, because centring it there put it on top
-            // of the Title field and read as a broken layout. Here it sits where a heading would,
-            // directly under the chip that was just tapped, and the form below it stays whole.
-            if (offerCovers && !offerOpen) {
-                Button(
-                    onClick = { offerOpen = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = Dimens.MinTouchTarget),
-                ) {
-                    // No description on the icon: the label says it, and a screen reader should
-                    // not read "lock" twice — the same reason the locked chips leave theirs null.
-                    Icon(imageVector = Lock, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(Res.string.purchase_show))
-                }
-            }
-
-            // The form, and — once the button above is tapped — the offer that covers it.
-            //
-            // The type picker stays outside and stays live, so somebody looking at a locked type
-            // can simply choose a different one. For an existing tile there is no picker, and the
-            // way out is Back — which is correct, since the type of a saved tile never changes.
-            Box {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    // Dimmed rather than scrimmed. A wash of `surface` over a `background` page is
-                    // all but invisible in light mode, so the form looked live while swallowing
-                    // every tap; fading the content itself is how every disabled control on the
-                    // platform reads, and it keeps the labels legible — which is the entire point
-                    // of folding the offer away.
-                    modifier = if (offerCovers) {
-                        Modifier.alpha(COVERED_FORM_ALPHA)
-                    } else {
-                        Modifier
-                    },
-                ) {
-                    OutlinedTextField(
-                        value = state.title,
-                        onValueChange = callbacks.onTitleChange,
-                        label = { Text(stringResource(Res.string.edit_title)) },
-                        isError = state.titleMissing,
-                        supportingText = if (state.titleMissing) {
-                            { Text(stringResource(Res.string.edit_title_required)) }
-                        } else {
-                            null
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    OutlinedTextField(
-                        value = state.subtitle,
-                        onValueChange = callbacks.onSubtitleChange,
-                        label = { Text(stringResource(Res.string.edit_subtitle)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    TypeFields(state = state, callbacks = callbacks)
-
-                    // Only once the tile exists: a translation is a copy of the original, and there
-                // is nothing to copy until there is something saved to copy from.
-                LanguageSection(
-                    isNew = state.isNew,
-                    languages = state.languages,
-                    onEdit = callbacks.onEditLanguage,
-                    onAdd = callbacks.onAddLanguage,
-                )
-
-                Section(title = stringResource(Res.string.edit_colour)) {
-                        ColorTokenPicker(
-                            selectedToken = state.colorToken,
-                            onSelect = callbacks.onColorChange,
-                        )
-                    }
-
-                    Section(title = stringResource(Res.string.edit_symbol)) {
-                        // The chosen symbol and its name, and a way to the screen that holds the rest.
-                        // Three hundred drawings inline pushed the title, the colour and Save off a phone.
-                        ChosenSymbol(
-                            symbolKey = state.symbolKey,
-                            colorToken = state.colorToken,
-                            onChange = callbacks.onChooseSymbol,
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        OutlinedButton(
-                            onClick = onBack,
-                            modifier = Modifier
-                                .weight(1f)
-                                .heightIn(min = Dimens.MinTouchTarget),
-                        ) {
-                            Text(stringResource(Res.string.edit_cancel))
-                        }
-                        Button(
-                            onClick = callbacks.onSave,
-                            modifier = Modifier
-                                .weight(1f)
-                                .heightIn(min = Dimens.MinTouchTarget),
-                        ) {
-                            Text(stringResource(Res.string.edit_save))
-                        }
-                    }
-
-                    if (!state.isNew) {
-                        TextButton(
-                            onClick = { confirmingDelete = true },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = Dimens.MinTouchTarget)
-                                .padding(bottom = 16.dp),
-                        ) {
-                            Text(
-                                text = stringResource(Res.string.edit_delete),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    }
-                }
-
-                if (offerCovers && offerOpen) {
-                    UnlockOverlay(
-                        type = state.type,
-                        price = state.offerPrice,
-                        message = state.offerMessage,
-                        onBuy = callbacks.onBuyUnlock,
-                    )
-                } else if (offerCovers) {
-                    // Invisible, and only there to eat the taps that would focus a field nobody
-                    // can fill. Scrolling still reaches the column, which a long form needs.
-                    //
-                    // TalkBack gets the same deal the eye does: the fields stay readable, because
-                    // judging whether a Video tile is worth paying for means knowing what it asks
-                    // for, and this node is what says they are not yours yet.
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .pointerInput(Unit) { detectTapGestures { } }
-                            .semantics {
-                                disabled()
-                                contentDescription = lockedFormDescription
-                            },
-                    )
-                }
-            }
+        // A translation is words and nothing else, so it replaces the form rather than being a
+        // section inside it: there is no colour to pick, no symbol, no pictures and no type.
+        // The frame is the same one, which is what makes switching languages read as this
+        // screen changing rather than another screen opening.
+        if (state.editingLanguage != null) {
+            TranslationForm(state = state, callbacks = callbacks, insets = insets)
+        } else {
+            TileForm(
+                state = state,
+                callbacks = callbacks,
+                insets = insets,
+                onConfirmDelete = { confirmingDelete = true },
+                onCancel = onBack,
+            )
         }
+    }
+
+    state.picker?.let { picker ->
+        LanguagePickerDialog(
+            shortlist = picker.shortlist,
+            all = picker.all,
+            onPick = callbacks.onLanguagePicked,
+            onDismiss = callbacks.onDismissLanguagePicker,
+        )
     }
 
     if (confirmingDelete) {
@@ -1219,83 +1084,288 @@ private fun TypePicker(
 }
 
 /**
- * The languages a tile already has, and the way to add one.
+ * One tile in one other language.
  *
- * A list rather than a form: adding a language opens a screen of its own, because translating a
- * guide with eight steps is not something to do inside a section of another form. Removing one
- * happens there too — the same place it is edited, so nothing is deleted from a list by mistake.
- */
-/**
- * The languages section, or nothing at all on a tile that has not been saved yet.
+ * Every field here is words and nothing else. There is no colour, no symbol, no picture, no phone
+ * number and no address — none of them are translated, and a form that offered them would let a
+ * translation quietly become a different tile. What is left is the title, the second line, and one
+ * box per phrase, in the order they appear on the tile.
  *
- * The emptiness check lives here rather than in the form above it for the form's sake: that
- * function is already a long `when` over ten tile types, and one more branch in it is one more
- * thing to hold in your head while reading the part that matters.
+ * This is the same form the editor draws for the tile itself, minus everything that is not words,
+ * rather than a second screen: `withTextFields` puts what is typed back into the original's own
+ * structure, so a guide's pictures and a call tile's numbers cannot be lost by typing here.
+ *
+ * The hand-off is in the bar with the languages rather than in the form. What comes back from it
+ * is pasted in by the person, box by box: Larova never reads the clipboard and never splits an
+ * answer up, which is the honest cost of not interpreting what somebody wrote.
  */
 @Composable
-private fun LanguageSection(
-    isNew: Boolean,
-    languages: List<VariantSummary>,
-    onEdit: (String) -> Unit,
-    onAdd: () -> Unit,
+private fun TranslationForm(
+    state: EditUiState,
+    callbacks: EditCardCallbacks,
+    insets: PaddingValues,
 ) {
-    // Only once the tile exists: a translation starts as a copy of the original, and there is
-    // nothing to copy until there is something saved to copy from.
-    if (isNew) return
-    Section(title = stringResource(Res.string.edit_languages)) {
-        LanguageList(languages = languages, onEdit = onEdit, onAdd = onAdd)
-    }
-}
-
-@Composable
-private fun LanguageList(
-    languages: List<VariantSummary>,
-    onEdit: (String) -> Unit,
-    onAdd: () -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(insets)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Dimens.ScreenMargin),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
         Text(
-            text = stringResource(Res.string.edit_languages_hint),
+            text = stringResource(Res.string.edit_translation_hint),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
-        if (languages.isEmpty()) {
-            Text(
-                text = stringResource(Res.string.edit_no_languages),
-                style = MaterialTheme.typography.bodyMedium,
+        OutlinedTextField(
+            value = state.title,
+            onValueChange = callbacks.onTitleChange,
+            label = { Text(stringResource(Res.string.edit_title)) },
+            isError = state.titleMissing,
+            supportingText = if (state.titleMissing) {
+                { Text(stringResource(Res.string.edit_title_required)) }
+            } else {
+                null
+            },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        OutlinedTextField(
+            value = state.subtitle,
+            onValueChange = callbacks.onSubtitleChange,
+            label = { Text(stringResource(Res.string.edit_subtitle)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        // One box per phrase, numbered only for the label a screen reader announces — the number
+        // is never part of the text, because the text is what gets stored.
+        state.translationFields.forEachIndexed { index, value ->
+            OutlinedTextField(
+                value = value,
+                onValueChange = { callbacks.onTranslationFieldChange(index, it) },
+                label = { Text(stringResource(Res.string.edit_translation_field, index + 1)) },
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 
-        for (language in languages) {
-            OutlinedButton(
-                onClick = { onEdit(language.tag) },
+        Button(
+            onClick = callbacks.onSave,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(stringResource(Res.string.edit_save))
+        }
+
+        if (state.translationExists) {
+            TextButton(
+                onClick = callbacks.onRemoveLanguage,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = Dimens.MinTouchTarget),
+                    .heightIn(min = Dimens.MinTouchTarget)
+                    .padding(bottom = 24.dp),
             ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(language.name)
-                    if (language.isStale) {
-                        // Said plainly here, where it can be acted on. Not amber and not red:
-                        // invariant 4 keeps both for the active step and the help bar.
-                        Text(
-                            text = stringResource(Res.string.edit_language_stale),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Text(
+                    text = stringResource(Res.string.edit_language_remove),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        }
+    }
+}
+
+
+/**
+ * The whole tile: its words, its type, its colour and its symbol.
+ *
+ * Split from the frame around it when the editor learned to switch language in place. The frame
+ * is shared — same bar, same globe, same Back — and what changes underneath it is this or the
+ * words-only form beside it, which is a choice better made in one line than inside a function
+ * that already runs to a screenful per tile type.
+ */
+@Composable
+private fun TileForm(
+    state: EditUiState,
+    callbacks: EditCardCallbacks,
+    insets: PaddingValues,
+    onConfirmDelete: () -> Unit,
+    onCancel: () -> Unit,
+) {
+        // Whether the offer is covering the form: a function of the chosen type, not of a tap.
+        // A purchase that completes elsewhere empties `lockedTypes` and the cover simply lifts.
+        val offerCovers = state.type in state.lockedTypes
+
+        // Folded by default, and folded again for the next type: `remember(state.type)`, so
+        // reading the offer for Video and then choosing Audio does not land on an open card
+        // somebody has to fold away before they can see the second form.
+        var offerOpen by remember(state.type) { mutableStateOf(false) }
+        val lockedFormDescription = stringResource(Res.string.edit_type_locked)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(insets)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = Dimens.ScreenMargin),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            if (state.isNew) {
+                Section(title = stringResource(Res.string.edit_choose_type)) {
+                    TypePicker(
+                        types = editableTypes(state.isNested),
+                        selected = state.type,
+                        locked = state.lockedTypes,
+                        onSelect = callbacks.onTypeChange,
+                    )
+                }
+            }
+
+            // Folded, the offer is this button and nothing else.
+            //
+            // In the flow rather than laid over the Box, because centring it there put it on top
+            // of the Title field and read as a broken layout. Here it sits where a heading would,
+            // directly under the chip that was just tapped, and the form below it stays whole.
+            if (offerCovers && !offerOpen) {
+                Button(
+                    onClick = { offerOpen = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    // No description on the icon: the label says it, and a screen reader should
+                    // not read "lock" twice — the same reason the locked chips leave theirs null.
+                    Icon(imageVector = Lock, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(Res.string.purchase_show))
+                }
+            }
+
+            // The form, and — once the button above is tapped — the offer that covers it.
+            //
+            // The type picker stays outside and stays live, so somebody looking at a locked type
+            // can simply choose a different one. For an existing tile there is no picker, and the
+            // way out is Back — which is correct, since the type of a saved tile never changes.
+            Box {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    // Dimmed rather than scrimmed. A wash of `surface` over a `background` page is
+                    // all but invisible in light mode, so the form looked live while swallowing
+                    // every tap; fading the content itself is how every disabled control on the
+                    // platform reads, and it keeps the labels legible — which is the entire point
+                    // of folding the offer away.
+                    modifier = if (offerCovers) {
+                        Modifier.alpha(COVERED_FORM_ALPHA)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    OutlinedTextField(
+                        value = state.title,
+                        onValueChange = callbacks.onTitleChange,
+                        label = { Text(stringResource(Res.string.edit_title)) },
+                        isError = state.titleMissing,
+                        supportingText = if (state.titleMissing) {
+                            { Text(stringResource(Res.string.edit_title_required)) }
+                        } else {
+                            null
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    OutlinedTextField(
+                        value = state.subtitle,
+                        onValueChange = callbacks.onSubtitleChange,
+                        label = { Text(stringResource(Res.string.edit_subtitle)) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    TypeFields(state = state, callbacks = callbacks)
+
+                    Section(title = stringResource(Res.string.edit_colour)) {
+                        ColorTokenPicker(
+                            selectedToken = state.colorToken,
+                            onSelect = callbacks.onColorChange,
                         )
                     }
+
+                    Section(title = stringResource(Res.string.edit_symbol)) {
+                        // The chosen symbol and its name, and a way to the screen that holds the rest.
+                        // Three hundred drawings inline pushed the title, the colour and Save off a phone.
+                        ChosenSymbol(
+                            symbolKey = state.symbolKey,
+                            colorToken = state.colorToken,
+                            onChange = callbacks.onChooseSymbol,
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        OutlinedButton(
+                            onClick = onCancel,
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Text(stringResource(Res.string.edit_cancel))
+                        }
+                        Button(
+                            onClick = callbacks.onSave,
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Text(stringResource(Res.string.edit_save))
+                        }
+                    }
+
+                    if (!state.isNew) {
+                        TextButton(
+                            onClick = onConfirmDelete,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = Dimens.MinTouchTarget)
+                                .padding(bottom = 16.dp),
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.edit_delete),
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+                }
+
+                if (offerCovers && offerOpen) {
+                    UnlockOverlay(
+                        type = state.type,
+                        price = state.offerPrice,
+                        message = state.offerMessage,
+                        onBuy = callbacks.onBuyUnlock,
+                    )
+                } else if (offerCovers) {
+                    // Invisible, and only there to eat the taps that would focus a field nobody
+                    // can fill. Scrolling still reaches the column, which a long form needs.
+                    //
+                    // TalkBack gets the same deal the eye does: the fields stay readable, because
+                    // judging whether a Video tile is worth paying for means knowing what it asks
+                    // for, and this node is what says they are not yours yet.
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .pointerInput(Unit) { detectTapGestures { } }
+                            .semantics {
+                                disabled()
+                                contentDescription = lockedFormDescription
+                            },
+                    )
                 }
             }
         }
-
-        OutlinedButton(
-            onClick = onAdd,
-            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(stringResource(Res.string.edit_add_language))
-        }
-    }
 }
 
 /** One switch and its label, with the whole row as the target. */
@@ -1419,10 +1489,27 @@ data class EditCardCallbacks(
     val onStopRecording: () -> Unit,
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
-    /** Opens the language chooser. The screen it leads to is where a translation is written. */
-    val onAddLanguage: () -> Unit,
-    /** Opens one language this tile already has, to change or remove it. */
-    val onEditLanguage: (String) -> Unit,
+    /**
+     * Switches which language the editor is writing. Null is the tile itself.
+     *
+     * The editor changes in place rather than opening a second screen, so this is a state change
+     * and not a navigation — which is why it can save what is on screen first without a back stack
+     * entry appearing between the two languages.
+     */
+    val onEditLanguage: (String?) -> Unit,
+    /** Opens the picker: `true` for the language the tile is written in, `false` to add one. */
+    val onPickLanguage: (Boolean) -> Unit,
+    val onLanguagePicked: (String) -> Unit,
+    val onDismissLanguagePicker: () -> Unit,
+    /** Removes the language being edited. Only ever offered on one that is already stored. */
+    val onRemoveLanguage: () -> Unit,
+    val onTranslationFieldChange: (Int, String) -> Unit,
+    /**
+     * Hands the words on screen to a translation app. Null when nothing on this phone will take
+     * them — the same shape as `onBuyUnlock`, and for the same reason: the screen is told what is
+     * possible rather than asking a platform this module should not know about.
+     */
+    val onTranslate: ((String) -> Unit)?,
 )
 
 /**
@@ -1438,9 +1525,9 @@ fun EditCardViewModel.callbacks(
     openVideoPicker: () -> Unit = {},
     openSoundPicker: () -> Unit = {},
     requestMicrophone: () -> Unit = {},
-    addLanguage: () -> Unit = {},
-    editLanguage: (String) -> Unit = {},
-    // Null by default so the previews and the screenshot fixtures need not know about the store.
+    // Null by default so the previews and the screenshot fixtures need not know about the store,
+    // nor about what else is installed on the phone.
+    translate: ((String) -> Unit)? = null,
     buyUnlock: (() -> Unit)? = null,
 ) = EditCardCallbacks(
     onTypeChange = ::onTypeChange,
@@ -1492,6 +1579,11 @@ fun EditCardViewModel.callbacks(
     onStopRecording = ::onStopRecording,
     onSave = ::onSave,
     onDelete = ::onDelete,
-    onAddLanguage = addLanguage,
-    onEditLanguage = editLanguage,
+    onEditLanguage = ::onEditLanguage,
+    onPickLanguage = ::onPickLanguage,
+    onLanguagePicked = ::onLanguagePicked,
+    onDismissLanguagePicker = ::onDismissPicker,
+    onRemoveLanguage = ::onRemoveLanguage,
+    onTranslationFieldChange = ::onTranslationFieldChange,
+    onTranslate = translate,
 )

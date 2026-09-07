@@ -63,16 +63,26 @@ data class CardUiState(
      */
     val translationText: String = "",
     /**
-     * Every language this tile exists in: the tile's own text first, then its variants.
+     * The languages this tile can actually be read in: the language it was written in, when a
+     * parent has said what that is, then one per translation.
      *
-     * One entry means no control — most tiles in most installations have exactly one, and a chip
-     * row offering a single choice is furniture.
+     * Empty when the tile has no translation at all, which is most tiles in most installations —
+     * and empty means the menu offers no languages rather than offering a choice of one.
+     *
+     * "Follow the app language" is not in here. It is not a language this tile exists in, it is the
+     * absence of a choice, and the menu draws it itself so that it is always first and always
+     * present.
      */
     val languages: List<TileLanguage> = emptyList(),
-    /** Which of them is on screen. Null is the tile's own text. */
-    val shownLanguage: String? = null,
-    /** The tile was edited after this translation was written. Shown regardless, and said. */
-    val isStaleTranslation: Boolean = false,
+    /**
+     * What was **chosen**, not what it resolved to. Null is "follow the app language".
+     *
+     * The distinction is the whole reason this is not `shownLanguage`: on a German phone, following
+     * the app and picking German are the same picture and different settings, and a menu that
+     * marked the second when the first was true would move the mark under somebody who never
+     * touched it.
+     */
+    val chosenLanguage: String? = null,
     /**
      * Where the video or recording on this tile actually is. Null when the row is there and the file
      * is not, which the screen says in words rather than handing a player a path to nowhere.
@@ -87,7 +97,7 @@ data class CardUiState(
  * looking for their language is the one person who cannot be assumed to read the app's. It comes
  * from the platform's locale data rather than from `strings.xml`; see `AppLanguage.nameOf`.
  */
-data class TileLanguage(val tag: String?, val name: String)
+data class TileLanguage(val tag: String, val name: String)
 
 /**
  * Suppressed rather than bundled, and rather than raising the threshold — which is what
@@ -186,8 +196,7 @@ class CardViewModel(
                     isLoading = false,
                     folderBoardId = (tile.payload as? CardPayload.Folder)?.boardId?.toString(),
                     languages = languagesOf(tile.card.locale, variants),
-                    shownLanguage = shown.lang,
-                    isStaleTranslation = shown.possiblyOutOfDate,
+                    chosenLanguage = translations.chosenLanguage().first(),
                 )
             }
             watchFolder(tile?.payload as? CardPayload.Folder)
@@ -206,22 +215,30 @@ class CardViewModel(
      * never sees the tile's second line, and does not need to.
      */
     /**
-     * The tile's own text first, then one entry per variant, in a stable order.
+     * The language the tile was written in, then one entry per variant, in a stable order.
      *
-     * The original's entry is labelled with the language it was written in when somebody has said
-     * what that is, and with a string when nobody has. Nothing guesses: a tile whose language was
-     * never recorded says "as written" rather than naming a language it might not be in.
+     * The original appears **only once somebody has said what language it is in**. Nothing guesses:
+     * a tag invented here would be one `resolveCardText` then matches against, so a tile whose
+     * language nobody recorded offers its translations and "follow the app language", which is what
+     * reaches the original anyway.
+     *
+     * Empty for a tile with no variants. There is nothing to choose between, and a menu listing the
+     * one language a tile is in is a question with one answer.
      */
     private fun languagesOf(sourceLocale: String?, variants: List<CardText>): List<TileLanguage> {
         if (variants.isEmpty()) return emptyList()
-        val original = TileLanguage(
-            tag = null,
-            name = sourceLocale?.let { translations.nameOf(it) } ?: "",
-        )
-        return listOf(original) + variants.map { TileLanguage(it.lang, translations.nameOf(it.lang)) }
+        val original = sourceLocale?.let { TileLanguage(it, translations.nameOf(it)) }
+        return listOfNotNull(original) +
+            variants.map { TileLanguage(it.lang, translations.nameOf(it.lang)) }
     }
 
-    /** Chooses which language every tile is shown in, on this phone. Not just this one. */
+    /**
+     * Chooses which language every tile is shown in, on this phone. Not just this one.
+     *
+     * Null is "follow the app language", and picking the tile's own language is a real choice
+     * rather than the same thing: `resolveCardText` step 1 returns the original for it, which is
+     * the one way back to what the parent wrote on a phone whose language has a translation.
+     */
     fun onContentLanguageChange(tag: String?) {
         viewModelScope.launch {
             translations.choose(tag)
