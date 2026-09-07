@@ -1,0 +1,1 @@
+Escribir una tarjeta en otro idioma se hace ahora en el editor de la propia tarjeta; lo que no son palabras — imágenes, números, direcciones — aparece en gris porque pertenece a la tarjeta. Una tarjeta de llamada con varias personas se traduce entera. Y el ajuste de idioma de las tarjetas ya ofrece el idioma en que están escritas.

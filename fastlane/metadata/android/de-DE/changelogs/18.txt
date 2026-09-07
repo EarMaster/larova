@@ -1,0 +1,1 @@
+Eine Kachel in einer anderen Sprache zu schreiben, geschieht jetzt im Editor der Kachel selbst; was keine Wörter sind – Bilder, Nummern, Adressen – erscheint ausgegraut als Teil der Kachel. Eine Anruf-Kachel mit mehreren Personen lässt sich vollständig übersetzen. Und die Einstellung „Sprache der Kacheln“ bietet jetzt auch die Sprache an, in der Ihre Kacheln geschrieben sind.

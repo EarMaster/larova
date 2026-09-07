@@ -17,6 +17,8 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-09-07
+
 ### Changed
 - Writing a tile in another language now uses the tile's own editor rather than a separate screen of numbered boxes. Every field is where it is when you write the tile: a guide's steps are steps, a call tile's people are people. What is not words — the colour, the symbol, the pictures, the phone numbers, the addresses — is shown greyed as belonging to the tile, and a line at the top says so.
 
