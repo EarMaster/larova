@@ -365,5 +365,5 @@
     <string name="edit_language_pick">どの言語ですか？</string>
     <string name="edit_language_remove">この言語を削除</string>
     <string name="edit_translation_title">%1$s で</string>
-    <string name="edit_translation_banner">このカードを%1$sで書いています。変わるのは言葉だけです。ほかはすべてカード自体のもので、どの言語でも同じです。</string>
+    <string name="edit_translation_banner">このカードを%1$sで書いています。変わるのは言葉だけで、ほかはすべてカード自体のものです。ここでの追加・削除・並べ替えは、すべての言語のカードに反映されます。どの言語も同じ構成に保つためです。</string>
 </resources>

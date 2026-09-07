@@ -368,5 +368,5 @@
     <string name="edit_language_pick">哪种语言？</string>
     <string name="edit_language_remove">移除这种语言</string>
     <string name="edit_translation_title">以 %1$s</string>
-    <string name="edit_translation_banner">你正在用%1$s书写这张卡片。只有文字会改变，其余部分属于卡片本身，在每种语言中都相同。</string>
+    <string name="edit_translation_banner">你正在用%1$s书写这张卡片。只有文字会改变，其余部分属于卡片本身。在这里添加、删除或调整顺序，会同时改变卡片的所有语言，好让它们保持相同的结构。</string>
 </resources>

@@ -282,9 +282,6 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 onChange = callbacks.onItemChange,
                 onAdd = callbacks.onAddItem,
                 onRemove = callbacks.onRemoveItem,
-                // A translation has the same items as the tile, in the same order. Adding one here
-                // would be a checklist with more things on it in Turkish than in German.
-                structural = !state.translating,
             )
             // Whether the ticks clear overnight is the tile's behaviour, not one of its words.
             if (!state.translating) {
@@ -564,17 +561,15 @@ private fun CallFields(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f),
                         )
-                        if (!state.translating) {
-                            IconButton(
-                                onClick = { callbacks.onRemoveContact(index) },
-                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                            ) {
-                                Icon(
-                                    imageVector = BackArrow,
-                                    contentDescription =
-                                        stringResource(Res.string.cd_remove_line, label),
-                                )
-                            }
+                        IconButton(
+                            onClick = { callbacks.onRemoveContact(index) },
+                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Icon(
+                                imageVector = BackArrow,
+                                contentDescription =
+                                    stringResource(Res.string.cd_remove_line, label),
+                            )
                         }
                     }
                 }
@@ -616,15 +611,13 @@ private fun CallFields(
             }
         }
 
-        if (!state.translating) {
-            OutlinedButton(
-                onClick = callbacks.onAddContact,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = Dimens.MinTouchTarget),
-            ) {
-                Text(stringResource(Res.string.edit_add_contact))
-            }
+        OutlinedButton(
+            onClick = callbacks.onAddContact,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Text(stringResource(Res.string.edit_add_contact))
         }
     }
 }
@@ -716,25 +709,20 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                             label = { Text(label) },
                             modifier = Modifier.fillMaxWidth(),
                         )
-                        if (!state.translating) {
-                            LineControls(
-                                label = label,
-                                canMoveUp = index > 0,
-                                canMoveDown = index < state.columns.lastIndex,
-                                // The last column cannot go: a table with no columns has nowhere
-                                // to put a value, and the editor would have nothing left to type
-                                // into.
-                                canRemove = state.columns.size > 1,
-                                onMoveUp = { callbacks.onMoveColumn(index, -1) },
-                                onMoveDown = { callbacks.onMoveColumn(index, 1) },
-                                onRemove = { callbacks.onRemoveColumn(index) },
-                            )
-                        }
+                        LineControls(
+                            label = label,
+                            canMoveUp = index > 0,
+                            canMoveDown = index < state.columns.lastIndex,
+                            // The last column cannot go: a table with no columns has nowhere to
+                            // put a value, and the editor would have nothing left to type into.
+                            canRemove = state.columns.size > 1,
+                            onMoveUp = { callbacks.onMoveColumn(index, -1) },
+                            onMoveDown = { callbacks.onMoveColumn(index, 1) },
+                            onRemove = { callbacks.onRemoveColumn(index) },
+                        )
                     }
                 }
-                // A table has the same columns and the same rows in every language it is read
-                // in — only the words in them change.
-                if (state.columns.size < MAX_TABLE_COLUMNS && !state.translating) {
+                if (state.columns.size < MAX_TABLE_COLUMNS) {
                     OutlinedButton(
                         onClick = callbacks.onAddColumn,
                         modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
@@ -759,17 +747,15 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.weight(1f),
                             )
-                            if (!state.translating) {
-                                LineControls(
-                                    label = rowLabel,
-                                    canMoveUp = rowIndex > 0,
-                                    canMoveDown = rowIndex < state.rows.lastIndex,
-                                    canRemove = true,
-                                    onMoveUp = { callbacks.onMoveRow(rowIndex, -1) },
-                                    onMoveDown = { callbacks.onMoveRow(rowIndex, 1) },
-                                    onRemove = { callbacks.onRemoveRow(rowIndex) },
-                                )
-                            }
+                            LineControls(
+                                label = rowLabel,
+                                canMoveUp = rowIndex > 0,
+                                canMoveDown = rowIndex < state.rows.lastIndex,
+                                canRemove = true,
+                                onMoveUp = { callbacks.onMoveRow(rowIndex, -1) },
+                                onMoveDown = { callbacks.onMoveRow(rowIndex, 1) },
+                                onRemove = { callbacks.onRemoveRow(rowIndex) },
+                            )
                         }
                         state.columns.forEachIndexed { columnIndex, column ->
                             val heading = column.ifBlank {
@@ -784,13 +770,11 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                         }
                     }
                 }
-                if (!state.translating) {
-                    OutlinedButton(
-                        onClick = callbacks.onAddRow,
-                        modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                    ) {
-                        Text(stringResource(Res.string.edit_add_row))
-                    }
+                OutlinedButton(
+                    onClick = callbacks.onAddRow,
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.edit_add_row))
                 }
             }
         }
@@ -822,17 +806,15 @@ private fun StepList(state: EditUiState, callbacks: EditCardCallbacks) {
                             label = { Text(label) },
                             modifier = Modifier.weight(1f),
                         )
-                        if (!state.translating) {
-                            IconButton(
-                                onClick = { callbacks.onRemoveStep(index) },
-                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                            ) {
-                                Icon(
-                                    imageVector = BackArrow,
-                                    contentDescription =
-                                        stringResource(Res.string.cd_remove_line, label),
-                                )
-                            }
+                        IconButton(
+                            onClick = { callbacks.onRemoveStep(index) },
+                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Icon(
+                                imageVector = BackArrow,
+                                contentDescription =
+                                    stringResource(Res.string.cd_remove_line, label),
+                            )
                         }
                     }
                     // The picture stays on screen while a language is being written, without the
@@ -859,13 +841,11 @@ private fun StepList(state: EditUiState, callbacks: EditCardCallbacks) {
                 )
             }
 
-            if (!state.translating) {
-                OutlinedButton(
-                    onClick = callbacks.onAddStep,
-                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                ) {
-                    Text(stringResource(Res.string.edit_add_step))
-                }
+            OutlinedButton(
+                onClick = callbacks.onAddStep,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_add_step))
             }
         }
     }

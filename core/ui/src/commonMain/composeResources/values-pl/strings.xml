@@ -377,5 +377,5 @@
     <string name="edit_language_pick">Który język?</string>
     <string name="edit_language_remove">Usuń ten język</string>
     <string name="edit_translation_title">W języku %1$s</string>
-    <string name="edit_translation_banner">Piszesz ten kafelek w języku %1$s. Zmieniają się tylko słowa — cała reszta należy do samego kafelka i jest taka sama w każdym języku.</string>
+    <string name="edit_translation_banner">Piszesz ten kafelek w języku %1$s. Zmieniają się tylko słowa — cała reszta należy do kafelka. Dodanie, usunięcie lub zmiana kolejności zmienia kafelek we wszystkich językach, aby miały tę samą strukturę.</string>
 </resources>

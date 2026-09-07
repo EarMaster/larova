@@ -375,5 +375,5 @@
     <string name="edit_language_pick">Welche Sprache?</string>
     <string name="edit_language_remove">Diese Sprache entfernen</string>
     <string name="edit_translation_title">Auf %1$s</string>
-    <string name="edit_translation_banner">Sie schreiben diese Kachel auf %1$s. Nur die Wörter ändern sich – alles andere gehört zur Kachel selbst und bleibt in jeder Sprache gleich.</string>
+    <string name="edit_translation_banner">Sie schreiben diese Kachel auf %1$s. Nur die Wörter ändern sich – alles andere gehört zur Kachel selbst. Hinzufügen, Entfernen und Umsortieren ändert die Kachel in allen Sprachen, damit sie überall dieselbe Form behält.</string>
 </resources>

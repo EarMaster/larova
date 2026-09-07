@@ -368,5 +368,5 @@
     <string name="edit_language_pick">Quale lingua?</string>
     <string name="edit_language_remove">Rimuovi questa lingua</string>
     <string name="edit_translation_title">In %1$s</string>
-    <string name="edit_translation_banner">Stai scrivendo questa scheda in %1$s. Cambiano solo le parole: tutto il resto appartiene alla scheda stessa e resta uguale in ogni lingua.</string>
+    <string name="edit_translation_banner">Stai scrivendo questa scheda in %1$s. Cambiano solo le parole: tutto il resto appartiene alla scheda stessa. Aggiungere, togliere o riordinare qui cambia la scheda in tutte le lingue, così mantengono la stessa struttura.</string>
 </resources>

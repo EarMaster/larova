@@ -369,5 +369,5 @@
     <string name="edit_language_pick">Que idioma?</string>
     <string name="edit_language_remove">Remover este idioma</string>
     <string name="edit_translation_title">Em %1$s</string>
-    <string name="edit_translation_banner">Está a escrever este mosaico em %1$s. Só as palavras mudam — tudo o resto pertence ao mosaico e é igual em todos os idiomas.</string>
+    <string name="edit_translation_banner">Está a escrever este mosaico em %1$s. Só as palavras mudam — tudo o resto pertence ao mosaico. Adicionar, remover ou reordenar aqui altera o mosaico em todos os idiomas, para que todos mantenham a mesma estrutura.</string>
 </resources>
