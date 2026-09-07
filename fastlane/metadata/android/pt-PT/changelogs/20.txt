@@ -1,0 +1,1 @@
+Corrige um problema que podia perder as suas traduções: ao adicionar, remover ou reordenar uma parte de um mosaico já traduzido, os outros idiomas ficavam desalinhados e podiam mostrar as palavras do original. Agora todos os idiomas mantêm a mesma estrutura e pode fazer essas alterações a partir de qualquer um.

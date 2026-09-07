@@ -17,6 +17,8 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-09-08
+
 ### Fixed
 - Adding, removing or reordering part of a tile that already has translations no longer breaks them. Adding a column to a translated table used to leave the translation a column short, and the next time that language was opened it showed the original's words — saving from there wrote them over the translation for good. Every language of a tile is now kept in the same shape, and a language you have not filled in yet gains an empty field rather than losing what it says.
 

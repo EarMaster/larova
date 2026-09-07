@@ -1,0 +1,1 @@
+Naprawiono błąd, przez który tłumaczenia mogły zniknąć: po dodaniu, usunięciu lub zmianie kolejności części już przetłumaczonego kafelka pozostałe języki traciły zgodność i mogły pokazywać słowa oryginału. Teraz wszystkie języki zachowują tę samą strukturę, a takie zmiany można wprowadzać z każdego z nich.

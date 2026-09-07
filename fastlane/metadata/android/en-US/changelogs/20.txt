@@ -1,0 +1,1 @@
+Fixes a problem that could lose your translations: adding, removing or reordering part of an already-translated tile left its other languages out of step, and one could end up showing the original's words. Every language now keeps the same shape, and you can make those changes from any of them.

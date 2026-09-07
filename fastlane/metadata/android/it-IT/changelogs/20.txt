@@ -1,0 +1,1 @@
+Corregge un problema che poteva far perdere le traduzioni: aggiungendo, togliendo o riordinando una parte di una scheda già tradotta, le altre lingue restavano indietro e potevano mostrare le parole dell'originale. Ora ogni lingua mantiene la stessa struttura e queste modifiche si possono fare da qualsiasi lingua.
