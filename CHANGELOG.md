@@ -17,6 +17,9 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Added
+- Table columns and rows can be moved up or down one place at a time. Before this, the only way to change the order of a table was to retype it.
+
 ## [1.1.2] - 2026-09-07
 
 ### Changed

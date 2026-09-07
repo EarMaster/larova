@@ -104,6 +104,40 @@ fun tableOf(columns: List<String>, rows: List<List<String>>): CardPayload.Table 
 }
 
 /**
+ * The same table with one column moved a place, and every value moved with it.
+ *
+ * Here rather than in the editor because of what it would mean to get wrong. A table's columns are
+ * headings in the editor and the shape of every row on the tile, so moving a heading without the
+ * cells beneath it does not scramble a layout — it silently re-labels a family's data, and the
+ * result still looks like a valid table. Returning both halves at once is the point: there is no
+ * call site that can take the new headings and forget the new rows.
+ *
+ * A move that goes nowhere, off either end, or asks for a column that is not there answers with the
+ * table unchanged. The buttons are disabled at the ends, so this is the second line rather than the
+ * first.
+ */
+fun movedTableColumn(
+    columns: List<String>,
+    rows: List<List<String>>,
+    from: Int,
+    to: Int,
+): CardPayload.Table {
+    if (from !in columns.indices || to !in columns.indices || from == to) {
+        return CardPayload.Table(columns = columns, rows = rows)
+    }
+    return CardPayload.Table(
+        columns = columns.swapping(from, to),
+        // A row shorter than the headings is left alone rather than padded: squaring a table is
+        // `tableOf`'s job, on the way to being stored, and doing it here would hide a row that
+        // arrived malformed from a file rather than from this editor.
+        rows = rows.map { if (from in it.indices && to in it.indices) it.swapping(from, to) else it },
+    )
+}
+
+private fun <T> List<T>.swapping(a: Int, b: Int): List<T> =
+    toMutableList().also { it[a] = this[b]; it[b] = this[a] }
+
+/**
  * Four columns.
  *
  * Not a storage limit but a legibility one: this is read on a phone, at up to 200 % font scale, by

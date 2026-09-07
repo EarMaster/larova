@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
@@ -65,6 +66,8 @@ import app.larova.core.ui.icon.Symbols
 import app.larova.core.ui.icon.Translate
 import app.larova.core.ui.icon.symbolImage
 import app.larova.core.ui.resources.Res
+import app.larova.core.ui.resources.cd_move_down
+import app.larova.core.ui.resources.cd_move_up
 import app.larova.core.ui.resources.cd_remove_line
 import app.larova.core.ui.resources.cd_step_picture
 import app.larova.core.ui.resources.edit_add_column
@@ -702,30 +705,30 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 state.columns.forEachIndexed { index, column ->
                     val label = stringResource(Res.string.edit_column_number, index + 1)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
+                    // The buttons sit under the field rather than beside it. A heading, three
+                    // controls and a text box do not share one line on a phone at the 200 % font
+                    // scale this app promises — the box ends up too narrow to read what is in it,
+                    // which is the field somebody is actually typing into.
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         OutlinedTextField(
                             value = column,
                             onValueChange = { callbacks.onColumnChange(index, it) },
                             label = { Text(label) },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.fillMaxWidth(),
                         )
-                        // The last column cannot go: a table with no columns has nowhere to put a
-                        // value, and the editor would have nothing left to type into.
-                        if (state.columns.size > 1 && !state.translating) {
-                            IconButton(
-                                onClick = { callbacks.onRemoveColumn(index) },
-                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                            ) {
-                                Icon(
-                                    imageVector = BackArrow,
-                                    contentDescription =
-                                        stringResource(Res.string.cd_remove_line, label),
-                                )
-                            }
+                        if (!state.translating) {
+                            LineControls(
+                                label = label,
+                                canMoveUp = index > 0,
+                                canMoveDown = index < state.columns.lastIndex,
+                                // The last column cannot go: a table with no columns has nowhere
+                                // to put a value, and the editor would have nothing left to type
+                                // into.
+                                canRemove = state.columns.size > 1,
+                                onMoveUp = { callbacks.onMoveColumn(index, -1) },
+                                onMoveDown = { callbacks.onMoveColumn(index, 1) },
+                                onRemove = { callbacks.onRemoveColumn(index) },
+                            )
                         }
                     }
                 }
@@ -750,20 +753,22 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Text(text = rowLabel, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = rowLabel,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.weight(1f),
+                            )
                             if (!state.translating) {
-                                IconButton(
-                                    onClick = { callbacks.onRemoveRow(rowIndex) },
-                                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                                ) {
-                                    Icon(
-                                        imageVector = BackArrow,
-                                        contentDescription =
-                                            stringResource(Res.string.cd_remove_line, rowLabel),
-                                    )
-                                }
+                                LineControls(
+                                    label = rowLabel,
+                                    canMoveUp = rowIndex > 0,
+                                    canMoveDown = rowIndex < state.rows.lastIndex,
+                                    canRemove = true,
+                                    onMoveUp = { callbacks.onMoveRow(rowIndex, -1) },
+                                    onMoveDown = { callbacks.onMoveRow(rowIndex, 1) },
+                                    onRemove = { callbacks.onRemoveRow(rowIndex) },
+                                )
                             }
                         }
                         state.columns.forEachIndexed { columnIndex, column ->
@@ -1367,6 +1372,74 @@ private fun TileForm(
         }
 }
 
+/**
+ * Move one line of a table up or down, or take it out.
+ *
+ * The same three controls for a column as for a row, because they are the same question asked of
+ * the two directions a table has. Up and down rather than start and end even for columns: in the
+ * editor a table's columns are a vertical list of headings, so the buttons describe what they do
+ * *here* — and moving a heading up is what makes it the first column on the tile, whichever side
+ * that is read from.
+ *
+ * Disabled at the ends rather than absent. A row of buttons that changes length as a line reaches
+ * the top is a row whose buttons move under the finger about to press them.
+ */
+@Composable
+private fun LineControls(
+    label: String,
+    canMoveUp: Boolean,
+    canMoveDown: Boolean,
+    canRemove: Boolean,
+    onMoveUp: () -> Unit,
+    onMoveDown: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        IconButton(
+            onClick = onMoveUp,
+            enabled = canMoveUp,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Icon(
+                // The back arrow rotated a quarter turn, as the arrange screen does it: one
+                // drawing, and it mirrors correctly in right-to-left layouts because the original
+                // does.
+                imageVector = BackArrow,
+                contentDescription = stringResource(Res.string.cd_move_up, label),
+                modifier = Modifier.graphicsLayer { rotationZ = QUARTER_TURN },
+            )
+        }
+        IconButton(
+            onClick = onMoveDown,
+            enabled = canMoveDown,
+            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+        ) {
+            Icon(
+                imageVector = BackArrow,
+                contentDescription = stringResource(Res.string.cd_move_down, label),
+                modifier = Modifier.graphicsLayer { rotationZ = -QUARTER_TURN },
+            )
+        }
+        if (canRemove) {
+            // A gap, because the three are not three of a kind. Two arrows that move a line and one
+            // that removes it read as three directions when they sit flush together — and the one
+            // that is not a direction is the one that cannot be undone.
+            Spacer(modifier = Modifier.width(16.dp))
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Icon(
+                    imageVector = BackArrow,
+                    contentDescription = stringResource(Res.string.cd_remove_line, label),
+                )
+            }
+        }
+    }
+}
+
+private const val QUARTER_TURN = 90f
+
 /** One switch and its label, with the whole row as the target. */
 @Composable
 private fun SwitchRow(
@@ -1466,8 +1539,11 @@ data class EditCardCallbacks(
     val onAddColumn: () -> Unit,
     val onRemoveColumn: (Int) -> Unit,
     val onCellChange: (Int, Int, String) -> Unit,
+    val onMoveColumn: (Int, Int) -> Unit,
     val onAddRow: () -> Unit,
     val onRemoveRow: (Int) -> Unit,
+    /** Second argument is -1 or 1: one place, which is all a table needs to be rearranged. */
+    val onMoveRow: (Int, Int) -> Unit,
     val onResetDailyChange: (Boolean) -> Unit,
     val onNoteChange: (String) -> Unit,
     val onContactChange: (Int, ContactDraft) -> Unit,
@@ -1550,8 +1626,10 @@ fun EditCardViewModel.callbacks(
     onAddColumn = ::onAddColumn,
     onRemoveColumn = ::onRemoveColumn,
     onCellChange = ::onCellChange,
+    onMoveColumn = ::onMoveColumn,
     onAddRow = ::onAddRow,
     onRemoveRow = ::onRemoveRow,
+    onMoveRow = ::onMoveRow,
     onResetDailyChange = ::onResetDailyChange,
     onNoteChange = ::onNoteChange,
     onContactChange = ::onContactChange,
