@@ -22,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -136,8 +137,44 @@ class CardViewModel(
     private var folderTiles: Job? = null
 
     init {
-        reload()
+        watchTile()
     }
+
+    /**
+     * The tile, its languages and the language it is being read in — all three watched rather than
+     * read once.
+     *
+     * This screen stays on the back stack while the editor sits on top of it, and the same instance
+     * is still there when the editor closes. Read once, it showed what the tile said *before* the
+     * edit: a language added in the editor was not in the menu on the way back, and only reopening
+     * the tile from the grid brought it in. Combined rather than collected separately, because a
+     * variant list and the tile it belongs to arriving in either order must not produce a frame
+     * built from one of them.
+     */
+    private fun watchTile() {
+        val id = parseUuidOrNull(cardId)
+        viewModelScope.launch {
+            if (id == null) {
+                _state.value = CardUiState(isLoading = false, missing = true)
+                return@launch
+            }
+            combine(
+                tiles.observe.flow(cardId),
+                translations.textsFor(id),
+                translations.language(),
+                translations.chosenLanguage(),
+            ) { tile, variants, language, chosen -> Reading(tile, variants, language, chosen) }
+                .collect { show(it) }
+        }
+    }
+
+    /** One frame of the tile: what it says, in the language it is being read in. */
+    private data class Reading(
+        val tile: Tile?,
+        val variants: List<CardText>,
+        val language: String,
+        val chosen: String?,
+    )
 
     /**
      * Recorded here rather than by the screen, so that a tile opened from the start screen, from a
@@ -157,12 +194,12 @@ class CardViewModel(
     fun onToggleItem(index: Int) {
         val id = parseUuidOrNull(cardId) ?: return
         viewModelScope.launch {
-            // Ticking an item is the one write a caregiver can make. Reload rather than mutate the
-            // state here: the stored payload is the truth, and a tick that failed must not leave a
-            // checkbox looking as though it succeeded.
+            // Ticking an item is the one write a caregiver can make, and nothing here puts it on
+            // screen: the stored payload is the truth and the tile is watched, so the tick arrives
+            // back the same way an edit does. A tick that failed leaves the checkbox as it was
+            // rather than looking as though it succeeded.
             toggleChecklistItem(id, index)
             recordEvent.checkToggled(id)
-            reload()
         }
     }
 
@@ -178,33 +215,36 @@ class CardViewModel(
         return media.loadImage(id, ImageSize.ON_SCREEN)?.toImageBitmapOrNull()
     }
 
-    private fun reload() {
-        viewModelScope.launch {
-            val tile = tiles.observe(cardId)
-            _state.value = if (tile == null) {
-                CardUiState(isLoading = false, missing = true)
-            } else {
-                val variants = translations.textsFor(tile.card.id).first()
-                val shown = resolveCardText(tile.card, variants, translations.language().first())
-                // The resolved text takes the state's existing field names, so not one of the ten
-                // renderers below has to know that translation exists. A variant is the same three
-                // things a tile is — title, second line, payload — which is the whole reason for
-                // storing it that way.
-                CardUiState(
-                    title = shown.title,
-                    colorToken = tile.card.colorToken,
-                    payload = CardPayloadCodec.decodeOrNull(shown.payload) ?: tile.payload,
-                    isLoading = false,
-                    folderBoardId = (tile.payload as? CardPayload.Folder)?.boardId?.toString(),
-                    languages = languagesOf(tile.card.locale, variants),
-                    chosenLanguage = translations.chosenLanguage().first(),
-                )
-            }
-            watchFolder(tile?.payload as? CardPayload.Folder)
-            checkApp(tile?.payload as? CardPayload.AppLink)
-            findMedia(tile?.payload)
-            checkTranslate(tile)
+    private suspend fun show(reading: Reading) {
+        val tile = reading.tile
+        _state.value = if (tile == null) {
+            CardUiState(isLoading = false, missing = true)
+        } else {
+            val shown = resolveCardText(tile.card, reading.variants, reading.language)
+            // The resolved text takes the state's existing field names, so not one of the ten
+            // renderers below has to know that translation exists. A variant is the same three
+            // things a tile is — title, second line, payload — which is the whole reason for
+            // storing it that way.
+            // Copied onto what is already on screen rather than built fresh. The four calls below
+            // fill their fields asynchronously, and this now runs again every time the tile, its
+            // variants or the chosen language change — so a fresh state would blank the folder's
+            // contents, the media path and the hand-off on every one of them, and fill them back in
+            // a frame later. Reading a language menu should not make the grid behind it flicker.
+            _state.value.copy(
+                title = shown.title,
+                colorToken = tile.card.colorToken,
+                payload = CardPayloadCodec.decodeOrNull(shown.payload) ?: tile.payload,
+                isLoading = false,
+                missing = false,
+                folderBoardId = (tile.payload as? CardPayload.Folder)?.boardId?.toString(),
+                languages = languagesOf(tile.card.locale, reading.variants),
+                chosenLanguage = reading.chosen,
+            )
         }
+        watchFolder(tile?.payload as? CardPayload.Folder)
+        checkApp(tile?.payload as? CardPayload.AppLink)
+        findMedia(tile?.payload)
+        checkTranslate(tile)
     }
 
     /**
@@ -252,10 +292,7 @@ class CardViewModel(
      * the one way back to what the parent wrote on a phone whose language has a translation.
      */
     fun onContentLanguageChange(tag: String?) {
-        viewModelScope.launch {
-            translations.choose(tag)
-            reload()
-        }
+        viewModelScope.launch { translations.choose(tag) }
     }
 
     private suspend fun checkTranslate(tile: Tile?) {

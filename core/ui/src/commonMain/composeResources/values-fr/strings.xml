@@ -374,6 +374,5 @@
     <string name="edit_language_pick">Quelle langue ?</string>
     <string name="edit_language_remove">Supprimer cette langue</string>
     <string name="edit_translation_title">En %1$s</string>
-    <string name="edit_translation_hint">Le texte d’origine a été copié ici. Traduisez-le vous-même — Larova ne traduit rien et ne lit jamais ce que vous collez.</string>
-    <string name="edit_translation_field">Ligne %1$d</string>
+    <string name="edit_translation_banner">Vous écrivez cette fiche en %1$s. Seuls les mots changent — tout le reste appartient à la fiche elle-même et reste identique dans toutes les langues.</string>
 </resources>

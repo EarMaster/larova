@@ -1,0 +1,1 @@
+Écrire une fiche dans une autre langue se fait désormais dans l'éditeur de la fiche elle-même ; ce qui n'est pas du texte — images, numéros, adresses — apparaît grisé comme appartenant à la fiche. Une fiche d'appel avec plusieurs personnes se traduit entièrement. Et le réglage de langue des fiches propose maintenant la langue dans laquelle vos fiches sont écrites.

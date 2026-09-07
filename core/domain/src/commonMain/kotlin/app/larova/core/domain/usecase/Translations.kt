@@ -5,11 +5,13 @@ import app.larova.core.domain.app.LanguageOption
 import app.larova.core.domain.app.Translators
 import app.larova.core.domain.model.CardText
 import app.larova.core.domain.model.canonicalLanguageTag
+import app.larova.core.domain.repository.CardRepository
 import app.larova.core.domain.repository.CardTextRepository
 import app.larova.core.domain.repository.PreferencesRepository
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 /**
@@ -36,6 +38,41 @@ class ObserveAllCardText(private val texts: CardTextRepository) {
 }
 
 /**
+ * What the languages on this phone are, for the setting that picks one.
+ *
+ * [languages] is every language some tile can be read in, which is **both** halves: the languages
+ * tiles were written in and the languages they were translated into. Built from the tiles rather
+ * than from a list of what the app supports, because the only languages worth offering are the ones
+ * something is actually written in — and that set changes as a parent adds them.
+ *
+ * Leaving the written half out was a bug with an obvious shape once seen: a family whose tiles are
+ * German with an Italian translation was offered Italian and English and not German, so the one
+ * language the tiles were actually in could not be asked for by name.
+ *
+ * [hasTranslations] is what decides whether the setting exists at all. A phone where nothing has
+ * been translated has one language and no choice to make, and a picker offering it is furniture.
+ */
+data class TileLanguages(
+    val languages: List<String> = emptyList(),
+    val hasTranslations: Boolean = false,
+)
+
+class ObserveTileLanguages(
+    private val cards: CardRepository,
+    private val texts: CardTextRepository,
+) {
+    operator fun invoke(): Flow<TileLanguages> =
+        combine(cards.observeAllCards(), texts.observeAll()) { allCards, allTexts ->
+            TileLanguages(
+                languages = (allCards.mapNotNull { it.locale } + allTexts.map { it.lang })
+                    .distinct()
+                    .sorted(),
+                hasTranslations = allTexts.isNotEmpty(),
+            )
+        }
+}
+
+/**
  * Which language tiles should be shown in, resolved for use.
  *
  * The stored preference is nullable and means "follow the app"; this turns that into the tag a
@@ -45,6 +82,7 @@ class ObserveAllCardText(private val texts: CardTextRepository) {
 class ContentLanguage(
     private val preferences: PreferencesRepository,
     private val appLanguage: AppLanguage,
+    private val tileLanguages: ObserveTileLanguages,
 ) {
 
     /** The chosen tag, or the app's own when nothing has been chosen. */
@@ -61,6 +99,9 @@ class ContentLanguage(
 
     /** Every language a tile can be written in, which is not the fourteen the app is written in. */
     fun available(): List<LanguageOption> = appLanguage.available()
+
+    /** Which languages this phone's tiles are actually in — the set the setting picks from. */
+    fun onThisPhone(): Flow<TileLanguages> = tileLanguages()
 }
 
 /**
@@ -89,6 +130,8 @@ class Translations(
     fun textsFor(cardId: Uuid): Flow<List<CardText>> = cardText(cardId)
 
     fun allTexts(): Flow<List<CardText>> = allCardText()
+
+    fun tileLanguages(): Flow<TileLanguages> = contentLanguage.onThisPhone()
 
     fun language(): Flow<String> = contentLanguage()
 

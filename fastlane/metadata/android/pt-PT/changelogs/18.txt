@@ -1,0 +1,1 @@
+Escrever um mosaico noutro idioma passa a acontecer no editor do próprio mosaico; o que não são palavras — imagens, números, endereços — aparece a cinzento por pertencer ao mosaico. Um mosaico de chamada com várias pessoas é traduzido por inteiro. E a definição de idioma dos mosaicos já oferece o idioma em que estão escritos.

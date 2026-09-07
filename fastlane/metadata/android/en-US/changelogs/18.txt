@@ -1,0 +1,1 @@
+Writing a tile in another language now happens in the tile's own editor, with what is not words — pictures, numbers, addresses — greyed as belonging to the tile. A call tile with several people translates in full. And the tile language setting now offers the language your tiles are written in.

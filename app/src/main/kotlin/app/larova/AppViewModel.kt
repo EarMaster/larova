@@ -100,15 +100,19 @@ class AppViewModel(
      * Which language tiles are read in, and what there is to choose from — or null when nothing on
      * this phone is translated, in which case the settings screen draws no card for it.
      *
-     * Built from the variants themselves rather than from a list of supported languages: the only
-     * languages worth offering are the ones some tile is actually written in, and that set changes
+     * Built from the tiles themselves rather than from a list of supported languages: the only
+     * languages worth offering are the ones something is actually written in, and that set changes
      * as a parent adds them.
+     *
+     * Both halves of it — see [ObserveTileLanguages]. The languages tiles were *written* in belong
+     * here as much as the ones they were translated into, and leaving them out meant a phone full
+     * of German tiles could be set to Italian or English but not to German.
      */
     val contentLanguage: StateFlow<ContentLanguageSetting?> =
-        combine(translations.allTexts(), translations.chosenLanguage()) { texts, chosen ->
-            val languages = texts.map { it.lang }.distinct().sorted()
+        combine(translations.tileLanguages(), translations.chosenLanguage()) { tiles, chosen ->
+            val languages = tiles.languages
                 .map { ContentLanguageChoice(tag = it, name = translations.nameOf(it)) }
-            if (languages.isEmpty()) null else ContentLanguageSetting(chosen, languages)
+            if (!tiles.hasTranslations) null else ContentLanguageSetting(chosen, languages)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),

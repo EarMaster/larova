@@ -375,6 +375,5 @@
     <string name="edit_language_pick">Welche Sprache?</string>
     <string name="edit_language_remove">Diese Sprache entfernen</string>
     <string name="edit_translation_title">Auf %1$s</string>
-    <string name="edit_translation_hint">Der ursprüngliche Text wurde hierher kopiert. Ändern Sie ihn selbst in die andere Sprache — Larova übersetzt nichts und liest nie, was Sie einfügen.</string>
-    <string name="edit_translation_field">Zeile %1$d</string>
+    <string name="edit_translation_banner">Sie schreiben diese Kachel auf %1$s. Nur die Wörter ändern sich – alles andere gehört zur Kachel selbst und bleibt in jeder Sprache gleich.</string>
 </resources>

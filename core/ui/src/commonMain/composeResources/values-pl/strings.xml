@@ -377,6 +377,5 @@
     <string name="edit_language_pick">Który język?</string>
     <string name="edit_language_remove">Usuń ten język</string>
     <string name="edit_translation_title">W języku %1$s</string>
-    <string name="edit_translation_hint">Oryginalny tekst został tu skopiowany. Zmień go samodzielnie na inny język — Larova niczego nie tłumaczy i nigdy nie czyta tego, co wklejasz.</string>
-    <string name="edit_translation_field">Wiersz %1$d</string>
+    <string name="edit_translation_banner">Piszesz ten kafelek w języku %1$s. Zmieniają się tylko słowa — cała reszta należy do samego kafelka i jest taka sama w każdym języku.</string>
 </resources>

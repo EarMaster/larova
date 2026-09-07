@@ -394,8 +394,10 @@
     <string name="settings_content_language_hint">Which language tiles are shown in, when a tile has more than one. This is a setting for this phone, not for one tile.</string>
     <string name="translate_follow_app">Follow the app language</string>
     <!-- Writing one tile in another language. The editor switches to that language in place and
-         then holds words and nothing else: no colour, no symbol, no pictures, no numbers, no
-         addresses. What a translator gives back is pasted in by the person, box by box.
+         stays the same form: the same fields for the same kind of tile, with everything that is not
+         words — the colour, the symbol, the pictures, the phone numbers, the addresses — shown as
+         the tile's own and not editable there. `edit_translation_banner` is what says so, because a
+         field that will not take a keystroke and does not say why reads as broken.
 
          `edit_written_in` is the tile's own language, which is asked rather than guessed — see
          `Card.locale`. Until somebody answers it, the original is listed as `translate_original`. -->
@@ -407,6 +409,5 @@
     <string name="edit_language_pick">Which language?</string>
     <string name="edit_language_remove">Remove this language</string>
     <string name="edit_translation_title">In %1$s</string>
-    <string name="edit_translation_hint">The original text has been copied here. Change it into the other language yourself — Larova translates nothing, and never reads what you paste.</string>
-    <string name="edit_translation_field">Line %1$d</string>
+    <string name="edit_translation_banner">You are writing this tile in %1$s. Only the words change — everything else belongs to the tile itself and stays the same in every language.</string>
 </resources>

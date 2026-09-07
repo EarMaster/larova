@@ -151,6 +151,8 @@ private class FakeCardDao(private val cards: List<CardEntity>) : CardDao {
     override fun observeAll(): Flow<List<CardEntity>> = flowOf(cards)
     override fun search(query: String): Flow<List<CardEntity>> = flowOf(cards)
     override suspend fun find(id: String): CardEntity? = cards.firstOrNull { it.id == id }
+    override fun observeCard(id: String): Flow<CardEntity?> =
+        flowOf(cards.firstOrNull { it.id == id })
     override suspend fun all(): List<CardEntity> = cards
     override suspend fun upsert(card: CardEntity) = Unit
     override suspend fun updateSortIndex(id: String, sortIndex: Int) = Unit

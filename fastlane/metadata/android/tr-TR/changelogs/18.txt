@@ -1,0 +1,1 @@
+Bir kartı başka bir dilde yazmak artık kartın kendi düzenleme ekranında oluyor; sözcük olmayan her şey — resimler, numaralar, adresler — karta ait olduğu için soluk gösteriliyor. Birden çok kişinin bulunduğu arama kartı artık tümüyle çevrilebiliyor. Kart dili ayarı da kartlarınızın yazıldığı dili sunuyor.

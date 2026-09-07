@@ -48,6 +48,16 @@ interface CardRepository {
      */
     fun observeAllCards(): Flow<List<Card>>
 
+    /**
+     * One tile, for as long as somebody is looking at it.
+     *
+     * The card screen outlives an edit: the editor opens on top of it and closes again, and the
+     * ViewModel underneath is the same instance throughout. Read once, it would still be showing
+     * what the tile said before the edit — which is most visible with translations, where a
+     * language added in the editor was simply not in the menu on the way back.
+     */
+    fun observeCard(id: Uuid): Flow<Card?>
+
     /** Search runs over titles and subtitles only. Payload content is never interpreted. */
     fun search(query: String): Flow<List<Card>>
 

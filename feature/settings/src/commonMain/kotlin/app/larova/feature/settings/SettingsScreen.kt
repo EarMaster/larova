@@ -87,6 +87,7 @@ import app.larova.core.ui.resources.settings_unlock_none
 import app.larova.core.ui.resources.settings_unlock_owned
 import app.larova.core.ui.resources.settings_version
 import app.larova.core.ui.resources.transfer_title
+import app.larova.core.ui.resources.edit_cancel
 import app.larova.core.ui.resources.translate_follow_app
 import app.larova.core.ui.resources.translate_original
 import app.larova.core.ui.resources.view_leave
@@ -618,6 +619,17 @@ private fun ContentLanguageCard(
                             choosing = false
                         },
                     )
+                    // Whatever each tile was written in, tile by tile. Not the same answer as
+                    // naming a language: this one follows the tile rather than the phone, and it
+                    // is the only row that reaches a tile whose language nobody has recorded.
+                    LanguageChoiceRow(
+                        label = asWritten,
+                        selected = setting.chosen == UNSPECIFIED_LANGUAGE,
+                        onSelect = {
+                            onChange(UNSPECIFIED_LANGUAGE)
+                            choosing = false
+                        },
+                    )
                     for (language in setting.languages) {
                         LanguageChoiceRow(
                             label = language.name,
@@ -635,7 +647,7 @@ private fun ContentLanguageCard(
                     onClick = { choosing = false },
                     modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
                 ) {
-                    Text(stringResource(Res.string.purchase_later))
+                    Text(stringResource(Res.string.edit_cancel))
                 }
             },
         )

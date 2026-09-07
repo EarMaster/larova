@@ -1,0 +1,1 @@
+Scrivere una scheda in un'altra lingua avviene ora nell'editor della scheda stessa; ciò che non è parole — immagini, numeri, indirizzi — appare in grigio perché appartiene alla scheda. Una scheda di chiamata con più persone si traduce per intero. E l'impostazione della lingua delle schede propone ora anche la lingua in cui sono scritte.
