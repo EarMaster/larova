@@ -17,6 +17,11 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Fixed
+- The tile language setting now lists the language your tiles are written in, not only the languages they have been translated into. A phone full of German tiles could be set to English or Italian but not back to German.
+- The tile language setting can also be set to "As written", which shows every tile in whatever language it was written in. It was reachable from a tile's own globe menu and could be read back on the settings screen, but not chosen there.
+- The button that closes the tile language chooser said "Not now". It says "Cancel", which is what it does.
+
 ## [1.1.1] - 2026-09-07
 
 ### Changed

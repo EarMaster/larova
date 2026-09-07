@@ -67,6 +67,7 @@ import app.larova.core.domain.usecase.Translations
 import app.larova.core.platform.AndroidAppLanguage
 import app.larova.core.platform.AndroidTranslators
 import app.larova.core.domain.usecase.ObserveSupportCount
+import app.larova.core.domain.usecase.ObserveTileLanguages
 import app.larova.core.domain.usecase.RecordLastBackup
 import app.larova.core.domain.usecase.ClearLog
 import app.larova.core.domain.usecase.ImportPackage
@@ -241,9 +242,10 @@ val appModule = module {
     factory { CanTranslate(get()) }
     factory { ObserveCardText(get()) }
     factory { ObserveAllCardText(get()) }
-    factory { ContentLanguage(get(), get()) }
+    factory { ContentLanguage(get(), get(), get()) }
     factory { SaveCardText(get(), get()) }
     factory { DeleteCardText(get()) }
+    factory { ObserveTileLanguages(get(), get()) }
     factory { Translations(get(), get(), get(), get(), get(), get()) }
     factory { AddImage(get(), get()) }
     factory { AddMediaFile(get(), get()) }
