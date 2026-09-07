@@ -1,0 +1,1 @@
+O menu do globo passa a oferecer sempre o idioma em que um mosaico está escrito, e não só as suas traduções, e a edição abre no idioma que estava a ler. Corrigido: o editor por vezes não listava nenhuma tradução. Ao desbloquear a vista dos pais volta aos seus mosaicos.

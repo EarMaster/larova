@@ -138,6 +138,19 @@ private fun String.primarySubtag(): String = substringBefore('-')
  *
  * Never guesses and never invents a region: `de` stays `de` rather than becoming `de-DE`.
  */
+/**
+ * "Whatever the parent wrote", as a language tag.
+ *
+ * BCP-47's own code for an undetermined language, which is exactly what this is: a tile whose
+ * language nobody has recorded still has a language, and this asks for it without naming one.
+ *
+ * It needs no special case in [resolveCardText]. No variant is ever stored under it — the picker
+ * offers real languages only — so it matches nothing at steps 2 and 3 and falls through to step 4,
+ * the original. That is the whole mechanism, and it is why asking for the original is not a fourth
+ * kind of answer the resolver has to know about.
+ */
+const val UNSPECIFIED_LANGUAGE: String = "und"
+
 fun canonicalLanguageTag(raw: String?): String? {
     val trimmed = raw?.trim().orEmpty()
     if (!TAG.matches(trimmed)) return null

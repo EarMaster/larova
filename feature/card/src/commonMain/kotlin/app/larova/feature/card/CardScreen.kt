@@ -35,6 +35,7 @@ import app.larova.core.ui.resources.cd_translate
 import app.larova.core.ui.resources.cd_translate_language
 import app.larova.core.ui.resources.home_add_tile
 import app.larova.core.ui.resources.translate_follow_app
+import app.larova.core.ui.resources.translate_original
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -168,6 +169,7 @@ private fun LanguageMenu(
     if (languages.isEmpty() && !canHandOff) return
 
     var expanded by remember { mutableStateOf(false) }
+    val asWritten = stringResource(Res.string.translate_original)
 
     IconButton(onClick = { expanded = true }) {
         Icon(imageVector = Translate, contentDescription = stringResource(Res.string.cd_language))
@@ -189,7 +191,8 @@ private fun LanguageMenu(
             )
             for (language in languages) {
                 LanguageItem(
-                    label = language.name,
+                    // Blank is the tile's own text, on a tile nobody has named the language of.
+                    label = language.name.ifBlank { asWritten },
                     selected = chosen == language.tag,
                     onClick = {
                         expanded = false

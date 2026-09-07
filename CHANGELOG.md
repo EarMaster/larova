@@ -17,6 +17,18 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-07
+
+### Changed
+- Unlocking parent view now returns you to your tiles instead of leaving you on the settings screen. Parent view is what you turn on to add or change a tile, and that starts on the grid.
+- The language a tile is written in is now always offered in its globe menu, listed separately from "Follow the app language". Following the app is an automatic mode; picking German is a choice, and on a German phone those looked like the same thing while behaving differently. A tile you have not named the language of is offered as "As written".
+- Editing a tile now opens in the language you were reading it in. Looking at the Turkish and tapping edit gets you the Turkish, instead of the original with the globe still to find.
+- Saving a translation goes back to the tile's own text instead of closing the editor. Writing one of a tile's several languages is rarely the end of the job.
+
+### Fixed
+- The editor's language menu sometimes listed none of a tile's translations, so the only way back into one was to add it again — which then opened the translation that was supposedly not there. Adding a language you already had was offered for the same reason.
+- Saying what language a tile is written in is now recorded straight away. It used to be kept until you saved the tile, so answering the question and then leaving the editor lost the answer without saying so.
+
 ## [1.1.0] - 2026-09-07
 
 ### Changed
