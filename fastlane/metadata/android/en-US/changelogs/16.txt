@@ -1,0 +1,1 @@
+A tile's globe button now opens a menu: choose which language to read the tile in, or hand its words to a translation app. The editor works the same way. And a tile can now be written in any language your phone knows, not only the fourteen Larova itself speaks.

@@ -1,0 +1,1 @@
+Le globe sur une fiche ouvre maintenant un menu : choisissez la langue dans laquelle la lire, ou confiez ses mots à une application de traduction. L'éditeur fonctionne de la même façon. Et une fiche peut désormais être écrite dans toutes les langues connues du téléphone, pas seulement les quatorze de Larova.

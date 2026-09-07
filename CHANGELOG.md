@@ -17,6 +17,8 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-07
+
 ### Changed
 - The globe on a tile now opens a menu instead of going straight to a translation app: it lists the languages that tile can be read in, and offers the hand-off below them. The row of language chips under the title is gone — it asked the same question twice, and on a guide it took the height a step needed.
 - The editor has the same globe. It switches which language you are writing in place, says which language the tile itself is written in, adds a language, and hands the words on screen to a translation app for a first draft. The "Other languages" section at the bottom of the form is gone, and translating no longer opens a separate screen.

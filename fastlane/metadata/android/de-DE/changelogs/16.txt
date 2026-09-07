@@ -1,0 +1,1 @@
+Die Weltkugel auf einer Kachel öffnet jetzt ein Menü: Sprache wählen, in der die Kachel gelesen wird, oder ihre Wörter an eine Übersetzungs-App übergeben. Im Bearbeiten-Modus genauso. Und eine Kachel lässt sich jetzt in jeder Sprache schreiben, die das Telefon kennt – nicht nur in den vierzehn von Larova.

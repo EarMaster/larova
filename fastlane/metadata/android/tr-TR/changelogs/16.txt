@@ -1,0 +1,1 @@
+Bir karttaki dünya simgesi artık bir menü açıyor: kartı hangi dilde okuyacağınızı seçin ya da sözcüklerini bir çeviri uygulamasına gönderin. Düzenleme ekranı da aynı şekilde çalışıyor. Ve bir kartı artık telefonun bildiği her dilde yazabilirsiniz, yalnızca Larova'nın on dört dilinde değil.

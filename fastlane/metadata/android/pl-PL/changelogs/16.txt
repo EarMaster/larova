@@ -1,0 +1,1 @@
+Globus na kafelku otwiera teraz menu: wybierz język, w którym chcesz go czytać, albo przekaż jego słowa aplikacji tłumaczącej. Edytor działa tak samo. A kafelek można teraz napisać w każdym języku, który zna telefon, nie tylko w czternastu językach Larovy.
