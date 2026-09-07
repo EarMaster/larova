@@ -82,16 +82,6 @@ abstract class CardScreenshotTest : ScreenshotTest() {
     @Test
     fun a_tile_in_another_language() = card("note_translated", Fixtures.noteTranslated)
 
-    /**
-     * The same tile after the original was edited.
-     *
-     * Shown, and said. Text nobody in the room can read is not the safer option; it is only the
-     * quieter one.
-     */
-    @Test
-    fun a_translation_the_tile_has_outgrown() =
-        card("note_translated_stale", Fixtures.noteTranslatedStale)
-
     private fun card(name: String, state: CardUiState) {
         capture("card/$name") { Card(state) }
     }

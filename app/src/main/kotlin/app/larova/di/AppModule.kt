@@ -114,8 +114,6 @@ import app.larova.core.platform.PlatformNames
 import app.larova.core.platform.PlatformPaths
 import app.larova.feature.card.CardViewModel
 import app.larova.feature.card.edit.EditCardViewModel
-import app.larova.feature.card.edit.EditTranslationViewModel
-import app.larova.feature.card.edit.TranslationTarget
 import app.larova.feature.card.edit.EditTarget
 import app.larova.feature.help.HelpViewModel
 import app.larova.feature.home.ArrangeTilesViewModel
@@ -246,7 +244,7 @@ val appModule = module {
     factory { ContentLanguage(get(), get()) }
     factory { SaveCardText(get(), get()) }
     factory { DeleteCardText(get()) }
-    factory { Translations(get(), get(), get(), get()) }
+    factory { Translations(get(), get(), get(), get(), get(), get()) }
     factory { AddImage(get(), get()) }
     factory { AddMediaFile(get(), get()) }
     factory { LoadImage(get(), get()) }
@@ -300,16 +298,10 @@ val appModule = module {
             parameters.get(), get(), get(), get(), get(), get(), get(), get(), get(),
         )
     }
-    viewModel { parameters ->
-        EditTranslationViewModel(parameters.get(), get(), get(), get(), get())
-    }
 }
 
 /** Kept next to the module so a caller cannot get the parameter order wrong. */
 fun cardViewModelParameters(cardId: String) = parametersOf(cardId)
-
-fun editTranslationViewModelParameters(cardId: String, lang: String) =
-    parametersOf(TranslationTarget(cardId = cardId, lang = lang))
 
 /**
  * An empty card id is a new tile; the editor treats it as such rather than looking one up. An empty

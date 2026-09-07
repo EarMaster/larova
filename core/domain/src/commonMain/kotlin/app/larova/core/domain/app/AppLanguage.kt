@@ -23,4 +23,27 @@ interface AppLanguage {
      * would need translating into fourteen languages and would still be wrong for this purpose.
      */
     fun nameOf(tag: String): String
+
+    /**
+     * Every language this phone can name, for the picker a parent writes a tile in.
+     *
+     * Deliberately far wider than the fourteen the app's own chrome speaks. Nothing in `Card.locale`
+     * or in `resolveCardText` cares which languages Larova was translated into — a family with a
+     * Romanian carer needs a Romanian tile whether or not the buttons around it are Romanian, and
+     * the buttons are the half that already falls back.
+     *
+     * Language level only, no regions: `resolveCardText` matches on the primary subtag anyway, and
+     * a list carrying four Spanishes is a list nobody can find Spanish in.
+     */
+    fun available(): List<LanguageOption>
 }
+
+/**
+ * One language, named twice.
+ *
+ * [endonym] is what it calls itself and is what the picker shows, for the reason [AppLanguage.nameOf]
+ * gives. [localName] is the same language in the *app's* language, and exists only so that searching
+ * works from either end: a German parent looking for Romanian may well type "Rumänisch", and a list
+ * that only matched "Română" would answer that with nothing.
+ */
+data class LanguageOption(val tag: String, val endonym: String, val localName: String)

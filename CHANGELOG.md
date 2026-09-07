@@ -17,6 +17,17 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Changed
+- The globe on a tile now opens a menu instead of going straight to a translation app: it lists the languages that tile can be read in, and offers the hand-off below them. The row of language chips under the title is gone — it asked the same question twice, and on a guide it took the height a step needed.
+- The editor has the same globe. It switches which language you are writing in place, says which language the tile itself is written in, adds a language, and hands the words on screen to a translation app for a first draft. The "Other languages" section at the bottom of the form is gone, and translating no longer opens a separate screen.
+- A tile can be written in any language the phone knows, not only the fourteen Larova itself speaks. The picker offers those fourteen first and the rest behind a search.
+
+### Added
+- You can now say what language a tile is written in. Once you have, that language can be chosen when reading the tile — so a phone set to Turkish can still be shown the German the tile was written in. Tiles you have not answered for keep working exactly as before.
+
+### Removed
+- The note saying a tile had been changed since its translation was written, on the tile and in the editor both. Nobody reading a tile could act on it, and it was a sentence about bookkeeping in front of somebody looking for how to do something.
+
 ## [1.0.0] - 2026-09-05
 
 ### Changed

@@ -198,6 +198,59 @@ class SaveCardTest {
 
     private fun root() = Board(id = boardId, parentId = null, title = "", sortIndex = 0, updatedAt = at)
 
+
+    @Test
+    fun theLanguageATileIsWrittenInIsStoredAsItComes() = runTest {
+        // The editor is the only thing that can know this — it is asked, never derived — so the
+        // one thing this write must not do is lose it. It ends up in every export file.
+        val cards = FakeCardRepository()
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        val result = save(draft(title = "Essen und Trinken", locale = "de"))
+
+        assertIs<SaveCard.Result.Saved>(result)
+        assertEquals("de", cards.cards.value.first { it.id == result.id }.locale)
+    }
+
+    @Test
+    fun theLanguageIsCanonicalisedOnTheWayIn() = runTest {
+        // `canonicalLanguageTag`'s rule, applied at the write boundary: two spellings of
+        // Portuguese must not become two languages that `resolveCardText` then cannot match.
+        val cards = FakeCardRepository()
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        val result = save(draft(title = "Comer e beber", locale = "PT-pt"))
+
+        assertIs<SaveCard.Result.Saved>(result)
+        assertEquals("pt-PT", cards.cards.value.first { it.id == result.id }.locale)
+    }
+
+    @Test
+    fun somethingThatIsNotALanguageTagIsNotStored() = runTest {
+        // Null is a real answer and means "nobody has said". Rubbish is not a different answer.
+        val cards = FakeCardRepository()
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        val result = save(draft(title = "Food", locale = "not a tag"))
+
+        assertIs<SaveCard.Result.Saved>(result)
+        assertNull(cards.cards.value.first { it.id == result.id }.locale)
+    }
+
+    @Test
+    fun anEditThatSaysNothingAboutLanguageClearsIt() = runTest {
+        // Deliberate, and the reason the editor round-trips the stored value into its draft: a
+        // parent must be able to take back an answer they got wrong, and the editor is the only
+        // caller. A helper that quietly kept the old value would make that impossible.
+        val stored = existing("Essen", 0).copy(locale = "de")
+        val cards = FakeCardRepository(listOf(stored))
+        val save = SaveCard(cards, FakeBoardRepository(listOf(root())))
+
+        save(draft(title = "Essen", id = stored.id))
+
+        assertNull(cards.cards.value.first { it.id == stored.id }.locale)
+    }
+
     private fun draft(
         title: String,
         id: Uuid? = null,
@@ -205,6 +258,7 @@ class SaveCardTest {
         colorToken: String = "sand",
         icon: String = "star",
         payload: CardPayload = CardPayload.Note("Text"),
+        locale: String? = null,
     ) = CardDraft(
         id = id,
         title = title,
@@ -212,6 +266,7 @@ class SaveCardTest {
         colorToken = colorToken,
         icon = icon,
         payload = payload,
+        locale = locale,
     )
 
     private fun existing(title: String, sortIndex: Int) = Card(

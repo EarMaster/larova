@@ -2,6 +2,8 @@ package app.larova.core.platform
 
 import android.content.Context
 import app.larova.core.domain.app.AppLanguage
+import app.larova.core.domain.app.LanguageOption
+import java.text.Collator
 import java.util.Locale
 
 /**
@@ -29,5 +31,40 @@ class AndroidAppLanguage(private val context: Context) : AppLanguage {
         val locale = Locale.forLanguageTag(tag)
         val name = locale.getDisplayLanguage(locale)
         return name.replaceFirstChar { it.titlecase(locale) }.ifBlank { tag }
+    }
+
+    /**
+     * Every language the platform can name, once each.
+     *
+     * `getAvailableLocales` returns hundreds of *locales* — every region of every language — so it
+     * is reduced to the primary subtag and deduplicated. That is the level tiles are written at:
+     * `resolveCardText` matches primary subtags, and asking a parent to choose between four
+     * Spanishes to write one tile is a question with no right answer in it.
+     *
+     * Sorted with a [Collator] for the app's own locale rather than by code points, so a German
+     * list puts Ö where a German reader looks for it. Computed on each call and not cached: the
+     * picker is opened rarely, and a cache here would be a copy of the platform's own data that
+     * cannot be invalidated when the phone's language changes underneath it.
+     */
+    override fun available(): List<LanguageOption> {
+        val app = context.resources.configuration.locales[0]
+        val collator = Collator.getInstance(app)
+        return Locale.getAvailableLocales()
+            .asSequence()
+            .map { it.language }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .map { tag ->
+                LanguageOption(
+                    tag = tag,
+                    endonym = nameOf(tag),
+                    localName = Locale.forLanguageTag(tag).getDisplayLanguage(app),
+                )
+            }
+            // A language the platform has a code for but no name for comes back as its own tag,
+            // which is not a word anybody is looking for. Dropped rather than shown as "sga".
+            .filter { it.endonym != it.tag }
+            .sortedWith { a, b -> collator.compare(a.endonym, b.endonym) }
+            .toList()
     }
 }

@@ -4,6 +4,7 @@ import app.larova.core.domain.model.Board
 import app.larova.core.domain.model.Card
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
+import app.larova.core.domain.model.canonicalLanguageTag
 import app.larova.core.domain.model.cardType
 import app.larova.core.domain.repository.BoardRepository
 import app.larova.core.domain.repository.CardRepository
@@ -33,6 +34,14 @@ data class CardDraft(
     val icon: String,
     val payload: CardPayload,
     val visibleToCaregiver: Boolean = true,
+    /**
+     * What language the parent says this tile is written in, or null for "nobody has said".
+     *
+     * Carried on the draft rather than left to [SaveCard] to preserve, because the editor is the
+     * only thing that can ever know it: it is asked, never derived. See `Card.locale` for why
+     * guessing it from the phone's own language would be worse than leaving it empty.
+     */
+    val locale: String? = null,
 )
 
 /**
@@ -95,7 +104,11 @@ class SaveCard(
             visibleToCaregiver = draft.visibleToCaregiver,
             type = draft.payload.cardType,
             payload = CardPayloadCodec.encode(draft.payload),
-            locale = existing?.locale,
+            // Canonicalised here because this is the write boundary, which is the rule
+            // `canonicalLanguageTag` states: two spellings of Portuguese must not become two
+            // languages. Null is a real answer and clears it — the editor round-trips the stored
+            // value, so an unset tile is one nobody has answered for rather than one that lost it.
+            locale = canonicalLanguageTag(draft.locale),
             updatedAt = Clock.System.now(),
         )
         cards.upsert(card)
