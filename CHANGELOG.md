@@ -17,6 +17,9 @@ file in the repo, this one has no column limit.
 
 ## [Unreleased]
 
+### Changed
+- Unlocking parent view now returns you to your tiles instead of leaving you on the settings screen. Parent view is what you turn on to add or change a tile, and that starts on the grid.
+
 ## [1.1.0] - 2026-09-07
 
 ### Changed

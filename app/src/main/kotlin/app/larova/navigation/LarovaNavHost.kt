@@ -274,7 +274,12 @@ fun LarovaNavHost(
                 }
             }
             LaunchedEffect(state.unlocked) {
-                if (state.unlocked) navController.popBackStack()
+                // Out to the tiles, not back to the settings screen the unlock was started from.
+                // Parent view is entered in order to do something to a tile — add one, edit one,
+                // rearrange them — and the grid is where all of that starts. Landing back on
+                // settings makes somebody navigate out of the room they only passed through, and
+                // the edit controls they just unlocked are not on that screen anyway.
+                if (state.unlocked) navController.popBackStack(route = HomeRoute, inclusive = false)
             }
 
             UnlockScreen(
