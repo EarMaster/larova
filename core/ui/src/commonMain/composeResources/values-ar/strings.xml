@@ -387,6 +387,5 @@
     <string name="edit_language_pick">أي لغة؟</string>
     <string name="edit_language_remove">إزالة هذه اللغة</string>
     <string name="edit_translation_title">بـ %1$s</string>
-    <string name="edit_translation_hint">تم نسخ النص الأصلي هنا. غيّره بنفسك إلى اللغة الأخرى — لا يترجم Larova شيئًا ولا يقرأ أبدًا ما تلصقه.</string>
-    <string name="edit_translation_field">السطر %1$d</string>
+    <string name="edit_translation_banner">أنت تكتب هذه البطاقة بـ%1$s. الكلمات وحدها هي التي تتغيَّر، وكل ما عداها يخص البطاقة نفسها ويبقى كما هو في كل اللغات.</string>
 </resources>

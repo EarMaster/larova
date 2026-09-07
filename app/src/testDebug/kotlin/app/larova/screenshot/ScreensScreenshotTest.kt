@@ -11,7 +11,9 @@ import app.larova.core.domain.model.Entitlement
 import app.larova.core.domain.model.LastBackup
 import app.larova.core.domain.usecase.PAID_TILE_TYPES
 import app.larova.feature.card.edit.EditCardScreen
+import app.larova.feature.card.edit.ContactDraft
 import app.larova.feature.card.edit.EditUiState
+import app.larova.feature.card.edit.VariantSummary
 import app.larova.feature.card.edit.StepDraft
 import app.larova.feature.card.edit.SymbolPickerScreen
 import app.larova.feature.help.HelpScreen
@@ -309,6 +311,41 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
                         StepDraft(text = "Pyjamas — the blue ones are in the second drawer."),
                         StepDraft(text = "Teeth. He will say he has done them. He has not."),
                     ),
+                ),
+                callbacks = noOpEditCallbacks(),
+                onBack = {},
+            )
+        }
+    }
+
+    /**
+     * The same editor writing one of the tile's other languages.
+     *
+     * A call tile on purpose: it is the type with the most that is *not* words, so this is the
+     * picture that shows the rule. The names and how each person is related take typing; the
+     * numbers are there, greyed, because somebody writing three names has to be able to tell which
+     * person is which — and a translated number is a number that no longer rings.
+     */
+    @Test
+    fun translating_a_tile() {
+        capture("screens/edit_translation") {
+            EditCardScreen(
+                state = EditUiState(
+                    isNew = false,
+                    type = CardType.PHONE,
+                    title = "Kimi arayacaksınız",
+                    colorToken = "clay",
+                    symbolKey = "phone",
+                    contacts = listOf(
+                        ContactDraft(name = "Anne", number = "0170 1234567", relation = "Annesi"),
+                        ContactDraft(name = "Dr. Weber", number = "030 998877", relation = "Doktoru"),
+                    ),
+                    editingLanguage = "tr",
+                    editingLanguageName = "Türkçe",
+                    translationExists = true,
+                    languages = listOf(VariantSummary(tag = "tr", name = "Türkçe")),
+                    locale = "de",
+                    localeName = "Deutsch",
                 ),
                 callbacks = noOpEditCallbacks(),
                 onBack = {},

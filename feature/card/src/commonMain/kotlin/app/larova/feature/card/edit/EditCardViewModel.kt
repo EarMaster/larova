@@ -152,14 +152,6 @@ data class EditUiState(
      */
     val editingLanguage: String? = null,
     val editingLanguageName: String = "",
-    /**
-     * The words of the translation being edited, in the order they appear on the tile.
-     *
-     * A new language starts as a **copy of the original** rather than as blank boxes: somebody
-     * translating needs to see what they are translating. Nothing is auto-filled from anywhere else
-     * and nothing is parsed — Larova never reads the clipboard.
-     */
-    val translationFields: List<String> = emptyList(),
     /** True once this language is stored, so a language being added offers nothing to remove. */
     val translationExists: Boolean = false,
     /** The words on screen, ready to hand to a translation app. Empty when nothing can take them. */
@@ -226,6 +218,17 @@ data class EditUiState(
 ) {
     /** Worth saying out loud before this goes into a backup somebody has to send somewhere. */
     val mediaIsLarge: Boolean get() = isLargeMedia(mediaSizeBytes)
+
+    /**
+     * Whether the form is writing one of the tile's other languages rather than the tile.
+     *
+     * It is the *same* form either way — same fields, same order, same tile type. What changes is
+     * that the parts of a tile which are not words become read-only: a translation is the tile said
+     * differently, not a different tile, so its colour, its symbol, its pictures, its phone numbers
+     * and its addresses are the original's and are shown as such rather than hidden. Hiding them
+     * would make a translated call tile look like a tile that had lost its numbers.
+     */
+    val translating: Boolean get() = editingLanguage != null
 }
 
 /**
@@ -791,12 +794,19 @@ class EditCardViewModel(
         }
         val id = parseUuidOrNull(cardId) ?: return false
         val original = tile.observe(cardId.orEmpty()) ?: return false
+        // The form is the whole editor, so what it produces is a whole payload — and the words are
+        // taken out of it and put back into **the original's** structure rather than stored as they
+        // came. The controls that would change the structure are read-only while a language is
+        // open, so this cannot differ from what was typed; it is here because "a variant is the
+        // same kind of tile" should be true because of how it is written, not because every form
+        // control remembered to be disabled.
+        val words = textFieldsOf(current.toPayload())
         val result = translations.save(
             cardId = id,
             lang = lang,
             title = current.title,
             subtitle = current.subtitle.takeIf { it.isNotBlank() },
-            payload = CardPayloadCodec.encode(withTextFields(original.payload, current.translationFields)),
+            payload = CardPayloadCodec.encode(withTextFields(original.payload, words)),
         )
         if (result is SaveCardText.Result.TitleMissing) {
             _state.update { it.copy(titleMissing = true) }
@@ -911,6 +921,12 @@ class EditCardViewModel(
      * A language with nothing stored yet arrives as a copy of the original, which is what makes
      * adding one and editing one the same code path — and what gives somebody translating the
      * words they are translating rather than an empty form.
+     *
+     * The form is built from **the original's payload with the variant's words put into it**, not
+     * from the variant's payload alone. The two are the same shape today, and this is what keeps
+     * them so: a guide's pictures, a call tile's numbers and a folder's board come from the tile
+     * itself every time a language is opened, so nothing a variant is missing can be inherited by
+     * the form and written back.
      */
     private suspend fun showLanguage(lang: String?) {
         val stored = tile.observe(cardId.orEmpty()) ?: return
@@ -922,31 +938,20 @@ class EditCardViewModel(
             return
         }
         val existing = translations.textsFor(stored.card.id).first().firstOrNull { it.lang == lang }
-        val payload = existing?.let { CardPayloadCodec.decodeOrNull(it.payload) } ?: stored.payload
-        _state.update {
-            it.copy(
-                editingLanguage = lang,
-                editingLanguageName = translations.nameOf(lang),
-                title = existing?.title ?: stored.card.title,
-                subtitle = existing?.subtitle ?: stored.card.subtitle.orEmpty(),
-                translationFields = textFieldsOf(payload),
-                translationExists = existing != null,
-                titleMissing = false,
-                isLoading = false,
-            )
-        }
+        val words = existing
+            ?.let { CardPayloadCodec.decodeOrNull(it.payload) }
+            ?.let { textFieldsOf(it) }
+        val payload = words?.let { withTextFields(stored.payload, it) } ?: stored.payload
+        _state.value = Tile(stored.card, payload).toEditState().named().keeping(_state.value).copy(
+            editingLanguage = lang,
+            editingLanguageName = translations.nameOf(lang),
+            title = existing?.title ?: stored.card.title,
+            subtitle = existing?.subtitle ?: stored.card.subtitle.orEmpty(),
+            translationExists = existing != null,
+        )
+        loadPictures()
+        loadFolderCount()
         refreshHandOff()
-    }
-
-    fun onTranslationFieldChange(index: Int, value: String) = _state.update { current ->
-        if (index !in current.translationFields.indices) {
-            current
-        } else {
-            current.copy(
-                translationFields = current.translationFields.toMutableList()
-                    .also { it[index] = value },
-            )
-        }
     }
 
     /**
@@ -959,12 +964,10 @@ class EditCardViewModel(
      */
     private suspend fun refreshHandOff() {
         val current = _state.value
-        val stored = tile.observe(cardId.orEmpty())
-        val payload = if (current.editingLanguage == null) {
-            stored?.payload ?: return
-        } else {
-            withTextFields(stored?.payload ?: return, current.translationFields)
-        }
+        val stored = tile.observe(cardId.orEmpty()) ?: return
+        // What is on screen, in the original's structure — the same rule the save uses, so the
+        // words handed to a translator are the words that would be stored.
+        val payload = withTextFields(stored.payload, textFieldsOf(current.toPayload()))
         val text = plainTextOf(
             title = current.title,
             subtitle = current.subtitle.takeIf { it.isNotBlank() },

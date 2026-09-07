@@ -124,8 +124,7 @@ import app.larova.core.ui.resources.edit_symbol
 import app.larova.core.ui.resources.edit_symbol_change
 import app.larova.core.ui.resources.edit_title
 import app.larova.core.ui.resources.edit_title_required
-import app.larova.core.ui.resources.edit_translation_field
-import app.larova.core.ui.resources.edit_translation_hint
+import app.larova.core.ui.resources.edit_translation_banner
 import app.larova.core.ui.resources.edit_translation_title
 import app.larova.core.ui.resources.edit_type_locked
 import app.larova.core.ui.resources.edit_web_address
@@ -205,21 +204,13 @@ fun EditCardScreen(
             EditLanguageMenu(state = state, callbacks = callbacks)
         },
     ) { insets ->
-        // A translation is words and nothing else, so it replaces the form rather than being a
-        // section inside it: there is no colour to pick, no symbol, no pictures and no type.
-        // The frame is the same one, which is what makes switching languages read as this
-        // screen changing rather than another screen opening.
-        if (state.editingLanguage != null) {
-            TranslationForm(state = state, callbacks = callbacks, insets = insets)
-        } else {
-            TileForm(
-                state = state,
-                callbacks = callbacks,
-                insets = insets,
-                onConfirmDelete = { confirmingDelete = true },
-                onCancel = onBack,
-            )
-        }
+        TileForm(
+            state = state,
+            callbacks = callbacks,
+            insets = insets,
+            onConfirmDelete = { confirmingDelete = true },
+            onCancel = onBack,
+        )
     }
 
     state.picker?.let { picker ->
@@ -288,12 +279,18 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
                 onChange = callbacks.onItemChange,
                 onAdd = callbacks.onAddItem,
                 onRemove = callbacks.onRemoveItem,
+                // A translation has the same items as the tile, in the same order. Adding one here
+                // would be a checklist with more things on it in Turkish than in German.
+                structural = !state.translating,
             )
-            SwitchRow(
-                label = stringResource(Res.string.edit_reset_daily),
-                checked = state.resetDaily,
-                onCheckedChange = callbacks.onResetDailyChange,
-            )
+            // Whether the ticks clear overnight is the tile's behaviour, not one of its words.
+            if (!state.translating) {
+                SwitchRow(
+                    label = stringResource(Res.string.edit_reset_daily),
+                    checked = state.resetDaily,
+                    onCheckedChange = callbacks.onResetDailyChange,
+                )
+            }
         }
 
         CardType.TABLE -> TableFields(state = state, callbacks = callbacks)
@@ -324,6 +321,10 @@ private fun TypeFields(state: EditUiState, callbacks: EditCardCallbacks) {
             OutlinedTextField(
                 value = state.webUrl,
                 onValueChange = callbacks.onWebUrlChange,
+                // An address means the same thing in every language, and a translated one is an
+                // address that no longer opens. Shown rather than hidden so a translator can see
+                // what the label and the caption are describing.
+                enabled = !state.translating,
                 label = { Text(stringResource(Res.string.edit_web_address)) },
                 isError = state.urlInvalid,
                 supportingText = if (state.urlInvalid) {
@@ -374,27 +375,31 @@ private fun MediaFields(state: EditUiState, callbacks: EditCardCallbacks) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
-        OutlinedButton(
-            onClick = callbacks.onChooseMedia,
-            enabled = !state.isRecording,
-            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(
-                stringResource(
-                    if (state.type == CardType.VIDEO) {
-                        Res.string.edit_choose_video
-                    } else {
-                        Res.string.edit_choose_sound
-                    },
-                ),
-            )
-        }
+        // The file is the tile's, in every language it is read in — only the caption is words.
+        // The line above still says whether there is one and how big it is.
+        if (!state.translating) {
+            OutlinedButton(
+                onClick = callbacks.onChooseMedia,
+                enabled = !state.isRecording,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(
+                    stringResource(
+                        if (state.type == CardType.VIDEO) {
+                            Res.string.edit_choose_video
+                        } else {
+                            Res.string.edit_choose_sound
+                        },
+                    ),
+                )
+            }
 
-        // Recording is offered for sound only. A video tile takes a film the phone's own camera app
-        // made, because a camera preview inside Larova would buy a permission for something the
-        // phone already does better.
-        if (state.type == CardType.AUDIO) {
-            RecordingControls(state = state, callbacks = callbacks)
+            // Recording is offered for sound only. A video tile takes a film the phone's own camera
+            // app made, because a camera preview inside Larova would buy a permission for something
+            // the phone already does better.
+            if (state.type == CardType.AUDIO) {
+                RecordingControls(state = state, callbacks = callbacks)
+            }
         }
 
         if (state.mediaIsLarge) {
@@ -556,14 +561,17 @@ private fun CallFields(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f),
                         )
-                        IconButton(
-                            onClick = { callbacks.onRemoveContact(index) },
-                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                        ) {
-                            Icon(
-                                imageVector = BackArrow,
-                                contentDescription = stringResource(Res.string.cd_remove_line, label),
-                            )
+                        if (!state.translating) {
+                            IconButton(
+                                onClick = { callbacks.onRemoveContact(index) },
+                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                            ) {
+                                Icon(
+                                    imageVector = BackArrow,
+                                    contentDescription =
+                                        stringResource(Res.string.cd_remove_line, label),
+                                )
+                            }
                         }
                     }
                 }
@@ -576,6 +584,10 @@ private fun CallFields(
                 OutlinedTextField(
                     value = contact.number,
                     onValueChange = { callbacks.onContactChange(index, contact.copy(number = it)) },
+                    // A translated phone number is a phone number that no longer rings. Shown
+                    // beside the name it belongs to, so somebody writing the names of three people
+                    // can tell which of them is which.
+                    enabled = !state.translating,
                     label = { Text(stringResource(Res.string.edit_call_number)) },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
@@ -588,23 +600,28 @@ private fun CallFields(
                     label = { Text(stringResource(Res.string.edit_call_relation)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
-                SwitchRow(
-                    label = stringResource(Res.string.edit_call_in_help),
-                    checked = contact.inHelpSheet,
-                    onCheckedChange = {
-                        callbacks.onContactChange(index, contact.copy(inHelpSheet = it))
-                    },
-                )
+                // Who appears on the help sheet is the tile's, not a language's.
+                if (!state.translating) {
+                    SwitchRow(
+                        label = stringResource(Res.string.edit_call_in_help),
+                        checked = contact.inHelpSheet,
+                        onCheckedChange = {
+                            callbacks.onContactChange(index, contact.copy(inHelpSheet = it))
+                        },
+                    )
+                }
             }
         }
 
-        OutlinedButton(
-            onClick = callbacks.onAddContact,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(stringResource(Res.string.edit_add_contact))
+        if (!state.translating) {
+            OutlinedButton(
+                onClick = callbacks.onAddContact,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_add_contact))
+            }
         }
     }
 }
@@ -622,11 +639,15 @@ private fun AppLinkFields(state: EditUiState, callbacks: EditCardCallbacks) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
-        OutlinedButton(
-            onClick = callbacks.onChooseApp,
-            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(stringResource(Res.string.edit_choose_app))
+        // Which app the tile opens is the tile's. The line above still names it, so the caption
+        // and the label being written have something to be about.
+        if (!state.translating) {
+            OutlinedButton(
+                onClick = callbacks.onChooseApp,
+                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+            ) {
+                Text(stringResource(Res.string.edit_choose_app))
+            }
         }
 
         if (state.appMissing) {
@@ -694,7 +715,7 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                         )
                         // The last column cannot go: a table with no columns has nowhere to put a
                         // value, and the editor would have nothing left to type into.
-                        if (state.columns.size > 1) {
+                        if (state.columns.size > 1 && !state.translating) {
                             IconButton(
                                 onClick = { callbacks.onRemoveColumn(index) },
                                 modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
@@ -708,7 +729,9 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                         }
                     }
                 }
-                if (state.columns.size < MAX_TABLE_COLUMNS) {
+                // A table has the same columns and the same rows in every language it is read
+                // in — only the words in them change.
+                if (state.columns.size < MAX_TABLE_COLUMNS && !state.translating) {
                     OutlinedButton(
                         onClick = callbacks.onAddColumn,
                         modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
@@ -730,15 +753,17 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(text = rowLabel, style = MaterialTheme.typography.bodyMedium)
-                            IconButton(
-                                onClick = { callbacks.onRemoveRow(rowIndex) },
-                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                            ) {
-                                Icon(
-                                    imageVector = BackArrow,
-                                    contentDescription =
-                                        stringResource(Res.string.cd_remove_line, rowLabel),
-                                )
+                            if (!state.translating) {
+                                IconButton(
+                                    onClick = { callbacks.onRemoveRow(rowIndex) },
+                                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                                ) {
+                                    Icon(
+                                        imageVector = BackArrow,
+                                        contentDescription =
+                                            stringResource(Res.string.cd_remove_line, rowLabel),
+                                    )
+                                }
                             }
                         }
                         state.columns.forEachIndexed { columnIndex, column ->
@@ -754,11 +779,13 @@ private fun TableFields(state: EditUiState, callbacks: EditCardCallbacks) {
                         }
                     }
                 }
-                OutlinedButton(
-                    onClick = callbacks.onAddRow,
-                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                ) {
-                    Text(stringResource(Res.string.edit_add_row))
+                if (!state.translating) {
+                    OutlinedButton(
+                        onClick = callbacks.onAddRow,
+                        modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                    ) {
+                        Text(stringResource(Res.string.edit_add_row))
+                    }
                 }
             }
         }
@@ -790,22 +817,29 @@ private fun StepList(state: EditUiState, callbacks: EditCardCallbacks) {
                             label = { Text(label) },
                             modifier = Modifier.weight(1f),
                         )
-                        IconButton(
-                            onClick = { callbacks.onRemoveStep(index) },
-                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                        ) {
-                            Icon(
-                                imageVector = BackArrow,
-                                contentDescription = stringResource(Res.string.cd_remove_line, label),
-                            )
+                        if (!state.translating) {
+                            IconButton(
+                                onClick = { callbacks.onRemoveStep(index) },
+                                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                            ) {
+                                Icon(
+                                    imageVector = BackArrow,
+                                    contentDescription =
+                                        stringResource(Res.string.cd_remove_line, label),
+                                )
+                            }
                         }
                     }
+                    // The picture stays on screen while a language is being written, without the
+                    // buttons that change it: a step's picture is the same picture in every
+                    // language, and it is often the thing that says what the step is about.
                     StepPicture(
                         stepNumber = index + 1,
                         picture = step.mediaId?.let { state.pictures[it] },
                         hasPicture = step.mediaId != null,
                         onPick = { callbacks.onPickPicture(index) },
                         onRemove = { callbacks.onRemovePicture(index) },
+                        structural = !state.translating,
                     )
                 }
             }
@@ -820,11 +854,13 @@ private fun StepList(state: EditUiState, callbacks: EditCardCallbacks) {
                 )
             }
 
-            OutlinedButton(
-                onClick = callbacks.onAddStep,
-                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-            ) {
-                Text(stringResource(Res.string.edit_add_step))
+            if (!state.translating) {
+                OutlinedButton(
+                    onClick = callbacks.onAddStep,
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.edit_add_step))
+                }
             }
         }
     }
@@ -844,6 +880,8 @@ private fun StepPicture(
     hasPicture: Boolean,
     onPick: () -> Unit,
     onRemove: () -> Unit,
+    /** False while another language is being written: the picture is the tile's, in all of them. */
+    structural: Boolean = true,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -861,26 +899,32 @@ private fun StepPicture(
                     .clip(MaterialTheme.shapes.extraSmall),
             )
         }
-        TextButton(
-            onClick = onPick,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(
-                stringResource(
-                    if (hasPicture) Res.string.edit_change_picture else Res.string.edit_add_picture,
-                ),
-            )
-        }
-        if (hasPicture) {
+        if (structural) {
             TextButton(
-                onClick = onRemove,
+                onClick = onPick,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .heightIn(min = Dimens.MinTouchTarget),
             ) {
-                Text(stringResource(Res.string.edit_remove_picture))
+                Text(
+                    stringResource(
+                        if (hasPicture) {
+                            Res.string.edit_change_picture
+                        } else {
+                            Res.string.edit_add_picture
+                        },
+                    ),
+                )
+            }
+            if (hasPicture) {
+                TextButton(
+                    onClick = onRemove,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(stringResource(Res.string.edit_remove_picture))
+                }
             }
         }
     }
@@ -898,6 +942,14 @@ private fun LineList(
     onChange: (Int, String) -> Unit,
     onAdd: () -> Unit,
     onRemove: (Int) -> Unit,
+    /**
+     * Whether the list's own shape can change here.
+     *
+     * False while one of the tile's other languages is open: a translation has the same lines as
+     * the tile, in the same order, and adding or removing one would be a list with more things on
+     * it in one language than another. The words stay editable, which is the whole point.
+     */
+    structural: Boolean = true,
 ) {
     Section(title = title) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -914,24 +966,29 @@ private fun LineList(
                         label = { Text(lineLabel) },
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(
-                        onClick = { onRemove(index) },
-                        modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-                    ) {
-                        Icon(
-                            // The arrow points back the way a line leaves the list; it mirrors in
-                            // right-to-left layouts along with everything else directional.
-                            imageVector = BackArrow,
-                            contentDescription = stringResource(Res.string.cd_remove_line, lineLabel),
-                        )
+                    if (structural) {
+                        IconButton(
+                            onClick = { onRemove(index) },
+                            modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                        ) {
+                            Icon(
+                                // The arrow points back the way a line leaves the list; it mirrors
+                                // in right-to-left layouts with everything else directional.
+                                imageVector = BackArrow,
+                                contentDescription =
+                                    stringResource(Res.string.cd_remove_line, lineLabel),
+                            )
+                        }
                     }
                 }
             }
-            OutlinedButton(
-                onClick = onAdd,
-                modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
-            ) {
-                Text(addLabel)
+            if (structural) {
+                OutlinedButton(
+                    onClick = onAdd,
+                    modifier = Modifier.heightIn(min = Dimens.MinTouchTarget),
+                ) {
+                    Text(addLabel)
+                }
             }
         }
     }
@@ -1084,102 +1141,6 @@ private fun TypePicker(
 }
 
 /**
- * One tile in one other language.
- *
- * Every field here is words and nothing else. There is no colour, no symbol, no picture, no phone
- * number and no address — none of them are translated, and a form that offered them would let a
- * translation quietly become a different tile. What is left is the title, the second line, and one
- * box per phrase, in the order they appear on the tile.
- *
- * This is the same form the editor draws for the tile itself, minus everything that is not words,
- * rather than a second screen: `withTextFields` puts what is typed back into the original's own
- * structure, so a guide's pictures and a call tile's numbers cannot be lost by typing here.
- *
- * The hand-off is in the bar with the languages rather than in the form. What comes back from it
- * is pasted in by the person, box by box: Larova never reads the clipboard and never splits an
- * answer up, which is the honest cost of not interpreting what somebody wrote.
- */
-@Composable
-private fun TranslationForm(
-    state: EditUiState,
-    callbacks: EditCardCallbacks,
-    insets: PaddingValues,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(insets)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = Dimens.ScreenMargin),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = stringResource(Res.string.edit_translation_hint),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        OutlinedTextField(
-            value = state.title,
-            onValueChange = callbacks.onTitleChange,
-            label = { Text(stringResource(Res.string.edit_title)) },
-            isError = state.titleMissing,
-            supportingText = if (state.titleMissing) {
-                { Text(stringResource(Res.string.edit_title_required)) }
-            } else {
-                null
-            },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        OutlinedTextField(
-            value = state.subtitle,
-            onValueChange = callbacks.onSubtitleChange,
-            label = { Text(stringResource(Res.string.edit_subtitle)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        // One box per phrase, numbered only for the label a screen reader announces — the number
-        // is never part of the text, because the text is what gets stored.
-        state.translationFields.forEachIndexed { index, value ->
-            OutlinedTextField(
-                value = value,
-                onValueChange = { callbacks.onTranslationFieldChange(index, it) },
-                label = { Text(stringResource(Res.string.edit_translation_field, index + 1)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Button(
-            onClick = callbacks.onSave,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = Dimens.MinTouchTarget),
-        ) {
-            Text(stringResource(Res.string.edit_save))
-        }
-
-        if (state.translationExists) {
-            TextButton(
-                onClick = callbacks.onRemoveLanguage,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = Dimens.MinTouchTarget)
-                    .padding(bottom = 24.dp),
-            ) {
-                Text(
-                    text = stringResource(Res.string.edit_language_remove),
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
-        }
-    }
-}
-
-
-/**
  * The whole tile: its words, its type, its colour and its symbol.
  *
  * Split from the frame around it when the editor learned to switch language in place. The frame
@@ -1213,6 +1174,21 @@ private fun TileForm(
                 .padding(horizontal = Dimens.ScreenMargin),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Says which language is being written, and that the greyed fields are the tile's own.
+            // Without it, a call tile whose numbers will not take a keystroke reads as broken
+            // rather than as deliberate — the fields are shown precisely so a translator can see
+            // what they belong to, and something has to say why they do not accept typing.
+            if (state.translating) {
+                Text(
+                    text = stringResource(
+                        Res.string.edit_translation_banner,
+                        state.editingLanguageName,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
             if (state.isNew) {
                 Section(title = stringResource(Res.string.edit_choose_type)) {
                     TypePicker(
@@ -1285,6 +1261,10 @@ private fun TileForm(
 
                     TypeFields(state = state, callbacks = callbacks)
 
+                    // Colour and symbol are the tile's, in every language it is read in. Left out
+                    // rather than greyed: unlike a phone number, neither is a word, so there is
+                    // nothing here for somebody translating to refer to.
+                    if (!state.translating) {
                     Section(title = stringResource(Res.string.edit_colour)) {
                         ColorTokenPicker(
                             selectedToken = state.colorToken,
@@ -1300,6 +1280,7 @@ private fun TileForm(
                             colorToken = state.colorToken,
                             onChange = callbacks.onChooseSymbol,
                         )
+                    }
                     }
 
                     Row(
@@ -1324,7 +1305,25 @@ private fun TileForm(
                         }
                     }
 
-                    if (!state.isNew) {
+                    // Deleting the tile is not offered while one of its languages is open: the
+                    // destructive thing in reach there is removing that language, and the two are
+                    // one tap apart on a screen where the difference is a whole tile.
+                    if (state.translating) {
+                        if (state.translationExists) {
+                            TextButton(
+                                onClick = callbacks.onRemoveLanguage,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = Dimens.MinTouchTarget)
+                                    .padding(bottom = 16.dp),
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.edit_language_remove),
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    } else if (!state.isNew) {
                         TextButton(
                             onClick = onConfirmDelete,
                             modifier = Modifier
@@ -1503,7 +1502,6 @@ data class EditCardCallbacks(
     val onDismissLanguagePicker: () -> Unit,
     /** Removes the language being edited. Only ever offered on one that is already stored. */
     val onRemoveLanguage: () -> Unit,
-    val onTranslationFieldChange: (Int, String) -> Unit,
     /**
      * Hands the words on screen to a translation app. Null when nothing on this phone will take
      * them — the same shape as `onBuyUnlock`, and for the same reason: the screen is told what is
@@ -1584,6 +1582,5 @@ fun EditCardViewModel.callbacks(
     onLanguagePicked = ::onLanguagePicked,
     onDismissLanguagePicker = ::onDismissPicker,
     onRemoveLanguage = ::onRemoveLanguage,
-    onTranslationFieldChange = ::onTranslationFieldChange,
     onTranslate = translate,
 )

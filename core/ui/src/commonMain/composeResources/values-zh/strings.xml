@@ -368,6 +368,5 @@
     <string name="edit_language_pick">哪种语言？</string>
     <string name="edit_language_remove">移除这种语言</string>
     <string name="edit_translation_title">以 %1$s</string>
-    <string name="edit_translation_hint">原文已复制到这里。请你自己改写成另一种语言 — Larova 不做任何翻译，也从不读取你粘贴的内容。</string>
-    <string name="edit_translation_field">第 %1$d 行</string>
+    <string name="edit_translation_banner">你正在用%1$s书写这张卡片。只有文字会改变，其余部分属于卡片本身，在每种语言中都相同。</string>
 </resources>

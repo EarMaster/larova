@@ -368,6 +368,5 @@
     <string name="edit_language_pick">¿Qué idioma?</string>
     <string name="edit_language_remove">Quitar este idioma</string>
     <string name="edit_translation_title">En %1$s</string>
-    <string name="edit_translation_hint">El texto original se ha copiado aquí. Cámbialo tú al otro idioma: Larova no traduce nada y nunca lee lo que pegas.</string>
-    <string name="edit_translation_field">Línea %1$d</string>
+    <string name="edit_translation_banner">Estás escribiendo esta tarjeta en %1$s. Solo cambian las palabras: todo lo demás pertenece a la tarjeta y es igual en todos los idiomas.</string>
 </resources>

@@ -368,6 +368,5 @@
     <string name="edit_language_pick">कौन-सी भाषा?</string>
     <string name="edit_language_remove">यह भाषा हटाएँ</string>
     <string name="edit_translation_title">%1$s में</string>
-    <string name="edit_translation_hint">मूल पाठ यहाँ कॉपी कर दिया गया है। इसे दूसरी भाषा में आप स्वयं बदलें — Larova कुछ भी अनुवाद नहीं करता और आप जो चिपकाते हैं उसे कभी नहीं पढ़ता।</string>
-    <string name="edit_translation_field">पंक्ति %1$d</string>
+    <string name="edit_translation_banner">आप यह टाइल %1$s में लिख रहे हैं। केवल शब्द बदलते हैं — बाकी सब कुछ टाइल का अपना है और हर भाषा में एक जैसा रहता है।</string>
 </resources>

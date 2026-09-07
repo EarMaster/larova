@@ -376,6 +376,5 @@
     <string name="edit_language_pick">Яка мова?</string>
     <string name="edit_language_remove">Вилучити цю мову</string>
     <string name="edit_translation_title">Мовою %1$s</string>
-    <string name="edit_translation_hint">Початковий текст скопійовано сюди. Перекладіть його самі — Larova нічого не перекладає й ніколи не читає те, що ви вставляєте.</string>
-    <string name="edit_translation_field">Рядок %1$d</string>
+    <string name="edit_translation_banner">Ви пишете цю плитку мовою %1$s. Змінюються лише слова — усе інше належить самій плитці й однакове в кожній мові.</string>
 </resources>
