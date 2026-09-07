@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.larova.core.domain.model.AppearanceSetting
 import app.larova.core.domain.model.Entitlement
+import app.larova.core.domain.model.UNSPECIFIED_LANGUAGE
 import app.larova.core.ui.component.ActionCard
 import app.larova.core.ui.component.LarovaScaffold
 import app.larova.core.ui.icon.Lock
@@ -87,6 +88,7 @@ import app.larova.core.ui.resources.settings_unlock_owned
 import app.larova.core.ui.resources.settings_version
 import app.larova.core.ui.resources.transfer_title
 import app.larova.core.ui.resources.translate_follow_app
+import app.larova.core.ui.resources.translate_original
 import app.larova.core.ui.resources.view_leave
 import app.larova.core.ui.resources.view_locked_note
 import app.larova.core.ui.resources.view_parent_active
@@ -579,11 +581,19 @@ private fun ContentLanguageCard(
 ) {
     var choosing by remember { mutableStateOf(false) }
     val followApp = stringResource(Res.string.translate_follow_app)
+    val asWritten = stringResource(Res.string.translate_original)
 
     ActionCard(
         icon = Translate,
         title = stringResource(Res.string.settings_content_language),
-        status = setting.languages.firstOrNull { it.tag == setting.chosen }?.name ?: followApp,
+        // "As written" is set from a tile's own language menu and can only be read back here.
+        // Reporting it as "follow the app language" would say this screen was showing one thing
+        // while the tiles showed another.
+        status = when (setting.chosen) {
+            null -> followApp
+            UNSPECIFIED_LANGUAGE -> asWritten
+            else -> setting.languages.firstOrNull { it.tag == setting.chosen }?.name ?: followApp
+        },
         description = stringResource(Res.string.settings_content_language_hint),
         onClick = { choosing = true },
         // Lilac: the fifth card on this screen and the fifth colour, so none of them reads as a

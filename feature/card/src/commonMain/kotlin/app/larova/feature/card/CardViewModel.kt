@@ -7,6 +7,7 @@ import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardText
+import app.larova.core.domain.model.UNSPECIFIED_LANGUAGE
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.plainTextOf
 import app.larova.core.domain.model.resolveCardText
@@ -215,20 +216,31 @@ class CardViewModel(
      * never sees the tile's second line, and does not need to.
      */
     /**
-     * The language the tile was written in, then one entry per variant, in a stable order.
+     * What the tile was written in, then one entry per variant, in a stable order.
      *
-     * The original appears **only once somebody has said what language it is in**. Nothing guesses:
-     * a tag invented here would be one `resolveCardText` then matches against, so a tile whose
-     * language nobody recorded offers its translations and "follow the app language", which is what
-     * reaches the original anyway.
+     * **The original is always offered**, and it is not the same row as "follow the app language".
+     * Following the app is an automatic mode: it tracks whatever the phone is set to, and on a
+     * German phone it lands on the German a tile happens to be written in by coincidence rather
+     * than by choice. Somebody looking for German wants to pick German, and wants it to stay
+     * picked. The two rows say different things and both belong here.
+     *
+     * The original is named when somebody has recorded what language the tile is in, and asked for
+     * by [UNSPECIFIED_LANGUAGE] when nobody has — the screen labels that one "as written". Nothing
+     * guesses a name: a tag invented here would be one `resolveCardText` matches against, and
+     * asking for the original needs no name, only a way to ask.
      *
      * Empty for a tile with no variants. There is nothing to choose between, and a menu listing the
-     * one language a tile is in is a question with one answer.
+     * one language a tile exists in is a question with a single answer.
      */
     private fun languagesOf(sourceLocale: String?, variants: List<CardText>): List<TileLanguage> {
         if (variants.isEmpty()) return emptyList()
-        val original = sourceLocale?.let { TileLanguage(it, translations.nameOf(it)) }
-        return listOfNotNull(original) +
+        val original = TileLanguage(
+            tag = sourceLocale ?: UNSPECIFIED_LANGUAGE,
+            // Blank rather than a guess: the platform has no name for a language nobody named, and
+            // the screen has a string for exactly this.
+            name = sourceLocale?.let { translations.nameOf(it) }.orEmpty(),
+        )
+        return listOf(original) +
             variants.map { TileLanguage(it.lang, translations.nameOf(it.lang)) }
     }
 

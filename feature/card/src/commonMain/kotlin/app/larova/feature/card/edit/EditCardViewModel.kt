@@ -17,6 +17,7 @@ import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.plainTextOf
+import app.larova.core.domain.model.resolveCardText
 import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.textFieldsOf
 import app.larova.core.domain.model.withTextFields
@@ -695,9 +696,24 @@ class EditCardViewModel(
         state.copy(items = remaining.ifEmpty { listOf(CheckItem("")) })
     }
 
+    /**
+     * Saves, and leaves only when there is nothing left to be looking at.
+     *
+     * Saving the tile finishes the job and closes the editor, as it always has. Saving a
+     * translation goes back to the tile's own text instead, which is where the parent was before
+     * they picked a language — the two screens this used to be behaved that way, and being thrown
+     * out to the grid for writing one of a tile's several languages is a worse answer now that it
+     * is all one screen.
+     */
     fun onSave() {
         viewModelScope.launch {
-            if (persist()) _state.update { it.copy(saved = true) }
+            val language = _state.value.editingLanguage
+            if (!persist()) return@launch
+            if (language == null) {
+                _state.update { it.copy(saved = true) }
+            } else {
+                showLanguage(null)
+            }
         }
     }
 
@@ -843,11 +859,12 @@ class EditCardViewModel(
         _state.update { it.copy(picker = null) }
         if (picker.forOriginal) {
             _state.update { it.copy(locale = tag, localeName = translations.nameOf(tag)) }
-            // While a translation is on screen, the tile is not what a save would write — so the
-            // answer goes straight through rather than waiting for a save that will not carry it.
-            if (_state.value.editingLanguage != null) {
-                viewModelScope.launch { writeLocaleOnly(tag) }
-            }
+            // Written through at once rather than waiting for a save. It is an answer to a
+            // question, not a field on a form: the menu closes showing the new language, and
+            // anything that then reads the tile — the tile screen's own menu, most of all — has to
+            // agree. Leaving it in state until Save meant an answer given and quietly lost by
+            // anybody who backed out, which looked exactly like the language never being offered.
+            viewModelScope.launch { writeLocaleOnly(tag) }
         } else {
             // Not written yet: the boxes are filled from the original and stored when the parent
             // saves. Somebody who opens a language and changes their mind has added nothing.
@@ -898,11 +915,7 @@ class EditCardViewModel(
     private suspend fun showLanguage(lang: String?) {
         val stored = tile.observe(cardId.orEmpty()) ?: return
         if (lang == null) {
-            _state.value = stored.toEditState().named().copy(
-                languages = _state.value.languages,
-                lockedTypes = _state.value.lockedTypes,
-                canTranslate = _state.value.canTranslate,
-            )
+            _state.value = stored.toEditState().named().keeping(_state.value)
             loadPictures()
             loadFolderCount()
             refreshHandOff()
@@ -974,18 +987,42 @@ class EditCardViewModel(
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val existing = tile.observe(id)
-            _state.value = if (existing == null) {
+            if (existing == null) {
                 // Deleted from under the editor, or never a tile. Treated as gone rather than as a
                 // new tile, so saving cannot resurrect it with half its content.
-                EditUiState(isNew = false, isLoading = false, deleted = true)
-            } else {
-                existing.toEditState().named()
+                _state.value = EditUiState(isNew = false, isLoading = false, deleted = true)
+                return@launch
             }
+            _state.value = existing.toEditState().named().keeping(_state.value)
             loadPictures()
             loadFolderCount()
-            if (existing != null) refreshHandOff()
+
+            // Open in the language the tile is being *read* in. Somebody looking at the Turkish and
+            // tapping edit means the Turkish; landing on the German and making them find the globe
+            // is a step that exists only because the two screens used to be separate.
+            val variants = translations.textsFor(existing.card.id).first()
+            val shown = resolveCardText(existing.card, variants, translations.language().first())
+            if (shown.lang != null) showLanguage(shown.lang) else refreshHandOff()
         }
     }
+
+    /**
+     * Keeps the fields the collectors in `init` own.
+     *
+     * Those collectors and this load are separate coroutines with no ordering between them, and
+     * this one assigns the whole state rather than merging into it — it is a different tile's worth
+     * of fields, not an edit to the current ones. Whichever finished second used to win, so a
+     * variant list that arrived first was silently dropped and the language menu came up holding
+     * only the original, on a tile that plainly had translations.
+     */
+    private fun EditUiState.keeping(previous: EditUiState): EditUiState = copy(
+        languages = previous.languages,
+        lockedTypes = previous.lockedTypes,
+        canTranslate = previous.canTranslate,
+        // Fetched off the back of `lockedTypes`, and only ever fetched once — dropping it here
+        // would leave the offer permanently priceless rather than briefly so.
+        offerPrice = previous.offerPrice,
+    )
 
     /**
      * A recording left running when the screen goes is thrown away.
