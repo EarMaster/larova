@@ -353,6 +353,36 @@ abstract class ScreensScreenshotTest : ScreenshotTest() {
         }
     }
 
+    /**
+     * A table mid-edit, which is where the order of its columns and rows can be changed.
+     *
+     * One place at a time, and the arrows are disabled at the ends. A medicine table is the case
+     * that asks for it: the column somebody wants first is rarely the one they typed first, and
+     * before this the only way to move it was to retype the whole thing.
+     */
+    @Test
+    fun editing_a_table() {
+        capture("screens/edit_table") {
+            EditCardScreen(
+                state = EditUiState(
+                    isNew = false,
+                    type = CardType.TABLE,
+                    title = "Medicine",
+                    colorToken = "rose",
+                    symbolKey = "star",
+                    columns = listOf("Time", "What", "How much"),
+                    rows = listOf(
+                        listOf("08:00", "Drops", "5 ml"),
+                        listOf("13:00", "Drops", "5 ml"),
+                        listOf("20:00", "Syrup", "10 ml"),
+                    ),
+                ),
+                callbacks = noOpEditCallbacks(),
+                onBack = {},
+            )
+        }
+    }
+
     /** A tile being made from scratch, which is the only time the type picker is on screen. */
     @Test
     fun making_a_tile() {

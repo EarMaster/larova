@@ -14,6 +14,7 @@ import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.domain.model.PhoneEntry
 import app.larova.core.domain.model.Step
 import app.larova.core.domain.model.isOpenableUrl
+import app.larova.core.domain.model.movedTableColumn
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.plainTextOf
@@ -675,6 +676,19 @@ class EditCardViewModel(
         }
     }
 
+    /**
+     * Moves one column one place, taking its values with it.
+     *
+     * The heading and the cell under it in **every** row move together, which is the whole of why
+     * this is not a swap in one list. A table's columns are only headings in the editor; on the
+     * tile they are the shape of every row, and moving a heading without its column would
+     * silently re-label everybody's data.
+     */
+    fun onMoveColumn(index: Int, offset: Int) = _state.update { state ->
+        val moved = movedTableColumn(state.columns, state.rows, index, index + offset)
+        state.copy(columns = moved.columns, rows = moved.rows)
+    }
+
     fun onCellChange(row: Int, column: Int, text: String) = _state.update { state ->
         state.copy(
             rows = state.rows.mapIndexed { r, cells ->
@@ -694,29 +708,41 @@ class EditCardViewModel(
         state.copy(rows = remaining.ifEmpty { listOf(List(state.columns.size) { "" }) })
     }
 
+    /** Moves one row one place. A row is a whole line of the table, so this is a plain swap. */
+    fun onMoveRow(index: Int, offset: Int) = _state.update { state ->
+        val target = index + offset
+        if (index !in state.rows.indices || target !in state.rows.indices) {
+            state
+        } else {
+            state.copy(rows = state.rows.swapping(index, target))
+        }
+    }
+
     fun onRemoveItem(index: Int) = _state.update { state ->
         val remaining = state.items.filterIndexed { i, _ -> i != index }
         state.copy(items = remaining.ifEmpty { listOf(CheckItem("")) })
     }
 
     /**
-     * Saves, and leaves only when there is nothing left to be looking at.
+     * Saves, and leaves — showing the tile in whatever language was just written.
      *
-     * Saving the tile finishes the job and closes the editor, as it always has. Saving a
-     * translation goes back to the tile's own text instead, which is where the parent was before
-     * they picked a language — the two screens this used to be behaved that way, and being thrown
-     * out to the grid for writing one of a tile's several languages is a worse answer now that it
-     * is all one screen.
+     * Saving a translation used to return to the tile's own text inside the editor, which made
+     * sense while a translation was a different *form*: going back to the full editor was going
+     * back to where you came from. It is the same form now, so staying put after Save leaves
+     * somebody looking at a screen that has not visibly changed, wondering whether it worked.
+     *
+     * So it closes, and the tile behind it is set to the language just written. Seeing the words
+     * on the tile is the only confirmation worth giving, and it is what the parent was writing
+     * them for. The language is the phone's setting rather than this tile's — see
+     * `settings_content_language_hint` — so this is a real change and not a preview, which is
+     * correct: somebody who has just written the Turkish is the person who wants the Turkish.
      */
     fun onSave() {
         viewModelScope.launch {
             val language = _state.value.editingLanguage
             if (!persist()) return@launch
-            if (language == null) {
-                _state.update { it.copy(saved = true) }
-            } else {
-                showLanguage(null)
-            }
+            if (language != null) translations.choose(language)
+            _state.update { it.copy(saved = true) }
         }
     }
 
@@ -1102,6 +1128,18 @@ class EditCardViewModel(
  * has its own rule about what counts as empty, and reading them together is how a rule ends up
  * applied to the wrong type.
  */
+/**
+ * The same list with two entries exchanged.
+ *
+ * Out of range is answered with the list unchanged rather than with an exception: the buttons that
+ * call this are disabled at the ends, and a table being edited while a save is in flight should
+ * move nothing rather than crash on the screen somebody is typing into.
+ */
+private fun <T> List<T>.swapping(a: Int, b: Int): List<T> {
+    if (a !in indices || b !in indices) return this
+    return toMutableList().also { it[a] = this[b]; it[b] = this[a] }
+}
+
 private fun EditUiState.toPayload(): CardPayload = when (type) {
     CardType.GUIDE -> guidePayload()
     CardType.CHECKLIST -> checklistPayload()

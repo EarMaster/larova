@@ -1,0 +1,1 @@
+Tables can be rearranged: move a column or a row up or down one place at a time, instead of retyping the table to change its order. And saving a tile you have written in another language now shows the tile in that language.

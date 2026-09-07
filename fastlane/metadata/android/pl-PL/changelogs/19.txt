@@ -1,0 +1,1 @@
+Tabele można teraz porządkować: przesuń kolumnę lub wiersz o jedno miejsce w górę albo w dół, zamiast przepisywać tabelę dla innej kolejności. A po zapisaniu kafelka napisanego w innym języku kafelek od razu wyświetla się w tym języku.

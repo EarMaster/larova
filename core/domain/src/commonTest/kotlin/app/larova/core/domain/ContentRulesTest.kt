@@ -3,6 +3,7 @@ package app.larova.core.domain
 import app.larova.core.domain.model.MAX_TABLE_COLUMNS
 import app.larova.core.domain.model.isOpenableUrl
 import app.larova.core.domain.model.sanitizePhoneNumber
+import app.larova.core.domain.model.movedTableColumn
 import app.larova.core.domain.model.tableOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -105,4 +106,51 @@ class ContentRulesTest {
         assertEquals(emptyList(), table.columns)
         assertEquals(emptyList(), table.rows)
     }
+
+    @Test
+    fun movingAColumnTakesEveryValueUnderItAlong() {
+        // The whole reason this is not a swap in one list. Moving the heading alone would leave a
+        // table that still looks right and says something different about every row in it.
+        val moved = movedTableColumn(
+            columns = listOf("Day", "Time", "Dose"),
+            rows = listOf(
+                listOf("Mon", "08:00", "5 ml"),
+                listOf("Tue", "09:00", "10 ml"),
+            ),
+            from = 1,
+            to = 2,
+        )
+
+        assertEquals(listOf("Day", "Dose", "Time"), moved.columns)
+        assertEquals(listOf("Mon", "5 ml", "08:00"), moved.rows[0])
+        assertEquals(listOf("Tue", "10 ml", "09:00"), moved.rows[1])
+    }
+
+    @Test
+    fun aColumnMoveThatGoesNowhereChangesNothing() {
+        val columns = listOf("Day", "Time")
+        val rows = listOf(listOf("Mon", "08:00"))
+
+        for (to in listOf(-1, 0, 2)) {
+            val moved = movedTableColumn(columns, rows, from = 0, to = to)
+            assertEquals(columns, moved.columns)
+            assertEquals(rows, moved.rows)
+        }
+    }
+
+    @Test
+    fun aRowTooShortForTheMoveIsLeftAsItIs() {
+        // Squaring a table is `tableOf`'s job on the way to being stored. A short row here came
+        // from a file rather than from the editor, and padding it would hide that.
+        val moved = movedTableColumn(
+            columns = listOf("Day", "Time", "Dose"),
+            rows = listOf(listOf("Mon", "08:00", "5 ml"), listOf("Tue")),
+            from = 0,
+            to = 2,
+        )
+
+        assertEquals(listOf("5 ml", "08:00", "Mon"), moved.rows[0])
+        assertEquals(listOf("Tue"), moved.rows[1])
+    }
+
 }

@@ -1,0 +1,1 @@
+Les tableaux peuvent être réorganisés : déplacez une colonne ou une ligne d'un cran vers le haut ou vers le bas, au lieu de retaper le tableau pour en changer l'ordre. Et lorsque vous enregistrez une fiche écrite dans une autre langue, la fiche s'affiche aussitôt dans cette langue.

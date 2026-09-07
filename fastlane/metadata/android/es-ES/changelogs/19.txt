@@ -1,0 +1,1 @@
+Las tablas se pueden reordenar: mueve una columna o una fila un lugar hacia arriba o hacia abajo, en vez de volver a escribir la tabla para cambiar el orden. Y al guardar una tarjeta escrita en otro idioma, la tarjeta se muestra ya en ese idioma.
