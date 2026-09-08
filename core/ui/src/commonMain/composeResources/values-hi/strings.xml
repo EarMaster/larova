@@ -368,5 +368,5 @@
     <string name="edit_language_pick">कौन-सी भाषा?</string>
     <string name="edit_language_remove">यह भाषा हटाएँ</string>
     <string name="edit_translation_title">%1$s में</string>
-    <string name="edit_translation_banner">आप यह टाइल %1$s में लिख रहे हैं। केवल शब्द बदलते हैं — बाकी सब कुछ टाइल का अपना है और हर भाषा में एक जैसा रहता है।</string>
+    <string name="edit_translation_banner">आप यह टाइल %1$s में लिख रहे हैं। केवल शब्द बदलते हैं — बाकी सब कुछ टाइल का अपना है। यहां जोड़ने, हटाने या क्रम बदलने से टाइल हर भाषा में बदलती है, ताकि सभी की संरचना एक जैसी रहे।</string>
 </resources>

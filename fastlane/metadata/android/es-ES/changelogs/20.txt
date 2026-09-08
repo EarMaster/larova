@@ -1,0 +1,1 @@
+Corrige un problema que podía perder tus traducciones: al añadir, quitar o reordenar una parte de una tarjeta ya traducida, los demás idiomas se quedaban descolocados y podían mostrar las palabras del original. Ahora todos los idiomas mantienen la misma estructura y esos cambios se pueden hacer desde cualquiera.

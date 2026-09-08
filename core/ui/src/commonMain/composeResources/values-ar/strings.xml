@@ -387,5 +387,5 @@
     <string name="edit_language_pick">أي لغة؟</string>
     <string name="edit_language_remove">إزالة هذه اللغة</string>
     <string name="edit_translation_title">بـ %1$s</string>
-    <string name="edit_translation_banner">أنت تكتب هذه البطاقة بـ%1$s. الكلمات وحدها هي التي تتغيَّر، وكل ما عداها يخص البطاقة نفسها ويبقى كما هو في كل اللغات.</string>
+    <string name="edit_translation_banner">أنت تكتب هذه البطاقة بـ%1$s. الكلمات وحدها هي التي تتغيَّر، وكل ما عداها يخص البطاقة نفسها. والإضافة والحذف وإعادة الترتيب هنا تغيِّر البطاقة بكل اللغات، لتبقى جميعها بالبنية نفسها.</string>
 </resources>

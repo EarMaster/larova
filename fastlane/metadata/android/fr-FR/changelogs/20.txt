@@ -1,0 +1,1 @@
+Corrige un problème qui pouvait faire perdre vos traductions : si vous ajoutiez, supprimiez ou réordonniez une partie d'une fiche déjà traduite, ses autres langues se désynchronisaient et pouvaient afficher les mots de l'original. Chaque langue conserve désormais la même structure, et vous pouvez faire ces changements depuis n'importe laquelle.

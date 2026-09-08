@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import app.larova.core.domain.app.LanguageOption
 import app.larova.core.domain.media.ImageSize
 import app.larova.core.domain.media.isLargeMedia
+import app.larova.core.domain.model.Card
 import app.larova.core.domain.model.CardPayload
 import app.larova.core.domain.model.CardPayloadCodec
 import app.larova.core.domain.model.CardType
@@ -18,6 +19,7 @@ import app.larova.core.domain.model.movedTableColumn
 import app.larova.core.domain.model.parseUuidOrNull
 import app.larova.core.domain.model.phoneOf
 import app.larova.core.domain.model.plainTextOf
+import app.larova.core.domain.model.reshapedToMatch
 import app.larova.core.domain.model.resolveCardText
 import app.larova.core.domain.model.tableOf
 import app.larova.core.domain.model.textFieldsOf
@@ -340,6 +342,21 @@ class EditCardViewModel(
      */
     private var pictureForStep: Int? = null
 
+    /**
+     * The changes to the tile's **shape** made on this screen, in order.
+     *
+     * A tile's structure is shared by every language it is written in — the same steps, the same
+     * columns, the same people — because a variant is stored as its words put back into the tile's
+     * own structure. So a shape change made in one language has to reach all of them, and the only
+     * thing that can carry it is the change itself: the *result* is a form full of one language's
+     * words, which is no use to the others.
+     *
+     * Replayed on save rather than applied as they happen, so that Cancel still discards
+     * everything. They are kept as the same functions the form applies to itself, so there is one
+     * definition of what "add a row" means and no second one to drift from it.
+     */
+    private val shapeEdits = mutableListOf<(EditUiState) -> EditUiState>()
+
     init {
         if (!cardId.isNullOrEmpty()) load(cardId)
         // Collected rather than read once, so a language added on the screen this one opens is
@@ -558,9 +575,9 @@ class EditCardViewModel(
         )
     }
 
-    fun onAddStep() = _state.update { it.copy(steps = it.steps + StepDraft()) }
+    fun onAddStep() = structural { it.copy(steps = it.steps + StepDraft()) }
 
-    fun onRemoveStep(index: Int) = _state.update { state ->
+    fun onRemoveStep(index: Int) = structural { state ->
         val remaining = state.steps.filterIndexed { i, _ -> i != index }
         // Never down to nothing: a guide screen with no steps has nothing to show, and an editor
         // with no rows gives no way to start typing again.
@@ -623,7 +640,7 @@ class EditCardViewModel(
         )
     }
 
-    fun onAddItem() = _state.update { it.copy(items = it.items + CheckItem("")) }
+    fun onAddItem() = structural { it.copy(items = it.items + CheckItem("")) }
 
     fun onContactChange(index: Int, contact: ContactDraft) = _state.update { state ->
         state.copy(
@@ -631,9 +648,9 @@ class EditCardViewModel(
         )
     }
 
-    fun onAddContact() = _state.update { it.copy(contacts = it.contacts + ContactDraft()) }
+    fun onAddContact() = structural { it.copy(contacts = it.contacts + ContactDraft()) }
 
-    fun onRemoveContact(index: Int) = _state.update { state ->
+    fun onRemoveContact(index: Int) = structural { state ->
         val remaining = state.contacts.filterIndexed { i, _ -> i != index }
         // Never down to nothing: a call tile with no rows gives no way to start typing again.
         state.copy(contacts = remaining.ifEmpty { listOf(ContactDraft()) })
@@ -646,7 +663,7 @@ class EditCardViewModel(
     }
 
     /** A new column reaches every row, so the table stays square while it is being typed. */
-    fun onAddColumn() = _state.update { state ->
+    fun onAddColumn() = structural { state ->
         if (state.columns.size >= MAX_TABLE_COLUMNS) {
             state
         } else {
@@ -664,7 +681,7 @@ class EditCardViewModel(
      * table is opened, which on a tile a caregiver reads under time pressure is worse than losing
      * the column.
      */
-    fun onRemoveColumn(index: Int) = _state.update { state ->
+    fun onRemoveColumn(index: Int) = structural { state ->
         val remaining = state.columns.filterIndexed { i, _ -> i != index }
         if (remaining.isEmpty()) {
             state
@@ -684,7 +701,7 @@ class EditCardViewModel(
      * tile they are the shape of every row, and moving a heading without its column would
      * silently re-label everybody's data.
      */
-    fun onMoveColumn(index: Int, offset: Int) = _state.update { state ->
+    fun onMoveColumn(index: Int, offset: Int) = structural { state ->
         val moved = movedTableColumn(state.columns, state.rows, index, index + offset)
         state.copy(columns = moved.columns, rows = moved.rows)
     }
@@ -697,19 +714,19 @@ class EditCardViewModel(
         )
     }
 
-    fun onAddRow() = _state.update { state ->
+    fun onAddRow() = structural { state ->
         // `listOf(...)` around the new row on purpose: adding a bare list to a list of lists
         // resolves to the overload that appends its elements, which would flatten the table.
         state.copy(rows = state.rows + listOf(List(state.columns.size) { "" }))
     }
 
-    fun onRemoveRow(index: Int) = _state.update { state ->
+    fun onRemoveRow(index: Int) = structural { state ->
         val remaining = state.rows.filterIndexed { i, _ -> i != index }
         state.copy(rows = remaining.ifEmpty { listOf(List(state.columns.size) { "" }) })
     }
 
     /** Moves one row one place. A row is a whole line of the table, so this is a plain swap. */
-    fun onMoveRow(index: Int, offset: Int) = _state.update { state ->
+    fun onMoveRow(index: Int, offset: Int) = structural { state ->
         val target = index + offset
         if (index !in state.rows.indices || target !in state.rows.indices) {
             state
@@ -718,7 +735,7 @@ class EditCardViewModel(
         }
     }
 
-    fun onRemoveItem(index: Int) = _state.update { state ->
+    fun onRemoveItem(index: Int) = structural { state ->
         val remaining = state.items.filterIndexed { i, _ -> i != index }
         state.copy(items = remaining.ifEmpty { listOf(CheckItem("")) })
     }
@@ -737,6 +754,75 @@ class EditCardViewModel(
      * `settings_content_language_hint` — so this is a real change and not a preview, which is
      * correct: somebody who has just written the Turkish is the person who wants the Turkish.
      */
+    /**
+     * A change to the tile's shape rather than to its words.
+     *
+     * Applied to the form now and remembered for the other languages, which are brought into line
+     * when this is saved. See [shapeEdits].
+     */
+    private fun structural(edit: (EditUiState) -> EditUiState) {
+        shapeEdits += edit
+        _state.update(edit)
+    }
+
+    /**
+     * Brings every language this form is *not* showing into the shape it now has.
+     *
+     * Each one keeps its own words: the same edits are replayed against its own text, and the
+     * result is then fitted to the tile's structure by `reshapedToMatch`, so a language cannot end
+     * up a column short however it got there. A language the parent never opened gains an empty
+     * cell rather than losing what it says.
+     *
+     * Without this the mismatch was silent and destructive. `withTextFields` refuses a wrong-length
+     * list, so a variant left behind by a structural edit showed the *original's* words the next
+     * time it was opened — and saving from that form wrote them over the translation.
+     */
+    private suspend fun propagateShape(current: EditUiState) {
+        if (shapeEdits.isEmpty()) return
+        val id = parseUuidOrNull(cardId) ?: return
+        val stored = tile.observe(cardId.orEmpty()) ?: return
+
+        // The tile's own text. Already saved from the form when that is what was being written;
+        // otherwise it is a language like any other and has the edits replayed onto it.
+        val original = if (current.editingLanguage == null) {
+            stored.payload
+        } else {
+            replayShape(stored.card, stored.payload).also { tile.save(draftOf(stored.card, it)) }
+        }
+
+        translations.textsFor(id).first()
+            .filter { it.lang != current.editingLanguage }
+            .forEach { text ->
+                val payload = CardPayloadCodec.decodeOrNull(text.payload) ?: return@forEach
+                translations.save(
+                    cardId = id,
+                    lang = text.lang,
+                    title = text.title,
+                    subtitle = text.subtitle,
+                    payload = CardPayloadCodec.encode(
+                        reshapedToMatch(replayShape(stored.card, payload), original),
+                    ),
+                )
+            }
+        shapeEdits.clear()
+    }
+
+    /** One language's words with this screen's shape changes played over them, in order. */
+    private fun replayShape(card: Card, payload: CardPayload): CardPayload =
+        shapeEdits.fold(Tile(card, payload).toEditState()) { state, edit -> edit(state) }.toPayload()
+
+    /** The stored tile as a draft, with one thing about it changed. */
+    private fun draftOf(card: Card, payload: CardPayload) = CardDraft(
+        id = card.id,
+        title = card.title,
+        subtitle = card.subtitle,
+        colorToken = card.colorToken,
+        icon = card.icon,
+        payload = payload,
+        visibleToCaregiver = card.visibleToCaregiver,
+        locale = card.locale,
+    )
+
     fun onSave() {
         viewModelScope.launch {
             val language = _state.value.editingLanguage
@@ -755,11 +841,16 @@ class EditCardViewModel(
      */
     private suspend fun persist(): Boolean {
         val current = _state.value
-        return if (current.editingLanguage != null) {
-            persistTranslation(current, current.editingLanguage)
-        } else {
-            persistTile(current)
+        if (current.editingLanguage != null) {
+            // The tile first: the words about to be written are written *into* its structure, so
+            // that structure has to be the new one before they go anywhere near it.
+            propagateShape(current)
+            return persistTranslation(current, current.editingLanguage)
         }
+        if (!persistTile(current)) return false
+        // The tile is the new shape now, and the other languages are brought to it.
+        propagateShape(current)
+        return true
     }
 
     private suspend fun persistTile(current: EditUiState): Boolean {
@@ -917,18 +1008,7 @@ class EditCardViewModel(
      */
     private suspend fun writeLocaleOnly(tag: String) {
         val stored = tile.observe(cardId.orEmpty()) ?: return
-        tile.save(
-            CardDraft(
-                id = stored.card.id,
-                title = stored.card.title,
-                subtitle = stored.card.subtitle,
-                colorToken = stored.card.colorToken,
-                icon = stored.card.icon,
-                payload = stored.payload,
-                visibleToCaregiver = stored.card.visibleToCaregiver,
-                locale = tag,
-            ),
-        )
+        tile.save(draftOf(stored.card.copy(locale = tag), stored.payload))
     }
 
     /** Removes the language being edited, and goes back to the tile. */

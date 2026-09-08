@@ -370,5 +370,5 @@
     <string name="edit_language_pick">Hangi dil?</string>
     <string name="edit_language_remove">Bu dili kaldır</string>
     <string name="edit_translation_title">%1$s dilinde</string>
-    <string name="edit_translation_banner">Bu kartı %1$s dilinde yazıyorsunuz. Yalnızca sözcükler değişir; geri kalan her şey kartın kendisine aittir ve her dilde aynı kalır.</string>
+    <string name="edit_translation_banner">Bu kartı %1$s dilinde yazıyorsunuz. Yalnızca sözcükler değişir; geri kalan her şey kartın kendisine aittir. Buradaki ekleme, çıkarma ve sıralama kartı bütün dillerde değiştirir, böylece hepsi aynı yapıda kalır.</string>
 </resources>

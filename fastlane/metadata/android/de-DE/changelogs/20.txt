@@ -1,0 +1,1 @@
+Behebt ein Problem, durch das Übersetzungen verloren gehen konnten: Wenn Sie bei einer bereits übersetzten Kachel etwas hinzugefügt, entfernt oder umsortiert haben, gerieten die anderen Sprachen aus dem Takt und konnten die Wörter des Originals anzeigen. Jede Sprache behält jetzt dieselbe Form, und Sie können diese Änderungen in jeder Sprache vornehmen.

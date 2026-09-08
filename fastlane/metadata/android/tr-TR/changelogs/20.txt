@@ -1,0 +1,1 @@
+Çevirilerin kaybolmasına yol açabilen bir sorun giderildi: daha önce çevirdiğiniz bir kartın bir bölümünü eklediğinizde, çıkardığınızda ya da yeniden sıraladığınızda diğer diller uyumsuz kalıyor ve aslın sözcüklerini gösterebiliyordu. Artık bütün diller aynı yapıyı koruyor ve bu değişiklikleri her dilden yapabilirsiniz.

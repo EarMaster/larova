@@ -7,6 +7,7 @@ import app.larova.core.domain.model.CardType
 import app.larova.core.domain.model.CheckItem
 import app.larova.core.domain.model.PhoneEntry
 import app.larova.core.domain.model.Step
+import app.larova.core.domain.model.reshapedToMatch
 import app.larova.core.domain.model.textFieldsOf
 import app.larova.core.domain.model.withTextFields
 import app.larova.core.domain.usecase.DeleteCardText
@@ -183,4 +184,64 @@ class CardTextEditingTest {
         payload = guidePayload,
         updatedAt = Instant.parse("2026-03-07T19:00:00Z"),
     )
+
+    @Test
+    fun aTranslationIsFittedToATableThatGainedAColumn() {
+        // The bug this exists for: withTextFields refuses a wrong-length list, so a variant left
+        // behind by a structural edit reverted to the original's words and the next save wrote
+        // them over the translation.
+        val shape = CardPayload.Table(
+            columns = listOf("Zeit", "Was", "Wie viel"),
+            rows = listOf(listOf("08:00", "Tropfen", "5 ml")),
+        )
+        val translation = CardPayload.Table(
+            columns = listOf("Saat", "Ne"),
+            rows = listOf(listOf("08:00", "Damla")),
+        )
+
+        val fitted = reshapedToMatch(translation, shape) as CardPayload.Table
+
+        assertEquals(listOf("Saat", "Ne", ""), fitted.columns)
+        assertEquals(listOf("08:00", "Damla", ""), fitted.rows.single())
+    }
+
+    @Test
+    fun aTranslationIsTrimmedToATableThatLostAColumn() {
+        val shape = CardPayload.Table(
+            columns = listOf("Zeit"),
+            rows = listOf(listOf("08:00")),
+        )
+        val translation = CardPayload.Table(
+            columns = listOf("Saat", "Ne"),
+            rows = listOf(listOf("08:00", "Damla")),
+        )
+
+        val fitted = reshapedToMatch(translation, shape) as CardPayload.Table
+
+        assertEquals(listOf("Saat"), fitted.columns)
+        assertEquals(listOf("08:00"), fitted.rows.single())
+    }
+
+    @Test
+    fun aTranslationThatAlreadyFitsIsUnchanged() {
+        val shape = CardPayload.Note("Nach dem Essen")
+        val translation = CardPayload.Note("Yemekten sonra")
+
+        assertEquals(translation, reshapedToMatch(translation, shape))
+    }
+
+    @Test
+    fun fittingNeverTakesTheStructureFromTheTranslation() {
+        // A guide's pictures are the tile's. Fitting carries words across and nothing else, so a
+        // variant can never bring a picture - or the absence of one - back with it.
+        val picture = Uuid.parse("11111111-2222-4333-8444-555555555555")
+        val shape = CardPayload.Guide(steps = listOf(Step(text = "Zähne", mediaId = picture)))
+        val translation = CardPayload.Guide(steps = listOf(Step(text = "Dişler")))
+
+        val fitted = reshapedToMatch(translation, shape) as CardPayload.Guide
+
+        assertEquals("Dişler", fitted.steps.single().text)
+        assertEquals(picture, fitted.steps.single().mediaId)
+    }
+
 }

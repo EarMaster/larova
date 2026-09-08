@@ -409,5 +409,5 @@
     <string name="edit_language_pick">Which language?</string>
     <string name="edit_language_remove">Remove this language</string>
     <string name="edit_translation_title">In %1$s</string>
-    <string name="edit_translation_banner">You are writing this tile in %1$s. Only the words change — everything else belongs to the tile itself and stays the same in every language.</string>
+    <string name="edit_translation_banner">You are writing this tile in %1$s. Only the words change — everything else belongs to the tile itself. Adding, removing or reordering here changes the tile in every language, so that all of them stay the same shape.</string>
 </resources>

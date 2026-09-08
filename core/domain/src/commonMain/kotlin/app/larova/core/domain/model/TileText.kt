@@ -136,6 +136,48 @@ fun textFieldsOf(payload: CardPayload): List<String> = when (payload) {
 }
 
 /**
+ * One tile's words, forced into the shape of another payload.
+ *
+ * The safety net under a tile whose structure has changed. [withTextFields] answers a wrong-length
+ * list by returning the payload untouched — the right answer for a caller that has no business
+ * reshaping anything, and the wrong one for a translation that has to keep up with a column its
+ * tile has just gained. Left to that, the variant silently reverts to the original's words and the
+ * next save writes them over the translation.
+ *
+ * So the words are fitted rather than refused: extra ones are dropped, missing ones arrive empty,
+ * and what comes back has exactly [shape]'s structure. Fitting rather than refusing is the
+ * deliberate half — a translation with one empty cell in it is a thing a parent can see and fill,
+ * and a translation replaced by the original is a thing they cannot even notice.
+ */
+fun reshapedToMatch(payload: CardPayload, shape: CardPayload): CardPayload =
+    withTextFields(shape, wordsFittedTo(shape, payload))
+
+/**
+ * The words of [payload], as many as [shape] has room for and in its arrangement.
+ *
+ * A table is the one shape this cannot be done flatly for. Its field list is every heading followed
+ * by every cell read across, so a table that gains a column moves the boundary between the two —
+ * pad such a list at the end and the last heading becomes the first cell, which is a table full of
+ * plausible nonsense rather than an obvious gap. Every other type is a uniform stride, where a
+ * missing item is missing from the end and padding lands where it should.
+ */
+private fun wordsFittedTo(shape: CardPayload, payload: CardPayload): List<String> = when (shape) {
+    is CardPayload.Table -> {
+        val from = payload as? CardPayload.Table
+        val headings = (from?.columns).orEmpty().fitted(shape.columns.size)
+        val cells = shape.rows.indices.flatMap { row ->
+            (from?.rows?.getOrNull(row)).orEmpty().fitted(shape.columns.size)
+        }
+        headings + cells
+    }
+
+    else -> textFieldsOf(payload).fitted(textFieldsOf(shape).size)
+}
+
+private fun List<String>.fitted(size: Int): List<String> =
+    if (this.size >= size) take(size) else this + List(size - this.size) { "" }
+
+/**
  * The same tile with those words replaced, and nothing else touched.
  *
  * Everything [textFieldsOf] left out is copied straight from [payload] — the pictures a guide
